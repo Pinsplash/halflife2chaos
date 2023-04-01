@@ -1,0 +1,22 @@
+﻿Build started 4/1/2023 4:44:37 AM.
+     1>Project "C:\sourceproject\halflife2chaos\sp\src\vgui2\vgui_controls\vgui_controls.vcxproj" on node 4 (Build target(s)).
+     1>PreBuildEvent:
+         if EXIST ..\..\lib\public\.\vgui_controls.lib ( for /f "delims=" %%A in ('attrib "..\..\lib\public\.\vgui_controls.lib"') do set valveTmpIsReadOnly="%%A"
+         ) else ( if not EXIST ..\..\lib\public\. mkdir ..\..\lib\public\. )
+         set valveTmpIsReadOnlyLetter=%valveTmpIsReadOnly:~6,1%
+         if "%valveTmpIsReadOnlyLetter%"=="R" (
+             attrib -r ..\..\lib\public\.\vgui_controls.lib
+             ..\..\devtools\bin\gnu\touch.exe -d "1999-01-01" ..\..\lib\public\.\vgui_controls.lib
+             attrib +r ..\..\lib\public\.\vgui_controls.lib
+         )
+         if exist "..\..\devtools\bin\vpc.exe" "..\..\devtools\bin\vpc.exe" -crc2 "vgui_controls.vcxproj"
+         if ERRORLEVEL 1 exit /b 1
+         
+         :VCEnd
+       Lib:
+         vgui_controls.vcxproj -> C:\sourceproject\halflife2chaos\sp\src\vgui2\vgui_controls\..\..\lib\public\.\vgui_controls.lib
+     1>Done Building Project "C:\sourceproject\halflife2chaos\sp\src\vgui2\vgui_controls\vgui_controls.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.16

@@ -1,0 +1,30 @@
+﻿Build started 3/10/2023 2:23:28 AM.
+     1>Project "C:\sourceproject\justnormal\sp\src\raytrace\raytrace.vcxproj" on node 5 (Build target(s)).
+     1>PreBuildEvent:
+         if EXIST ..\lib\public\.\raytrace.lib ( for /f "delims=" %%A in ('attrib "..\lib\public\.\raytrace.lib"') do set valveTmpIsReadOnly="%%A"
+         ) else ( if not EXIST ..\lib\public\. mkdir ..\lib\public\. )
+         set valveTmpIsReadOnlyLetter=%valveTmpIsReadOnly:~6,1%
+         if "%valveTmpIsReadOnlyLetter%"=="R" (
+             attrib -r ..\lib\public\.\raytrace.lib
+             ..\devtools\bin\gnu\touch.exe -d "1999-01-01" ..\lib\public\.\raytrace.lib
+             attrib +r ..\lib\public\.\raytrace.lib
+         )
+         if exist "..\devtools\bin\vpc.exe" "..\devtools\bin\vpc.exe" -crc2 "raytrace.vcxproj"
+         if ERRORLEVEL 1 exit /b 1
+         
+         :VCEnd
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I..\common /I..\public /I..\public\tier0 /I..\public\tier1 /I..\utils\common /ZI /nologo /W4 /WX /MP /Od /Oy- /D VPC /D RAD_TELEMETRY_DISABLED /D _HAS_ITERATOR_DEBUGGING=0 /D WIN32 /D _WIN32 /D _DEBUG /D DEBUG /D _LIB /D _CRT_SECURE_NO_DEPRECATE /D _CRT_NONSTDC_NO_DEPRECATE /D _ALLOW_RUNTIME_LIBRARY_MISMATCH /D _ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH /D _ALLOW_MSC_VER_MISMATCH /D _USING_V110_SDK71_ /D _MBCS /D COMPILER_MSVC32 /D COMPILER_MSVC32 /D COMPILER_MSVC /D _DLL_EXT=.dll /D LIBNAME=raytrace /D BINK_VIDEO /D AVI_VIDEO /D WMV_VIDEO /D DEV_BUILD /D FRAME_POINTER_OMISSION_DISABLED /D _EXTERNAL_DLL_EXT=.dll /D VPCGAMECAPS=VALVE /D PROJECTDIR=C:\sourceproject\justnormal\sp\src\raytrace /D _DLL_EXT=.dll /D VPCGAME=valve /D SOURCE1=1 /GF /Gm- /MTd /GS /arch:SSE /fp:fast /Zc:wchar_t /Zc:forScope /GR /openmp- /Fo".\Debug\.\/" /Fd".\Debug\.\/vc120.pdb" /Gd /TP /wd4316 /analyze- /FC /errorReport:prompt  /Gw raytrace.cpp trace2.cpp trace3.cpp
+         raytrace.cpp
+         trace2.cpp
+         trace3.cpp
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\Lib.exe /OUT:"..\lib\public\.\raytrace.lib" /NOLOGO  /ignore:4221 .\Debug\.\/raytrace.obj
+         .\Debug\.\/trace2.obj
+         .\Debug\.\/trace3.obj
+         raytrace.vcxproj -> C:\sourceproject\justnormal\sp\src\raytrace\..\lib\public\.\raytrace.lib
+     1>Done Building Project "C:\sourceproject\justnormal\sp\src\raytrace\raytrace.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:01.97

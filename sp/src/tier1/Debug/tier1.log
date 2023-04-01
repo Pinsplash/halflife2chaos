@@ -1,0 +1,63 @@
+﻿Build started 3/10/2023 4:24:42 AM.
+     1>Project "C:\sourceproject\justnormal\sp\src\tier1\tier1.vcxproj" on node 2 (Build target(s)).
+     1>PreBuildEvent:
+         if EXIST ..\lib\public\.\tier1.lib ( for /f "delims=" %%A in ('attrib "..\lib\public\.\tier1.lib"') do set valveTmpIsReadOnly="%%A"
+         ) else ( if not EXIST ..\lib\public\. mkdir ..\lib\public\. )
+         set valveTmpIsReadOnlyLetter=%valveTmpIsReadOnly:~6,1%
+         if "%valveTmpIsReadOnlyLetter%"=="R" (
+             attrib -r ..\lib\public\.\tier1.lib
+             ..\devtools\bin\gnu\touch.exe -d "1999-01-01" ..\lib\public\.\tier1.lib
+             attrib +r ..\lib\public\.\tier1.lib
+         )
+         if exist "..\devtools\bin\vpc.exe" "..\devtools\bin\vpc.exe" -crc2 "tier1.vcxproj"
+         if ERRORLEVEL 1 exit /b 1
+         
+         :VCEnd
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I..\common /I..\public /I..\public\tier0 /I..\public\tier1 /ZI /nologo /W4 /WX /MP /Od /Oy- /D VPC /D RAD_TELEMETRY_DISABLED /D _HAS_ITERATOR_DEBUGGING=0 /D WIN32 /D _WIN32 /D _DEBUG /D DEBUG /D _LIB /D _CRT_SECURE_NO_DEPRECATE /D _CRT_NONSTDC_NO_DEPRECATE /D _ALLOW_RUNTIME_LIBRARY_MISMATCH /D _ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH /D _ALLOW_MSC_VER_MISMATCH /D _USING_V110_SDK71_ /D _MBCS /D COMPILER_MSVC32 /D COMPILER_MSVC32 /D COMPILER_MSVC /D _DLL_EXT=.dll /D LIBNAME=tier1 /D BINK_VIDEO /D AVI_VIDEO /D WMV_VIDEO /D DEV_BUILD /D FRAME_POINTER_OMISSION_DISABLED /D TIER1_STATIC_LIB /D _EXTERNAL_DLL_EXT=.dll /D VPCGAMECAPS=VALVE /D PROJECTDIR=C:\sourceproject\justnormal\sp\src\tier1 /D _DLL_EXT=.dll /D VPCGAME=valve /D SOURCE1=1 /GF /Gm- /MTd /GS /arch:SSE /fp:fast /Zc:wchar_t /Zc:forScope /GR /openmp- /Fo".\Debug\.\/" /Fd".\Debug\.\/vc120.pdb" /Gd /TP /wd4316 /analyze- /FC /errorReport:prompt  /Gw bitbuf.cpp newbitbuf.cpp
+         bitbuf.cpp
+         newbitbuf.cpp
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\Lib.exe /OUT:"..\lib\public\.\tier1.lib" Rpcrt4.lib /NOLOGO  /ignore:4221 .\Debug\.\/bitbuf.obj
+         .\Debug\.\/byteswap.obj
+         .\Debug\.\/characterset.obj
+         .\Debug\.\/checksum_crc.obj
+         .\Debug\.\/checksum_md5.obj
+         .\Debug\.\/checksum_sha1.obj
+         .\Debug\.\/commandbuffer.obj
+         .\Debug\.\/convar.obj
+         .\Debug\.\/datamanager.obj
+         .\Debug\.\/diff.obj
+         .\Debug\.\/generichash.obj
+         .\Debug\.\/ilocalize.obj
+         .\Debug\.\/interface.obj
+         .\Debug\.\/KeyValues.obj
+         .\Debug\.\/kvpacker.obj
+         .\Debug\.\/lzmaDecoder.obj
+         .\Debug\.\/mempool.obj
+         .\Debug\.\/memstack.obj
+         .\Debug\.\/NetAdr.obj
+         .\Debug\.\/newbitbuf.obj
+         .\Debug\.\/processor_detect.obj
+         .\Debug\.\/rangecheckedvar.obj
+         .\Debug\.\/reliabletimer.obj
+         ".\Debug\.\/snappy-sinksource.obj"
+         ".\Debug\.\/snappy-stubs-internal.obj"
+         .\Debug\.\/snappy.obj
+         .\Debug\.\/sparsematrix.obj
+         .\Debug\.\/splitstring.obj
+         .\Debug\.\/stringpool.obj
+         .\Debug\.\/strtools.obj
+         .\Debug\.\/tier1.obj
+         .\Debug\.\/tokenreader.obj
+         .\Debug\.\/uniqueid.obj
+         .\Debug\.\/utlbuffer.obj
+         .\Debug\.\/utlbufferutil.obj
+         .\Debug\.\/utlstring.obj
+         .\Debug\.\/utlsymbol.obj
+         tier1.vcxproj -> C:\sourceproject\justnormal\sp\src\tier1\..\lib\public\.\tier1.lib
+     1>Done Building Project "C:\sourceproject\justnormal\sp\src\tier1\tier1.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.83
