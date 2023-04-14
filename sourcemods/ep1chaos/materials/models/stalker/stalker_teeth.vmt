@@ -1,0 +1,18 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/Stalker/stalker_teeth"
+}
+
+
+
+
+
+/*
+"Teeth"
+{
+	"$basetexture" "models/stalker/stalker_teeth"
+	"$clientshader" "MouthShader"
+	"$model" 1
+	"$halflambert" 1
+	"$nodecal" "1"
+}

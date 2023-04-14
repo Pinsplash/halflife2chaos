@@ -1,0 +1,7 @@
+"eyes"
+{
+	"$basetexture" "lostcoast/models/fisherman/eyeball_l"
+	"$iris" "lostcoast/models/fisherman/pupil_l"
+	"$halflambert" 1
+	"$nodecal" "1"
+}

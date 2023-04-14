@@ -1,0 +1,5 @@
+"Eyeball"
+{
+	"$basetexture" "lostcoast/models/fisherman/pupil_r"
+	"$nodecal" "1"
+}

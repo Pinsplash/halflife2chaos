@@ -1,0 +1,449 @@
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat{\fonttbl{\f0\fnil\fcharset0 Calibri;}{\f1\fnil\fcharset2 Symbol;}}
+{\*\generator Riched20 10.0.19041}\viewkind4\uc1 
+\pard\f0\fs22\lang1033 Put the "\b hl2chaos\b0 " folder into \b Steam/steamapps/sourcemods/\b0 . The path to \b gameinfo.txt\b0  should be \b Steam/steamapps/sourcemods/hl2chaos/gameinfo.txt\b0 . Do the same with the \b ep1chaos\b0  and \b ep2chaos\b0  folders if you wish to play Chaos in \i Episode One/Two\i0 . In all places in this guide, replace "\b hl2chaos\b0 " with "\b ep1chaos\b0 " or "\b ep2chaos\b0 " if using \i Episode One/Two\i0 .\par
+\par
+Restart Steam for the mod(s) to appear in your library.\par
+\par
+When running you will be prompted to download \i Source SDK Base 2013 Singleplayer \i0 if you don't have it already. This is normal. Download it, then right click on it and go to "\b Properties...\b0 ", "\b BETAS\b0 ", and change the dropdown from "None" to "\b upcoming - upcoming\b0 ". Changing this setting will prevent immediate crashes.\par
+\par
+You must copy the .BSP files from your installation of \i Half-Life 2/Episode One/Two\i0 . The mod may attempt to load maps without this step, but there will likely be issues.\par
+To do this go to \b Steam/steamapps/common/Half-Life 2/___/maps/\b0 . Fill in the blank with which game you want to copy maps for:\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\b hl2\b0  for \i Half-Life 2\i0\par
+{\pntext\f1\'B7\tab}\b episodic \b0 for \i Episode One\i0\par
+{\pntext\f1\'B7\tab}\b ep2 \b0 for \i Episode Two\i0\par
+
+\pard\par
+Maps from mods (and \i Lost Coast\i0 ) can also be used if you wish, though some things may not function correctly and additional original content (like textures and models) will need to be copied as well.\par
+\par
+Copy the map files and paste them in \b Steam/steamapps/sourcemods/hl2chaos/maps/\b0 .\b\par
+\b0\par
+Tips:\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720 If issues arise while playing, try \b chaos_restart \b0 in the console. This should set everything back to normal and restart the map.\par
+{\pntext\f1\'B7\tab}To modify things about Chaos like effect duration and probability, edit \b hl2chaos/cfg/autoexec.cfg\b0 .\par
+{\pntext\f1\'B7\tab}Want a specific effect? Use \b chaos_test_effect \b0 followed by a number. You can get any effect's number through \b chaos_print\b0 .\par
+{\pntext\f1\'B7\tab}Any CFG files you change must have their change reflected in the same file in all three mods if you wish for the change to apply in all of them. You can simply copy the file into the other two mod folders and replace the old version.\par
+{\pntext\f1\'B7\tab}Saving often will help you progress faster.\par
+{\pntext\f1\'B7\tab}If necessary, you can leave important NPCs behind. They will teleport into the next level with you.\par
+{\pntext\f1\'B7\tab}Enemy NPCs spawned by Chaos are gone forever once killed and remain wounded forever once hurt (unless they regenerate health), even if you reload a save, so don't give up on them.\par
+{\pntext\f1\'B7\tab}Turn off \i Fast weapon switch \i0 to easily know which weapons you have.\par
+{\pntext\f1\'B7\tab}Quickclip will not disable weapon switching if enabled by Chaos.\par
+{\pntext\f1\'B7\tab}Doing ep1_citadel_03 out of order is not recommended.\par
+{\pntext\f1\'B7\tab}Make keybinds for loading quicksaves and autosaves.\par
+{\pntext\f1\'B7\tab}Some effect-specific advice, if you don't wish to figure it out on your own:\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080\ul Zero Gravity\ulnone : Land in water to avoid fall damage. Landing on slopes can prevent fall damage.\par
+{\pntext\f1\'B7\tab}\ul Invert Gravity\ulnone : You can stick to the ground as long as you don't jump or move off it. Land in water to avoid fall damage. Landing on slopes can prevent fall damage.\par
+{\pntext\f1\'B7\tab}\ul Water World\ulnone : Only the crowbar, gravity gun, pistol, and crossbow can be used underwater. Drowning damage heals once you leave water. If Superhot is on, stay still to minimize drowning damage. If Supercold is on, move around to minimize drowning damage. You can't drown in vehicles.\par
+{\pntext\f1\'B7\tab}\ul Annoying Alyx\ulnone : Don't use burst damage weapons such as the shotgun. Alyx can only lose 25% of her health at once and regenerates health, so will take at least 5 hits to kill.\par
+{\pntext\f1\'B7\tab}\ul Floor Is Lava\ulnone  doesn't count some things as "not the floor" when it should. You can always stand on moving things, metal, and in water.\par
+{\pntext\f1\'B7\tab}Sometimes things are invisible with \ul Orthographic Camera\ulnone . Turning on the flashlight may fix it.\par
+
+\pard\par
+Certain console variables are changed in this mod that you might want your own settings for. These settings have been put in their own CFG files so you can control what they are, except when chaos effects modify them.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\b pitch.cfg\b0 : Sets \b m_pitch\b0 , the vertical sensitivity. Default 0.022.\par
+{\pntext\f1\'B7\tab}\b yaw.cfg\b0 : Sets \b m_yaw\b0 , the horizontal sensitivity. Default 0.022.\par
+{\pntext\f1\'B7\tab}\b portalsopenall.cfg\b0 : Sets \b r_portalsopenall\b0 . Force-opens all areaportals. Most users will want to use 1 because if 0, areas of levels may become invisible until you enter them. This was intended to help performance, but Chaos can disrupt this feature due to sequence breaking. Normally the default is 0, but in Chaos, it's 1.\par
+
+\pard\par
+Known issues:\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720 Sometimes the bar at the top won't appear after loading a save/map. The mod is still working. The bar should appear once the next effect starts.\par
+{\pntext\f1\'B7\tab}The "Saved..." message may not appear. The save is still made.\par
+{\pntext\f1\'B7\tab}The car compass HUD element does not display correctly.\par
+{\pntext\f1\'B7\tab}If you play maps from something that isn't \i Half-Life 2/Episode One/Two\i0 , the "Node graph out of date" message will appear every time you go to a new map for the first time. This message is harmless, but if you wish, you can copy the .AIN files from the mod as well. It will also stop appearing after you've visited each map a single time, because the mod has now generated its own copy of the node graph. The .AIN files are included for \i Half-Life 2/Episode One/Two\i0 .\par
+{\pntext\f1\'B7\tab}If you take a weird path through d3_c17_13, you may not activate the strider in the car pit. You will have to kill it before the intended route can continue.\par
+{\pntext\f1\'B7\tab}It's easy to get stuck with \ul Player is Huge\ulnone , but only temporarily. The issue seems to only happen when jumping and not holding crouch.\par
+{\pntext\f1\'B7\tab}\ul Super Grab\ulnone  sometimes makes it harder to grab things.\par
+{\pntext\f1\'B7\tab}\ul Floor Is Lava\ulnone  doesn't count some things as "not the floor" when it should. You can always stand on moving things, metal, and in water.\par
+{\pntext\f1\'B7\tab}Sometimes things are invisible with \ul Orthographic Camera\ulnone . Turning on the flashlight may fix it.\par
+{\pntext\f1\'B7\tab}Collisions can be weird when \ul Slow Physics\ulnone  is on.\par
+
+\pard\par
+Thanks for big and small bits of help:\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720 Blixibon\par
+{\pntext\f1\'B7\tab}tmp64\par
+{\pntext\f1\'B7\tab}BoxFigs\par
+{\pntext\f1\'B7\tab}B.A.S.E\par
+{\pntext\f1\'B7\tab}TeamSpen210\par
+{\pntext\f1\'B7\tab}craftablescience\par
+{\pntext\f1\'B7\tab}EchoesForeAndAft\par
+{\pntext\f1\'B7\tab}ender\par
+{\pntext\f1\'B7\tab}2838\par
+
+\pard\par
+Version history\par
+\par
+\b v0.1\par
+General:\b0\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720 Effects are much less likely to bug out when loading saves or going to new levels.\par
+{\pntext\f1\'B7\tab}Added timers showing how long effects have left until they expire.\par
+{\pntext\f1\'B7\tab}Certain spawned objects can now persist through saves and carry their state over from when the load button was pressed. This means things like zombies spawned by \ul Left 4 Dead\ulnone  are easier to fight as the dead zombies will stay dead, and wounded zombies will stay wounded, even if you die initially.\par
+{\pntext\f1\'B7\tab}Things from the \i Episodes\i0  and \i Lost Coast \i0 have been added. Episodic things will only appear in \i Episode One/Two Chaos\i0 . You may play the base HL2 campaign in \i Episode One/Two Chaos\i0  if you wish, but expect issues.\par
+{\pntext\f1\'B7\tab}Time between new effects has been lowered from 30 seconds to 20 seconds.\par
+{\pntext\f1\'B7\tab}Effect duration has been lowered from 90 seconds to 80 seconds.\par
+{\pntext\f1\'B7\tab}Effects can now have individually modified lengths.\par
+{\pntext\f1\'B7\tab}Effects can now have individually modified probabilities. (Including being entirely disabled.)\par
+{\pntext\f1\'B7\tab}Effects that are already active cannot be chosen again. This existed in the first version but I don't think it was functional.\par
+{\pntext\f1\'B7\tab}Added effect groups, which prevent effects in the same group from being chosen if one from the group is already active. This existed in the first version but I don't think it was functional.\par
+{\pntext\f1\'B7\tab}Effects are now less likely to happen again after recently occurring.\par
+{\pntext\f1\'B7\tab}Due to being necessary for some effects, Chaos now operates at the correct real life speed, independent of \b host_timescale\b0 .\par
+{\pntext\f1\'B7\tab}If an effect causes the player to die too many times, it will be aborted. The number of times can be controlled with \b chaos_strike_max\b0 . Default 5.\par
+{\pntext\f1\'B7\tab}Added convars for controlling bar color, text color, and positioning of text.\par
+{\pntext\f1\'B7\tab}Text for effects can now fade to a different color as the effect gets closer to expiring.\par
+{\pntext\f1\'B7\tab}Text for effects now renders normally instead of additively to make it easier to read.\par
+{\pntext\f1\'B7\tab}Fixed top bar becoming thicker as it grew.\par
+{\pntext\f1\'B7\tab}The game now tries to get the player unstuck every time an effect starts. If you become stuck, try waiting for the next effect.\par
+{\pntext\f1\'B7\tab}The game now sets \b sv_cheats\b0  to \b 1 \b0 every time an effect starts as it would interfere with some effects.\par
+{\pntext\f1\'B7\tab}Created new algorithm for getting the player and other objects out of places where they're stuck.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Based off original algorithm used by \b noclip\b0 .\par
+{\pntext\f1\'B7\tab}Tests for open space above, below, to the north, south, east, and west of the object and all combinations of those directions.\par
+{\pntext\f1\'B7\tab}Avoids placing objects through walls.\par
+{\pntext\f1\'B7\tab}Avoids placing objects above nodraw and skybox textures.\par
+{\pntext\f1\'B7\tab}Optional failsafe to placing object at the nearest appropriate AI node.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1440 Failsafe keeps the object in the same node zone if possible.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Recognizes quickclip and preserves it while still getting the player unstuck.\par
+{\pntext\f1\'B7\tab}Forces player to crouch if necessary.\par
+
+\pard\par
+Since it wasn't tracked well before, here is a readout of all current effect \b contexts:\b0\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Boat\ulnone : An airboat must be present in the map.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Used by \ul Lock Vehicles\ulnone  and \ul Force In/Out Vehicle\ulnone .\par
+{\pntext\f1\'B7\tab}If an effect uses both \ul Boat\ulnone  and \ul Buggy\ulnone , only one of them is required.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Buggy\ulnone : A buggy or jalopy must be present in the map.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Used by \ul Lock Vehicles\ulnone , \ul Bumpy Road\ulnone , \ul Broken Brakes\ulnone , and \ul Force In/Out Vehicle\ulnone .\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Water\ulnone : The map must have water.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Used by \ul Death Water\ulnone .\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Physics\ulnone : The map must not be one where important things can become broken if their physics are messed with.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Used by \ul Ran Out Of Glue\ulnone  and \ul Pause Physics\ulnone .\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul No Invuln\ulnone : Player must not be invulnerable.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Used by \ul Grenade Guns\ulnone , \ul Funny Number\ulnone , and \ul Floor Is Lava\ulnone .\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Shotgun\ulnone : There must a shotgun, held or unheld, in the map.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Used by \ul Double Barrel Shotgun\ulnone .\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Has Weapon\ulnone : Player must have at least one weapon.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Used by \ul Drop Weapons\ulnone , \ul Left 4 Dead\ulnone , \ul Annoying Alyx\ulnone , \ul Remove Random Weapon\ulnone , \ul No One Can Reload\ulnone , and \ul Remove All Pickups\ulnone .\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Quickclip Off\ulnone : Quickclip must be off and the map must not be one that can easily softlock if quickclip is on.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Used by \ul Enable Quickclip\ulnone  and \ul Floor Is Lava\ulnone .\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Quickclip On\ulnone : Quickclip must be on.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Used by \ul Disable Quickclip\ulnone .\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul No Cutscene\ulnone : Must not be on a map that's mostly cutscenes.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Used by \ul World of Hate\ulnone , \ul World of Fear\ulnone , and \ul You Teleport?\ulnone .\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Pickups\ulnone : A pickup must exist on the map, and the map must not be one with pickups that are needed to progress or are very hard without pickups.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Used by \ul Remove All Pickups\ulnone  and \ul Water World\ulnone .\par
+{\pntext\f1\'B7\tab}This only looks for entities with classnames beginning with "it", so suit and health chargers count as pickups.\par
+{\pntext\f1\'B7\tab}Weapon entities do not count. To clarify, \ul Remove All Pickups\ulnone  does remove unheld weapons despite them not being counted by the context's criteria.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Invert Gravity\ulnone : The map must not be one that is known to have softlock issues with this effect.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Used by \ul Invert Gravity\ulnone .\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Crane Spawn\ulnone : Map must generally be spacious enough to fit a crane.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Used by \ul Noriko, No!\ulnone .\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Bullet Teleport\ulnone : The map must not be one that has certain NPCs which are vital to progressing.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Used by \ul Teleporter Bullets\ulnone .\par
+{\pntext\f1\'B7\tab}NPCs on these maps are required to be killed in order to progress on the intended route, and \ul Teleporter Bullets\ulnone  can cause them to teleport to places that make it difficult or impossible to find them.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul No Citadel\ulnone : Map must not be one of the gameplay-focussed Citadel maps.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Used by \ul Drop Weapons\ulnone , \ul Remove Random Weapon\ulnone , \ul Remove All Pickups\ulnone , and \ul Floor Is Lava\ulnone .\par
+{\pntext\f1\'B7\tab}\ul Floor Is Lava\ulnone  currently allows all metal surfaces to be stepped on, and wouldn't make much sense in the Citadel.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Player Teleport\ulnone : The map must not be one where a softlock could occur if the player was teleported somewhere.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Used by \ul Teleport to Random Place\ulnone , \ul Force In/Out Vehicle\ulnone , and \ul Deja Vu?\ulnone .\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul No Vehicle\ulnone : Must not be an airboat, buggy, or jalopy in the map.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Used by \ul Pause Physics\ulnone  and \ul Grabby\ulnone .\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul NPC Teleport\ulnone : The map must not be one there NPCs can still create issues even when teleporting in a manner more controlled than \ul Teleporter Bullets\ulnone .\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Used by \ul You Teleport?\ulnone .\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Clone NPCs\ulnone : Must not be on certain maps that rely on an NPC moving to a certain place.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Used by \ul Suppression Field Hiccup\ulnone . When multiple of an NPC are requested by a script, the game only chooses one of them to use at a time. The NPC that's chosen at any particular moment may be stuck elsewhere because it was not chosen to do some scripted movement that it would be expected to have done by now.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul No Long Map\ulnone : Map cannot be one that takes "too long".\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Used by \ul Go Back a Level\ulnone . If this effect would take you back to a "long map", it will just restart the current map instead.\par
+{\pntext\f1\'B7\tab}A convar is planned to be introduced in later versions to control what counts as "too long".\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul No Slow Physics\ulnone : The physics timescale cannot be below 1.0. (So basically, it just avoids \ul Pause Physics\ulnone  and \ul Slow Physics\ulnone , mainly intended for the 2nd one.)\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Used by \ul Floor Is Lava\ulnone .\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul No Lava\ulnone : \ul Floor Is Lava\ulnone  must not be on.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Used by \ul Slow Physics\ulnone .\par
+{\pntext\f1\'B7\tab}\ul No Slow Physics\ulnone  and \ul No Lava\ulnone  exist because physics objects can interact weirdly with the player if the physics timescale is lower than 1.\par
+{\pntext\f1\'B7\tab}\ul Floor Is Lava\ulnone  and \ul Slow Physics\ulnone  could not be made mutually exclusive via \b groups \b0 because both were already in groups, and effects currently cannot be in multiple groups.\par
+
+\pard\par
+Since it wasn't tracked well before, here is a readout of all current effect \b groups:\b0\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Gravity\ulnone : Used by \ul Zero Gravity\ulnone , \ul Super Gravity\ulnone , and \ul Low Gravity\ulnone .\par
+{\pntext\f1\'B7\tab}\ul Physics Speed\ulnone : Used by \ul Pause Physics\ulnone , \ul Fast Physics\ulnone , and \ul Slow Physics\ulnone .\par
+{\pntext\f1\'B7\tab}\ul NPC Relationships\ulnone : Used by \ul World of Hate\ulnone , \ul World of Love\ulnone , \ul World of Apathy\ulnone , and \ul World of Fear\ulnone .\par
+{\pntext\f1\'B7\tab}\ul Superhot\ulnone : Used by \ul Superhot\ulnone , \ul Supercold\ulnone , \ul Stop\ulnone , and \ul Super Speed\ulnone .\par
+{\pntext\f1\'B7\tab}\ul Barrel\ulnone : Used by \ul Black Hole\ulnone , \ul Repulsive\ulnone , and \ul Double Barrel Shotgun\ulnone .\par
+{\pntext\f1\'B7\tab}\ul Vision\ulnone : (AKA shit that annoyed me on ep2_outland_12) Used by \ul Where Are The Objects?\ulnone , \ul Drop Weapons\ulnone , \ul Floor Is Lava\ulnone , \ul Orthographic Camera\ulnone , \ul Surprise Reforestation!\ulnone , and \ul Vision Machine Broke\ulnone .\par
+
+\pard\par
+\b Game:\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\b0 Stalkers in HL2 now use the Ep1 model as the original one did not ragdoll well and could cause lag.\par
+{\pntext\f1\'B7\tab}If a vehicle is being grabbed by a crane or resting on the ceiling due to altered gravity, the player will now exit the vehicle from below instead of getting jammed into the thing above it.\par
+{\pntext\f1\'B7\tab}Removed ability of \b setpos_exact\b0  (and \b reload setpos\b0 ) to enable \b noclip \b0 when stuck.\par
+{\pntext\f1\'B7\tab}Removed acid screen flashing.\par
+{\pntext\f1\'B7\tab}Fixed Alyx "falling to her death" when gravity is not pointing downward in the Episodes.\par
+
+\pard\par
+\b Effects:\b0\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720 Gravity modifiers:\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Physically-simulated objects now react immediately to changes in gravity. Previously they only fell according to \b sv_gravity \b0 at the time they spawned/activated at.\par
+{\pntext\f1\'B7\tab}Now less likely to set \b sv_gravity \b0 to something incorrect.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Zero Gravity\ulnone :\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Fixed minor issues related to NPCs not understanding \ul Zero Gravity\ulnone .\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Black Hole\ulnone  and \ul Repulsive\ulnone :\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Now acknowledge the strength of global gravity and scale with it.\par
+{\pntext\f1\'B7\tab}The base strength of \ul Black Hole\ulnone  and \ul Repulsive\ulnone  can be adjusted with \b chaos_pushpull_strength\b0 .\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Stop\ulnone  and \ul Super Speed\ulnone :\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Now only affect the "leg speed" instead of affecting all movement. Secondary things such as gravity and damage affect player movement how they normally would.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Stop\ulnone :\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Now affects vehicles too.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Super Speed\ulnone :\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Speed increased from 10 times the regular speed values to 4000 ups in all modes and directions.\par
+{\pntext\f1\'B7\tab}Fall damage has been reduced.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Lock Vehicle\ulnone :\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Has been renamed to "\ul Lock Vehicles\ulnone ".\par
+{\pntext\f1\'B7\tab}Locks vehicles the whole time it's active, not just when it is picked.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul World of ...\ulnone :\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Fixed issue where relationships didn't apply to newly spawned NPCs.\par
+{\pntext\f1\'B7\tab}NPCs will no longer have relationships applied to themselves. This means no more NPCs attempting to attack themselves or running away from themselves.\par
+{\pntext\f1\'B7\tab}Negative relationships will no longer apply between vital ally NPCs and the player since killing them would mean resetting the game. This could be changed in the future since you can just hide from them.\par
+{\pntext\f1\'B7\tab}NPCs will no longer care about crane drivers, since they're immortal.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Player is Huge\ulnone , \ul Player is Tiny\ulnone , and \ul Teleport to Random Place\ulnone :\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 If the player gets stuck, the game will try to get them unstuck.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Teleport to Random Place\ulnone :\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Now works when in vehicles.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Spawn Random Vehicle\ulnone  and \ul Spawn Random NPC\ulnone :\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 APCs can now spawn.\par
+{\pntext\f1\'B7\tab}Spawned things ignore the camera's vertical angle to avoid spawning in the ground or directly above the player.\par
+{\pntext\f1\'B7\tab}The game will try to avoid putting NPCs and vehicles inside solid objects.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Spawn Random Vehicle\ulnone\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Cranes can now spawn.\par
+{\pntext\f1\'B7\tab}Jalopies can now spawn in \i Episode Two\i0 .\par
+{\pntext\f1\'B7\tab}Vehicles spawn farther away to avoid hitting the player on the head.\par
+{\pntext\f1\'B7\tab}Airboats will now have their gun.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Spawn Random NPC\ulnone :\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 NPCs spawn facing player instead of looking to the side.\par
+{\pntext\f1\'B7\tab}Large flying NPCs will now spawn farther away.\par
+{\pntext\f1\'B7\tab}Barnacles and ceiling turrets now spawn on ceilings as opposed to floating in the air.\par
+{\pntext\f1\'B7\tab}Antlions and antlion guardians may randomly be the acid variants in \i Episode Two\i0 .\par
+{\pntext\f1\'B7\tab}Alyx can now use her EMP device to reprogram rollermines.\par
+{\pntext\f1\'B7\tab}Alyx, Barney, citizens, vortigaunts and fisherman now have a randomized readiness level.\par
+{\pntext\f1\'B7\tab}Citizens will now follow the player and have a randomized medic status, ammo resupplier status, type of ammo they give, clothing, expression, and weapon.\par
+{\pntext\f1\'B7\tab}Soldiers now have 100 grenades to throw and have a randomized model/elite status and weapon.\par
+{\pntext\f1\'B7\tab}Scanners are now allowed to chase enemies.\par
+{\pntext\f1\'B7\tab}Dog will now try to play fetch.\par
+{\pntext\f1\'B7\tab}Metrocops now have 100 manhacks to deploy and have a randomized weapon.\par
+{\pntext\f1\'B7\tab}Stalkers now have a randomized beam power.\par
+{\pntext\f1\'B7\tab}Striders are now allowed to impale the player.\par
+{\pntext\f1\'B7\tab}Ceiling turrets now actually do stuff.\par
+{\pntext\f1\'B7\tab}Speculative fix for a crash related to spawned turrets.\par
+{\pntext\f1\'B7\tab}Vortigaunts can now recharge the player's suit.\par
+{\pntext\f1\'B7\tab}Zombines can now spawn in \i Episode One \i0 and \i Two\i0 .\par
+{\pntext\f1\'B7\tab}Advisors, antlion grubs, fast zombie torsos, hunters, and Dr. Magnusson can now spawn in \i Episode Two\i0 .\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Water World\ulnone :\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Drowning damage will stop when in a vehicle. It already did this sometimes so might as well make it a consistent thing.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul No Looking Left/Right\ulnone  and \ul No Looking Up/Down\ulnone :\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Now ensuring that \b sv_cheats \b0 is always \b 1 \b0 as this seemed to be the cause of an issue where the sensitivity would become inverted.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Super Grab\ulnone :\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Objects can now be picked up regardless of weight.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Give All Weapons\ulnone  and \ul Give Random Weapon\ulnone :\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Now give HEV suit and (more) ammo as well.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Give Random Weapon\ulnone :\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Removed alyxgun, annabelle, citizenpackage, citizensuitcase, and cubemap as they don't work very well.\par
+{\pntext\f1\'B7\tab}Will no longer try to give weapons you already have.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Drop Weapons\ulnone :\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Speculative fix for crash.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Drunk Camera\ulnone :\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Has been renamed to "\ul Wobbly\ulnone ".\par
+{\pntext\f1\'B7\tab}Will now apply even in the air.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Left 4 Dead\ulnone :\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Zombies no longer appear to fall down immediately upon spawning.\par
+{\pntext\f1\'B7\tab}Zombies will no longer mysteriously be all the same type.\par
+{\pntext\f1\'B7\tab}Zombines can now spawn in \i Episode One \i0 and \i Two\i0 .\par
+{\pntext\f1\'B7\tab}Fast zombie torsos can now spawn in \i Episode Two\i0 .\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul NPCs Explode on Death\ulnone :\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Antlion grubs now explode.\par
+{\pntext\f1\'B7\tab}Fixed a crash when scanners died.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Teleporter Bullets\ulnone :\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 If the player or an NPC gets stuck, the game will try to get them unstuck.\par
+{\pntext\f1\'B7\tab}Floor turrets now work a bit better, but will not attempt to teleport when tipped over.\par
+{\pntext\f1\'B7\tab}Mounted guns will no longer teleport because they break.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Credits\ulnone :\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Second song now plays at appropriate time.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720 Added effects:\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080\ul Grenade Guns\par
+{\pntext\f1\'B7\tab}Superhot\par
+{\pntext\f1\'B7\tab}Supercold\par
+{\pntext\f1\'B7\tab}Double Barrel Shotgun\par
+{\pntext\f1\'B7\tab}Enable Quickclip\par
+{\pntext\f1\'B7\tab}Disable Quickclip\par
+{\pntext\f1\'B7\tab}Solid Triggers\par
+{\pntext\f1\'B7\tab}Pretty Colors\par
+{\pntext\f1\'B7\tab}Beer I owed ya\par
+{\pntext\f1\'B7\tab}Annoying Alyx\par
+{\pntext\f1\'B7\tab}Noriko, No!\par
+{\pntext\f1\'B7\tab}Why So Rushed?\par
+{\pntext\f1\'B7\tab}Floor Is Lava\par
+{\pntext\f1\'B7\tab}Play Random Song\par
+{\pntext\f1\'B7\tab}Grabby\par
+{\pntext\f1\'B7\tab}Orthographic Camera\par
+{\pntext\f1\'B7\tab}Surprise Reforestation!\par
+{\pntext\f1\'B7\tab}Spawn Mounted Gun\par
+{\pntext\f1\'B7\tab}Go Back a Level\par
+{\pntext\f1\'B7\tab}Remove All Pickups\par
+{\pntext\f1\'B7\tab}Suppression Field Hiccup\par
+{\pntext\f1\'B7\tab}Vision Machine Broke\par
+{\pntext\f1\'B7\tab}Deja Vu?\par
+{\pntext\f1\'B7\tab}Bumpy Road\par
+{\pntext\f1\'B7\tab}Broken Brakes\par
+{\pntext\f1\'B7\tab}Force In/Out Vehicle\par
+{\pntext\f1\'B7\tab}Remove Random Weapon\par
+{\pntext\f1\'B7\tab}Laggy NPCs\par
+{\pntext\f1\'B7\tab}Ran Out Of Glue\par
+{\pntext\f1\'B7\tab}No Climbing\par
+{\pntext\f1\'B7\tab}No Saving\par
+{\pntext\f1\'B7\tab}No One Can Reload\par
+{\pntext\f1\'B7\tab}You Teleport?\par
+{\pntext\f1\'B7\tab}Death Water\par
+
+\pard\par
+\ulnone\b v0.0\par
+Effects:\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\b0 Added effects:\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080\ul Zero Gravity\par
+{\pntext\f1\'B7\tab}Super Gravity\par
+{\pntext\f1\'B7\tab}Low Gravity\par
+{\pntext\f1\'B7\tab}Invert Gravity\par
+{\pntext\f1\'B7\tab}Pause Physics\par
+{\pntext\f1\'B7\tab}Fast Physics\par
+{\pntext\f1\'B7\tab}Slow Physics\par
+{\pntext\f1\'B7\tab}Black Hole\par
+{\pntext\f1\'B7\tab}Repulsive\par
+{\pntext\f1\'B7\tab}Stop\par
+{\pntext\f1\'B7\tab}Super Speed\par
+{\pntext\f1\'B7\tab}Lock Vehicle\par
+{\pntext\f1\'B7\tab}World of Hate\par
+{\pntext\f1\'B7\tab}World of Love\par
+{\pntext\f1\'B7\tab}World of Apathy\par
+{\pntext\f1\'B7\tab}World of Fear\par
+{\pntext\f1\'B7\tab}Teleport to Random Place\par
+{\pntext\f1\'B7\tab}Spawn Random Vehicle\par
+{\pntext\f1\'B7\tab}Spawn Random NPC\par
+{\pntext\f1\'B7\tab}Water World\par
+{\pntext\f1\'B7\tab}Where Are The Objects?\par
+{\pntext\f1\'B7\tab}Ultra Low Detail\par
+{\pntext\f1\'B7\tab}Player is Huge\par
+{\pntext\f1\'B7\tab}Player is Tiny\par
+{\pntext\f1\'B7\tab}No Looking Left/Right\par
+{\pntext\f1\'B7\tab}No Looking Up/Down\par
+{\pntext\f1\'B7\tab}Super Grab\par
+{\pntext\f1\'B7\tab}Give Random Weapon\par
+{\pntext\f1\'B7\tab}Give All Weapons\par
+{\pntext\f1\'B7\tab}Drop Weapons\par
+{\pntext\f1\'B7\tab}Drunk Camera\par
+{\pntext\f1\'B7\tab}Funny Number\par
+{\pntext\f1\'B7\tab}Left 4 Dead\par
+{\pntext\f1\'B7\tab}NPCs Explode on Death\par
+{\pntext\f1\'B7\tab}Teleporter Bullets\par
+{\pntext\f1\'B7\tab}Credits\par
+}
+ 

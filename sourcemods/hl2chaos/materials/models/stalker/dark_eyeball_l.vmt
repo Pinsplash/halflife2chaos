@@ -1,0 +1,7 @@
+"eyes"
+{
+	"$basetexture" "models/stalker/dark_eyeball_l"
+	"$iris" "models/stalker/pupil_l"
+	"$halflambert" 1
+	"$nodecal" "1"
+}

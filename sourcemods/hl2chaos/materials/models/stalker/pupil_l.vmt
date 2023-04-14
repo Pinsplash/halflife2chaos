@@ -1,0 +1,5 @@
+"Eyeball"
+{
+	"$basetexture" "models/stalker/pupil_l"
+	"$nodecal" "1"
+}

@@ -1,0 +1,17 @@
+"vertexlitgeneric"
+{
+	"$baseTexture" "models/Stalker/stalker_sheet"	
+	"$bumpmap" "models/Stalker/stalker_sheet_normal"
+//	"$halflambert" 1
+	"$nodecal" "1"
+	"$model" "1"
+	"$selfillum" "1"
+
+// -- From here down is new stuff which will only be applied if $phong is set to 1 --
+
+	"$phong" "1"
+//	"$phongexponent" "35"
+	"$phongexponenttexture" "models/Stalker/stalker_specexp"
+	"$phongboost"	"15"
+	"$phongfresnelranges"	"[.2 0.4 2]"
+}
