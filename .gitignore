@@ -58,3 +58,5 @@ config.cfg
 *.hl1
 *.hl2
 *.hl3
+*.obj
+*.dat

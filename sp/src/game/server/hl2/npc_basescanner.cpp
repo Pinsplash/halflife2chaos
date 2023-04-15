@@ -407,7 +407,8 @@ int CNPC_BaseScanner::OnTakeDamage_Dying( const CTakeDamageInfo &info )
 
 	if ( m_iHealth < -40 )
 	{
-		Gib();
+		if (!chaos_explode_on_death.GetBool())
+			Gib();
 		return 1;
 	}
 
@@ -560,7 +561,6 @@ void CNPC_BaseScanner::Gib( void )
 	te->DynamicLight( filter, 0.0, &WorldSpaceCenter(), 255, 180, 100, 0, 100, 0.1, 0 );
 
 	// Cover the gib spawn
-	if (!chaos_explode_on_death.GetBool())
 		ExplosionCreate( WorldSpaceCenter(), GetAbsAngles(), this, 64, 64, false );
 
 	// Turn off any smoke trail
