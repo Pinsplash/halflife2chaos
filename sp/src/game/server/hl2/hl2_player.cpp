@@ -7637,36 +7637,76 @@ void CEQuickclip::StartEffect()
 }
 void CEFloorIsLava::FastThink()
 {
-	if (m_iTicksSkipped < 7)
+	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+	bool bSkipThisTick = false;
+	//have to be on solid ground
+	if (pPlayer->IsInAVehicle())
+		bSkipThisTick = true;
+
+	//don't hurt if in water
+	if (pPlayer->GetWaterLevel() >= WL_Feet)
+		bSkipThisTick = true;
+
+	//allow all grating and clipping
+	if (pPlayer->m_chTextureType == 'G' || pPlayer->m_chTextureType == 'I')
+		bSkipThisTick = true;
+
+	if (!bSkipThisTick)
 	{
-		m_iTicksSkipped++;
-		return;
+		//trace hull lets us see when player is surfing. checking ground entity can't differentiate between surfing and being entirely in the air
+		trace_t	trace;
+		UTIL_TraceHull(pPlayer->GetAbsOrigin() + Vector(0, 0, 1), pPlayer->GetAbsOrigin() - Vector(0, 0, 1), Vector(-16, -16, -1), Vector(16, 16, 0), CONTENTS_SOLID, pPlayer, COLLISION_GROUP_NONE, &trace);
+
+		//have to be on solid ground
+		//all entities get a free pass
+		if (!trace.m_pEnt || !trace.m_pEnt->IsWorld())
+			bSkipThisTick = true;
+
+		if (!bSkipThisTick)
+		{
+			//don't count static props
+			if (!strcmp(trace.surface.name, "**studio**"))
+				bSkipThisTick = true;
+		}
+
+		//test in center and 4 corners
+		trace_t	trace2;
+		//Vector vecCorners[5] = { Vector(0, 0, 0), Vector(-16, -16, 0), Vector(16, -16, 0), Vector(-16, 16, 0), Vector(16, 16, 0) };
+		//for (int i = 0; i < 5; i++)
+		//{
+			UTIL_TraceLine(pPlayer->GetAbsOrigin(), pPlayer->GetAbsOrigin() - Vector(0, 0, 20), CONTENTS_SOLID, pPlayer, COLLISION_GROUP_NONE, &trace2);
+
+			//if you're on sky or nodraw, then whatever
+			if ((trace2.surface.flags & SURF_SKY) || (trace2.surface.flags & SURF_NODRAW))
+			{
+				bSkipThisTick = true;
+				//break;
+			}
+		//}
+	}
+
+	if (bSkipThisTick)
+	{
+		//off ground, reset the timer so that we get burned on the first tick we're back on solid ground
+		m_iSkipTicks = 0;
 	}
 	else
-		m_iTicksSkipped = 0;
-	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
-	//you can still have a ground entity if you're in a crane apparently. or maybe the crane counts as the ground entity?
-	if (pPlayer->GetGroundEntity() && pPlayer->GetGroundEntity()->GetMoveType() == MOVETYPE_NONE && !pPlayer->IsInAVehicle())
 	{
-		//try to avoid some things like static props and fences
-		//TODO: Not very robust. static props can still cause false positives
-		trace_t	trace;
-		UTIL_TraceHull(pPlayer->GetAbsOrigin(), pPlayer->GetAbsOrigin() - Vector(0, 0, 1), pPlayer->GetPlayerMins(), pPlayer->GetPlayerMaxs(), CONTENTS_SOLID, pPlayer, COLLISION_GROUP_NONE, &trace);
-		if (!trace.DidHit())
+		//When on solid ground, wait X ticks between applying damage.
+		if (m_iSkipTicks > 0)
+		{
+			//tick timer down
+			m_iSkipTicks--;
 			return;
-
-		//don't hurt if in water
-		if (pPlayer->GetWaterLevel() >= WL_Feet)
-			return;
-
-		//allow all grate, clip, and metal textures.
-		//can we at least get rocks in here?
-		if (pPlayer->m_chTextureType == 'G' || pPlayer->m_chTextureType == 'I' || pPlayer->m_chTextureType == 'M' || pPlayer->m_chTextureType == 'P')
-			return;
-
-		//apply dmg
-		CTakeDamageInfo info(pPlayer, pPlayer, 1, DMG_BURN);
-		pPlayer->TakeDamage(info);
+		}
+		else
+		{
+			//time to burn again
+			m_iSkipTicks = 7;
+			//apply dmg
+			CTakeDamageInfo info(pPlayer, pPlayer, 1, DMG_BURN);
+			pPlayer->TakeDamage(info);
+		}
 	}
 }
 bool CEFloorIsLava::CheckStrike(const CTakeDamageInfo &info)

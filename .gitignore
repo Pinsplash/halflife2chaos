@@ -12,7 +12,7 @@
 *.exp
 *.ilk
 *.lastbuildstate
-vc100.pdb
+*.pdb
 ipch
 *.sdf
 *.opensdf
@@ -58,5 +58,7 @@ config.cfg
 *.hl1
 *.hl2
 *.hl3
-*.obj
 *.dat
+*.dll
+*.lib
+*.vpc.sentinel

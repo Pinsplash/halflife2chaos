@@ -470,7 +470,7 @@ class CEFloorIsLava : public CChaosEffect
 {
 public:
 	void FastThink() override;
-	int m_iTicksSkipped = 0;
+	int m_iSkipTicks = 0;
 	bool CheckStrike(const CTakeDamageInfo &info) override;
 };
 class CEUseSpam : public CChaosEffect
