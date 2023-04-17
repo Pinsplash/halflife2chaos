@@ -4717,11 +4717,13 @@ void CHL2_Player::CreateEffect(int nEffect, string_t strHudName, int nGroup, int
 	{
 		newEffect->m_flTimeRem = chaos_effect_time.GetFloat();
 		newEffect->m_flDuration = chaos_effect_time.GetFloat();
+		newEffect->m_bTransient = true;
 	}
 	else
 	{
 		newEffect->m_flTimeRem = chaos_effect_time.GetFloat() * flDurationMult;
 		newEffect->m_flDuration = chaos_effect_time.GetFloat() * flDurationMult;
+		newEffect->m_bTransient = false;
 	}
 	g_ChaosEffects.AddToTail(newEffect);
 }
@@ -5184,6 +5186,7 @@ ConVar chaos_bar_r("chaos_bar_r", "255");
 ConVar chaos_bar_g("chaos_bar_g", "220");
 ConVar chaos_bar_b("chaos_bar_b", "0");
 ConVar chaos_bar_a("chaos_bar_a", "255");
+ConVar chaos_alwaysShowEffectTime("chaos_alwaysShowEffectTime", "0");
 void CHL2_Player::DoChaosHUDBar()
 {
 	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
@@ -5224,10 +5227,17 @@ void PrintEffectName(int i, int iHidden, bool bDead, CChaosEffect *pEffect, bool
 	textParams.holdTime = bDead ? 100 : gpGlobals->interval_per_tick + 0.1;//don't progress timer when dead to avoid confusion
 	textParams.fxTime = 0;
 	textParams.drawtype = 1;
-	char szMessage[2048];
-	int iTime = ceil(pEffect->m_flTimeRem);
-	Q_snprintf(szMessage, sizeof(szMessage), "%s (%i)", STRING(pEffect->m_strHudName), iTime);
-	UTIL_HudMessage(UTIL_GetLocalPlayer(), textParams, bHidden ? " " : szMessage);
+	if (pEffect->m_bTransient && !chaos_alwaysShowEffectTime.GetBool())
+	{
+		UTIL_HudMessage(UTIL_GetLocalPlayer(), textParams, bHidden ? " " : STRING(pEffect->m_strHudName));
+	}
+	else
+	{
+		char szMessage[2048];
+		int iTime = ceil(pEffect->m_flTimeRem);
+		Q_snprintf(szMessage, sizeof(szMessage), "%s (%i)", STRING(pEffect->m_strHudName), iTime);
+		UTIL_HudMessage(UTIL_GetLocalPlayer(), textParams, bHidden ? " " : szMessage);
+	}
 }
 void CHL2_Player::DoChaosHUDText()
 {
