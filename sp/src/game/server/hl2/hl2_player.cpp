@@ -93,6 +93,7 @@ extern ConVar r_vehicleBrakeRate;
 extern ConVar steepness_limit;
 extern ConVar chaos_no_reload;
 extern ConVar chaos_npc_teleport;
+extern ConVar chaos_disable_ladders;
 //Do not touch with without seeing me, please! (sjb)
 //For consistency's sake, enemy gunfire is traced against a scaled down
 //version of the player's hull, not the hitboxes for the player's model
@@ -7933,12 +7934,14 @@ void CEIncline::StartEffect()
 	steepness_limit.SetValue(0.96f);//1.0 is too aggressive, we will slide around on seemingly flat things
 	sv_airaccelerate.SetValue(1);
 	UTIL_GetLocalPlayer()->m_Local.m_flStepSize = 0;
+	chaos_disable_ladders.SetValue(true);
 }
 void CEIncline::StopEffect()
 {
 	steepness_limit.SetValue(0.7f);
 	sv_airaccelerate.SetValue(10);
 	UTIL_GetLocalPlayer()->m_Local.m_flStepSize = 18;
+	chaos_disable_ladders.SetValue(false);
 }
 void CEDeathWater::FastThink()
 {

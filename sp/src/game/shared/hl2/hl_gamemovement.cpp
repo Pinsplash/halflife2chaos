@@ -15,7 +15,8 @@
 static ConVar sv_autoladderdismount( "sv_autoladderdismount", "1", FCVAR_REPLICATED, "Automatically dismount from ladders when you reach the end (don't have to +USE)." );
 static ConVar sv_ladderautomountdot( "sv_ladderautomountdot", "0.4", FCVAR_REPLICATED, "When auto-mounting a ladder by looking up its axis, this is the tolerance for looking now directly along the ladder axis." );
 
-static ConVar sv_ladder_useonly( "sv_ladder_useonly", "0", FCVAR_REPLICATED, "If set, ladders can only be mounted by pressing +USE" );
+static ConVar sv_ladder_useonly("sv_ladder_useonly", "0", FCVAR_REPLICATED, "If set, ladders can only be mounted by pressing +USE");
+ConVar chaos_disable_ladders("chaos_disable_ladders", "0");
 
 #define USE_DISMOUNT_SPEED 100
 
@@ -884,7 +885,7 @@ bool CHL2GameMovement::CheckLadderAutoMount( CFuncLadder *ladder, const Vector& 
 bool CHL2GameMovement::LadderMove( void )
 {
 
-	if ( player->GetMoveType() == MOVETYPE_NOCLIP )
+	if ( player->GetMoveType() == MOVETYPE_NOCLIP || chaos_disable_ladders.GetBool())
 	{
 		SetLadder( NULL );
 		return false;
