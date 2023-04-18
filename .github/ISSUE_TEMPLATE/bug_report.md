@@ -18,10 +18,7 @@ Steps to reproduce the behavior:
 4. See error
 
 **Expected behavior**
-A description of what you expected to happen.
-
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+A description of what you expected to happen. (Not needed if it's something obvious, like you expected the game to not crash.)
 
 **Additional context**
-Add any other context about the problem here.
+Add any other context about the problem here. A video showing what happened leading up to the issue is most useful.

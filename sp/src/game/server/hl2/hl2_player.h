@@ -85,10 +85,9 @@ public:
 	void StopGivenEffect(int nID);
 	void MaintainEvils();
 	void PopulateEffects();
-	template<class T = CChaosEffect> void CreateEffect(int nEffect, string_t strHudName, int strGroup, int nContext, float flDurationMult, int iWeight);
+	template<class T = CChaosEffect> void CreateEffect(int nEffect, string_t strHudName, int nContext, float flDurationMult, int iWeight);
 	bool EffectOrGroupAlreadyActive(int iEffect);
 	//we actually do want to remember what effects are present at the moment of a save so that we may eliminate them upon reloading if needed
-	//CUtlVector<int>	m_iActiveEffects;
 	int m_iActiveEffects[64];
 	//HACK: the chaos HUD does not appear on its own after loading a save. it must be done at some time after the screen has begun updating(?),
 	//and Activate() is too early, but PreThink() is fine, so we will have to remember to restart the HUD.
@@ -435,8 +434,8 @@ static const char *g_MapNames[] =
 	{ "d1_town_01" },
 	{ "d1_town_01a" },
 	{ "d1_town_02" },
-	{ "d1_town_02a" },
 	{ "d1_town_03" },
+	{ "d1_town_02a" },
 	{ "d1_town_04" },//|
 	{ "d1_town_05" },
 	{ "d2_coast_01" },

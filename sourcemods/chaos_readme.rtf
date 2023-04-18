@@ -18,10 +18,12 @@ Maps from mods (and \i Lost Coast\i0 ) can also be used if you wish, though some
 \par
 Copy the map files and paste them in \b Steam/steamapps/sourcemods/hl2chaos/maps/\b0 .\b\par
 \b0\par
-Tips:\par
 
-\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720 If issues arise while playing, try \b chaos_restart \b0 in the console. This should set everything back to normal and restart the map.\par
+\pard\qc\b Tips\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\b0 If issues arise while playing, try \b chaos_restart \b0 in the console. This should set everything back to normal and restart the map.\par
 {\pntext\f1\'B7\tab}To modify things about Chaos like effect duration and probability, edit \b hl2chaos/cfg/autoexec.cfg\b0 .\par
+{\pntext\f1\'B7\tab}Effect groups can be changed in \b groups.cfg\b0 .\par
 {\pntext\f1\'B7\tab}Want a specific effect? Use \b chaos_test_effect \b0 followed by a number. You can get any effect's number through \b chaos_print\b0 .\par
 {\pntext\f1\'B7\tab}Any CFG files you change must have their change reflected in the same file in all three mods if you wish for the change to apply in all of them. You can simply copy the file into the other two mod folders and replace the old version.\par
 {\pntext\f1\'B7\tab}Saving often will help you progress faster.\par
@@ -33,11 +35,9 @@ Tips:\par
 {\pntext\f1\'B7\tab}Make keybinds for loading quicksaves and autosaves.\par
 {\pntext\f1\'B7\tab}Some effect-specific advice, if you don't wish to figure it out on your own:\par
 
-\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080\ul Zero Gravity\ulnone : Land in water to avoid fall damage. Landing on slopes can prevent fall damage.\par
-{\pntext\f1\'B7\tab}\ul Invert Gravity\ulnone : You can stick to the ground as long as you don't jump or move off it. Land in water to avoid fall damage. Landing on slopes can prevent fall damage.\par
-{\pntext\f1\'B7\tab}\ul Water World\ulnone : Only the crowbar, gravity gun, pistol, and crossbow can be used underwater. Drowning damage heals once you leave water. If Superhot is on, stay still to minimize drowning damage. If Supercold is on, move around to minimize drowning damage. You can't drown in vehicles.\par
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080\ul Zero Gravity\ulnone  and \ul Invert Gravity\ulnone : You can stick to the ground as long as you don't jump or move off it. Land in water to avoid fall damage. Landing on slopes can prevent fall damage.\par
+{\pntext\f1\'B7\tab}\ul Water World\ulnone : Only the crowbar, gravity gun, pistol, and crossbow can be used underwater. Drowning damage heals once you leave water. If \ul Superhot\ulnone  is on, stay still to minimize drowning damage. If \ul Supercold\ulnone  is on, move around to minimize drowning damage. You can't drown in vehicles.\par
 {\pntext\f1\'B7\tab}\ul Annoying Alyx\ulnone : Don't use burst damage weapons such as the shotgun. Alyx can only lose 25% of her health at once and regenerates health, so will take at least 5 hits to kill.\par
-{\pntext\f1\'B7\tab}\ul Floor Is Lava\ulnone  doesn't count some things as "not the floor" when it should. You can always stand on moving things, metal, and in water.\par
 {\pntext\f1\'B7\tab}Sometimes things are invisible with \ul Orthographic Camera\ulnone . Turning on the flashlight may fix it.\par
 
 \pard\par
@@ -48,23 +48,24 @@ Certain console variables are changed in this mod that you might want your own s
 {\pntext\f1\'B7\tab}\b portalsopenall.cfg\b0 : Sets \b r_portalsopenall\b0 . Force-opens all areaportals. Most users will want to use 1 because if 0, areas of levels may become invisible until you enter them. This was intended to help performance, but Chaos can disrupt this feature due to sequence breaking. Normally the default is 0, but in Chaos, it's 1.\par
 
 \pard\par
-Known issues:\par
 
-\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720 Sometimes the bar at the top won't appear after loading a save/map. The mod is still working. The bar should appear once the next effect starts.\par
+\pard\qc\b Known issues\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\b0 Sometimes the bar at the top won't appear after loading a save/map. The mod is still working. The bar should appear once the next effect starts.\par
 {\pntext\f1\'B7\tab}The "Saved..." message may not appear. The save is still made.\par
 {\pntext\f1\'B7\tab}The car compass HUD element does not display correctly.\par
 {\pntext\f1\'B7\tab}If you play maps from something that isn't \i Half-Life 2/Episode One/Two\i0 , the "Node graph out of date" message will appear every time you go to a new map for the first time. This message is harmless, but if you wish, you can copy the .AIN files from the mod as well. It will also stop appearing after you've visited each map a single time, because the mod has now generated its own copy of the node graph. The .AIN files are included for \i Half-Life 2/Episode One/Two\i0 .\par
 {\pntext\f1\'B7\tab}If you take a weird path through d3_c17_13, you may not activate the strider in the car pit. You will have to kill it before the intended route can continue.\par
 {\pntext\f1\'B7\tab}It's easy to get stuck with \ul Player is Huge\ulnone , but only temporarily. The issue seems to only happen when jumping and not holding crouch.\par
 {\pntext\f1\'B7\tab}\ul Super Grab\ulnone  sometimes makes it harder to grab things.\par
-{\pntext\f1\'B7\tab}\ul Floor Is Lava\ulnone  doesn't count some things as "not the floor" when it should. You can always stand on moving things, metal, and in water.\par
 {\pntext\f1\'B7\tab}Sometimes things are invisible with \ul Orthographic Camera\ulnone . Turning on the flashlight may fix it.\par
 {\pntext\f1\'B7\tab}Collisions can be weird when \ul Slow Physics\ulnone  is on.\par
 
 \pard\par
-Thanks for big and small bits of help:\par
 
-\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720 Blixibon\par
+\pard\qc\b Thanks for big and small bits of help\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\b0 Blixibon\par
 {\pntext\f1\'B7\tab}tmp64\par
 {\pntext\f1\'B7\tab}BoxFigs\par
 {\pntext\f1\'B7\tab}B.A.S.E\par
@@ -75,16 +76,40 @@ Thanks for big and small bits of help:\par
 {\pntext\f1\'B7\tab}2838\par
 
 \pard\par
-Version history\par
-\par
-\b v0.1.2\par
-General:\par
+
+\pard\qc\b Version history\par
+
+\pard\b0\par
+
+\pard\qc\b v0.1.2\par
+General\par
 
 \pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\b0 Transient effects will no longer show their remaining time. If you want them to show despite technically not being necessary, you can use \b chaos_alwaysShowEffectTime 1\b0 .\par
+{\pntext\f1\'B7\tab}Effects can now be in more than one group.\par
+{\pntext\f1\'B7\tab}Effect groups are now user-modifiable. You can edit groups in \b groups.cfg\b0 .\par
 
 \pard\par
-\b v0.1.1\par
-Effects:\par
+
+\pard\qc\b Groups\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul\b0 Superhot\ulnone  has been split into two groups: one that includes \ul Superhot\ulnone , \ul Supercold\ulnone , and \ul Stop\ulnone , and one that includes \ul Superhot\ulnone , \ul Supercold\ulnone , and \ul Super Speed\ulnone . The goal of this is to make \ul Stop\ulnone  and \ul Super Speed\ulnone  not mutually exclusive.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Barrel\ulnone  has been split into two groups: one that includes \ul Double Barrel Shotgun\ulnone  and \ul Black Hole\ulnone , and one that includes \ul Double Barrel Shotgun\ulnone  and \ul Repulsive\ulnone . The goal of this is to make \ul Black Hole\ulnone  and \ul Repulsive\ulnone  not mutually exclusive.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720 A new group has been created which includes \ul Slow Physics\ulnone  and \ul Floor Is Lava\ulnone , which previously couldn't exist because \ul Slow Physics\ulnone  was already in a group.\par
+
+\pard\par
+
+\pard\qc\b Effects\b0\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Go Back a Level\ulnone :\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Fixed being sent to d1_town_03 from d1_town_04 when you should be sent to d1_town_02a.\par
+
+\pard\par
+
+\pard\qc\b v0.1.1\par
+Effects\par
 
 \pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul\b0 NPCs Explode on Death\ulnone :\par
 
@@ -96,8 +121,9 @@ Effects:\par
 
 \pard\par
 \par
-\b v0.1.0\par
-General:\b0\par
+
+\pard\qc\b v0.1.0\par
+General\b0\par
 
 \pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720 Effects are much less likely to bug out when loading saves or going to new levels.\par
 {\pntext\f1\'B7\tab}Added timers showing how long effects have left until they expire.\par
@@ -132,7 +158,8 @@ General:\b0\par
 {\pntext\f1\'B7\tab}Forces player to crouch if necessary.\par
 
 \pard\par
-Since it wasn't tracked well before, here is a readout of all current effect \b contexts:\b0\par
+
+\pard\qc Since it wasn't tracked well before, here is a readout of all current effect \b contexts\b0\par
 
 \pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Boat\ulnone : An airboat must be present in the map.\par
 
@@ -231,7 +258,8 @@ Since it wasn't tracked well before, here is a readout of all current effect \b 
 {\pntext\f1\'B7\tab}\ul Floor Is Lava\ulnone  and \ul Slow Physics\ulnone  could not be made mutually exclusive via \b groups \b0 because both were already in groups, and effects currently cannot be in multiple groups.\par
 
 \pard\par
-Since it wasn't tracked well before, here is a readout of all current effect \b groups:\b0\par
+
+\pard\qc Since it wasn't tracked well before, here is a readout of all current effect \b groups\b0\par
 
 \pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Gravity\ulnone : Used by \ul Zero Gravity\ulnone , \ul Super Gravity\ulnone , and \ul Low Gravity\ulnone .\par
 {\pntext\f1\'B7\tab}\ul Physics Speed\ulnone : Used by \ul Pause Physics\ulnone , \ul Fast Physics\ulnone , and \ul Slow Physics\ulnone .\par
@@ -241,7 +269,8 @@ Since it wasn't tracked well before, here is a readout of all current effect \b 
 {\pntext\f1\'B7\tab}\ul Vision\ulnone : (AKA shit that annoyed me on ep2_outland_12) Used by \ul Where Are The Objects?\ulnone , \ul Drop Weapons\ulnone , \ul Floor Is Lava\ulnone , \ul Orthographic Camera\ulnone , \ul Surprise Reforestation!\ulnone , and \ul Vision Machine Broke\ulnone .\par
 
 \pard\par
-\b Game:\par
+
+\pard\qc\b Game\par
 
 \pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\b0 Stalkers in HL2 now use the Ep1 model as the original one did not ragdoll well and could cause lag.\par
 {\pntext\f1\'B7\tab}If a vehicle is being grabbed by a crane or resting on the ceiling due to altered gravity, the player will now exit the vehicle from below instead of getting jammed into the thing above it.\par
@@ -250,7 +279,8 @@ Since it wasn't tracked well before, here is a readout of all current effect \b 
 {\pntext\f1\'B7\tab}Fixed Alyx "falling to her death" when gravity is not pointing downward in the Episodes.\par
 
 \pard\par
-\b Effects:\b0\par
+
+\pard\qc\b Effects\b0\par
 
 \pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720 Gravity modifiers:\par
 
@@ -423,8 +453,9 @@ Since it wasn't tracked well before, here is a readout of all current effect \b 
 {\pntext\f1\'B7\tab}Death Water\par
 
 \pard\par
-\ulnone\b v0.0.0\par
-Effects:\par
+
+\pard\qc\ulnone\b v0.0.0\par
+Effects\par
 
 \pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\b0 Added effects:\par
 

@@ -5,6 +5,8 @@
 #include "ai_network.h"
 #include "vehicle_base.h"
 #define MAX_ACTIVE_EFFECTS 64
+#define MAX_GROUPS 32
+#define MAX_EFFECTS_IN_GROUP 32
 enum Effect_T
 {
 	EFFECT_ERROR,
@@ -87,19 +89,8 @@ enum Effect_T
 
 	NUM_EFFECTS
 };
-enum EffectGroup_T
-{
-	EGROUP_NONE,
-	EGROUP_GRAVITY,
-	EGROUP_PHYS_SPEED,
-	EGROUP_NPC_RELS,
-	EGROUP_SUPERHOT,
-	EGROUP_BARREL,
-	EGROUP_VISION,
 
-	NUM_EGROUPS
-};
-
+//effect contexts
 #define EC_NONE				0
 #define EC_BOAT				1
 #define EC_BUGGY			2
@@ -151,7 +142,7 @@ public:
 	int m_nID;
 	string_t m_strHudName;
 	string_t m_strGeneralName;
-	int m_nGroup;
+	//int m_nGroup;
 	int m_nContext;
 	float m_flDuration;
 	//float m_flStartTime;
@@ -241,6 +232,7 @@ float						g_flNextEffectRem = -1;
 CChaosStoredEnt *StoreEnt(CBaseEntity *pEnt);
 CBaseEntity *RetrieveStoredEnt(CChaosStoredEnt *pStoredEnt, bool bPersist);
 bool						g_bGoBackLevel = false;
+int							g_iGroups[MAX_GROUPS][MAX_EFFECTS_IN_GROUP];
 
 class CEBumpy : public CChaosEffect
 {

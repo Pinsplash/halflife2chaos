@@ -2027,7 +2027,7 @@ void CBaseEntity::GetUnstuck(float flMaxDist, bool bAllowNodeTeleport)
 	UTIL_TraceEntity(this, vecGoodSpot, vecGoodSpot - Vector(0, 0, 10000), IsPlayer() ? MASK_PLAYERSOLID : MASK_NPCSOLID, &trace);
 	if (trace.startsolid || (trace.surface.flags & SURF_SKY) || (trace.surface.flags & SURF_NODRAW) || !trace.DidHit())
 	{
-		Msg("trace.startsolid\n");
+		//Msg("trace.startsolid\n");
 		Vector forward, right, up;
 		AngleVectors(vec3_angle, &forward, &right, &up);
 		for (int i = 10; i <= flMaxDist; i += 10)//don't actually do 500 tests. that's insane.
@@ -2077,13 +2077,13 @@ void CBaseEntity::GetUnstuck(float flMaxDist, bool bAllowNodeTeleport)
 		{
 			if (bAllowNodeTeleport)
 			{
-				Msg("Putting at node\n");
+				//Msg("Putting at node\n");
 				PutAtNearestNode();
 				GetUnstuck(flMaxDist, false);
 			}
 			else
 			{
-				Msg("Could not get unstuck!\n");
+				//Msg("Could not get unstuck!\n");
 			}
 		}
 	}
@@ -2100,7 +2100,7 @@ bool CBaseEntity::FindOffsetSpot(Vector forward, int FFlip, Vector right, int RF
 	Vector vecTestDir = (forward * FFlip) + (right * RFlip) + (up * UFlip);
 	vecTestDir.NormalizeInPlace();
 	Vector vecDest = GetAbsOrigin() + vecTestDir * flDist;
-	Msg("Testing spot %0.1f %0.1f %0.1f\n", vecDest.x, vecDest.y, vecDest.z);
+	//Msg("Testing spot %0.1f %0.1f %0.1f\n", vecDest.x, vecDest.y, vecDest.z);
 	if (FindPassableSpace(vecTestDir, flDist, vecGoodSpot))
 	{
 		//Warning("Found spot %0.1f %0.1f %0.1f\n", vecDest.x, vecDest.y, vecDest.z);
@@ -2121,7 +2121,7 @@ bool CBaseEntity::FindPassableSpace(const Vector direction, float step, Vector& 
 	UTIL_TraceLine(GetAbsOrigin(), vecDest, IsPlayer() ? MASK_PLAYERSOLID_BRUSHONLY : MASK_NPCSOLID_BRUSHONLY, this, COLLISION_GROUP_DEBRIS, &preTrace);
 	if (preTrace.fraction != 1.0)
 	{
-		Msg("Don't want to go through walls\n");
+		//Msg("Don't want to go through walls\n");
 		return false;
 	}
 	trace_t	trace;
@@ -2129,7 +2129,7 @@ bool CBaseEntity::FindPassableSpace(const Vector direction, float step, Vector& 
 	UTIL_TraceEntity(this, vecDest, vecDest, IsPlayer() ? MASK_PLAYERSOLID : MASK_NPCSOLID, &trace);
 	if (trace.startsolid)
 	{
-		Msg("Can't fit\n");
+		//Msg("Can't fit\n");
 		return false;
 	}
 	//don't place on these textures to avoid falling through the ground in displacement-heavy maps
@@ -2138,7 +2138,7 @@ bool CBaseEntity::FindPassableSpace(const Vector direction, float step, Vector& 
 	UTIL_TraceLine(vecDest, vecDest - Vector(0, 0, 10000), IsPlayer() ? MASK_PLAYERSOLID : MASK_NPCSOLID, this, COLLISION_GROUP_NONE, &tr);
 	if (!tr.DidHit() || (tr.surface.flags & SURF_SKY) || (tr.surface.flags & SURF_NODRAW) || (tr.m_pEnt && tr.m_pEnt->IsNPC()))
 	{
-		Msg("Bad ground\n");
+		//Msg("Bad ground\n");
 		return false;
 	}
 	//the code below was written on the assumption that the code above was writ proper
@@ -2168,7 +2168,7 @@ bool CBaseEntity::FindPassableSpace(const Vector direction, float step, Vector& 
 		return false;
 	}
 	*/
-	Msg("Good ground\n");
+	//Msg("Good ground\n");
 	oldorigin = vecDest;
 	return true;
 }
