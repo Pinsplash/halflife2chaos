@@ -4887,10 +4887,10 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CEGravitySet>(EFFECT_ZEROG,				MAKE_STRING("Zero Gravity"),				EC_NONE,								chaos_time_zerog.GetFloat(),				chaos_prob_zerog.GetInt());
 	CreateEffect<CEGravitySet>(EFFECT_SUPERG,				MAKE_STRING("Super Gravity"),				EC_NONE,								chaos_time_superg.GetFloat(),				chaos_prob_superg.GetInt());
 	CreateEffect<CEGravitySet>(EFFECT_LOWG,					MAKE_STRING("Low Gravity"),					EC_NONE,								chaos_time_lowg.GetFloat(),					chaos_prob_lowg.GetInt());
-	CreateEffect<CEGravitySet>(EFFECT_INVERTG,				MAKE_STRING("Invert Gravity"),				EC_INVERT_GRAVITY,						chaos_time_invertg.GetFloat(),				chaos_prob_invertg.GetInt());
+	CreateEffect<CEGravitySet>(EFFECT_INVERTG,				MAKE_STRING("Invert Gravity"),				EC_NONE,								chaos_time_invertg.GetFloat(),				chaos_prob_invertg.GetInt());
 	CreateEffect<CEPhysSpeedSet>(EFFECT_PHYS_PAUSE,			MAKE_STRING("Pause Physics"),				EC_PHYSICS | EC_NO_VEHICLE,				chaos_time_phys_pause.GetFloat(),			chaos_prob_phys_pause.GetInt());
 	CreateEffect<CEPhysSpeedSet>(EFFECT_PHYS_FAST,			MAKE_STRING("Fast Physics"),				EC_NONE,								chaos_time_phys_fast.GetFloat(),			chaos_prob_phys_fast.GetInt());
-	CreateEffect<CEPhysSpeedSet>(EFFECT_PHYS_SLOW,			MAKE_STRING("Slow Physics"),				EC_NO_LAVA,								chaos_time_phys_slow.GetFloat(),			chaos_prob_phys_slow.GetInt());
+	CreateEffect<CEPhysSpeedSet>(EFFECT_PHYS_SLOW,			MAKE_STRING("Slow Physics"),				EC_NONE,								chaos_time_phys_slow.GetFloat(),			chaos_prob_phys_slow.GetInt());
 	CreateEffect<CEPullToPlayer>(EFFECT_PULL_TO_PLAYER,		MAKE_STRING("Black Hole"),					EC_NONE,								chaos_time_pull_to_player.GetFloat(),		chaos_prob_pull_to_player.GetInt());
 	CreateEffect<CEPushFromPlayer>(EFFECT_PUSH_FROM_PLAYER,	MAKE_STRING("Repulsive"),					EC_NONE,								chaos_time_push_from_player.GetFloat(),		chaos_prob_push_from_player.GetInt());
 	CreateEffect<CEStop>(EFFECT_NO_MOVEMENT,				MAKE_STRING("Stop"),						EC_NONE,								chaos_time_no_movement.GetFloat(),			chaos_prob_no_movement.GetInt());
@@ -4919,28 +4919,28 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CE420Joke>(EFFECT_420_JOKE,				MAKE_STRING("Funny Number"),				EC_NO_INVULN,							-1,											chaos_prob_420_joke.GetInt());
 	CreateEffect<CEZombieSpam>(EFFECT_ZOMBIE_SPAM,			MAKE_STRING("Left 4 Dead"),					EC_HAS_WEAPON,							-1,											chaos_prob_zombie_spam.GetInt());
 	CreateEffect<>(EFFECT_EXPLODE_ON_DEATH,					MAKE_STRING("NPCs Explode on Death"),		EC_NONE,								chaos_time_explode_on_death.GetFloat(),		chaos_prob_explode_on_death.GetInt());
-	CreateEffect<>(EFFECT_BULLET_TELEPORT,					MAKE_STRING("Teleporter Bullets"),			EC_BULLET_TELEPORT,						chaos_time_bullet_teleport.GetFloat(),		chaos_prob_bullet_teleport.GetInt());
+	CreateEffect<>(EFFECT_BULLET_TELEPORT,					MAKE_STRING("Teleporter Bullets"),			EC_NONE,								chaos_time_bullet_teleport.GetFloat(),		chaos_prob_bullet_teleport.GetInt());
 	CreateEffect<CECredits>(EFFECT_CREDITS,					MAKE_STRING("Credits"),						EC_NONE,								-1,											chaos_prob_credits.GetInt());
 	CreateEffect<CESuperhot>(EFFECT_SUPERHOT,				MAKE_STRING("Superhot"),					EC_NONE,								chaos_time_superhot.GetFloat(),				chaos_prob_superhot.GetInt());
 	CreateEffect<CESupercold>(EFFECT_SUPERCOLD,				MAKE_STRING("Supercold"),					EC_NONE,								chaos_time_supercold.GetFloat(),			chaos_prob_supercold.GetInt());
-	CreateEffect<CEBarrelShotgun>(EFFECT_BARREL_SHOTGUN,	MAKE_STRING("Double Barrel Shotgun"),		EC_SHOTGUN,								chaos_time_barrel_shotgun.GetFloat(),		chaos_prob_barrel_shotgun.GetInt());
+	CreateEffect<CEBarrelShotgun>(EFFECT_BARREL_SHOTGUN,	MAKE_STRING("Double Barrel Shotgun"),		EC_NONE,								chaos_time_barrel_shotgun.GetFloat(),		chaos_prob_barrel_shotgun.GetInt());
 	CreateEffect<CEQuickclip>(EFFECT_QUICKCLIP_ON,			MAKE_STRING("Enable Quickclip"),			EC_QC_OFF,								chaos_time_quickclip_on.GetFloat(),			chaos_prob_quickclip_on.GetInt());
-	CreateEffect<CEQuickclip>(EFFECT_QUICKCLIP_OFF,			MAKE_STRING("Disable Quickclip"),			EC_QC_ON,								chaos_time_quickclip_off.GetFloat(),		chaos_prob_quickclip_off.GetInt());
+	CreateEffect<CEQuickclip>(EFFECT_QUICKCLIP_OFF,			MAKE_STRING("Disable Quickclip"),			EC_NONE,								chaos_time_quickclip_off.GetFloat(),		chaos_prob_quickclip_off.GetInt());
 	CreateEffect<CESolidTriggers>(EFFECT_SOLID_TRIGGERS,	MAKE_STRING("Solid Triggers"),				EC_NONE,								chaos_time_solid_triggers.GetFloat(),		chaos_prob_solid_triggers.GetInt());
 	CreateEffect<CEColors>(EFFECT_RANDOM_COLORS,			MAKE_STRING("Pretty Colors"),				EC_NONE,								chaos_time_random_colors.GetFloat(),		chaos_prob_random_colors.GetInt());
 	CreateEffect<CEBottle>(EFFECT_BEER_BOTTLE,				MAKE_STRING("Beer I owed ya"),				EC_NONE,								-1,											chaos_prob_beer_bottle.GetInt());
 	CreateEffect<CEEvilNPC>(EFFECT_EVIL_ALYX,				MAKE_STRING("Annoying Alyx"),				EC_HAS_WEAPON,							-1,											chaos_prob_evil_alyx.GetInt());
-	CreateEffect<CEEvilNPC>(EFFECT_EVIL_NORIKO,				MAKE_STRING("Noriko, No!"),					EC_CRANE_SPAWN,							-1,											chaos_prob_evil_noriko.GetInt());
+	CreateEffect<CEEvilNPC>(EFFECT_EVIL_NORIKO,				MAKE_STRING("Noriko, No!"),					EC_NONE,								-1,											chaos_prob_evil_noriko.GetInt());
 	CreateEffect<>(EFFECT_CANT_LEAVE_MAP,					MAKE_STRING("Why So Rushed?"),				EC_NONE,								chaos_time_cant_leave_map.GetFloat(),		chaos_prob_cant_leave_map.GetInt());
-	CreateEffect<CEFloorIsLava>(EFFECT_FLOOR_IS_LAVA,		MAKE_STRING("Floor Is Lava"),				EC_NO_INVULN | EC_NO_CITADEL | EC_QC_OFF | EC_NO_SLOW_PHYS, chaos_time_floor_is_lava.GetFloat(), chaos_prob_floor_is_lava.GetInt());
+	CreateEffect<CEFloorIsLava>(EFFECT_FLOOR_IS_LAVA,		MAKE_STRING("Floor Is Lava"),				EC_NO_INVULN | EC_QC_OFF,				chaos_time_floor_is_lava.GetFloat(),		chaos_prob_floor_is_lava.GetInt());
 	CreateEffect<CERandomSong>(EFFECT_PLAY_MUSIC,			MAKE_STRING("Play Random Song"),			EC_NONE,								-1,											chaos_prob_play_music.GetInt());
 	CreateEffect<CEUseSpam>(EFFECT_USE_SPAM,				MAKE_STRING("Grabby"),						EC_NO_VEHICLE,							chaos_time_use_spam.GetFloat(),				chaos_prob_use_spam.GetInt());
 	CreateEffect<>(EFFECT_ORTHO_CAM,						MAKE_STRING("Orthographic Camera"),			EC_NONE,								chaos_time_ortho_cam.GetFloat(),			chaos_prob_ortho_cam.GetInt());
 	CreateEffect<CETreeSpam>(EFFECT_FOREST,					MAKE_STRING("Surprise Reforestation!"),		EC_NONE,								chaos_time_forest.GetFloat(),				chaos_prob_forest.GetInt());
 	CreateEffect<CEMountedGun>(EFFECT_SPAWN_MOUNTED_GUN,	MAKE_STRING("Spawn Mounted Gun"),			EC_NONE,								-1,											chaos_prob_spawn_mounted_gun.GetInt());
-	CreateEffect<CEBackLevel>(EFFECT_BACK_LEVEL,			MAKE_STRING("Go Back a Level"),				EC_NO_LONG_MAP,							-1,											chaos_prob_back_level.GetInt());
+	CreateEffect<CEBackLevel>(EFFECT_BACK_LEVEL,			MAKE_STRING("Go Back a Level"),				EC_NONE,								-1,											chaos_prob_back_level.GetInt());
 	CreateEffect<CERemovePickups>(EFFECT_REMOVE_PICKUPS,	MAKE_STRING("Remove All Pickups"),			EC_PICKUPS | EC_NO_CITADEL | EC_HAS_WEAPON, -1,										chaos_prob_remove_pickups.GetInt());
-	CreateEffect<CECloneNPCs>(EFFECT_CLONE_NPCS,			MAKE_STRING("Suppression Field Hiccup"),	EC_CLONE_NPCS,							-1,											chaos_prob_clone_npcs.GetInt());
+	CreateEffect<CECloneNPCs>(EFFECT_CLONE_NPCS,			MAKE_STRING("Suppression Field Hiccup"),	EC_NONE,								-1,											chaos_prob_clone_npcs.GetInt());
 	CreateEffect<CELockPVS>(EFFECT_LOCK_PVS,				MAKE_STRING("Vision Machine Broke"),		EC_NONE,								chaos_time_lock_pvs.GetFloat(),				chaos_prob_lock_pvs.GetInt());
 	CreateEffect<CEDejaVu>(EFFECT_RELOAD_DEJA_VU,			MAKE_STRING("Deja Vu?"),					EC_PLAYER_TELEPORT,						-1,											chaos_prob_reload_deja_vu.GetInt());
 	CreateEffect<CEBumpy>(EFFECT_BUMPY,						MAKE_STRING("Bumpy Road"),					EC_BUGGY,								chaos_time_bumpy.GetFloat(),				chaos_prob_bumpy.GetInt());
@@ -4952,7 +4952,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CEIncline>(EFFECT_INCLINE,					MAKE_STRING("No Climbing"),					EC_NONE,								chaos_time_incline.GetFloat(),				chaos_prob_incline.GetInt());
 	CreateEffect<>(EFFECT_DISABLE_SAVE,						MAKE_STRING("No Saving"),					EC_NONE,								chaos_time_disable_save.GetFloat(),			chaos_prob_disable_save.GetInt());
 	CreateEffect<>(EFFECT_NO_RELOAD,						MAKE_STRING("No One Can Reload"),			EC_HAS_WEAPON,							chaos_time_no_reload.GetFloat(),			chaos_prob_no_reload.GetInt());
-	CreateEffect<>(EFFECT_NPC_TELEPORT,						MAKE_STRING("You Teleport?"),				EC_NO_CUTSCENE | EC_NPC_TELEPORT,		chaos_time_npc_teleport.GetFloat(),			chaos_prob_npc_teleport.GetInt());
+	CreateEffect<>(EFFECT_NPC_TELEPORT,						MAKE_STRING("You Teleport?"),				EC_NO_CUTSCENE,							chaos_time_npc_teleport.GetFloat(),			chaos_prob_npc_teleport.GetInt());
 	CreateEffect<CEDeathWater>(EFFECT_DEATH_WATER,			MAKE_STRING("Death Water"),					EC_WATER,								chaos_time_death_water.GetFloat(),			chaos_prob_death_water.GetInt());
 }
 
@@ -5056,10 +5056,77 @@ bool CHL2_Player::EffectOrGroupAlreadyActive(int iEffect)
 bool CChaosEffect::CheckEffectContext()
 {
 	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
-	if (m_nContext == EC_NONE || chaos_ignore_context.GetBool())
-		return true;
 
 	const char *pMapName = STRING(gpGlobals->mapname);
+
+	if (chaos_ignore_context.GetBool())
+		return true;
+
+	//avoid long maps
+	if (m_nID == EFFECT_BACK_LEVEL)
+		if (MapIsLong(pMapName))
+			return false;//this is a long map
+
+	//potential softlock if clone npcs happens on some maps
+	if (m_nID == EFFECT_CLONE_NPCS)
+		if (!Q_strcmp(pMapName, "ep1_citadel_00") || !Q_strcmp(pMapName, "ep1_citadel_01"))
+			return false;
+
+	//You Teleport is bad specifically on these maps
+	//ep2_outland_12: strider just teleport straight to the silo, which is fucking hilarious, but not good
+	if (m_nID == EFFECT_NPC_TELEPORT)
+		if (!Q_strcmp(pMapName, "ep2_outland_12"))
+			return false;//bad map
+
+	//avoid maps that need striders or other NPCs to not teleport to god-knows-where
+	if (m_nID == EFFECT_BULLET_TELEPORT)
+		if (!Q_strcmp(pMapName, "d3_c17_12b") || !Q_strcmp(pMapName, "d3_c17_13")
+			|| !Q_strcmp(pMapName, "ep1_c17_00a") || !Q_strcmp(pMapName, "ep1_c17_05") || !Q_strcmp(pMapName, "ep1_c17_06")
+			|| !Q_strcmp(pMapName, "ep2_outland_01") || !Q_strcmp(pMapName, "ep2_outland_08") || !Q_strcmp(pMapName, "ep2_outland_08") || !Q_strcmp(pMapName, "ep2_outland_12"))
+			return false;//if striders get lost on this map, we softlock or near softlock
+
+	//avoid maps that would poorly fit a crane
+	if (m_nID == EFFECT_EVIL_NORIKO)
+		if (!MapGoodForCrane(pMapName))
+			return false;//map not good for cranes
+
+	//avoid maps where you would softlock due to inverted gravity
+	//d2_coast_04: car go up, car hit the fucky-wucky trigger
+	//ep2_outland_12: entire map has a "shell" of clipping around it. vehicle will get stuck on it, but if player exits vehicle when it's on the ceiling of that shell, they will be put out above it. perhaps make the exiting checks test below car, then above?
+	if (m_nID == EFFECT_INVERTG)
+		if (!Q_strcmp(pMapName, "d2_coast_04") || !Q_strcmp(pMapName, "ep2_outland_12"))
+			return false;//oh no
+
+	//quickclip must be on
+	if (m_nID == EFFECT_QUICKCLIP_OFF)
+		if (pPlayer->IsInAVehicle() || pPlayer->GetCollisionGroup() == COLLISION_GROUP_PLAYER)
+			return false;//quickclip is off
+
+	//need a shotgun ANYWHERE in the map, held or not
+	if (m_nID == EFFECT_BARREL_SHOTGUN)
+		if (gEntList.FindEntityByClassname(NULL, "weapon_sh*") == NULL)
+			return false;//no sir no shotguns here
+
+	//Don't remove pickups on these maps
+	//ts05 suit has to be picked up to progress cutscene
+	//d3_c17_09 grenades to save barney
+	//d3_c17_10b explosives for ground turrets
+	//d3_c17_11 rocket crate for shooting gunship
+	//ep1_c17_00 pistol and shotgun to shoot lock
+	//ep1_c17_00a too hard
+	//ep1_c17_05 rocket crate for shooting sniper
+	//ep1_c17_06 rocket crate for shooting strider
+	//ep2_outland_03 too hard
+	//ep2_outland_09 grenades for autogun
+	//ep2_outland_12 removing seems to break the respawn system?
+	if (m_nID == EFFECT_REMOVE_PICKUPS)
+		if (!Q_strcmp(pMapName, "d1_trainstation_05") || !Q_strcmp(pMapName, "d3_c17_09") || !Q_strcmp(pMapName, "d3_c17_10b") || !Q_strcmp(pMapName, "d3_c17_11")
+			|| !Q_strcmp(pMapName, "ep1_c17_00") || !Q_strcmp(pMapName, "ep1_c17_05") || !Q_strcmp(pMapName, "ep1_c17_06")
+			|| !Q_strcmp(pMapName, "ep2_outland_03") || !Q_strcmp(pMapName, "ep2_outland_09") || !Q_strcmp(pMapName, "ep2_outland_12"))
+			return false;
+
+	if (m_nContext == EC_NONE)
+		return true;
 
 	//need at least one vehicle of desired type
 	if (m_nContext & EC_BUGGY || m_nContext & EC_BOAT)
@@ -5079,27 +5146,11 @@ bool CChaosEffect::CheckEffectContext()
 	//avoid maps that are mostly cutscenes, since the given effect could easily cause a softlock
 	if (m_nContext & EC_NO_CUTSCENE)
 		if (MapIsCutsceneMap(pMapName))
-			return false;//this is a cutscene map 
-
-	//avoid maps that would poorly fit a crane
-	if (m_nContext & EC_CRANE_SPAWN)
-		if (!MapGoodForCrane(pMapName))
-			return false;//map not good for cranes
+			return false;//this is a cutscene map
 
 	//need at least one pickup in the map
-	//ts05 suit has to be picked up to progress cutscene
-	//c17 00 pistol and shotgun to shoot lock
-	//c17 00a too hard?
-	//c17 05 rocket crate for shooting sniper
-	//c17 06 rocket crate for shooting strider
-	//ep2_outland_03 too hard
-	//ep2_outland_09 grenades for autogun
-	//ep2_outland_12 removing seems to break the respawn system?
 	if (m_nContext & EC_PICKUPS)
-		if (gEntList.FindEntityByClassname(NULL, "it*") == NULL
-			|| !Q_strcmp(pMapName, "d1_trainstation_05")
-			|| !Q_strcmp(pMapName, "ep1_c17_00")		|| !Q_strcmp(pMapName, "ep1_c17_05")		|| !Q_strcmp(pMapName, "ep1_c17_06")
-			|| !Q_strcmp(pMapName, "ep2_outland_03")	|| !Q_strcmp(pMapName, "ep2_outland_09")	|| !Q_strcmp(pMapName, "ep2_outland_12"))
+		if (gEntList.FindEntityByClassname(NULL, "it*") == NULL)
 			return false;//no pickups
 
 	//quickclip must be off
@@ -5128,11 +5179,6 @@ bool CChaosEffect::CheckEffectContext()
 			return false;//bad map
 	}
 
-	//quickclip must be on
-	if (m_nContext & EC_QC_ON)
-		if (pPlayer->IsInAVehicle() || pPlayer->GetCollisionGroup() == COLLISION_GROUP_PLAYER)
-			return false;//quickclip is off
-
 	//need water in the map
 	if (m_nContext & EC_WATER)
 		if (gEntList.FindEntityByClassname(NULL, "wa*") == NULL)
@@ -5159,25 +5205,6 @@ bool CChaosEffect::CheckEffectContext()
 		}
 	}
 
-	//need a shotgun ANYWHERE in the map, held or not
-	if (m_nContext & EC_SHOTGUN)
-		if (gEntList.FindEntityByClassname(NULL, "weapon_sh*") == NULL)
-			return false;//no sir no shotguns here
-
-	//avoid maps that need striders or other NPCs to not teleport to god-knows-where
-	if (m_nContext & EC_BULLET_TELEPORT)
-		if (!Q_strcmp(pMapName, "d3_c17_12b")			|| !Q_strcmp(pMapName, "d3_c17_13")
-			|| !Q_strcmp(pMapName, "ep1_c17_00a")		|| !Q_strcmp(pMapName, "ep1_c17_05")		|| !Q_strcmp(pMapName, "ep1_c17_06")
-			|| !Q_strcmp(pMapName, "ep2_outland_01")	|| !Q_strcmp(pMapName, "ep2_outland_08")	|| !Q_strcmp(pMapName, "ep2_outland_08")	|| !Q_strcmp(pMapName, "ep2_outland_12"))
-			return false;//if striders get lost on this map, we softlock or near softlock
-
-	//avoid maps where you would softlock due to inverted gravity
-	//d2_coast_04: car go up, car hit the fucky-wucky trigger
-	//ep2_outland_12: entire map has a "shell" of clipping around it. vehicle will get stuck on it, but if player exits vehicle when it's on the ceiling of that shell, they will be put out above it. perhaps make the exiting checks test below car, then above?
-	if (m_nContext & EC_INVERT_GRAVITY)
-		if (!Q_strcmp(pMapName, "d2_coast_04") || !Q_strcmp(pMapName, "ep2_outland_12"))
-			return false;//oh no
-
 	//not citadel maps
 	if (m_nContext & EC_NO_CITADEL)
 		if (GlobalEntity_GetState("super_phys_gun") == GLOBAL_ON
@@ -5193,36 +5220,6 @@ bool CChaosEffect::CheckEffectContext()
 			|| !Q_strcmp(pMapName, "ep2_outland_01")	|| !Q_strcmp(pMapName, "ep2_outland_03")	|| !Q_strcmp(pMapName, "ep2_outland_06a")	|| !Q_strcmp(pMapName, "ep2_outland_09")
 			|| !Q_strcmp(pMapName, "ep2_outland_10") || !Q_strcmp(pMapName, "ep2_outland_11") || !Q_strcmp(pMapName, "ep2_outland_11a") || !Q_strcmp(pMapName, "ep2_outland_11b") || !Q_strcmp(pMapName, "ep2_outland_12") || !Q_strcmp(pMapName, "ep2_outland_12a"))
 			return false;//no
-
-	//potential softlock if clone npcs happens on some maps
-	if (m_nContext & EC_CLONE_NPCS)
-		if (!Q_strcmp(pMapName, "ep1_citadel_00")		|| !Q_strcmp(pMapName, "ep1_citadel_01"))
-			return false;
-
-	//avoid long maps
-	if (m_nContext & EC_NO_LONG_MAP)
-		if (MapIsLong(pMapName))
-			return false;//this is a long map
-
-	//ep2_outland_01 has some kind of infinite loop happening in VPhysics code when black hole causes some things to be removed/broken
-	//think this is fixed now since i changed a bit of that code
-	//if (m_nContext & EC_PHYSCRASH)
-	//	if (!Q_strcmp(pMapName, "ep2_outland_01"))
-	//		return false;
-
-	if (m_nContext & EC_NO_SLOW_PHYS)
-		if (phys_timescale.GetFloat() < 1)
-			return false;
-
-	//Floor Is Lava must not be on
-	if (m_nContext & EC_NO_LAVA)
-		if (g_ChaosEffects[EFFECT_FLOOR_IS_LAVA]->m_bActive)
-			return false;//it's on
-
-	//You Teleport is bad specifically on these maps
-	if (m_nContext & EC_NPC_TELEPORT)
-		if (!Q_strcmp(pMapName, "ep2_outland_12"))
-			return false;//bad map
 
 	//you did it
 	return true;

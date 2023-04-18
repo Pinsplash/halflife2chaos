@@ -81,12 +81,22 @@ Certain console variables are changed in this mod that you might want your own s
 
 \pard\b0\par
 
-\pard\qc\b v0.1.2\par
-General\par
+\pard\qc\b\fs24 v0.1.2\par
+\fs22 General\par
 
 \pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\b0 Transient effects will no longer show their remaining time. If you want them to show despite technically not being necessary, you can use \b chaos_alwaysShowEffectTime 1\b0 .\par
 {\pntext\f1\'B7\tab}Effects can now be in more than one group.\par
 {\pntext\f1\'B7\tab}Effect groups are now user-modifiable. You can edit groups in \b groups.cfg\b0 .\par
+
+\pard\par
+
+\pard\qc\b Contexts\b0\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720 Several contexts have been deleted and had their criteria assigned specifically to the effect they were made for, as they were probably never going to be used by any other effects: \ul Invert Gravity\ulnone , \ul Bullet Teleport\ulnone , \ul Shotgun\ulnone , \ul Quickclip On\ulnone , \ul Crane Spawn\ulnone , \ul No Long Map\ulnone , \ul Clone NPCs\ulnone , and \ul NPC Teleport\ulnone . The effects' underlying criteria remain the same except as noted.\par
+{\pntext\f1\'B7\tab}\ul No Lava\ulnone  and \ul No Slow Physics\ulnone  have been deleted because their purpose is now fulfilled by a group.\par
+{\pntext\f1\'B7\tab}\ul Pickups\ulnone :\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 The list of unsuitable maps has been removed from the context label and now applies only to \ul Remove All Pickups\ulnone , so that \ul Water World\ulnone  isn't pointlessly restricted on some maps.\par
 
 \pard\par
 
@@ -112,10 +122,18 @@ General\par
 
 \pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Now prevents moving on ladders.\par
 
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Remove All Pickups\ulnone :\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 More maps have been added to the list of unsuitable maps.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Floor Is Lava\ulnone :\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 No longer uses the No Citadel context as the effect's understanding of "floor" was improved in v0.1.1.\par
+
 \pard\par
 
-\pard\qc\b v0.1.1\par
-Effects\par
+\pard\qc\b\fs24 v0.1.1\par
+\fs22 Effects\par
 
 \pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul\b0 NPCs Explode on Death\ulnone :\par
 
@@ -128,8 +146,8 @@ Effects\par
 \pard\par
 \par
 
-\pard\qc\b v0.1.0\par
-General\b0\par
+\pard\qc\b\fs24 v0.1.0\par
+\fs22 General\b0\par
 
 \pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720 Effects are much less likely to bug out when loading saves or going to new levels.\par
 {\pntext\f1\'B7\tab}Added timers showing how long effects have left until they expire.\par
@@ -460,8 +478,8 @@ General\b0\par
 
 \pard\par
 
-\pard\qc\ulnone\b v0.0.0\par
-Effects\par
+\pard\qc\ulnone\b\fs24 v0.0.0\par
+\fs22 Effects\par
 
 \pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\b0 Added effects:\par
 

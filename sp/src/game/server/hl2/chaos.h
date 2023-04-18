@@ -97,23 +97,13 @@ enum Effect_T
 #define EC_WATER			4
 #define EC_PHYSICS			8
 #define EC_NO_INVULN		16
-#define EC_SHOTGUN			32
-#define EC_HAS_WEAPON		64
-#define EC_QC_OFF			128
-#define EC_QC_ON			256
-#define EC_NO_CUTSCENE		512
-#define EC_PICKUPS			1024
-#define EC_INVERT_GRAVITY	2048
-#define EC_CRANE_SPAWN		4096
-#define EC_BULLET_TELEPORT	8192//the difference between bullet teleport and npc teleport is that Teleporter Bullets is completely erratic and You Teleport is predictable enough for things to generally work well
-#define EC_NO_CITADEL		16384
-#define EC_PLAYER_TELEPORT	32768
-#define EC_NO_VEHICLE		65536
-#define EC_NPC_TELEPORT		131072
-#define EC_CLONE_NPCS		262144
-#define EC_NO_LONG_MAP		524288
-#define EC_NO_SLOW_PHYS		1048576
-#define EC_NO_LAVA			2097152
+#define EC_HAS_WEAPON		32
+#define EC_QC_OFF			64
+#define EC_NO_CUTSCENE		128
+#define EC_PICKUPS			256
+#define EC_NO_CITADEL		512
+#define EC_PLAYER_TELEPORT	1024
+#define EC_NO_VEHICLE		2048
 
 enum
 {
