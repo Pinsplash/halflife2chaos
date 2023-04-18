@@ -179,7 +179,7 @@ void ClearChaosData()
 	for (int i = 0; g_ChaosEffects.Size() >= i + 1; i++)
 	{
 		CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
-		CHL2_Player *pHL2Player = dynamic_cast<CHL2_Player*>(pPlayer);
+		CHL2_Player *pHL2Player = static_cast<CHL2_Player*>(pPlayer);
 		pHL2Player->StopGivenEffect(g_ChaosEffects[i]->m_nID);
 	}
 	//Invert gravity messes this up
@@ -630,7 +630,7 @@ void CC_ToggleZoom( void )
 
 	if( pPlayer )
 	{
-		CHL2_Player *pHL2Player = dynamic_cast<CHL2_Player*>(pPlayer);
+		CHL2_Player *pHL2Player = static_cast<CHL2_Player*>(pPlayer);
 
 		if( pHL2Player && pHL2Player->IsSuitEquipped() )
 		{
@@ -4645,7 +4645,7 @@ void CLogicPlayerProxy::InputSetFlashlightSlowDrain( inputdata_t &inputdata )
 	if( m_hPlayer == NULL )
 		return;
 
-	CHL2_Player *pPlayer = dynamic_cast<CHL2_Player*>(m_hPlayer.Get());
+	CHL2_Player *pPlayer = static_cast<CHL2_Player*>(m_hPlayer.Get());
 
 	if( pPlayer )
 		pPlayer->SetFlashlightPowerDrainScale( hl2_darkness_flashlight_factor.GetFloat() );
@@ -4656,7 +4656,7 @@ void CLogicPlayerProxy::InputSetFlashlightNormalDrain( inputdata_t &inputdata )
 	if( m_hPlayer == NULL )
 		return;
 
-	CHL2_Player *pPlayer = dynamic_cast<CHL2_Player*>(m_hPlayer.Get());
+	CHL2_Player *pPlayer = static_cast<CHL2_Player*>(m_hPlayer.Get());
 
 	if( pPlayer )
 		pPlayer->SetFlashlightPowerDrainScale( 1.0f );
@@ -4667,7 +4667,7 @@ void CLogicPlayerProxy::InputRequestAmmoState( inputdata_t &inputdata )
 	if( m_hPlayer == NULL )
 		return;
 
-	CHL2_Player *pPlayer = dynamic_cast<CHL2_Player*>(m_hPlayer.Get());
+	CHL2_Player *pPlayer = static_cast<CHL2_Player*>(m_hPlayer.Get());
 
 	for ( int i = 0 ; i < pPlayer->WeaponCount(); ++i )
 	{
@@ -4691,7 +4691,7 @@ void CLogicPlayerProxy::InputLowerWeapon( inputdata_t &inputdata )
 	if( m_hPlayer == NULL )
 		return;
 
-	CHL2_Player *pPlayer = dynamic_cast<CHL2_Player*>(m_hPlayer.Get());
+	CHL2_Player *pPlayer = static_cast<CHL2_Player*>(m_hPlayer.Get());
 
 	pPlayer->Weapon_Lower();
 }
@@ -4701,7 +4701,7 @@ void CLogicPlayerProxy::InputEnableCappedPhysicsDamage( inputdata_t &inputdata )
 	if( m_hPlayer == NULL )
 		return;
 
-	CHL2_Player *pPlayer = dynamic_cast<CHL2_Player*>(m_hPlayer.Get());
+	CHL2_Player *pPlayer = static_cast<CHL2_Player*>(m_hPlayer.Get());
 	pPlayer->EnableCappedPhysicsDamage();
 }
 
@@ -4710,7 +4710,7 @@ void CLogicPlayerProxy::InputDisableCappedPhysicsDamage( inputdata_t &inputdata 
 	if( m_hPlayer == NULL )
 		return;
 
-	CHL2_Player *pPlayer = dynamic_cast<CHL2_Player*>(m_hPlayer.Get());
+	CHL2_Player *pPlayer = static_cast<CHL2_Player*>(m_hPlayer.Get());
 	pPlayer->DisableCappedPhysicsDamage();
 }
 
@@ -4727,7 +4727,7 @@ void CLogicPlayerProxy::InputSetLocatorTargetEntity( inputdata_t &inputdata )
 		pTarget = gEntList.FindEntityByName( NULL, iszTarget );
 	}
 
-	CHL2_Player *pPlayer = dynamic_cast<CHL2_Player*>(m_hPlayer.Get());
+	CHL2_Player *pPlayer = static_cast<CHL2_Player*>(m_hPlayer.Get());
 	pPlayer->SetLocatorTargetEntity(pTarget);
 }
 template<class T>
@@ -5547,7 +5547,7 @@ void CChaosEffect::AbortEffect()
 {
 	Msg("Aborting effect %i\n", m_nID);
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
-	CHL2_Player *pHL2Player = dynamic_cast<CHL2_Player*>(pPlayer);
+	CHL2_Player *pHL2Player = static_cast<CHL2_Player*>(pPlayer);
 	pHL2Player->StopGivenEffect(m_nID);
 }
 void CChaosEffect::RandomTeleport(bool bPlayerOnly)
@@ -5587,7 +5587,7 @@ CBaseEntity *CChaosEffect::ChaosSpawnVehicle(const char *className, string_t str
 		return NULL;
 	}
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
-	//CHL2_Player *pHL2Player = dynamic_cast<CHL2_Player*>(pPlayer);
+	//CHL2_Player *pHL2Player = static_cast<CHL2_Player*>(pPlayer);
 	Vector vecForward;
 	AngleVectors(pPlayer->EyeAngles(), &vecForward);
 	vecForward.z = 0;
@@ -5875,7 +5875,7 @@ CAI_BaseNPC *CChaosEffect::ChaosSpawnNPC(const char *className, string_t strActu
 	if (UTIL_GetModDir(modDir, sizeof(modDir)) == false)
 		return NULL;
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
-	//CHL2_Player *pHL2Player = dynamic_cast<CHL2_Player*>(pPlayer);
+	//CHL2_Player *pHL2Player = static_cast<CHL2_Player*>(pPlayer);
 	Vector vecForward;
 	AngleVectors(pPlayer->EyeAngles(), &vecForward);
 	vecForward.z = 0;
@@ -6143,7 +6143,9 @@ void CERandomVehicle::StartEffect()
 	{
 		//crane
 		CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
-		CHL2_Player *pHL2Player = dynamic_cast<CHL2_Player*>(pPlayer);
+		CHL2_Player *pHL2Player = static_cast<CHL2_Player*>(pPlayer);
+		g_iChaosSpawnCount++;
+		char szName[2048];
 
 		//crane magnet
 		Vector vecOrigin = pHL2Player->RotatedOffset(Vector(1034, 164, 750), true);
@@ -6151,7 +6153,8 @@ void CERandomVehicle::StartEffect()
 		CBaseEntity *pMagnet = CreateEntityByName("phys_magnet");
 		pMagnet->KeyValue("model", "models/props_wasteland/cranemagnet01a.mdl");
 		pMagnet->KeyValue("massScale", "1000");
-		pMagnet->KeyValue("targetname", "chaos_cranemagnet2");
+		Q_snprintf(szName, sizeof(szName), "crane_magnet_%i", g_iChaosSpawnCount);
+		pMagnet->KeyValue("targetname", szName);
 		pMagnet->KeyValue("overridescript", "damping,0.2,rotdamping,0.2,inertia,0.3");
 		DispatchSpawn(pMagnet);
 		pMagnet->Activate();
@@ -6164,8 +6167,9 @@ void CERandomVehicle::StartEffect()
 		CBaseEntity *pVehicle = CreateEntityByName("prop_vehicle_crane");
 		pVehicle->KeyValue("model", "models/Cranes/crane_docks.mdl");
 		pVehicle->KeyValue("solid", "6");
-		pVehicle->KeyValue("targetname", "chaos_crane");
-		pVehicle->KeyValue("magnetname", "chaos_cranemagnet2");
+		pVehicle->KeyValue("magnetname", szName);
+		Q_snprintf(szName, sizeof(szName), "crane%i", g_iChaosSpawnCount);
+		pVehicle->KeyValue("targetname", szName);
 		pVehicle->KeyValue("vehiclescript", "scripts/vehicles/crane.txt");
 		pVehicle->KeyValue("PlayerOn", "chaos_ladder,Disable,,0,-1");
 		pVehicle->KeyValue("PlayerOff", "chaos_ladder,Enable,,5,-1");
@@ -6175,11 +6179,12 @@ void CERandomVehicle::StartEffect()
 		vecOrigin = pHL2Player->RotatedOffset(Vector(524, 84, 90), true);
 		vecAngles = QAngle(0, pPlayer->GetAbsAngles().y - 90, 0);
 		CFuncLadder *pLadder = (CFuncLadder *)CreateEntityByName("func_useableladder");
-		pLadder->KeyValue("parentname", "chaos_crane");
+		pLadder->KeyValue("parentname", szName);
 		pLadder->SetEndPoints(pHL2Player->RotatedOffset(Vector(524, 84, 90), true), pHL2Player->RotatedOffset(Vector(524, 84, 4), true));
 		pLadder->KeyValue("targetname", "chaos_ladder");
 		pLadder->KeyValue("spawnflags", "1");
-		pLadder->KeyValue("OnPlayerGotOnLadder", "chaos_crane,ForcePlayerIn,,0,-1");
+		Q_snprintf(szName, sizeof(szName), "crane%i,ForcePlayerIn,,0,-1", g_iChaosSpawnCount);
+		pLadder->KeyValue("OnPlayerGotOnLadder", szName);
 		DispatchSpawn(pLadder);
 		pLadder->Activate();
 		pLadder->Teleport(&vecOrigin, &vecAngles, NULL);
@@ -6836,14 +6841,18 @@ void CEEvilNPC::EvilNoriko()
 	variant_t sVariant;
 	sVariant.SetString(MAKE_STRING("d1_t02_Plaza_Sit02"));
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
-	CHL2_Player *pHL2Player = dynamic_cast<CHL2_Player*>(pPlayer);
+	CHL2_Player *pHL2Player = static_cast<CHL2_Player*>(pPlayer);
+	g_iChaosSpawnCount++;
+	char szName[2048];
+
 	//crane magnet
 	Vector vecOrigin = pHL2Player->RotatedOffset(Vector(0, 164, 750), true);
 	QAngle vecAngles = QAngle(0, pPlayer->GetAbsAngles().y - 90, 0);
 	CBaseEntity *pMagnet = CreateEntityByName("phys_magnet");
 	pMagnet->KeyValue("model", "models/props_wasteland/cranemagnet01a.mdl");
 	pMagnet->KeyValue("massScale", "1000");
-	pMagnet->KeyValue("targetname", "chaos_cranemagnet2");
+	Q_snprintf(szName, sizeof(szName), "crane_magnet_%i", g_iChaosSpawnCount);
+	pMagnet->KeyValue("targetname", szName);
 	pMagnet->KeyValue("overridescript", "damping,0.5,rotdamping,0.2,inertia,0.3");
 	pMagnet->m_bChaosSpawned = true;
 	DispatchSpawn(pMagnet);
@@ -6857,8 +6866,9 @@ void CEEvilNPC::EvilNoriko()
 	CBaseEntity *pVehicle = CreateEntityByName("prop_vehicle_crane");
 	pVehicle->KeyValue("model", "models/Cranes/crane_docks.mdl");
 	pVehicle->KeyValue("solid", "6");
-	pVehicle->KeyValue("targetname", "chaos_crane");
-	pVehicle->KeyValue("magnetname", "chaos_cranemagnet2");
+	pVehicle->KeyValue("magnetname", szName);
+	Q_snprintf(szName, sizeof(szName), "crane%i", g_iChaosSpawnCount);
+	pVehicle->KeyValue("targetname", szName);
 	pVehicle->KeyValue("vehiclescript", "scripts/vehicles/crane.txt");
 	pVehicle->m_bChaosSpawned = true;
 	pVehicle->Teleport(&vecOrigin, &vecAngles, NULL);
@@ -6879,9 +6889,8 @@ void CEEvilNPC::EvilNoriko()
 	vecOrigin = pHL2Player->RotatedOffset(Vector(534, 64, 128), true);
 	vecAngles = QAngle(0, pPlayer->GetAbsAngles().y - 90, 0);
 	CAI_BaseNPC *pDriver = (CAI_BaseNPC *)CreateEntityByName("npc_cranedriver");
-	pDriver->KeyValue("vehicle", "chaos_crane");
+	pDriver->KeyValue("vehicle", szName);
 	pDriver->KeyValue("releasepause", "0");
-	g_iChaosSpawnCount++; pDriver->CBaseEntity::KeyValue("chaosid", g_iChaosSpawnCount);
 	pDriver->m_bChaosSpawned = true;
 	pDriver->m_bEvil = true;
 	DispatchSpawn(pDriver);
@@ -7623,7 +7632,7 @@ void CEPlayerSmall::MaintainEffect()
 void CESuperGrab::StartEffect()
 {
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
-	CHL2_Player *pHL2Player = dynamic_cast<CHL2_Player*>(pPlayer);
+	CHL2_Player *pHL2Player = static_cast<CHL2_Player*>(pPlayer);
 	player_use_dist.SetValue(8000);
 	player_throwforce.SetValue(50000);
 	if (pHL2Player)
@@ -7632,7 +7641,7 @@ void CESuperGrab::StartEffect()
 void CESuperGrab::StopEffect()
 {
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
-	CHL2_Player *pHL2Player = dynamic_cast<CHL2_Player*>(pPlayer);
+	CHL2_Player *pHL2Player = static_cast<CHL2_Player*>(pPlayer);
 	player_use_dist.SetValue(80);
 	player_throwforce.SetValue(1000);
 	if (pHL2Player)
