@@ -1961,10 +1961,10 @@ void CBaseEntity::FireBullets( const FireBulletsInfo_t &info )
 		{
 			if (IsCombatCharacter())
 			{
-				Vector vecShootOffset = GetAbsOrigin() - MyCombatCharacterPointer()->Weapon_ShootPosition();
+				//Vector vecShootOffset = GetAbsOrigin() - MyCombatCharacterPointer()->Weapon_ShootPosition();
 				//Msg("B %0.1f %0.1f %0.1f - %0.1f %0.1f %0.1f\n", tr.endpos.x, tr.endpos.y, tr.endpos.z, vecShootOffset.x, vecShootOffset.y, vecShootOffset.z);
 				//SetAbsOrigin();//position gun was shot from does not match our origin
-				Vector vecFinal = tr.endpos - vecShootOffset;
+				Vector vecFinal = tr.endpos;// -vecShootOffset;
 				QAngle aAngle = GetAbsAngles();
 				Vector vecVel = GetAbsVelocity();
 				bool bSleep = false;
@@ -2104,7 +2104,12 @@ bool CBaseEntity::FindOffsetSpot(Vector forward, int FFlip, Vector right, int RF
 	if (FindPassableSpace(vecTestDir, flDist, vecGoodSpot))
 	{
 		//Warning("Found spot %0.1f %0.1f %0.1f\n", vecDest.x, vecDest.y, vecDest.z);
-		SetAbsOrigin(vecGoodSpot);
+		Vector vecFinal = vecGoodSpot;// -vecShootOffset;
+		QAngle aAngle = GetAbsAngles();
+		Vector vecVel = GetAbsVelocity();
+
+		Teleport(&vecFinal, &aAngle, &vecVel);
+		
 		//if (GetMoveType() != MOVETYPE_VPHYSICS)//airboat gun go brr. turret also go brr.
 		//NDebugOverlay::Cross3D(vecGoodSpot, 16, 0, 255, 0, true, 30);
 		return true;

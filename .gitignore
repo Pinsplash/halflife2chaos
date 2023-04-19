@@ -62,3 +62,4 @@ config.cfg
 *.dll
 *.lib
 *.vpc.sentinel
+*.tga

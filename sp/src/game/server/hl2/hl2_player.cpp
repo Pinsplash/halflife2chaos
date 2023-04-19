@@ -5080,9 +5080,9 @@ bool CChaosEffect::CheckEffectContext()
 
 	//avoid maps that need striders or other NPCs to not teleport to god-knows-where
 	if (m_nID == EFFECT_BULLET_TELEPORT)
-		if (!Q_strcmp(pMapName, "d3_c17_12b") || !Q_strcmp(pMapName, "d3_c17_13")
-			|| !Q_strcmp(pMapName, "ep1_c17_00a") || !Q_strcmp(pMapName, "ep1_c17_05") || !Q_strcmp(pMapName, "ep1_c17_06")
-			|| !Q_strcmp(pMapName, "ep2_outland_01") || !Q_strcmp(pMapName, "ep2_outland_08") || !Q_strcmp(pMapName, "ep2_outland_08") || !Q_strcmp(pMapName, "ep2_outland_12"))
+		if (!Q_strcmp(pMapName, "d3_c17_12b")			|| !Q_strcmp(pMapName, "d3_c17_13")
+			|| !Q_strcmp(pMapName, "ep1_c17_00a")		|| !Q_strcmp(pMapName, "ep1_c17_05")		|| !Q_strcmp(pMapName, "ep1_c17_06")
+			|| !Q_strcmp(pMapName, "ep2_outland_01")	|| !Q_strcmp(pMapName, "ep2_outland_08")	|| !Q_strcmp(pMapName, "ep2_outland_08") || !Q_strcmp(pMapName, "ep2_outland_12"))
 			return false;//if striders get lost on this map, we softlock or near softlock
 
 	//avoid maps that would poorly fit a crane
@@ -5120,9 +5120,9 @@ bool CChaosEffect::CheckEffectContext()
 	//ep2_outland_09 grenades for autogun
 	//ep2_outland_12 removing seems to break the respawn system?
 	if (m_nID == EFFECT_REMOVE_PICKUPS)
-		if (!Q_strcmp(pMapName, "d1_trainstation_05") || !Q_strcmp(pMapName, "d3_c17_09") || !Q_strcmp(pMapName, "d3_c17_10b") || !Q_strcmp(pMapName, "d3_c17_11")
-			|| !Q_strcmp(pMapName, "ep1_c17_00") || !Q_strcmp(pMapName, "ep1_c17_05") || !Q_strcmp(pMapName, "ep1_c17_06")
-			|| !Q_strcmp(pMapName, "ep2_outland_03") || !Q_strcmp(pMapName, "ep2_outland_09") || !Q_strcmp(pMapName, "ep2_outland_12"))
+		if (!Q_strcmp(pMapName, "d1_trainstation_05")	|| !Q_strcmp(pMapName, "d3_c17_09")			|| !Q_strcmp(pMapName, "d3_c17_10b") || !Q_strcmp(pMapName, "d3_c17_11")
+			|| !Q_strcmp(pMapName, "ep1_c17_00")		|| !Q_strcmp(pMapName, "ep1_c17_05")		|| !Q_strcmp(pMapName, "ep1_c17_06")
+			|| !Q_strcmp(pMapName, "ep2_outland_03")	|| !Q_strcmp(pMapName, "ep2_outland_09")	|| !Q_strcmp(pMapName, "ep2_outland_12"))
 			return false;
 
 	if (m_nContext == EC_NONE)
@@ -5214,11 +5214,17 @@ bool CChaosEffect::CheckEffectContext()
 
 	//NO TELEPORT LIST LEAKED
 	if (m_nContext & EC_PLAYER_TELEPORT)
-		if (!Q_strcmp(pMapName, "d1_canals_05")			|| !Q_strcmp(pMapName, "d1_canals_11")
+		if (!Q_strcmp(pMapName, "d1_trainstation_01")	|| !Q_strcmp(pMapName, "d1_trainstation_04")|| !Q_strcmp(pMapName, "d1_trainstation_05")
+			|| !Q_strcmp(pMapName, "d1_canals_01")		|| !Q_strcmp(pMapName, "d1_canals_05")		|| !Q_strcmp(pMapName, "d1_canals_08")		|| !Q_strcmp(pMapName, "d1_canals_11")
+			|| !Q_strcmp(pMapName, "d1_eli_01")			|| !Q_strcmp(pMapName, "d1_eli_02")
+			|| !Q_strcmp(pMapName, "d1_town_02a")		|| !Q_strcmp(pMapName, "d1_town_05")
+			|| !Q_strcmp(pMapName, "d2_coast_04")
+			|| !Q_strcmp(pMapName, "d2_prison_06")		|| !Q_strcmp(pMapName, "d2_prison_08")
+			|| !Q_strcmp(pMapName, "d3_c17_10b")
 			|| !Q_strcmp(pMapName, "d3_citadel_03")		|| !Q_strcmp(pMapName, "d3_citadel_04")
 			|| !Q_strcmp(pMapName, "ep1_citadel_03")	|| !Q_strcmp(pMapName, "ep1_c17_00")		|| !Q_strcmp(pMapName, "ep1_c17_00a")
 			|| !Q_strcmp(pMapName, "ep2_outland_01")	|| !Q_strcmp(pMapName, "ep2_outland_03")	|| !Q_strcmp(pMapName, "ep2_outland_06a")	|| !Q_strcmp(pMapName, "ep2_outland_09")
-			|| !Q_strcmp(pMapName, "ep2_outland_10") || !Q_strcmp(pMapName, "ep2_outland_11") || !Q_strcmp(pMapName, "ep2_outland_11a") || !Q_strcmp(pMapName, "ep2_outland_11b") || !Q_strcmp(pMapName, "ep2_outland_12") || !Q_strcmp(pMapName, "ep2_outland_12a"))
+			|| !Q_strcmp(pMapName, "ep2_outland_10")	|| !Q_strcmp(pMapName, "ep2_outland_11")	|| !Q_strcmp(pMapName, "ep2_outland_11a")	|| !Q_strcmp(pMapName, "ep2_outland_11b")	|| !Q_strcmp(pMapName, "ep2_outland_12") || !Q_strcmp(pMapName, "ep2_outland_12a"))
 			return false;//no
 
 	//you did it
