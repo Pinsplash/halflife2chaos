@@ -6,7 +6,12 @@
 /*
 */
 
+// ACBOB: HACK! Commenting this include works on Linux. It does not work on windows.
+// Preprocessor time!
+#ifdef _WIN32
 #include "cbase.h"
+#endif
+
 #include <string>
 #include <cmath>
 #include "hl2_player.h"

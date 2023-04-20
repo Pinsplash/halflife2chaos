@@ -34,6 +34,8 @@ enum HL2PlayerPhysFlag_e
 class IPhysicsPlayerController;
 class CLogicPlayerProxy;
 
+class CChaosEffect;
+
 struct commandgoal_t
 {
 	Vector		m_vecGoalLocation;

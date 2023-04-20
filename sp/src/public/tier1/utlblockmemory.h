@@ -135,10 +135,13 @@ CUtlBlockMemory<T,I>::~CUtlBlockMemory()
 template< class T, class I >
 void CUtlBlockMemory<T,I>::Swap( CUtlBlockMemory< T, I > &mem )
 {
-	swap( m_pMemory, mem.m_pMemory );
-	swap( m_nBlocks, mem.m_nBlocks );
-	swap( m_nIndexMask, mem.m_nIndexMask );
-	swap( m_nIndexShift, mem.m_nIndexShift );
+	// ACBOB: specifying this-> silences a LOT of warnings
+	//        And I usually wouldn't care, but it makes the output unreadable and unusable junk.
+	// SO https://stackoverflow.com/a/15531940
+	this->swap( m_pMemory, mem.m_pMemory );
+	this->swap( m_nBlocks, mem.m_nBlocks );
+	this->swap( m_nIndexMask, mem.m_nIndexMask );
+	this->swap( m_nIndexShift, mem.m_nIndexShift );
 }
 
 
