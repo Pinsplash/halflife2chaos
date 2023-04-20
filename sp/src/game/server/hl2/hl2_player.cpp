@@ -8,9 +8,9 @@
 
 // ACBOB: HACK! Commenting this include works on Linux. It does not work on windows.
 // Preprocessor time!
-#ifdef _WIN32
+//#ifdef _WIN32
 #include "cbase.h"
-#endif
+//#endif
 
 #include <string>
 #include <cmath>
