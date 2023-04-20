@@ -6,13 +6,11 @@
 /*
 */
 
-// ACBOB: HACK! Commenting this include works on Linux. It does not work on windows.
-// Preprocessor time!
-//#ifdef _WIN32
 #include "cbase.h"
-//#endif
 
-#include <string>
+// do not include <string> !!! it breaks compilation with latest gcc
+// from stdstring.h: GCC 4.2.2 headers screw up our min/max defs.
+#include "stdstring.h"
 #include <cmath>
 #include "hl2_player.h"
 #include "globalstate.h"

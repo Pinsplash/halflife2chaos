@@ -28,6 +28,22 @@ Maps from mods (and _Lost Coast_) can also be used if you wish, though some thin
 
 Copy the map files and paste them in `Steam/steamapps/sourcemods/hl2chaos/maps/`.
 
+## Building from source
+
+### For linux
+
+Note: No build enviroment setup required! Isn't that cool?
+
+1. `git clone https://github.com/Pinsplash/halflife2chaos`
+1. `cd halflife2chaos/sp`
+1. `./src/createallprojects` // TODO: this likely can be done with creategameprojects.
+1. `make -f ./src/everything.mak client_hl2 server_hl2`
+1. `mkdir ~/.steam/steam/steamapps/sourcemods/mod_hl2; sudo mount --bind $(pwd)/game/mod_hl2 ~/.steam/steam/steamapps/sourcemods/mod_hl2`  
+ Note the use of the bind mount instead of a symbolic link. Steam outright refuses to detect symbolic links.  
+ You can use `mv` or `cp` instead, if you don't care.
+
+Compiling for the episodes is an excercise for the reader. (should be similar but with `mod_episodic`, `client_episodic` and `server_episodic`)
+
 ## Tips
 
 * If issues arise while playing, try `chaos_restart` in the console.  
