@@ -94,6 +94,7 @@ extern ConVar steepness_limit;
 extern ConVar chaos_no_reload;
 extern ConVar chaos_npc_teleport;
 extern ConVar chaos_disable_ladders;
+extern ConVar ai_block_damage;
 //Do not touch with without seeing me, please! (sjb)
 //For consistency's sake, enemy gunfire is traced against a scaled down
 //version of the player's hull, not the hitboxes for the player's model
@@ -1554,6 +1555,7 @@ void CHL2_Player::InputInsideTransition(inputdata_t &inputdata)
 
 void CHL2_Player::Activate( void )
 {
+	StartGame();
 	m_bRestartHUD = true;
 	//STOP TRYING TO DO MAPLOAD_NEWGAME STUFF HERE DUMMY. GO TO SPAWN()
 	if (gpGlobals->eLoadType == MapLoad_LoadGame)
@@ -1868,12 +1870,27 @@ void CHL2_Player::PlayerRunCommand(CUserCmd *ucmd, IMoveHelper *moveHelper)
 
 	BaseClass::PlayerRunCommand( ucmd, moveHelper );
 }
-
+void CHL2_Player::StartGame()
+{
+	const char *pMapName = STRING(gpGlobals->mapname);
+	if (!Q_strcmp(pMapName, "d2_coast_04"))
+	{
+		variant_t emptyVariant;
+		CBaseEntity *pFallTrigger = gEntList.FindEntityByName(NULL, "fall_trigger");
+		while (pFallTrigger)
+		{
+			g_EventQueue.AddEvent(pFallTrigger, "Kill", emptyVariant, 0.1f, this, this);
+			//pFallTrigger->AcceptInput("Kill", NULL, NULL, emptyVariant, 0);
+			pFallTrigger = gEntList.FindEntityByName(pFallTrigger, "fall_trigger");
+		}
+	}
+}
 //-----------------------------------------------------------------------------
 //Purpose: Sets HL2 specific defaults.
 //-----------------------------------------------------------------------------
 void CHL2_Player::Spawn(void)
 {
+	StartGame();
 	if (gpGlobals->eLoadType == MapLoad_NewGame)
 	{
 		//copy any IDs in global active list to memory active list right now we can restore/abort as needed
@@ -1894,6 +1911,7 @@ void CHL2_Player::Spawn(void)
 			g_EventQueue.AddEvent(pAutosave, "Save", 1.0, NULL, NULL);
 			g_EventQueue.AddEvent(pAutosave, "Kill", 1.1, NULL, NULL);
 		}
+		//for some reason, we can't do this at the same time as autoexec...
 		engine->ClientCommand(engine->PEntityOfEntIndex(1), "exec groups\n");
 	}
 #ifndef HL2MP
@@ -4888,7 +4906,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CEGravitySet>(EFFECT_SUPERG,				MAKE_STRING("Super Gravity"),				EC_NONE,								chaos_time_superg.GetFloat(),				chaos_prob_superg.GetInt());
 	CreateEffect<CEGravitySet>(EFFECT_LOWG,					MAKE_STRING("Low Gravity"),					EC_NONE,								chaos_time_lowg.GetFloat(),					chaos_prob_lowg.GetInt());
 	CreateEffect<CEGravitySet>(EFFECT_INVERTG,				MAKE_STRING("Invert Gravity"),				EC_NONE,								chaos_time_invertg.GetFloat(),				chaos_prob_invertg.GetInt());
-	CreateEffect<CEPhysSpeedSet>(EFFECT_PHYS_PAUSE,			MAKE_STRING("Pause Physics"),				EC_PHYSICS | EC_NO_VEHICLE,				chaos_time_phys_pause.GetFloat(),			chaos_prob_phys_pause.GetInt());
+	CreateEffect<CEPhysSpeedSet>(EFFECT_PHYS_PAUSE,			MAKE_STRING("Pause Physics"),				EC_NO_VEHICLE,							chaos_time_phys_pause.GetFloat(),			chaos_prob_phys_pause.GetInt());
 	CreateEffect<CEPhysSpeedSet>(EFFECT_PHYS_FAST,			MAKE_STRING("Fast Physics"),				EC_NONE,								chaos_time_phys_fast.GetFloat(),			chaos_prob_phys_fast.GetInt());
 	CreateEffect<CEPhysSpeedSet>(EFFECT_PHYS_SLOW,			MAKE_STRING("Slow Physics"),				EC_NONE,								chaos_time_phys_slow.GetFloat(),			chaos_prob_phys_slow.GetInt());
 	CreateEffect<CEPullToPlayer>(EFFECT_PULL_TO_PLAYER,		MAKE_STRING("Black Hole"),					EC_NONE,								chaos_time_pull_to_player.GetFloat(),		chaos_prob_pull_to_player.GetInt());
@@ -4896,10 +4914,10 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CEStop>(EFFECT_NO_MOVEMENT,				MAKE_STRING("Stop"),						EC_NONE,								chaos_time_no_movement.GetFloat(),			chaos_prob_no_movement.GetInt());
 	CreateEffect<CESuperMovement>(EFFECT_SUPER_MOVEMENT,	MAKE_STRING("Super Speed"),					EC_NONE,								chaos_time_super_movement.GetFloat(),		chaos_prob_super_movement.GetInt());
 	CreateEffect<CELockVehicles>(EFFECT_LOCK_VEHICLE,		MAKE_STRING("Lock Vehicles"),				EC_BOAT | EC_BUGGY,						chaos_time_lock_vehicle.GetFloat(),			chaos_prob_lock_vehicle.GetInt());
-	CreateEffect<CENPCRels>(EFFECT_NPC_HATE,				MAKE_STRING("World of Hate"),				EC_NO_CUTSCENE,							chaos_time_npc_hate.GetFloat(),				chaos_prob_npc_hate.GetInt());
+	CreateEffect<CENPCRels>(EFFECT_NPC_HATE,				MAKE_STRING("World of Hate"),				EC_NONE,								chaos_time_npc_hate.GetFloat(),				chaos_prob_npc_hate.GetInt());
 	CreateEffect<CENPCRels>(EFFECT_NPC_LIKE,				MAKE_STRING("World of Love"),				EC_NONE,								chaos_time_npc_like.GetFloat(),				chaos_prob_npc_like.GetInt());
 	CreateEffect<CENPCRels>(EFFECT_NPC_NEUTRAL,				MAKE_STRING("World of Apathy"),				EC_NONE,								chaos_time_npc_neutral.GetFloat(),			chaos_prob_npc_neutral.GetInt());
-	CreateEffect<CENPCRels>(EFFECT_NPC_FEAR,				MAKE_STRING("World of Fear"),				EC_NO_CUTSCENE,							chaos_time_npc_fear.GetFloat(),				chaos_prob_npc_fear.GetInt());
+	CreateEffect<CENPCRels>(EFFECT_NPC_FEAR,				MAKE_STRING("World of Fear"),				EC_NONE,								chaos_time_npc_fear.GetFloat(),				chaos_prob_npc_fear.GetInt());
 	CreateEffect<>(EFFECT_TELEPORT_RANDOM,					MAKE_STRING("Teleport to Random Place"),	EC_PLAYER_TELEPORT,						-1,											chaos_prob_teleport_random.GetInt());
 	CreateEffect<CERandomVehicle>(EFFECT_SPAWN_VEHICLE,		MAKE_STRING("Spawn Random Vehicle"),		EC_NONE,								-1,											chaos_prob_spawn_vehicle.GetInt());
 	CreateEffect<CERandomNPC>(EFFECT_SPAWN_NPC,				MAKE_STRING("Spawn Random NPC"),			EC_NONE,								-1,											chaos_prob_spawn_npc.GetInt());
@@ -4948,11 +4966,11 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CEForceInOutCar>(EFFECT_FORCE_INOUT_CAR,	MAKE_STRING("Force In/Out Vehicle"),		EC_BUGGY | EC_BOAT | EC_PLAYER_TELEPORT,-1,											chaos_prob_force_inout_car.GetInt());
 	CreateEffect<CEWeaponRemove>(EFFECT_WEAPON_REMOVE,		MAKE_STRING("Remove Random Weapon"),		EC_HAS_WEAPON | EC_NO_CITADEL,			-1,											chaos_prob_weapon_remove.GetInt());
 	CreateEffect<>(EFFECT_INTERP_NPCS,						MAKE_STRING("Laggy NPCs"),					EC_NONE,								chaos_time_interp_npcs.GetFloat(),			chaos_prob_interp_npcs.GetInt());
-	CreateEffect<CEPhysConvert>(EFFECT_PHYS_CONVERT,		MAKE_STRING("Ran Out Of Glue"),				EC_PHYSICS,								-1,											chaos_prob_phys_convert.GetInt());
+	CreateEffect<CEPhysConvert>(EFFECT_PHYS_CONVERT,		MAKE_STRING("Ran Out Of Glue"),				EC_NONE,								-1,											chaos_prob_phys_convert.GetInt());
 	CreateEffect<CEIncline>(EFFECT_INCLINE,					MAKE_STRING("No Climbing"),					EC_NONE,								chaos_time_incline.GetFloat(),				chaos_prob_incline.GetInt());
 	CreateEffect<>(EFFECT_DISABLE_SAVE,						MAKE_STRING("No Saving"),					EC_NONE,								chaos_time_disable_save.GetFloat(),			chaos_prob_disable_save.GetInt());
 	CreateEffect<>(EFFECT_NO_RELOAD,						MAKE_STRING("No One Can Reload"),			EC_HAS_WEAPON,							chaos_time_no_reload.GetFloat(),			chaos_prob_no_reload.GetInt());
-	CreateEffect<>(EFFECT_NPC_TELEPORT,						MAKE_STRING("You Teleport?"),				EC_NO_CUTSCENE,							chaos_time_npc_teleport.GetFloat(),			chaos_prob_npc_teleport.GetInt());
+	CreateEffect<>(EFFECT_NPC_TELEPORT,						MAKE_STRING("You Teleport?"),				EC_NONE,								chaos_time_npc_teleport.GetFloat(),			chaos_prob_npc_teleport.GetInt());
 	CreateEffect<CEDeathWater>(EFFECT_DEATH_WATER,			MAKE_STRING("Death Water"),					EC_WATER,								chaos_time_death_water.GetFloat(),			chaos_prob_death_water.GetInt());
 }
 
@@ -5073,7 +5091,7 @@ bool CChaosEffect::CheckEffectContext()
 			return false;
 
 	//You Teleport is bad specifically on these maps
-	//ep2_outland_12: strider just teleport straight to the silo, which is fucking hilarious, but not good
+	//ep2_outland_12: striders just teleport straight to the silo, which is fucking hilarious, but not good
 	if (m_nID == EFFECT_NPC_TELEPORT)
 		if (!Q_strcmp(pMapName, "ep2_outland_12"))
 			return false;//bad map
@@ -5089,13 +5107,6 @@ bool CChaosEffect::CheckEffectContext()
 	if (m_nID == EFFECT_EVIL_NORIKO)
 		if (!MapGoodForCrane(pMapName))
 			return false;//map not good for cranes
-
-	//avoid maps where you would softlock due to inverted gravity
-	//d2_coast_04: car go up, car hit the fucky-wucky trigger
-	//ep2_outland_12: entire map has a "shell" of clipping around it. vehicle will get stuck on it, but if player exits vehicle when it's on the ceiling of that shell, they will be put out above it. perhaps make the exiting checks test below car, then above?
-	if (m_nID == EFFECT_INVERTG)
-		if (!Q_strcmp(pMapName, "d2_coast_04") || !Q_strcmp(pMapName, "ep2_outland_12"))
-			return false;//oh no
 
 	//quickclip must be on
 	if (m_nID == EFFECT_QUICKCLIP_OFF)
@@ -5125,6 +5136,44 @@ bool CChaosEffect::CheckEffectContext()
 			|| !Q_strcmp(pMapName, "ep2_outland_03")	|| !Q_strcmp(pMapName, "ep2_outland_09")	|| !Q_strcmp(pMapName, "ep2_outland_12"))
 			return false;
 
+	//this is essentially just a list of all maps with elevators. quickclip will cause you to phase through elevators.
+	if (m_nID == EFFECT_QUICKCLIP_ON)
+		if (!Q_strcmp(pMapName, "d2_prison_05")			|| !Q_strcmp(pMapName, "d2_prison_06")		|| !Q_strcmp(pMapName, "d2_prison_08")
+			|| !Q_strcmp(pMapName, "d3_citadel_03")		|| !Q_strcmp(pMapName, "d3_citadel_04")		|| !Q_strcmp(pMapName, "d3_breen_01")
+			|| !Q_strcmp(pMapName, "ep1_citadel_01")	|| !Q_strcmp(pMapName, "ep1_citadel_03")	|| !Q_strcmp(pMapName, "ep1_c17_00a")
+			|| !Q_strcmp(pMapName, "ep2_outland_12a")	|| !Q_strcmp(pMapName, "ep2_outland_03")	|| !Q_strcmp(pMapName, "ep2_outland_04"))
+			return false;//bad map
+
+	//Pause Physics can cause serious issues on these maps
+	if (m_nID == EFFECT_PHYS_PAUSE)
+		if (!Q_strcmp(pMapName, "d3_citadel_01")		|| !Q_strcmp(pMapName, "d3_citadel_02")		|| !Q_strcmp(pMapName, "d3_citadel_05")		|| !Q_strcmp(pMapName, "d3_breen_01")
+			|| !Q_strcmp(pMapName, "ep2_outland_01")	|| !Q_strcmp(pMapName, "ep2_outland_03")	|| !Q_strcmp(pMapName, "ep2_outland_04")	|| !Q_strcmp(pMapName, "ep2_outland_11") || !Q_strcmp(pMapName, "ep2_outland_11b"))
+			return false;//bad map
+
+	//Ran Out Of Glue can cause serious issues on these maps
+	if (m_nID == EFFECT_PHYS_CONVERT)
+		if (!Q_strcmp(pMapName, "d3_citadel_01")		|| !Q_strcmp(pMapName, "d3_citadel_02")		|| !Q_strcmp(pMapName, "d3_citadel_05")		|| !Q_strcmp(pMapName, "d3_breen_01")
+			|| !Q_strcmp(pMapName, "ep1_c17_00a")
+			|| !Q_strcmp(pMapName, "ep2_outland_01")	|| !Q_strcmp(pMapName, "ep2_outland_03")	|| !Q_strcmp(pMapName, "ep2_outland_11")	|| !Q_strcmp(pMapName, "ep2_outland_11b"))
+			return false;//bad map
+
+	//could distrupt cutscenes
+	if (m_nID == EFFECT_NPC_HATE)
+		if (!Q_strcmp(pMapName, "d1_trainstation_04") || !Q_strcmp(pMapName, "d1_canals_03") || !Q_strcmp(pMapName, "d1_eli_01")
+			|| !Q_strcmp(pMapName, "d2_coast_10")
+			|| !Q_strcmp(pMapName, "d3_breen_01"))
+			return false;//bad map
+
+	//could distrupt cutscenes
+	if (m_nID == EFFECT_NPC_FEAR)
+		if (!Q_strcmp(pMapName, ""))
+			return false;//bad map
+
+	//could distrupt cutscenes
+	if (m_nID == EFFECT_NPC_TELEPORT)
+		if (!Q_strcmp(pMapName, "d1_trainstation_01"))
+			return false;//bad map
+
 	if (m_nContext == EC_NONE)
 		return true;
 
@@ -5137,16 +5186,6 @@ bool CChaosEffect::CheckEffectContext()
 	if (m_nContext & EC_NO_VEHICLE)
 		if (IterUsableVehicles(true))
 			return false;//vehicle found
-
-	//avoid maps that rely on physics working correctly to be completeable
-	if (m_nContext & EC_PHYSICS)
-		if (MapHasImportantPhysics(pMapName))
-			return false;//map's physics entities are... delicate
-
-	//avoid maps that are mostly cutscenes, since the given effect could easily cause a softlock
-	if (m_nContext & EC_NO_CUTSCENE)
-		if (MapIsCutsceneMap(pMapName))
-			return false;//this is a cutscene map
 
 	//need at least one pickup in the map
 	if (m_nContext & EC_PICKUPS)
@@ -5161,22 +5200,6 @@ bool CChaosEffect::CheckEffectContext()
 			return false;//quickclip is on
 		if (pPlayer->IsInAVehicle())
 			return false;//can't turn quickclip on when you're in a vehicle
-		//some maps not allowed
-		const char *pNextMap = "";
-		//find next map
-		for (int i = 0; i < ARRAYSIZE(g_MapNames); i++)
-		{
-			if (!Q_strcmp(pMapName, g_MapNames[i]))
-			{
-				pNextMap = g_MapNames[i + 1];
-			}
-		}
-		//this is essentially just a list of all maps with elevators. quickclip will cause you to phase through elevators.
-		if (!Q_strcmp(pMapName, "d2_prison_05")			|| !Q_strcmp(pMapName, "d2_prison_06")		|| !Q_strcmp(pMapName, "d2_prison_08")
-			|| !Q_strcmp(pMapName, "d3_citadel_03")		|| !Q_strcmp(pMapName, "d3_citadel_04")		|| !Q_strcmp(pMapName, "d3_breen_01")
-			|| !Q_strcmp(pMapName, "ep1_citadel_01")	|| !Q_strcmp(pMapName, "ep1_citadel_03")	|| !Q_strcmp(pMapName, "ep1_c17_00a")
-			|| !Q_strcmp(pMapName, "ep2_outland_12a")	|| !Q_strcmp(pMapName, "ep2_outland_03")	|| !Q_strcmp(pMapName, "ep2_outland_04"))
-			return false;//bad map
 	}
 
 	//need water in the map
@@ -5218,7 +5241,6 @@ bool CChaosEffect::CheckEffectContext()
 			|| !Q_strcmp(pMapName, "d1_canals_01")		|| !Q_strcmp(pMapName, "d1_canals_05")		|| !Q_strcmp(pMapName, "d1_canals_08")		|| !Q_strcmp(pMapName, "d1_canals_11")
 			|| !Q_strcmp(pMapName, "d1_eli_01")			|| !Q_strcmp(pMapName, "d1_eli_02")
 			|| !Q_strcmp(pMapName, "d1_town_02a")		|| !Q_strcmp(pMapName, "d1_town_05")
-			|| !Q_strcmp(pMapName, "d2_coast_04")
 			|| !Q_strcmp(pMapName, "d2_prison_06")		|| !Q_strcmp(pMapName, "d2_prison_08")
 			|| !Q_strcmp(pMapName, "d3_c17_10b")
 			|| !Q_strcmp(pMapName, "d3_citadel_03")		|| !Q_strcmp(pMapName, "d3_citadel_04")
@@ -5397,12 +5419,12 @@ void CChaosEffect::StartEffect()
 		UTIL_GetLocalPlayer()->EquipSuit();
 		ChaosSpawnWeapon("weapon_crowbar", MAKE_STRING("Give All Weapons"));
 		ChaosSpawnWeapon("weapon_physcannon", MAKE_STRING("Give All Weapons"));
-		ChaosSpawnWeapon("weapon_pistol", MAKE_STRING("Give All Weapons"), 255, "Pistol");
-		ChaosSpawnWeapon("weapon_357", MAKE_STRING("Give All Weapons"), 32, "357");
-		ChaosSpawnWeapon("weapon_smg1", MAKE_STRING("Give All Weapons"), 255, "SMG1", 3, "smg1_grenade");
-		ChaosSpawnWeapon("weapon_ar2", MAKE_STRING("Give All Weapons"), 255, "AR2", 5, "AR2AltFire");
-		ChaosSpawnWeapon("weapon_shotgun", MAKE_STRING("Give All Weapons"), 255, "Buckshot");
-		ChaosSpawnWeapon("weapon_crossbow", MAKE_STRING("Give All Weapons"), 16, "XBowBolt");
+		ChaosSpawnWeapon("weapon_pistol", MAKE_STRING("Give All Weapons"), 75, "Pistol");
+		ChaosSpawnWeapon("weapon_357", MAKE_STRING("Give All Weapons"), 9, "357");
+		ChaosSpawnWeapon("weapon_smg1", MAKE_STRING("Give All Weapons"), 128, "SMG1", 1, "smg1_grenade");
+		ChaosSpawnWeapon("weapon_ar2", MAKE_STRING("Give All Weapons"), 30, "AR2", 1, "AR2AltFire");
+		ChaosSpawnWeapon("weapon_shotgun", MAKE_STRING("Give All Weapons"), 15, "Buckshot");
+		ChaosSpawnWeapon("weapon_crossbow", MAKE_STRING("Give All Weapons"), 5, "XBowBolt");
 		ChaosSpawnWeapon("weapon_frag", MAKE_STRING("Give All Weapons"), 5, "grenade");
 		ChaosSpawnWeapon("weapon_rpg", MAKE_STRING("Give All Weapons"), 3, "rpg_round");
 		break;
@@ -5419,7 +5441,7 @@ void CChaosEffect::StartEffect()
 		chaos_cant_leave_map.SetValue(1);
 		break;
 	case EFFECT_ORTHO_CAM:
-		engine->ClientCommand(engine->PEntityOfEntIndex(1), "camortho;c_orthoheight 90;c_orthowidth 160\n");
+		engine->ClientCommand(engine->PEntityOfEntIndex(1), "camortho;c_orthoheight 135;c_orthowidth 240\n");
 		break;
 	case EFFECT_INTERP_NPCS:
 		engine->ClientCommand(engine->PEntityOfEntIndex(1), "cl_interp_npcs 5");
@@ -5739,16 +5761,6 @@ CBaseEntity *CChaosEffect::GetEntityWithID(int iChaosID)
 	return NULL;
 }
 
-//maps that are mostly cutscenes
-//World of... effects can break these maps as important NPCs may exit scripts upon seeing an enemy
-//		note that the effects of this are limited because negative relationships have been selectively precluded from applying on game-end-allies like barney and alyx
-//You Teleport? may cause an NPC to teleport around an important trigger
-//it is not certain how many such maps actually need to be included here. i'm just adding as i find them
-bool CChaosEffect::MapIsCutsceneMap(const char *pMapName)
-{
-	return !Q_strcmp(pMapName, "d1_trainstation_01") || !Q_strcmp(pMapName, "d1_trainstation_05") || !Q_strcmp(pMapName, "ep2_outland_11a") || !Q_strcmp(pMapName, "ep2_outland_11b");
-}
-
 bool CChaosEffect::MapIsLong(const char *pMapName)
 {
 	return !Q_strcmp(pMapName, "d1_trainstation_01")	|| !Q_strcmp(pMapName, "d1_trainstation_05")		|| !Q_strcmp(pMapName, "d1_eli_01")				|| !Q_strcmp(pMapName, "d1_eli_02")
@@ -5781,12 +5793,6 @@ bool CChaosEffect::MapGoodForCrane(const char *pMapName)
 		&& Q_strcmp(pMapName, "ep2_outland_11")			&& Q_strcmp(pMapName, "ep2_outland_11a")			&& Q_strcmp(pMapName, "ep2_outland_11b")		&& Q_strcmp(pMapName, "ep2_outland_12a");
 }
 
-bool CChaosEffect::MapHasImportantPhysics(const char *pMapName)
-{
-	return !Q_strcmp(pMapName, "d3_citadel_01")			|| !Q_strcmp(pMapName, "d3_citadel_02")				|| !Q_strcmp(pMapName, "d3_citadel_05")			|| !Q_strcmp(pMapName, "d3_breen_01")
-		|| !Q_strcmp(pMapName, "ep1_c17_00a")
-		|| !Q_strcmp(pMapName, "ep2_outland_01") || !Q_strcmp(pMapName, "ep2_outland_03") || !Q_strcmp(pMapName, "ep2_outland_04") || !Q_strcmp(pMapName, "ep2_outland_11") || !Q_strcmp(pMapName, "ep2_outland_11b") || !Q_strcmp(pMapName, "ep2_outland_12");
-}
 //make evil NPCs stay evil
 //can't do in the effect's MaintainEffect() because that only lasts 80 seconds
 void CHL2_Player::MaintainEvils()
@@ -6627,14 +6633,14 @@ void CENPCRels::DoNPCRels(int disposition, bool bRevert)
 				if (pTarget->IsPlayer() && pSubject->IsNPC() && pSubject->MyNPCPointer()->IsPlayerAlly())
 				{
 					CAI_PlayerAlly *pSubjectAlly = static_cast<CAI_PlayerAlly*>(pSubject);
-					if (!pSubjectAlly->m_bChaosSpawned)
+					if (!pSubjectAlly->m_bChaosSpawned && (pSubjectAlly->ClassMatches("npc_a*") || pSubjectAlly->ClassMatches("npc_b*") || pSubjectAlly->ClassMatches("npc_v*")))
 						continue;
 				}
 				//check other way too so player can't kill them by friendly fire cause that's just dumb
 				if (pSubject->IsPlayer() && pTarget->IsNPC() && pTarget->MyNPCPointer()->IsPlayerAlly())
 				{
 					CAI_PlayerAlly *pTargetAlly = static_cast<CAI_PlayerAlly*>(pTarget);
-					if (!pTargetAlly->m_bChaosSpawned)
+					if (!pTargetAlly->m_bChaosSpawned && (pTargetAlly->ClassMatches("npc_a*") || pTargetAlly->ClassMatches("npc_b*") || pTargetAlly->ClassMatches("npc_v*")))
 						continue;
 				}
 				if (pTarget->ClassMatches("npc_cra*"))//don't try to attack a crane driver, you're not winning
@@ -6659,6 +6665,8 @@ void CENPCRels::DoNPCRels(int disposition, bool bRevert)
 void CENPCRels::StopEffect()
 {
 	DoNPCRels(D_ER, true);
+	if (m_nID == EFFECT_NPC_LIKE)
+		ai_block_damage.SetValue(false);
 }
 void CENPCRels::MaintainEffect()
 {
@@ -6673,6 +6681,7 @@ void CENPCRels::StartEffect()
 		break;
 	case EFFECT_NPC_LIKE:
 		DoNPCRels(D_LI, false);
+		ai_block_damage.SetValue(true);
 		break;
 	case EFFECT_NPC_NEUTRAL:
 		DoNPCRels(D_NU, false);

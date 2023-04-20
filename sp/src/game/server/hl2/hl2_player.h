@@ -85,6 +85,7 @@ public:
 	void StopGivenEffect(int nID);
 	void MaintainEvils();
 	void PopulateEffects();
+	void StartGame();//called after loads of all kinds
 	template<class T = CChaosEffect> void CreateEffect(int nEffect, string_t strHudName, int nContext, float flDurationMult, int iWeight);
 	bool EffectOrGroupAlreadyActive(int iEffect);
 	//we actually do want to remember what effects are present at the moment of a save so that we may eliminate them upon reloading if needed

@@ -620,37 +620,35 @@ bool CBaseServerVehicle::GetPassengerExitPoint( int nRole, Vector *pExitPoint, Q
 	if( CheckExitPoint( 180, 170, pExitPoint ) )
 		return true;
 
-	// All else failed, try popping them out the top.
+	trace_t tr;
 	Vector vecWorldMins, vecWorldMaxs;
+	//still nothing? then we're either attached to a crane or on the ceiling because sv_gravity was altered, in which case place below the car lmao
+	m_pVehicle->CollisionProp()->WorldSpaceAABB(&vecWorldMins, &vecWorldMaxs);
+	pExitPoint->x = (vecWorldMins.x + vecWorldMaxs.x) * 0.5f;
+	pExitPoint->y = (vecWorldMins.y + vecWorldMaxs.y) * 0.5f;
+	pExitPoint->z = vecWorldMaxs.z - 200.0f;
+
+	// Make sure it's clear
+	//why where these two traces using m_pVehicle->CollisionProp()->WorldSpaceCenter() as the start pos???
+	UTIL_TraceHull(*pExitPoint, *pExitPoint, VEC_HULL_MIN, VEC_HULL_MAX, MASK_PLAYERSOLID, m_pVehicle, COLLISION_GROUP_NONE, &tr);
+	if (!tr.startsolid)
+	{
+		return true;
+	}
+
+	// All else failed, try popping them out the top.
 	m_pVehicle->CollisionProp()->WorldSpaceAABB( &vecWorldMins, &vecWorldMaxs );
 	pExitPoint->x = (vecWorldMins.x + vecWorldMaxs.x) * 0.5f;
 	pExitPoint->y = (vecWorldMins.y + vecWorldMaxs.y) * 0.5f;
 	pExitPoint->z = vecWorldMaxs.z + 50.0f;
 
 	// Make sure it's clear
-	trace_t tr;
-	UTIL_TraceHull( m_pVehicle->CollisionProp()->WorldSpaceCenter(), *pExitPoint, VEC_HULL_MIN, VEC_HULL_MAX, MASK_PLAYERSOLID, m_pVehicle, COLLISION_GROUP_NONE, &tr );
+	UTIL_TraceHull(*pExitPoint, *pExitPoint, VEC_HULL_MIN, VEC_HULL_MAX, MASK_PLAYERSOLID, m_pVehicle, COLLISION_GROUP_NONE, &tr);
 	if ( !tr.startsolid )
 	{
 		return true;
 	}
-	else
-	{
-		//still nothing? then we're either attached to a crane or on the ceiling because sv_gravity was altered, in which case place below the car lmao
-		Vector vecWorldMins, vecWorldMaxs;
-		m_pVehicle->CollisionProp()->WorldSpaceAABB(&vecWorldMins, &vecWorldMaxs);
-		pExitPoint->x = (vecWorldMins.x + vecWorldMaxs.x) * 0.5f;
-		pExitPoint->y = (vecWorldMins.y + vecWorldMaxs.y) * 0.5f;
-		pExitPoint->z = vecWorldMaxs.z - 200.0f;
-
-		// Make sure it's clear
-		UTIL_TraceHull(m_pVehicle->CollisionProp()->WorldSpaceCenter(), *pExitPoint, VEC_HULL_MIN, VEC_HULL_MAX, MASK_PLAYERSOLID, m_pVehicle, COLLISION_GROUP_NONE, &tr);
-		if (!tr.startsolid)
-		{
-			return true;
-		}
-		//damn, really thought that would work
-	}
+	
 
 	// No clear exit point available!
 	return false;

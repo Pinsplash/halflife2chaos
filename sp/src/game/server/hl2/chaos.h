@@ -95,11 +95,11 @@ enum Effect_T
 #define EC_BOAT				1
 #define EC_BUGGY			2
 #define EC_WATER			4
-#define EC_PHYSICS			8
+//#define EC_PHYSICS			8
 #define EC_NO_INVULN		16
 #define EC_HAS_WEAPON		32
 #define EC_QC_OFF			64
-#define EC_NO_CUTSCENE		128
+//#define EC_NO_CUTSCENE		128//hate, fear, you tele
 #define EC_PICKUPS			256
 #define EC_NO_CITADEL		512
 #define EC_PLAYER_TELEPORT	1024
@@ -151,10 +151,8 @@ public:
 	bool IterUsableVehicles(bool bFindOnly);
 	virtual void DoOnVehicles(CPropVehicleDriveable *pVehicle){};
 	CBaseEntity *GetEntityWithID(int iChaosID);
-	bool MapIsCutsceneMap(const char *pMapName);
 	bool MapIsLong(const char *pMapName);
 	bool MapGoodForCrane(const char *pMapName);
-	bool MapHasImportantPhysics(const char *pMapName);
 	bool MapHasElevator(const char *pMapName);
 	//DECLARE_SIMPLE_DATADESC();
 };

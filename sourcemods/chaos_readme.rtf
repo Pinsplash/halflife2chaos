@@ -92,17 +92,31 @@ Certain console variables are changed in this mod that you might want your own s
 
 \pard\par
 
+\pard\qc\b Game\b0\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720 Vehicles now prefer to put the player below them instead of above them when exiting. This prevents an issue with \ul Invert Gravity\ulnone  on ep2_outland_12.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720 The game no longer automatically resets on d2_coast_04 when the player or buggy falls into a bad place. This prevents an issue with \ul Invert Gravity\ulnone  on this map.\par
+
+\pard\par
+
 \pard\qc\b Contexts\b0\par
 
 \pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720 Several contexts have been deleted and had their criteria assigned specifically to the effect they were made for, as they were probably never going to be used by any other effects: \ul Invert Gravity\ulnone , \ul Bullet Teleport\ulnone , \ul Shotgun\ulnone , \ul Quickclip On\ulnone , \ul Crane Spawn\ulnone , \ul No Long Map\ulnone , \ul Clone NPCs\ulnone , and \ul NPC Teleport\ulnone . The effects' underlying criteria remain the same except as noted.\par
 {\pntext\f1\'B7\tab}\ul No Lava\ulnone  and \ul No Slow Physics\ulnone  have been deleted because their purpose is now fulfilled by a group.\par
 {\pntext\f1\'B7\tab}\ul Pickups\ulnone :\par
 
-\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 The list of unsuitable maps has been removed from the context label and now applies only to \ul Remove All Pickups\ulnone , so that \ul Water World\ulnone  isn't pointlessly restricted on some maps.\par
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Made the unsuitable map criterion specific to \ul Remove All Pickups\ulnone , so that \ul Water World\ulnone  isn't pointlessly restricted on some maps.\par
 
 \pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Player Teleport\ulnone :\par
 
 \pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Added a few more maps to the list.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Quickclip Off\ulnone :\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Made the unsuitable map criterion specific to \ul Enable Quickclip\ulnone , so that \ul Floor Is Lava\ulnone  isn't pointlessly restricted on some maps.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Physics\ulnone  has been removed and \ul Ran Out Of Glue\ulnone  and \ul Pause Physics\ulnone  now use their own separate map lists that cater to them individually.\par
 
 \pard\par
 
@@ -135,11 +149,27 @@ Certain console variables are changed in this mod that you might want your own s
 
 \pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Floor Is Lava\ulnone :\par
 
-\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 No longer uses the No Citadel context as the effect's understanding of "floor" was improved in v0.1.1.\par
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 No longer uses the \ul No Citadel\ulnone  context as the effect's understanding of "floor" was improved in v0.1.1.\par
 
 \pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Teleporter Bullets\ulnone :\par
 
 \pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 No longer puts the shooting object slightly in the air when not needed.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul World of Love\ulnone :\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 NPCs can no longer be hurt when active. Previously, it was possible to still hurt enemy NPCs while they were being friendly.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Give All Weapons\ulnone :\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 Now gives less ammo.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Orthographic Camera\ulnone :\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 "Field of view" now wider.\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li720\ul Invert Gravity\ulnone :\par
+
+\pard{\pntext\f1\'B7\tab}{\*\pn\pnlvlblt\pnf1\pnindent0{\pntxtb\'B7}}\fi-360\li1080 No longer restricted on d2_coast_04 and ep2_outland_12 as the issues with those maps have been fixed.\par
 
 \pard\par
 
