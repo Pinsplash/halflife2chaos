@@ -46,18 +46,18 @@ Copy the map files and paste them in `Steam/steamapps/sourcemods/hl2chaos/maps/`
 
 Some effect-specific advice, if you don't wish to figure it out on your own:
 
- * **Zero Gravity** and **Invert Gravity**:  
-  You can stick to the ground as long as you don't jump or move off it. 
-  Land in water to avoid fall damage. 
-  Landing on slopes can prevent fall damage.
- * **Water World**:  
-  Only the crowbar, gravity gun, pistol, and crossbow can be used underwater.  
-  Drowning damage heals once you leave water.  
-  If **Superhot** is on, stay still to minimize drowning damage.  
-  If **Supercold** is on, move around to minimize drowning damage. You can't drown in vehicles.
- * **Annoying Alyx**:  
-  Don't use burst damage weapons such as the shotgun. Alyx can only lose 25% of her health at once and regenerates health, so will take at least 5 hits to kill.
- * Sometimes things are invisible with **Orthographic Camera**. Turning on the flashlight may fix it.
+* **Zero Gravity** and **Invert Gravity**:  
+ You can stick to the ground as long as you don't jump or move off it. 
+ Land in water to avoid fall damage. 
+ Landing on slopes can prevent fall damage.
+* **Water World**:  
+ Only the crowbar, gravity gun, pistol, and crossbow can be used underwater.  
+ Drowning damage heals once you leave water.  
+ If **Superhot** is on, stay still to minimize drowning damage.  
+ If **Supercold** is on, move around to minimize drowning damage. You can't drown in vehicles.
+* **Annoying Alyx**:  
+ Don't use burst damage weapons such as the shotgun. Alyx can only lose 25% of her health at once and regenerates health, so will take at least 5 hits to kill.
+* Sometimes things are invisible with **Orthographic Camera**. Turning on the flashlight may fix it.
 
 Certain console variables are changed in this mod that you might want your own settings for.  
 These settings have been put in their own CFG files so you can control what they are, except when chaos effects modify them.

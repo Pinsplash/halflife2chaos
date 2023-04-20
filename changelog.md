@@ -26,15 +26,13 @@
  The effects' underlying criteria remain the same except as noted.
 * **No Lava** and **No Slow Physics** have been deleted because their purpose is now fulfilled by a group.
 * **Pickups**:
- * Made the unsuitable map criterion specific to **Remove All Pickups**, 
- so that **Water World** isn't pointlessly restricted on some maps.
+  * Made the unsuitable map criterion specific to **Remove All Pickups**, so that **Water World** isn't pointlessly restricted on some maps.
 * **Player Teleport**:
- * Added a few more maps to the list.
+  * Added a few more maps to the list.
 * **Quickclip Off**:
- * Made the unsuitable map criterion specific to **Enable Quickclip**, 
+  * Made the unsuitable map criterion specific to **Enable Quickclip**, 
  so that **Floor Is Lava** isn't pointlessly restricted on some maps.
- * **Physics** has been removed and **Ran Out Of Glue** and **Pause Physics** now use their own separate map lists 
- that cater to them individually.
+  * **Physics** has been removed and **Ran Out Of Glue** and **Pause Physics** now use their own separate map lists that cater to them individually.
 
 ### Groups
 
@@ -112,14 +110,14 @@ The number of times can be controlled with `chaos_strike_max`. Default 5.
 * The game now sets `sv_cheats` to 1 every time an effect starts as it would interfere with some effects.
 
 * Created new algorithm for getting the player and other objects out of places where they're stuck.
- * Based off original algorithm used by noclip.
- * Tests for open space above, below, to the north, south, east, and west of the object and all combinations of those directions.
- * Avoids placing objects through walls.
- * Avoids placing objects above nodraw and skybox textures.
- * Optional failsafe to placing object at the nearest appropriate AI node.
- * Failsafe keeps the object in the same node zone if possible.
- * Recognizes quickclip and preserves it while still getting the player unstuck.
- * Forces player to crouch if necessary.
+  * Based off original algorithm used by noclip.
+  * Tests for open space above, below, to the north, south, east, and west of the object and all combinations of those directions.
+  * Avoids placing objects through walls.
+  * Avoids placing objects above nodraw and skybox textures.
+  * Optional failsafe to placing object at the nearest appropriate AI node.
+  * Failsafe keeps the object in the same node zone if possible.
+  * Recognizes quickclip and preserves it while still getting the player unstuck.
+  * Forces player to crouch if necessary.
 
 Since it wasn't tracked well before, here is a readout of all current effect **contexts**
 
@@ -234,29 +232,29 @@ Since it wasn't tracked well before, here is a readout of all current effect **g
  Spawned things ignore the camera's vertical angle to avoid spawning in the ground or directly above the player.  
  The game will try to avoid putting NPCs and vehicles inside solid objects.
 * **Spawn Random Vehicle**:  
- * Cranes can now spawn.  
- * Jalopies can now spawn in Episode Two.  
- * Vehicles spawn farther away to avoid hitting the player on the head.
- * Airboats will now have their gun.
+  * Cranes can now spawn.  
+  * Jalopies can now spawn in Episode Two.  
+  * Vehicles spawn farther away to avoid hitting the player on the head.
+  * Airboats will now have their gun.
 * **Spawn Random NPC**:
- * NPCs spawn facing player instead of looking to the side.
- * Large flying NPCs will now spawn farther away.
- * Barnacles and ceiling turrets now spawn on ceilings as opposed to floating in the air.
- * Antlions and antlion guardians may randomly be the acid variants in Episode Two.
- * Alyx can now use her EMP device to reprogram rollermines.
- * Alyx, Barney, citizens, vortigaunts and fisherman now have a randomized readiness level.
- * Citizens will now follow the player and have a randomized medic status, ammo resupplier status, type of ammo they give, clothing, expression, and weapon.
- * Soldiers now have 100 grenades to throw and have a randomized model/elite status and weapon.
- * Scanners are now allowed to chase enemies.
- * Dog will now try to play fetch.
- * Metrocops now have 100 manhacks to deploy and have a randomized weapon.
- * Stalkers now have a randomized beam power.
- * Striders are now allowed to impale the player.
- * Ceiling turrets now actually do stuff.
- * Speculative fix for a crash related to spawned turrets.
- * Vortigaunts can now recharge the player's suit.
- * Zombines can now spawn in Episode One and Two.
- * Advisors, antlion grubs, fast zombie torsos, hunters, and Dr. Magnusson can now spawn in Episode Two.
+  * NPCs spawn facing player instead of looking to the side.
+  * Large flying NPCs will now spawn farther away.
+  * Barnacles and ceiling turrets now spawn on ceilings as opposed to floating in the air.
+  * Antlions and antlion guardians may randomly be the acid variants in Episode Two.
+  * Alyx can now use her EMP device to reprogram rollermines.
+  * Alyx, Barney, citizens, vortigaunts and fisherman now have a randomized readiness level.
+  * Citizens will now follow the player and have a randomized medic status, ammo resupplier status, type of ammo they give, clothing, expression, and weapon.
+  * Soldiers now have 100 grenades to throw and have a randomized model/elite status and weapon.
+  * Scanners are now allowed to chase enemies.
+  * Dog will now try to play fetch.
+  * Metrocops now have 100 manhacks to deploy and have a randomized weapon.
+  * Stalkers now have a randomized beam power.
+  * Striders are now allowed to impale the player.
+  * Ceiling turrets now actually do stuff.
+  * Speculative fix for a crash related to spawned turrets.
+  * Vortigaunts can now recharge the player's suit.
+  * Zombines can now spawn in Episode One and Two.
+  * Advisors, antlion grubs, fast zombie torsos, hunters, and Dr. Magnusson can now spawn in Episode Two.
 * **Water World**:  
  Drowning damage will stop when in a vehicle. It already did this sometimes so might as well make it a consistent thing.
 * **No Looking Left/Right** and **No Looking Up/Down**:  
