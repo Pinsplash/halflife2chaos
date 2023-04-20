@@ -1,5 +1,5 @@
 # Half-Life 2 Chaos
-Latest binary release here: https://github.com/Pinsplash/halflife2chaos/releases  
+Download from here: https://github.com/Pinsplash/halflife2chaos/releases  
 
 ## Installation
 
