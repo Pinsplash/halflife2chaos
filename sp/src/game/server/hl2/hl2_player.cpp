@@ -6,7 +6,8 @@
 /*
 */
 
-#include "cbase.h"
+// ACBOB: this file shits the bed if cbase is included. ...it compiles fine without it being included.
+// #include "cbase.h"
 #include <string>
 #include <cmath>
 #include "hl2_player.h"

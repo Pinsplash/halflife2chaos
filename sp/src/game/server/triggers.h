@@ -14,7 +14,10 @@
 #include "basetoggle.h"
 #include "entityoutput.h"
 #include "EntityParticleTrail.h"
-bool g_bEndSolidTriggers = false;
+
+// ACBOB: This is global scope in a header, so should be externed...
+extern bool g_bEndSolidTriggers;
+
 //
 // Spawnflags
 //
