@@ -134,10 +134,10 @@ void LoadHudTextures( CUtlDict< CHudTexture *, int >& list, const char *szFilena
 				pTemp = pTemp->GetNextKey();
 			}
 		}
+		// Failed for some reason. Delete the Key data and abort.
+		pKeyValuesData->deleteThis();
 	}
 
-	// Failed for some reason. Delete the Key data and abort.
-	pKeyValuesData->deleteThis();
 }
 
 //-----------------------------------------------------------------------------
