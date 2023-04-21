@@ -20,6 +20,7 @@
 			platform				|all_source_engine_paths|platform/platform_misc.vpk
 			game					|all_source_engine_paths|hl2
 			platform				|all_source_engine_paths|platform
+			game					"..\..\common\Half-Life 2\hl2"
 		}
 	}
 	
