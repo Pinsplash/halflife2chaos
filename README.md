@@ -4,8 +4,7 @@ https://github.com/Pinsplash/halflife2chaos/releases
 ## Installation
 Put the `hl2chaos` folder into `Steam/steamapps/sourcemods/`. The path to `gameinfo.txt` should be `Steam/steamapps/sourcemods/hl2chaos/gameinfo.txt`. Do the same with the `ep1chaos` and `ep2chaos` folders if you wish to play Chaos in Episode One/Two. In all places in this guide, replace "hl2chaos" with "ep1chaos" or "ep2chaos" if using Episode One/Two. Restart Steam for the mod(s) to appear in your library.
 
-When running you will be prompted to download `Source SDK Base 2013 Singleplayer` if you don't have it already. This is normal. Download it, then right click on it and go to `Properties...`, `BETAS`, and change the dropdown from `None` to `upcoming - upcoming`.
-Changing this setting will prevent immediate crashes.
+When running, you will be prompted to download `Source SDK Base 2013 Singleplayer` if you don't have it already. This is normal. Download it, then right click on it and go to `Properties...`, `BETAS`, and change the dropdown from `None` to `upcoming - upcoming`. Changing this setting will prevent immediate crashes.
 
 For Episode One/Two, you must copy the map (.bsp) files from your installation of Episode One/Two. The mod may attempt to load maps without this step, but there will be issues. To do this go to `Steam/steamapps/common/Half-Life 2/___/maps/`. Fill in the blank with which game you want to copy maps for:
 * **hl2** for Half-Life 2
