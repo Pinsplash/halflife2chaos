@@ -1,5 +1,7 @@
 # Half-Life 2 Chaos
-Download from here: https://github.com/Pinsplash/halflife2chaos/releases  
+
+## Download from here
+https://github.com/Pinsplash/halflife2chaos/releases  
 
 ## Installation
 
