@@ -6,7 +6,7 @@ Put the `hl2chaos` folder into `Steam/steamapps/sourcemods/`. The path to `gamei
 
 When running, you will be prompted to download `Source SDK Base 2013 Singleplayer` if you don't have it already. This is normal. Download it, then right click on it and go to `Properties...`, `BETAS`, and change the dropdown from `None` to `upcoming - upcoming`. Changing this setting will prevent immediate crashes.
 
-For Episode One/Two, you must copy the map (.bsp) files from your installation of Episode One/Two. The mod may attempt to load maps without this step, but there will be issues. To do this go to `Steam/steamapps/common/Half-Life 2/___/maps/`. Fill in the blank with which game you want to copy maps for:
+You must copy the map (.bsp) files from your installation of Half-Life 2/Episode One/Two. The mod may attempt to load maps without this step, but there will be issues. To do this go to `Steam/steamapps/common/Half-Life 2/___/maps/`. Fill in the blank with which game you want to copy maps for:
 * **hl2** for Half-Life 2
 * **episodic** for Episode One
 * **ep2** for Episode Two
