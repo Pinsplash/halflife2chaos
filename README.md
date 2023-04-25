@@ -1,17 +1,24 @@
-# Half-Life 2 Chaos—Download from here
-https://github.com/Pinsplash/halflife2chaos/releases
+# Half-Life 2 Chaos
 
-## Installation
-Put the `hl2chaos` folder into `Steam/steamapps/sourcemods/`. The path to `gameinfo.txt` should be `Steam/steamapps/sourcemods/hl2chaos/gameinfo.txt`. Do the same with the `ep1chaos` and `ep2chaos` folders if you wish to play Chaos in Episode One/Two. In all places in this guide, replace "hl2chaos" with "ep1chaos" or "ep2chaos" if using Episode One/Two. Restart Steam for the mod(s) to appear in your library.
+## Installing a binary release
+1. Install `Source SDK Base 2013 Singleplayer` from Steam.
+1. Switch SDK to upcoming beta. Press right click -> `Properties...` -> `Betas` and change the dropdown `None` to `upcoming - upcoming`. Changing this setting will prevent immediate crashes.
+1. Download latest `hl2c.zip` file from [releases](https://github.com/Pinsplash/halflife2chaos/releases).
+1. Extract `hl2chaos` from the dowloaded zip file into `Steam/steamapps/sourcemods/`.
 
-When running, you will be prompted to download `Source SDK Base 2013 Singleplayer` if you don't have it already. This is normal. Download it, then right click on it and go to `Properties...`, `BETAS`, and change the dropdown from `None` to `upcoming - upcoming`. Changing this setting will prevent immediate crashes.
+    The final directory tree should look like this: `Steam/steamapps/sourcemods/hl2chaos/gameinfo.txt`.
 
-You must copy the map (.bsp) files from your installation of Half-Life 2/Episode One/Two. The mod may attempt to load maps without this step, but there will be issues. To do this go to `Steam/steamapps/common/Half-Life 2/___/maps/`. Fill in the blank with which game you want to copy maps for:
-* **hl2** for Half-Life 2
-* **episodic** for Episode One
-* **ep2** for Episode Two
+    Do the same for `ep1chaos` and `ep2chaos` if you want to play Chaos in Half-Life 2: Episode One/Two.
+1. Restart Steam for the mod(s) to appear in your library.
+1. Copy map (`.bsp`) files from `Steam/steamapps/common/Half-Life 2/___/maps/` into `Steam/steamapps/sourcemods/***/maps/`.
 
-Copy the map files and paste them in `Steam/steamapps/sourcemods/hl2chaos/maps/`. Maps from mods (and Lost Coast) can also be used if you wish, though some things may not function correctly and additional original content (like textures and models) will need to be copied as well.
+    In place of `___` and `***` you will want to fill:
+    * `hl2` and `hl2chaos` for Half-Life 2
+    * `episodic` and `ep1chaos` for Half-Life 2: Episode One
+    * `ep2` and `ep2chaos` for Half-Life 2: Episode Two
+
+    Maps from mods (and Lost Coast) can also be used if you wish, though some things may not function correctly and additional original content (like textures and models) will need to be copied as well
+
 
 ## Building from source for Linux
 No build enviroment setup required.
