@@ -1740,7 +1740,13 @@ void CBaseEntity::FireBullets( const FireBulletsInfo_t &info )
 		//VectorAngles(vecEnd, angAiming);
 		if (chaos_replace_bullets_with_grenades.GetBool())
 		{
-			Fraggrenade_Create(info.m_vecSrc, vec3_angle, vecDir * 1200, AngularImpulse(600, random->RandomInt(-1200, 1200), 0), pAttacker, 3, false);
+			float flForceScale = 80;
+			float flForceFracBoost = 3;
+			float flForce = max(pAmmoDef->NPCDamage(info.m_iAmmoType), max(pAmmoDef->PlrDamage(info.m_iAmmoType), max(info.m_iPlayerDamage, info.m_flDamage))) * flForceScale;
+			//Msg("%0.1f * %0.1f = %0.1f\n", flForce / flForceScale, flForceScale, flForce);
+			flForce *= flForceFracBoost;
+			//Msg("* %0.1f = %0.1f\n", flForceFracBoost, flForce);
+			Fraggrenade_Create(info.m_vecSrc, vec3_angle, vecDir * flForce, AngularImpulse(600, random->RandomInt(-1200, 1200), 0), pAttacker, 3, false);
 			iSeed++;
 			continue;
 		}
