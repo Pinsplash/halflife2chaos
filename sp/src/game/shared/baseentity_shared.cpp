@@ -1953,16 +1953,16 @@ void CBaseEntity::FireBullets( const FireBulletsInfo_t &info )
 
 #ifdef GAME_DLL
 
-	ApplyMultiDamage();
+	if (!chaos_replace_bullets_with_grenades.GetBool())//if grenade guns is on, no real "attack" has actually happened yet, so all of this code would make no sense
+	{
+		ApplyMultiDamage();
 
-	if ( IsPlayer() && flCumulativeDamage > 0.0f )
-	{
-		CBasePlayer *pPlayer = static_cast< CBasePlayer * >( this );
-		CTakeDamageInfo dmgInfo( this, pAttacker, flCumulativeDamage, nDamageType );
-		gamestats->Event_WeaponHit( pPlayer, info.m_bPrimaryAttack, pPlayer->GetActiveWeapon()->GetClassname(), dmgInfo );
-	}
-	if (!chaos_replace_bullets_with_grenades.GetBool())//if grenade guns is on, the bullet trace never actually happened, so tr.endpos is just the origin
-	{
+		if (IsPlayer() && flCumulativeDamage > 0.0f)
+		{
+			CBasePlayer *pPlayer = static_cast<CBasePlayer *>(this);
+			CTakeDamageInfo dmgInfo(this, pAttacker, flCumulativeDamage, nDamageType);
+			gamestats->Event_WeaponHit(pPlayer, info.m_bPrimaryAttack, pPlayer->GetActiveWeapon()->GetClassname(), dmgInfo);
+		}
 		if (chaos_bullet_teleport.GetBool())
 		{
 			if (IsCombatCharacter())

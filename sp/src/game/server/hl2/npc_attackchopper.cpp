@@ -3571,6 +3571,7 @@ void CNPC_AttackHelicopter::TraceAttack( const CTakeDamageInfo &info, const Vect
 	// TraceAttack() as a means for delivering blast damage. Usually when the explosive penetrates
 	// the target. (RPG missiles do this sometimes).
 	if ( ( info.GetDamageType() & DMG_AIRBOAT ) || 
+		( info.GetDamageType() & DMG_BLAST) ||
 		 ( info.GetInflictor()->Classify() == CLASS_MISSILE ) || 
 		 ( info.GetAttacker()->Classify() == CLASS_MISSILE ) )
 	{
@@ -3589,6 +3590,7 @@ int CNPC_AttackHelicopter::OnTakeDamage( const CTakeDamageInfo &info )
 	if( info.GetInflictor() != this )
 	{
 		if ( ( ( info.GetDamageType() & DMG_AIRBOAT ) == 0 ) && 
+			((info.GetDamageType() & DMG_BLAST) == 0) &&
 			( info.GetInflictor()->Classify() != CLASS_MISSILE ) && 
 			( info.GetAttacker()->Classify() != CLASS_MISSILE ) )
 			return 0;
@@ -3625,7 +3627,18 @@ int CNPC_AttackHelicopter::OnTakeDamage( const CTakeDamageInfo &info )
 
 		return BaseClass::OnTakeDamage( fudgedInfo );
 	}
+	//all other explosions do 1/5 of max health in chaos. intended to make it easier to fight helicopters when grenade guns is on.
+	//this will affect other things like the RPG, but that never comes up in regular gameplay, pretty sure
+	if (info.GetDamageType() & DMG_BLAST)
+	{
+		CTakeDamageInfo fudgedInfo = info;
+		float damage = GetMaxHealth() / 5;
+		damage = ceilf(damage);
+		fudgedInfo.SetDamage(damage);
+		fudgedInfo.SetMaxDamage(damage);
 
+		return BaseClass::OnTakeDamage(fudgedInfo);
+	}
 	return BaseClass::OnTakeDamage( info );
 }
 
