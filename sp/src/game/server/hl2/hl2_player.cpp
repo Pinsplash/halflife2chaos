@@ -5207,9 +5207,8 @@ bool CChaosEffect::CheckEffectContext()
 			return false;
 
 	//You Teleport is bad specifically on these maps
-	//ep2_outland_12: striders just teleport straight to the silo, which is fucking hilarious, but not good
 	if (m_nID == EFFECT_NPC_TELEPORT)
-		if (!Q_strcmp(pMapName, "ep2_outland_12"))
+		if (!Q_strcmp(pMapName, "d1_trainstation_01") || !Q_strcmp(pMapName, "ep2_outland_12"))
 			return false;//bad map
 
 	//avoid maps that need striders or other NPCs to not teleport to god-knows-where
@@ -5274,20 +5273,12 @@ bool CChaosEffect::CheckEffectContext()
 			return false;//bad map
 
 	//could distrupt cutscenes
-	if (m_nID == EFFECT_NPC_HATE)
+	if (m_nID == EFFECT_NPC_HATE || m_nID == EFFECT_NPC_FEAR)
 		if (!Q_strcmp(pMapName, "d1_trainstation_04") || !Q_strcmp(pMapName, "d1_canals_03") || !Q_strcmp(pMapName, "d1_eli_01")
 			|| !Q_strcmp(pMapName, "d2_coast_10")
-			|| !Q_strcmp(pMapName, "d3_breen_01"))
-			return false;//bad map
-
-	//could distrupt cutscenes
-	if (m_nID == EFFECT_NPC_FEAR)
-		if (!Q_strcmp(pMapName, ""))
-			return false;//bad map
-
-	//could distrupt cutscenes
-	if (m_nID == EFFECT_NPC_TELEPORT)
-		if (!Q_strcmp(pMapName, "d1_trainstation_01"))
+			|| !Q_strcmp(pMapName, "d3_breen_01")
+			|| !Q_strcmp(pMapName, "ep1_citadel_03") || !Q_strcmp(pMapName, "ep1_c17_02b")
+			|| !Q_strcmp(pMapName, "ep2_outland_01") || !Q_strcmp(pMapName, "ep2_outland_07") || !Q_strcmp(pMapName, "ep2_outland_08") || !Q_strcmp(pMapName, "ep2_outland_10a"))
 			return false;//bad map
 
 	if (m_nContext == EC_NONE)
@@ -6699,6 +6690,28 @@ void CEColors::MaintainEffect()
 		pEnt = gEntList.NextEnt(pEnt);
 	}
 }
+
+//is the given character one that the game will force you to keep alive
+bool IsPlayerAlly(CBaseCombatCharacter *pCharacter)
+{
+	if (pCharacter->m_bChaosSpawned)
+		return false;
+		
+	if (pCharacter->IsNPC())
+	{
+		if (pCharacter->GetMaxHealth() < 10)//talkers (max health of 8 for all of them apparently?)
+			return true;
+		if (pCharacter->MyNPCPointer()->IsPlayerAlly())//fighters
+		{
+			//damage filter pertains to some invulnerable citizens in some maps
+			if (pCharacter->m_hDamageFilter)
+				return true;
+			if (pCharacter->ClassMatches("npc_a*") || pCharacter->ClassMatches("npc_b*") || pCharacter->ClassMatches("npc_v*"))
+				return true;
+		}
+	}
+	return false;
+}
 void CENPCRels::DoNPCRels(int disposition, bool bRevert)
 {
 	const int MAX_HANDLED = 512;
@@ -6746,20 +6759,23 @@ void CENPCRels::DoNPCRels(int disposition, bool bRevert)
 			{
 				//don't make vital allies like alyx and barney hostile to player
 				//you can't just kill them!
-				if (pTarget->IsPlayer() && pSubject->IsNPC() && pSubject->MyNPCPointer()->IsPlayerAlly())
-				{
-					CAI_PlayerAlly *pSubjectAlly = static_cast<CAI_PlayerAlly*>(pSubject);
-					if (!pSubjectAlly->m_bChaosSpawned && (pSubjectAlly->ClassMatches("npc_a*") || pSubjectAlly->ClassMatches("npc_b*") || pSubjectAlly->ClassMatches("npc_v*")))
-						continue;
-				}
+				bool bTargetIsPlayer = pTarget->IsPlayer();
+				bool bSubjectIsAlly = IsPlayerAlly(pSubject);
+				if (bTargetIsPlayer && bSubjectIsAlly)
+					continue;
+
 				//check other way too so player can't kill them by friendly fire cause that's just dumb
-				if (pSubject->IsPlayer() && pTarget->IsNPC() && pTarget->MyNPCPointer()->IsPlayerAlly())
-				{
-					CAI_PlayerAlly *pTargetAlly = static_cast<CAI_PlayerAlly*>(pTarget);
-					if (!pTargetAlly->m_bChaosSpawned && (pTargetAlly->ClassMatches("npc_a*") || pTargetAlly->ClassMatches("npc_b*") || pTargetAlly->ClassMatches("npc_v*")))
-						continue;
-				}
-				if (pTarget->ClassMatches("npc_cra*"))//don't try to attack a crane driver, you're not winning
+				bool bSubjectIsPlayer = pSubject->IsPlayer();
+				bool bTargetIsAlly = IsPlayerAlly(pTarget);
+				if (bSubjectIsPlayer && bTargetIsAlly)
+					continue;
+
+				//no fighting amongst themselves either
+				if (bSubjectIsAlly && bTargetIsAlly)
+					continue;
+
+				//don't try to attack a crane driver, you're not winning
+				if (pTarget->ClassMatches("npc_cra*"))
 					pSubject->AddEntityRelationship(pTarget, D_NU, 100);
 			}
 
