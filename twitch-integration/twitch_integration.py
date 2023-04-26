@@ -2,10 +2,12 @@ import threading
 from collections import Counter
 from typing import Optional
 
+from twitchAPI.oauth import refresh_access_token
 from twitchAPI import Twitch
 from twitchAPI.oauth import UserAuthenticator
-from twitchAPI.types import AuthScope, ChatEvent
+from twitchAPI.types import AuthScope, ChatEvent, TwitchAPIException
 from twitchAPI.chat import Chat, EventData, ChatMessage
+# noinspection PyUnresolvedReferences
 import obspython as obs
 from rcon.source import rcon
 from rcon.exceptions import WrongPassword
@@ -14,6 +16,7 @@ import asyncio
 APP_ID = ''
 APP_SECRET = ''
 USER_SCOPE = [AuthScope.CHAT_READ]
+REFRESH_TOKEN = ''
 TARGET_CHANNEL = ''
 SOURCE_NAME = ''
 RCON_HOST = "127.0.0.1"
@@ -107,12 +110,21 @@ poll_task: Optional[asyncio.Task] = None
 
 
 async def try_starting_twitch():
-    global chat, twitch
+    global chat, twitch, REFRESH_TOKEN
     if APP_ID != "" and APP_SECRET != "" and twitch is None:
         twitch = await Twitch(APP_ID, APP_SECRET)
-        auth = UserAuthenticator(twitch, USER_SCOPE)
-        token, refresh_token = await auth.authenticate()
-        await twitch.set_user_authentication(token, USER_SCOPE, refresh_token)
+        token = None
+        if REFRESH_TOKEN != "":
+            print("refreshing token")
+            try:
+                token, REFRESH_TOKEN = await refresh_access_token(REFRESH_TOKEN, APP_ID, APP_SECRET)
+            except TwitchAPIException as e:
+                print("token refresh failed", e)
+        if token is None:
+            print("querying new token")
+            auth = UserAuthenticator(twitch, USER_SCOPE)
+            token, REFRESH_TOKEN = await auth.authenticate()
+        await twitch.set_user_authentication(token, USER_SCOPE, REFRESH_TOKEN)
 
         chat = await Chat(twitch)
         chat.register_event(ChatEvent.READY, on_ready)
@@ -138,7 +150,9 @@ async def shutdown_twitch():
 
 async def startup():
     global poll_task
-    await asyncio.sleep(1)  # since we're running in a thread, we need to wait for obs to set our properties.
+    # since we're running in a thread, we need to wait for obs to set our properties.
+    # TODO: change this to a future or some other kind of awaitable?
+    await asyncio.sleep(1)
     loop = asyncio.get_event_loop()
     poll_task = loop.create_task(game_loop())
     await try_starting_twitch()
@@ -246,14 +260,20 @@ def script_update(settings):
     obs.obs_data_array_release(obs_votes_keywords)
     print("data updated")
 
+
+def script_save(settings):
+    obs.obs_data_set_string(settings, "refresh_token", REFRESH_TOKEN)
+
 # https://gist.github.com/serializingme/5c1a6fd6c7ea58af77c7b80579737c5a
 
 def script_load(settings):
+    global _LOOP, _THREAD, REFRESH_TOKEN
+    REFRESH_TOKEN = obs.obs_data_get_string(settings, "refresh_token")
+
     # let's be nice, and only call the obs's methods from its own thread.
     # TODO: call this every frame because why not?
     obs.timer_add(update_source, 1000)
 
-    global _LOOP, _THREAD
     _LOOP = asyncio.new_event_loop()
 
     def async_thread():
