@@ -1,24 +1,17 @@
 # Half-Life 2 Chaos
-
-## Installing a binary release
+## Installing
 1. Install `Source SDK Base 2013 Singleplayer` from Steam.
-1. Switch SDK to upcoming beta. Press right click -> `Properties...` -> `Betas` and change the dropdown `None` to `upcoming - upcoming`. Changing this setting will prevent immediate crashes.
-1. Download latest `hl2c.zip` file from [releases](https://github.com/Pinsplash/halflife2chaos/releases).
-1. Extract `hl2chaos` from the dowloaded zip file into `Steam/steamapps/sourcemods/`.
-
-    The final directory tree should look like this: `Steam/steamapps/sourcemods/hl2chaos/gameinfo.txt`.
-
-    Do the same for `ep1chaos` and `ep2chaos` if you want to play Chaos in Half-Life 2: Episode One/Two.
-1. Restart Steam for the mod(s) to appear in your library.
-1. Copy map (`.bsp`) files from `Steam/steamapps/common/Half-Life 2/___/maps/` into `Steam/steamapps/sourcemods/***/maps/`.
-
+2. Switch the SDK to the 'upcoming' beta. Press right click -> `Properties...` -> `Betas` and change the dropdown `None` to `upcoming - upcoming`. Changing this setting will prevent immediate crashes.
+3. Download latest `hl2c.zip` file from [releases](https://github.com/Pinsplash/halflife2chaos/releases).
+4. Extract `hl2chaos` from the dowloaded zip file into `Steam/steamapps/sourcemods/`. The path to gameinfo.txt should look like this: `Steam/steamapps/sourcemods/hl2chaos/gameinfo.txt`. Do the same for `ep1chaos` and `ep2chaos` if you want to play Chaos in Half-Life 2: Episode One/Two.
+5. Restart Steam for the mod(s) to appear in your library.
+6. Copy the map (`.bsp`) files from `Steam/steamapps/common/Half-Life 2/___/maps/` into `Steam/steamapps/sourcemods/***/maps/`.
     In place of `___` and `***` you will want to fill:
     * `hl2` and `hl2chaos` for Half-Life 2
     * `episodic` and `ep1chaos` for Half-Life 2: Episode One
     * `ep2` and `ep2chaos` for Half-Life 2: Episode Two
 
-    Maps from mods (and Lost Coast) can also be used if you wish, though some things may not function correctly and additional original content (like textures and models) will need to be copied as well
-
+Maps from mods (and Lost Coast) can also be used if you wish, though some things may not function correctly and additional original content (like textures and models) will need to be copied as well
 
 ## Building from source for Linux
 No build enviroment setup required.
@@ -31,6 +24,29 @@ No build enviroment setup required.
 
 Compiling for the episodes is an excercise for the reader. (Should be similar but with `mod_episodic`, `client_episodic` and `server_episodic`.)
 
+# Effect Voting on Twitch
+If you stream on Twitch, you can make it so that viewers can vote for effects by sending chat messages. These instructions are specifically for Windows. If you're on Linux, you can figure it out.
+1. Download and install [Python](https://www.python.org/) 3.10.11 from [here](https://www.python.org/downloads/release/python-31011/).
+2. Download the code. This is the green button that says "code" at the top. Click "Download ZIP" unless you want to use GitHub Desktop for some reason.
+3. Extract the contents to any place on your computer. The only part you need are the files in the `twitch-integration` folder.
+4. Press the Windows logo on your keyboard and R at the same time. It should bring up a small window named 'Run'. Type `cmd` in the text box and then click 'OK'. It should bring up a black text box.
+5. Select the extracted requirements.txt in File Explorer and view the file's properties. Copy the file path next to "Location".
+6. In cmd.exe, type `cd` followed by a space, then paste the file path and press Enter.
+7. Now type `pip install -r requirements.txt`. It should do a bunch of stuff.
+8. Go to [twitch dev apps](https://dev.twitch.tv/console/apps) and register a new app.
+9. The name can be anything. In "OAuth Redirect URLs" put `http://localhost:17563`. The Category should be Game Integration.
+10. Press 'Manage' on your newly created app.
+11. Copy 'Client ID', create a new secret, and copy 'Client Secret'. Both of these strings will need to be remembered.
+12. In OBS, create a new text source.
+13. Open Tools -> Scripts -> Python Settings. Change the Install Path to the folder where Python 3.10 is installed. If you allowed it to install to it's default place, this should be `C:/Users/___/AppData/Local/Programs/Python/Python310`. Replace `___` with your Windows user name. You can find what the name is by simply looking in `C:/Users`. If set correctly, it should say "Loaded Python Version: 3.10".
+14. Click on "Scripts", click the `+` button, and select `twitch_integration.py` from the `twitch-integration` folder you extracted before.
+15. Fill in 'App id' with the Client ID from Twitch and 'App secret' with the Client Secret from Twitch. Set 'Target channel' to your channel (i.e `acuifex` for `twitch.tv/acuifex`). Set 'Text Source' to your newly created text source's name. Set 'RCON password' to a password of your choice.
+16. Press 'Reconnect to twitch' if you didn't automatically connect.
+17. The script should open Twitch authorization page. Allow the app to do things.
+18. In Steam, right click on the mod and then click "Properties...". In 'LAUNCH OPTIONS', put `+developer 0 -usercon +ip 127.0.0.1 +rcon_password ___ +net_start +chaos_vote_enable 1`. Replace `___` with the RCON password that you entered in OBS. The `+developer 0` part is necessary for some reason, despite not seeming like it should be. You will also have to do this in Ep1 & 2 chaos if you want to use Twitch voting in them.
+
+It should work now. If it doesn't, 'Script Log' button in OBS might have useful info. You can test voting commands by typing in your Twitch chat, even if you're not streaming.
+
 ## Tips
 * If issues arise while playing, try `chaos_restart` in the console. This should set everything back to normal and restart the map.
 * To modify things about Chaos like effect duration and probability, edit `hl2chaos/cfg/autoexec.cfg`.
@@ -38,7 +54,7 @@ Compiling for the episodes is an excercise for the reader. (Should be similar bu
 * Want a specific effect? Use `chaos_test_effect` followed by a number. You can get any effect's number through `chaos_print`.
 * Any CFG files you change must have their change reflected in the same file in all three mods if you wish for the change to apply in all of them. You can simply copy the file into the other two mod folders and replace the old version.
 * Saving often will help you progress faster.
-* If necessary, you can leave important NPCs behind. They will teleport into the next level with you.
+* If necessary, you can leave important NPCs behind, except Alyx in the driving parts of Episode Two. They will teleport into the next level with you.
 * Enemy NPCs spawned by Chaos are gone forever once killed and remain wounded forever once hurt (unless they regenerate health), even if you reload a save, so don't give up on them.
 * Fast weapon switch is best left off to easily know which weapons you have.
 * Quickclip will not disable weapon switching if enabled by Chaos.
