@@ -1741,7 +1741,7 @@ void CBaseEntity::FireBullets( const FireBulletsInfo_t &info )
 		if (chaos_replace_bullets_with_grenades.GetBool())
 		{
 			Fraggrenade_Create(info.m_vecSrc, vec3_angle, vecDir * 1200, AngularImpulse(600, random->RandomInt(-1200, 1200), 0), pAttacker, 3, false);
-			//NDebugOverlay::Line(info.m_vecSrc, vecEnd, 255, 255, 255, false, .1);
+			iSeed++;
 			continue;
 		}
 #endif
