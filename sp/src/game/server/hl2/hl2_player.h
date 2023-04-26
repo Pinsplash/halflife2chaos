@@ -82,6 +82,7 @@ class CHL2_Player : public CBasePlayer
 {
 public:
 	DECLARE_CLASS(CHL2_Player, CBasePlayer);
+	void ResetVotes();
 	int PickEffect(int iWeightSum);
 	void StartGivenEffect(int nID);
 	void StopGivenEffect(int nID);

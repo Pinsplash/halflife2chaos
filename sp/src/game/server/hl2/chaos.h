@@ -217,6 +217,9 @@ CUtlVector<int>				g_iTerminated;//list of chaos ids to NOT restore from txt. us
 CUtlVector<CChaosStoredEnt *> g_PersistEnts;
 float						g_flEffectThinkRem;
 float						g_flNextEffectRem = -1;
+int							g_arriVoteEffects[4];
+int							g_arriVotes[4];
+int							g_iVoteNumber = 0; // acts as a unique number for the external client
 CChaosStoredEnt *StoreEnt(CBaseEntity *pEnt);
 CBaseEntity *RetrieveStoredEnt(CChaosStoredEnt *pStoredEnt, bool bPersist);
 bool						g_bGoBackLevel = false;

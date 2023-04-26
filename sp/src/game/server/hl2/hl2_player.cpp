@@ -160,6 +160,7 @@ ConVar chaos_ignore_activeness("chaos_ignore_activeness", "0");
 ConVar chaos_ignore_group("chaos_ignore_group", "0");
 ConVar chaos_ignore_context("chaos_ignore_context", "0");
 ConVar chaos_print_rng("chaos_print_rng", "0");
+ConVar chaos_vote_enable("chaos_vote_enable", "0");
 
 void RandomizeReadiness(CBaseEntity *pNPC)
 {
@@ -409,6 +410,68 @@ CON_COMMAND(chaos_test_effect, "turn on a specific effect")
 			}
 		}
 	}
+}
+CON_COMMAND(chaos_vote_internal_poll, "used by an external client. returns vote number and possible choises for this vote")
+{
+	ConMsg("%d;%s;%s;%s;%s",
+		g_iVoteNumber,
+		STRING(g_ChaosEffects[g_arriVoteEffects[0]]->m_strHudName),
+		STRING(g_ChaosEffects[g_arriVoteEffects[1]]->m_strHudName),
+		STRING(g_ChaosEffects[g_arriVoteEffects[2]]->m_strHudName),
+		STRING(g_ChaosEffects[g_arriVoteEffects[3]]->m_strHudName)
+	);
+
+}
+CON_COMMAND(chaos_vote_internal_set, "used by an external client. sets current votes")
+{
+	// TODO: assumes vote number and 4 choices.
+	if (args.ArgC() < 6)
+		return;
+
+	int givenVoteNumber = atoi(args[1]);
+
+	if (givenVoteNumber != g_iVoteNumber)
+		return;
+
+	for (int i = 0; i < 4; ++i)
+	{
+		g_arriVotes[i] = atoi(args[i+2]);
+	}
+}
+CON_COMMAND(chaos_vote_debug, "prints info about the votes")
+{
+	ConMsg("vote#: %d, votes: %d;%d;%d;%d, effects: %s;%s;%s;%s\n", 
+		g_iVoteNumber,
+		g_arriVotes[0],
+		g_arriVotes[1],
+		g_arriVotes[2],
+		g_arriVotes[3],
+		STRING(g_ChaosEffects[g_arriVoteEffects[0]]->m_strHudName),
+		STRING(g_ChaosEffects[g_arriVoteEffects[1]]->m_strHudName),
+		STRING(g_ChaosEffects[g_arriVoteEffects[2]]->m_strHudName),
+		STRING(g_ChaosEffects[g_arriVoteEffects[3]]->m_strHudName)
+	);
+}
+CON_COMMAND(chaos_vote_reset, "choses new effects and resets votes")
+{
+	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+
+	if (!pPlayer)
+		return;
+
+	CHL2_Player *pHL2Player = static_cast<CHL2_Player*>(pPlayer);
+	// TODO: do we really need this null check? i feel like the cast above is supposed to be dynamic_cast
+	if (!pHL2Player)
+		return;
+
+	pHL2Player->ResetVotes();
+	ConMsg("%d;%s;%s;%s;%s\n",
+		g_iVoteNumber,
+		STRING(g_ChaosEffects[g_arriVoteEffects[0]]->m_strHudName),
+		STRING(g_ChaosEffects[g_arriVoteEffects[1]]->m_strHudName),
+		STRING(g_ChaosEffects[g_arriVoteEffects[2]]->m_strHudName),
+		STRING(g_ChaosEffects[g_arriVoteEffects[3]]->m_strHudName)
+	);
 }
 CON_COMMAND(chaos_reset, "resets stuff like sv_gravity. executes chaos_restart.cfg.")
 {
@@ -1015,11 +1078,51 @@ void CHL2_Player::Event_PreSaveGameLoaded(char const *pSaveName, bool bInGame)
 	engine->ClientCommand(engine->PEntityOfEntIndex(1), "r_lockpvs 0; exec portalsopenall\n");
 }
 
+void CHL2_Player::ResetVotes() 
+{
+	g_iVoteNumber++;
+	int iWeightSum = 0;
+	for (int i = 1; i < NUM_EFFECTS; i++)
+	{
+		if (chaos_print_rng.GetBool()) Msg("i %i, %s %i += %i\n", i, STRING(g_ChaosEffects[i]->m_strGeneralName), iWeightSum, g_ChaosEffects[i]->m_iCurrentWeight);
+		iWeightSum += g_ChaosEffects[i]->m_iCurrentWeight;
+		//recover weight for recent effects
+		//add a fraction of the maximum weight on every interval
+		if (!EffectOrGroupAlreadyActive(i) && g_ChaosEffects[i]->m_iCurrentWeight < g_ChaosEffects[i]->m_iMaxWeight)
+			g_ChaosEffects[i]->m_iCurrentWeight = min(g_ChaosEffects[i]->m_iCurrentWeight + g_ChaosEffects[i]->m_iMaxWeight * 0.2, g_ChaosEffects[i]->m_iMaxWeight);
+	}
+	for (int i = 0; i < 4; i++)
+	{
+		// TODO: This likely can pick the same effect multiple times.
+		// I don't wanna reverse engineer the picking algorithm to avoid doing that.
+		g_arriVoteEffects[i] = PickEffect(iWeightSum);
+		g_arriVotes[i] = 0;
+	}
+}
+
+int GetVoteWinnerEffect() 
+{
+	int bestVotes = -1;
+	int bestEffect = 0;
+	for (int i = 0; i < 4; i++)
+	{
+		if (g_arriVotes[i] > bestVotes) {
+			bestVotes = g_arriVotes[i];
+			bestEffect = g_arriVoteEffects[i];
+		}
+	}
+	return bestEffect;
+}
+
 //-----------------------------------------------------------------------------
 //Purpose: Allow pre-frame adjustments on the player
 //-----------------------------------------------------------------------------
 void CHL2_Player::PreThink(void)
 {
+	if (g_arriVoteEffects[0] == 0) 
+	{ // if haven't been set yet...
+		ResetVotes();
+	}
 	if (gpGlobals->frametime != 0)//don't do anything if game is paused
 	{
 		if (chaos.GetBool())
@@ -1049,22 +1152,32 @@ void CHL2_Player::PreThink(void)
 			{
 				engine->ClientCommand(engine->PEntityOfEntIndex(1), "sv_cheats 1");//always force cheats on to ensure everything works
 				GetUnstuck(500, true);
-				int iWeightSum = 0;
-				for (int i = 1; i < NUM_EFFECTS; i++)
-				{
-					if (chaos_print_rng.GetBool()) Msg("i %i, %s %i += %i\n", i, STRING(g_ChaosEffects[i]->m_strGeneralName), iWeightSum, g_ChaosEffects[i]->m_iCurrentWeight);
-					iWeightSum += g_ChaosEffects[i]->m_iCurrentWeight;
-					//recover weight for recent effects
-					//add a fraction of the maximum weight on every interval
-					if (!EffectOrGroupAlreadyActive(i) && g_ChaosEffects[i]->m_iCurrentWeight < g_ChaosEffects[i]->m_iMaxWeight)
-						g_ChaosEffects[i]->m_iCurrentWeight = min(g_ChaosEffects[i]->m_iCurrentWeight + g_ChaosEffects[i]->m_iMaxWeight * 0.2, g_ChaosEffects[i]->m_iMaxWeight);
+				int nID = 0;
+				if (!chaos_vote_enable.GetBool()) {
+					int iWeightSum = 0;
+					for (int i = 1; i < NUM_EFFECTS; i++)
+					{
+						if (chaos_print_rng.GetBool()) Msg("i %i, %s %i += %i\n", i, STRING(g_ChaosEffects[i]->m_strGeneralName), iWeightSum, g_ChaosEffects[i]->m_iCurrentWeight);
+						iWeightSum += g_ChaosEffects[i]->m_iCurrentWeight;
+						//recover weight for recent effects
+						//add a fraction of the maximum weight on every interval
+						if (!EffectOrGroupAlreadyActive(i) && g_ChaosEffects[i]->m_iCurrentWeight < g_ChaosEffects[i]->m_iMaxWeight)
+							g_ChaosEffects[i]->m_iCurrentWeight = min(g_ChaosEffects[i]->m_iCurrentWeight + g_ChaosEffects[i]->m_iMaxWeight * 0.2, g_ChaosEffects[i]->m_iMaxWeight);
+					}
+					nID = PickEffect(iWeightSum);
+
+				} else {
+					nID = GetVoteWinnerEffect();
 				}
-				int nID = PickEffect(iWeightSum);
 				g_flEffectThinkRem = 0;
 				//send to HUD
 				DoChaosHUDBar();
+
 				//start effect
 				StartGivenEffect(nID);
+				if (chaos_vote_enable.GetBool()) {
+					ResetVotes();
+				}
 			}
 		}
 		else if (chaos_instant_off.GetBool())
