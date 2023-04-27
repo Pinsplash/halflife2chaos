@@ -1532,10 +1532,10 @@ public:
 	bool					UseStepSimulationNetworkAngles( const QAngle **out_a );
 
 public:
-	void GetUnstuck(float flMaxDist, bool bAllowNodeTeleport);
-	bool FindPassableSpace(const Vector direction, float step, Vector& oldorigin);
-	bool FindOffsetSpot(Vector forward, int FFlip, Vector right, int RFlip, Vector up, int UFlip, Vector& vecGoodSpot, int flDist);
-	void PutAtNearestNode();
+	bool GetUnstuck(float flMaxDist, bool bAllowNodeTeleport, bool bNoDebug = false);
+	bool FindPassableSpace(const Vector direction, float step, Vector& oldorigin, bool bSkipPreTrace, bool bNoDebug);
+	bool FindOffsetSpot(Vector forward, int FFlip, Vector right, int RFlip, Vector up, int UFlip, Vector& vecGoodSpot, int flDist, bool bSkipPreTrace, bool bNoDebug);
+	bool PutAtNearestNode(float flMaxDist, bool bNoDebug);
 	// Add a discontinuity to a step
 	bool					AddStepDiscontinuity( float flTime, const Vector &vecOrigin, const QAngle &vecAngles );
 	int						GetFirstThinkTick();	// get first tick thinking on any context

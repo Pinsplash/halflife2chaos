@@ -1413,7 +1413,8 @@ CBaseEntity *CreateServerRagdoll( CBaseAnimating *pAnimating, int forceBone, con
 		{
 			int physBone = pAnimating->GetPhysicsBone( pAnimating->GetHitboxBone( boxList[i] ) );
 			IPhysicsObject *pPhysics = pRagInfo->list[physBone].pObject;
-			pPhysics->ApplyForceCenter( info.GetDamageForce() * pPhysics->GetMass() * massScale );
+			if (pPhysics)//icky can have no phys objects in its ragdoll?
+				pPhysics->ApplyForceCenter( info.GetDamageForce() * pPhysics->GetMass() * massScale );
 		}
 	}
 	else

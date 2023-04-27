@@ -1416,7 +1416,7 @@ void CBaseEntity::PerformPush( float movetime )
 		{
 			// UNDONE: Any reason to want to call this twice before physics runs?
 			// If so, maybe just append to the list?
-			Assert( !GetDataObject( PHYSICSPUSHLIST ) );
+			//Assert( !GetDataObject( PHYSICSPUSHLIST ) );//sometimes this fires when phys_timescale 0, not currently known to cause any serious issue
 			physicspushlist_t *pList = (physicspushlist_t *)CreateDataObject( PHYSICSPUSHLIST );
 			if ( pList )
 			{

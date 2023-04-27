@@ -557,6 +557,10 @@ CON_COMMAND_F(chaos_group, "Creates a chaos group.", FCVAR_SERVER_CAN_EXECUTE)
 		Msg("Specify numbers to assign to group\n");
 	}
 }
+CON_COMMAND(getunstuck, "try to get unstuck right now")
+{
+	UTIL_GetLocalPlayer()->GetUnstuck(200, true);
+}
 Vector CHL2_Player::RotatedOffset(Vector vecOffset, bool bNoVertical)
 {
 	QAngle angEye = GetAbsAngles();
@@ -1151,7 +1155,8 @@ void CHL2_Player::PreThink(void)
 			if (g_flNextEffectRem <= 0 && !pl.deadflag)//don't start new effects when dead
 			{
 				engine->ClientCommand(engine->PEntityOfEntIndex(1), "sv_cheats 1");//always force cheats on to ensure everything works
-				GetUnstuck(500, true);
+				if (GetMoveType() != MOVETYPE_NOCLIP)
+					GetUnstuck(500, true);
 				int nID = 0;
 				if (!chaos_vote_enable.GetBool()) {
 					int iWeightSum = 0;
@@ -1238,6 +1243,16 @@ void CHL2_Player::PreThink(void)
 			MaintainEvils();
 			g_flEffectThinkRem = 1;
 		}
+	}
+	//if we're in a vehicle, we can't be drowning/breathing underwater no matter what
+	//this makes swim in air more manageable
+	//we don't keep this in CESwimInAir::FastThink because that only runs when the effect is active, so if the effect was on during a save, but off when loading, the game will still act like you're underwater
+	if (IsInAVehicle())
+	{
+		SetWaterLevel(WL_NotInWater);
+		SetPlayerUnderwater(false);
+		RemoveFlag(FL_INWATER);
+		RemoveFlag(FL_SWIM);
 	}
 	if ( player_showpredictedposition.GetBool() )
 	{
@@ -5203,7 +5218,7 @@ bool CChaosEffect::CheckEffectContext()
 
 	//potential softlock if clone npcs happens on some maps
 	if (m_nID == EFFECT_CLONE_NPCS)
-		if (!Q_strcmp(pMapName, "ep1_citadel_00") || !Q_strcmp(pMapName, "ep1_citadel_01"))
+		if (!Q_strcmp(pMapName, "d1_trainstation_01") || !Q_strcmp(pMapName, "d1_eli_02") || !Q_strcmp(pMapName, "ep1_citadel_00") || !Q_strcmp(pMapName, "ep1_citadel_01"))
 			return false;
 
 	//You Teleport is bad specifically on these maps
@@ -5267,7 +5282,8 @@ bool CChaosEffect::CheckEffectContext()
 
 	//Ran Out Of Glue can cause serious issues on these maps
 	if (m_nID == EFFECT_PHYS_CONVERT)
-		if (!Q_strcmp(pMapName, "d3_citadel_01")		|| !Q_strcmp(pMapName, "d3_citadel_02")		|| !Q_strcmp(pMapName, "d3_citadel_05")		|| !Q_strcmp(pMapName, "d3_breen_01")
+		if (!Q_strcmp(pMapName, "d1_canals_11")			|| !Q_strcmp(pMapName, "d1_eli_01")
+			||!Q_strcmp(pMapName, "d3_citadel_01")		|| !Q_strcmp(pMapName, "d3_citadel_02")		|| !Q_strcmp(pMapName, "d3_citadel_05")		|| !Q_strcmp(pMapName, "d3_breen_01")
 			|| !Q_strcmp(pMapName, "ep1_c17_00a")
 			|| !Q_strcmp(pMapName, "ep2_outland_01")	|| !Q_strcmp(pMapName, "ep2_outland_03")	|| !Q_strcmp(pMapName, "ep2_outland_11")	|| !Q_strcmp(pMapName, "ep2_outland_11b"))
 			return false;//bad map
@@ -5345,7 +5361,7 @@ bool CChaosEffect::CheckEffectContext()
 	//NO TELEPORT LIST LEAKED
 	if (m_nContext & EC_PLAYER_TELEPORT)
 		if (!Q_strcmp(pMapName, "d1_trainstation_01")	|| !Q_strcmp(pMapName, "d1_trainstation_04")|| !Q_strcmp(pMapName, "d1_trainstation_05")
-			|| !Q_strcmp(pMapName, "d1_canals_01")		|| !Q_strcmp(pMapName, "d1_canals_05")		|| !Q_strcmp(pMapName, "d1_canals_08")		|| !Q_strcmp(pMapName, "d1_canals_11")
+			|| !Q_strcmp(pMapName, "d1_canals_01")		|| !Q_strcmp(pMapName, "d1_canals_05")		|| !Q_strcmp(pMapName, "d1_canals_06")		|| !Q_strcmp(pMapName, "d1_canals_08")		|| !Q_strcmp(pMapName, "d1_canals_11")
 			|| !Q_strcmp(pMapName, "d1_eli_01")			|| !Q_strcmp(pMapName, "d1_eli_02")
 			|| !Q_strcmp(pMapName, "d1_town_02a")		|| !Q_strcmp(pMapName, "d1_town_05")
 			|| !Q_strcmp(pMapName, "d2_prison_06")		|| !Q_strcmp(pMapName, "d2_prison_08")
@@ -6429,7 +6445,7 @@ void CERandomNPC::MaintainEffect()
 void CELockVehicles::DoOnVehicles(CPropVehicleDriveable *pVehicle)
 {
 	variant_t emptyVariant;
-	if (m_flTimeRem < 1)
+	if (m_flTimeRem < 1 || !m_bActive)
 		pVehicle->AcceptInput("Unlock", pVehicle, pVehicle, emptyVariant, 0);
 	else
 		pVehicle->AcceptInput("Lock", pVehicle, pVehicle, emptyVariant, 0);
@@ -7559,8 +7575,6 @@ void CECloneNPCs::StartEffect()
 		CBaseEntity *pCloneNPC = RetrieveStoredEnt(&vNPCs[i], false);
 		if (pCloneNPC)
 		{
-			if (pCloneNPC->ClassMatches("npc_dog"))
-				pCloneNPC->SetSolid(SOLID_NONE);//saw an issue on eli 2 where dog would never be able to get into his spot in the airlock if the wrong dog was already there. the wrong dog is an asshole.
 			if (pCloneNPC->ClassMatches("npc_furniture"))
 				continue;//don't clone furniture's, bad stuff can happen
 			Vector vecOrigin = pCloneNPC->GetAbsOrigin();
@@ -7706,20 +7720,14 @@ void CESwimInAir::FastThink()
 {
 	//TODO: can we move this to MaintainEffect? it's just been here since creation.
 	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
-	if (pPlayer->IsInAVehicle())//count us as above water if in a vehicle. it already happens inconsistently, so might as well make it be consistent
-	{
-		pPlayer->SetWaterLevel(WL_NotInWater);
-		pPlayer->SetPlayerUnderwater(false);
-		pPlayer->RemoveFlag(FL_INWATER);
-		pPlayer->RemoveFlag(FL_SWIM);
-	}
-	else
+	if (!pPlayer->IsInAVehicle())
 	{
 		pPlayer->SetWaterLevel(WL_Eyes);
 		pPlayer->SetPlayerUnderwater(true);
 		pPlayer->AddFlag(FL_INWATER);
 		pPlayer->AddFlag(FL_SWIM);
 	}
+	//other half of this logic is in prethink
 }
 bool CESwimInAir::CheckStrike(const CTakeDamageInfo &info)
 {

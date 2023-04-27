@@ -1563,8 +1563,6 @@ void CChangeLevel::ChangeLevelNow( CBaseEntity *pActivator )
 	if ( m_bTouched )
 		return;
 
-	m_bTouched = true;
-
 	CBaseEntity *pPlayer = (pActivator && pActivator->IsPlayer()) ? pActivator : UTIL_GetLocalPlayer();
 
 	int transitionState = InTransitionVolume(pPlayer, m_szLandmarkName);
@@ -1573,6 +1571,8 @@ void CChangeLevel::ChangeLevelNow( CBaseEntity *pActivator )
 		DevMsg( 2, "Player isn't in the transition volume %s, aborting\n", m_szLandmarkName );
 		return;
 	}
+
+	m_bTouched = true;//PIN: prevents issues with being "softlocked" on canals 1?
 
 	// look for a landmark entity		
 	pLandmark = FindLandmark( m_szLandmarkName );

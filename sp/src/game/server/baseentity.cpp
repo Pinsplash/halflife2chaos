@@ -71,7 +71,7 @@
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
-
+extern ConVar unstuck_debug;
 extern bool g_bTestMoveTypeStepSimulation;
 extern ConVar sv_vehicle_autoaim_scale;
 
@@ -7494,7 +7494,7 @@ void CC_Ent_Orient( const CCommand& args )
 }
 
 static ConCommand ent_orient("ent_orient", CC_Ent_Orient, "Orient the specified entity to match the player's angles. By default, only orients target entity's YAW. Use the 'allangles' option to orient on all axis.\n\tFormat: ent_orient <entity name> <optional: allangles>", FCVAR_NONE);
-void CBaseEntity::PutAtNearestNode()
+bool CBaseEntity::PutAtNearestNode(float flMaxDist, bool bNoDebug)
 {
 	CAI_Node *pPlayerNode = g_pBigAINet->GetNode(g_pBigAINet->NearestNodeToPoint(GetAbsOrigin(), false), false);
 	CAI_Node *pNode;
@@ -7509,16 +7509,25 @@ void CBaseEntity::PutAtNearestNode()
 		{
 			pNode = g_pBigAINet->GetNode(node);
 			if (bStayInZone && pPlayerNode && pPlayerNode->GetZone() != pNode->GetZone())
+			{
+				if (unstuck_debug.GetBool() && !bNoDebug) Msg("Rejected node %i because not in zone %i\n", pNode->GetId(), pPlayerNode->GetZone());
 				continue;
+			}
 			if (pNode->GetType() != NODE_GROUND)
+			{
+				if (unstuck_debug.GetBool() && !bNoDebug) Msg("Rejected node %i because not ground node\n", pNode->GetId());
 				continue;
+			}
 			float flDist = (GetAbsOrigin() - pNode->GetPosition(HULL_HUMAN)).Length();
+			if (unstuck_debug.GetBool()) Msg("Node %i dist (%0.1f) < (%0.1f)\n", pNode->GetId(), flDist, flClosest);
 			if (flDist < flClosest)
 			{
+				if (unstuck_debug.GetBool() && !bNoDebug) Msg("Node %i new closest\n", pNode->GetId());
 				flClosest = flDist;
 			}
 			if (!full || (flDist < result->ElementAtHead().dist))
 			{
+				if (unstuck_debug.GetBool() && !bNoDebug) Msg("Node %i added to list\n", pNode->GetId());
 				if (full)
 				{
 					result->RemoveAtHead();
@@ -7527,9 +7536,11 @@ void CBaseEntity::PutAtNearestNode()
 				full = (result->Count() == 40);
 			}
 		}
-		for (int node = 0; node < result->Count(); node++)
+		for (; result->Count(); result->RemoveAtHead())
 		{
-			pNode = g_pBigAINet->GetNode(node);
+			pNode = g_pBigAINet->GetNode(result->ElementAtHead().nodeIndex);
+			if (unstuck_debug.GetBool() && !bNoDebug) Msg("Trying node %i, dist %0.1f\n", pNode->GetId(), (GetAbsOrigin() - pNode->GetPosition(HULL_HUMAN)).Length());
+			/*
 			trace_t	trace;
 			Vector vecTestPos = pNode->GetPosition(HULL_HUMAN);
 			//add extra height if model is scaled up, or else we can fail a lot on bumpy ground
@@ -7541,16 +7552,28 @@ void CBaseEntity::PutAtNearestNode()
 				SetAbsOrigin(vecTestPos);
 				return;
 			}
+			*/
+			SetAbsOrigin(pNode->GetPosition(HULL_HUMAN));
+			if (GetUnstuck(flMaxDist, false, true))
+			{
+				if (unstuck_debug.GetBool() && !bNoDebug) Msg("Can fit at node %i\n", pNode->GetId());
+				return true;
+			}
+			else
+			{
+				if (unstuck_debug.GetBool() && !bNoDebug) Msg("Can't fit at node %i\n", pNode->GetId());
+			}
 		}
 		if (bStayInZone)
 		{
 			//try again without worrying about zone
+			if (unstuck_debug.GetBool() && !bNoDebug) Msg("bStayInZone false\n");
 			bStayInZone = false;
 		}
 		else
 		{
-			Msg("Couldn't find node to put entity at!\n");
-			return;
+			if (unstuck_debug.GetBool() && !bNoDebug) Msg("Couldn't find node to put entity at!\n");
+			return false;
 		}
 	}
 }

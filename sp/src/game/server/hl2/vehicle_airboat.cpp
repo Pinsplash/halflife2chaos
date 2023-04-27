@@ -29,6 +29,7 @@
 #include "tier0/memdbgon.h"
 
 extern ConVar sv_vehicle_autoaim_scale;
+extern ConVar chaos_no_reload;
 
 #define	VEHICLE_HITBOX_DRIVER	1
 
@@ -1007,6 +1008,8 @@ void CPropAirboat::RemoveAmmo( float flAmmoAmount )
 //-----------------------------------------------------------------------------
 void CPropAirboat::RechargeAmmo(void)
 {
+	if (chaos_no_reload.GetBool())
+		return;
 	if ( !m_bHasGun )
 	{
 		m_nAmmoCount = -1;
