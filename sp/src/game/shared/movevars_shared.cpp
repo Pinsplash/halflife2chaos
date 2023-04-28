@@ -98,7 +98,7 @@ ConVar	sv_backspeed	( "sv_backspeed", "0.6", FCVAR_ARCHIVE | FCVAR_REPLICATED, "
 ConVar  sv_waterdist	( "sv_waterdist","12", FCVAR_REPLICATED, "Vertical view fixup when eyes are near water plane." );
 #endif // CSTRIKE_DLL
 
-ConVar	sv_skyname		( "sv_skyname", "sky_urb01", FCVAR_ARCHIVE | FCVAR_REPLICATED, "Current name of the skybox texture" );
+ConVar	sv_skyname		( "sv_skyname", "sky_urb01", FCVAR_REPLICATED, "Current name of the skybox texture" );
 
 // Vehicle convars
 ConVar r_VehicleViewDampen( "r_VehicleViewDampen", "1", FCVAR_NOTIFY | FCVAR_REPLICATED );

@@ -456,6 +456,7 @@ void CWeaponShotgun::DryFire( void )
 void CWeaponShotgun::FireBarrel(Vector vecOffset, Vector vecAiming)
 {
 	QAngle angEye = GetOwner()->GetAbsAngles();
+	vecOffset.z *= GetOwner()->GetModelScale();
 	//Vector vecLeft = Vector(64, 16, 0);
 	vecOffset.z -= abs(angEye.x);
 	Vector vecBarrelPos;

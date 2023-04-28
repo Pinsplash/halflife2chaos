@@ -161,6 +161,7 @@ ConVar chaos_ignore_group("chaos_ignore_group", "0");
 ConVar chaos_ignore_context("chaos_ignore_context", "0");
 ConVar chaos_print_rng("chaos_print_rng", "0");
 ConVar chaos_vote_enable("chaos_vote_enable", "0");
+ConVar chaos_unstuck_neweffect("chaos_unstuck_neweffect", "1", FCVAR_NONE, "Get the player unstuck every time a new effect starts. may not be wanted by some technical players.");
 
 void RandomizeReadiness(CBaseEntity *pNPC)
 {
@@ -1095,6 +1096,7 @@ void CHL2_Player::ResetVotes()
 		if (!EffectOrGroupAlreadyActive(i) && g_ChaosEffects[i]->m_iCurrentWeight < g_ChaosEffects[i]->m_iMaxWeight)
 			g_ChaosEffects[i]->m_iCurrentWeight = min(g_ChaosEffects[i]->m_iCurrentWeight + g_ChaosEffects[i]->m_iMaxWeight * 0.2, g_ChaosEffects[i]->m_iMaxWeight);
 	}
+	//choose effects to nominate
 	for (int i = 0; i < 4; i++)
 	{
 		// TODO: This likely can pick the same effect multiple times.
@@ -1123,7 +1125,7 @@ int GetVoteWinnerEffect()
 //-----------------------------------------------------------------------------
 void CHL2_Player::PreThink(void)
 {
-	if (g_arriVoteEffects[0] == 0) 
+	if (g_arriVoteEffects[0] == 0 && chaos_vote_enable.GetBool()) 
 	{ // if haven't been set yet...
 		ResetVotes();
 	}
@@ -1155,7 +1157,7 @@ void CHL2_Player::PreThink(void)
 			if (g_flNextEffectRem <= 0 && !pl.deadflag)//don't start new effects when dead
 			{
 				engine->ClientCommand(engine->PEntityOfEntIndex(1), "sv_cheats 1");//always force cheats on to ensure everything works
-				if (GetMoveType() != MOVETYPE_NOCLIP)
+				if (GetMoveType() != MOVETYPE_NOCLIP && chaos_unstuck_neweffect.GetBool())
 					GetUnstuck(500, true);
 				int nID = 0;
 				if (!chaos_vote_enable.GetBool()) {
@@ -2004,6 +2006,15 @@ void CHL2_Player::PlayerRunCommand(CUserCmd *ucmd, IMoveHelper *moveHelper)
 void CHL2_Player::StartGame()
 {
 	const char *pMapName = STRING(gpGlobals->mapname);
+	//scripting of canals 11 requires an airboat to be present, give player a new one if they came here without one
+	if (!Q_strcmp(pMapName, "d1_canals_11"))
+	{
+		if (!IsInAVehicle() && gpGlobals->eLoadType != MapLoad_NewGame)
+		{
+			g_ChaosEffects[EFFECT_SPAWN_VEHICLE]->ChaosSpawnVehicle("prop_vehicle_airboat", MAKE_STRING("Spawn Airboat"), SPAWNTYPE_VEHICLE, "models/airboat.mdl", "airboat", "scripts/vehicles/airboat.txt");
+		}
+	}
+	//remove the fucky-wucky triggers so that invert gravity doesn't softlock you
 	if (!Q_strcmp(pMapName, "d2_coast_04"))
 	{
 		variant_t emptyVariant;
@@ -2011,8 +2022,16 @@ void CHL2_Player::StartGame()
 		while (pFallTrigger)
 		{
 			g_EventQueue.AddEvent(pFallTrigger, "Kill", emptyVariant, 0.1f, this, this);
-			//pFallTrigger->AcceptInput("Kill", NULL, NULL, emptyVariant, 0);
 			pFallTrigger = gEntList.FindEntityByName(pFallTrigger, "fall_trigger");
+		}
+	}
+	//weapon destruction part requires a gravity gun in order to finish, but what if we lost it?
+	if (!Q_strcmp(pMapName, "d3_citadel_03"))
+	{
+		CBaseEntity *pGravGun = gEntList.FindEntityByClassname(NULL, "weapon_physcannon");
+		if (!pGravGun && gpGlobals->eLoadType != MapLoad_NewGame)
+		{
+			g_ChaosEffects[EFFECT_GIVE_WEAPON]->ChaosSpawnWeapon("weapon_physcannon", MAKE_STRING("Give Gravity Gun"));
 		}
 	}
 }
@@ -5218,7 +5237,7 @@ bool CChaosEffect::CheckEffectContext()
 
 	//potential softlock if clone npcs happens on some maps
 	if (m_nID == EFFECT_CLONE_NPCS)
-		if (!Q_strcmp(pMapName, "d1_trainstation_01") || !Q_strcmp(pMapName, "d1_eli_02") || !Q_strcmp(pMapName, "ep1_citadel_00") || !Q_strcmp(pMapName, "ep1_citadel_01"))
+		if (!Q_strcmp(pMapName, "d1_trainstation_01") || !Q_strcmp(pMapName, "d1_eli_02") || !Q_strcmp(pMapName, "d3_breen_01") || !Q_strcmp(pMapName, "ep1_citadel_00") || !Q_strcmp(pMapName, "ep1_citadel_01"))
 			return false;
 
 	//You Teleport is bad specifically on these maps
@@ -5282,7 +5301,7 @@ bool CChaosEffect::CheckEffectContext()
 
 	//Ran Out Of Glue can cause serious issues on these maps
 	if (m_nID == EFFECT_PHYS_CONVERT)
-		if (!Q_strcmp(pMapName, "d1_canals_11")			|| !Q_strcmp(pMapName, "d1_eli_01")
+		if (!Q_strcmp(pMapName, "d1_trainstation_01")	|| !Q_strcmp(pMapName, "d1_canals_11")		|| !Q_strcmp(pMapName, "d1_eli_01")
 			||!Q_strcmp(pMapName, "d3_citadel_01")		|| !Q_strcmp(pMapName, "d3_citadel_02")		|| !Q_strcmp(pMapName, "d3_citadel_05")		|| !Q_strcmp(pMapName, "d3_breen_01")
 			|| !Q_strcmp(pMapName, "ep1_c17_00a")
 			|| !Q_strcmp(pMapName, "ep2_outland_01")	|| !Q_strcmp(pMapName, "ep2_outland_03")	|| !Q_strcmp(pMapName, "ep2_outland_11")	|| !Q_strcmp(pMapName, "ep2_outland_11b"))
@@ -5360,17 +5379,24 @@ bool CChaosEffect::CheckEffectContext()
 
 	//NO TELEPORT LIST LEAKED
 	if (m_nContext & EC_PLAYER_TELEPORT)
-		if (!Q_strcmp(pMapName, "d1_trainstation_01")	|| !Q_strcmp(pMapName, "d1_trainstation_04")|| !Q_strcmp(pMapName, "d1_trainstation_05")
-			|| !Q_strcmp(pMapName, "d1_canals_01")		|| !Q_strcmp(pMapName, "d1_canals_05")		|| !Q_strcmp(pMapName, "d1_canals_06")		|| !Q_strcmp(pMapName, "d1_canals_08")		|| !Q_strcmp(pMapName, "d1_canals_11")
-			|| !Q_strcmp(pMapName, "d1_eli_01")			|| !Q_strcmp(pMapName, "d1_eli_02")
-			|| !Q_strcmp(pMapName, "d1_town_02a")		|| !Q_strcmp(pMapName, "d1_town_05")
-			|| !Q_strcmp(pMapName, "d2_prison_06")		|| !Q_strcmp(pMapName, "d2_prison_08")
-			|| !Q_strcmp(pMapName, "d3_c17_10b")
-			|| !Q_strcmp(pMapName, "d3_citadel_03")		|| !Q_strcmp(pMapName, "d3_citadel_04")
-			|| !Q_strcmp(pMapName, "ep1_citadel_03")	|| !Q_strcmp(pMapName, "ep1_c17_00")		|| !Q_strcmp(pMapName, "ep1_c17_00a")
-			|| !Q_strcmp(pMapName, "ep2_outland_01")	|| !Q_strcmp(pMapName, "ep2_outland_03")	|| !Q_strcmp(pMapName, "ep2_outland_06a")	|| !Q_strcmp(pMapName, "ep2_outland_09")
-			|| !Q_strcmp(pMapName, "ep2_outland_10")	|| !Q_strcmp(pMapName, "ep2_outland_11")	|| !Q_strcmp(pMapName, "ep2_outland_11a")	|| !Q_strcmp(pMapName, "ep2_outland_11b")	|| !Q_strcmp(pMapName, "ep2_outland_12") || !Q_strcmp(pMapName, "ep2_outland_12a"))
-			return false;//no
+	{
+		//don't need to check map list if we would be forcing out of a car, cause we don't teleport (far) in that case, unless you did the ladder bug thing
+		if (!(m_nID == EFFECT_FORCE_INOUT_CAR && pPlayer->IsInAVehicle()))
+		{
+			if (!Q_strcmp(pMapName, "d1_trainstation_01")	|| !Q_strcmp(pMapName, "d1_trainstation_04")|| !Q_strcmp(pMapName, "d1_trainstation_05")
+				|| !Q_strcmp(pMapName, "d1_canals_01")		|| !Q_strcmp(pMapName, "d1_canals_05")		|| !Q_strcmp(pMapName, "d1_canals_06")		|| !Q_strcmp(pMapName, "d1_canals_08")		|| !Q_strcmp(pMapName, "d1_canals_11")
+				|| !Q_strcmp(pMapName, "d1_eli_01")			|| !Q_strcmp(pMapName, "d1_eli_02")
+				|| !Q_strcmp(pMapName, "d1_town_02a")		|| !Q_strcmp(pMapName, "d1_town_05")
+				|| !Q_strcmp(pMapName, "d2_prison_06")		|| !Q_strcmp(pMapName, "d2_prison_08")
+				|| !Q_strcmp(pMapName, "d3_c17_10b")
+				|| !Q_strcmp(pMapName, "d3_citadel_03")		|| !Q_strcmp(pMapName, "d3_citadel_04")
+				|| !Q_strcmp(pMapName, "d3_breen_01")
+				|| !Q_strcmp(pMapName, "ep1_citadel_03")	|| !Q_strcmp(pMapName, "ep1_c17_00")		|| !Q_strcmp(pMapName, "ep1_c17_00a")
+				|| !Q_strcmp(pMapName, "ep2_outland_01")	|| !Q_strcmp(pMapName, "ep2_outland_03")	|| !Q_strcmp(pMapName, "ep2_outland_06a")	|| !Q_strcmp(pMapName, "ep2_outland_09")
+				|| !Q_strcmp(pMapName, "ep2_outland_10")	|| !Q_strcmp(pMapName, "ep2_outland_11")	|| !Q_strcmp(pMapName, "ep2_outland_11a")	|| !Q_strcmp(pMapName, "ep2_outland_11b")	|| !Q_strcmp(pMapName, "ep2_outland_12") || !Q_strcmp(pMapName, "ep2_outland_12a"))
+				return false;//no
+		}
+	}
 
 	//you did it
 	return true;
@@ -5550,6 +5576,8 @@ void CChaosEffect::StartEffect()
 		ChaosSpawnWeapon("weapon_crossbow", MAKE_STRING("Give All Weapons"), 5, "XBowBolt");
 		ChaosSpawnWeapon("weapon_frag", MAKE_STRING("Give All Weapons"), 5, "grenade");
 		ChaosSpawnWeapon("weapon_rpg", MAKE_STRING("Give All Weapons"), 3, "rpg_round");
+		ChaosSpawnWeapon("weapon_bugbait", MAKE_STRING("Give All Weapons"));
+		GlobalEntity_Add(MAKE_STRING("antlion_allied"), gpGlobals->mapname, GLOBAL_ON);//antlions become friendly
 		break;
 	case EFFECT_NADE_GUNS:
 		chaos_replace_bullets_with_grenades.SetValue(1);
@@ -5788,6 +5816,7 @@ bool CChaosEffect::ChaosSpawnWeapon(const char *className, string_t strActualNam
 		UTIL_GetLocalPlayer()->GiveAmmo(iCount2, strAmmoType2);
 	return bGaveWeapon;
 }
+ConVar getnearbynodes_debug("getnearbynodes_debug", "0");
 CNodeList *CChaosEffect::GetNearbyNodes(int iNodes)
 {
 	CAI_Node *pNode;
@@ -5799,22 +5828,33 @@ CNodeList *CChaosEffect::GetNearbyNodes(int iNodes)
 	{
 		pNode = g_pBigAINet->GetNode(node);
 		if (pNode->GetType() != NODE_GROUND)
+		{
+			if (getnearbynodes_debug.GetBool()) Msg("Rejected node %i for not being a ground node\n", pNode->GetId());
 			continue;
+		}
 		float flDist = (UTIL_GetLocalPlayer()->GetAbsOrigin() - pNode->GetPosition(HULL_HUMAN)).Length();
 		if (flDist < flClosest)
 		{
+			if (getnearbynodes_debug.GetBool()) Msg("node %i is closer (%0.1f) than previous closest (%0.1f)\n", pNode->GetId(), flDist, flClosest);
 			flClosest = flDist;
 		}
 		if (!full || (flDist < result->ElementAtHead().dist))
 		{
+			if (getnearbynodes_debug.GetBool()) Msg("Adding node %i to list. full is %s, %0.1f < %0.1f\n", pNode->GetId(), full ? "TRUE" : "FALSE", flDist, result->Count() > 0 ? result->ElementAtHead().dist : 1234);
 			if (full)
 			{
+				if (getnearbynodes_debug.GetBool()) Msg("List full, removing node %i to add node %i\n", result->ElementAtHead().nodeIndex, pNode->GetId());
 				result->RemoveAtHead();
 			}
 			result->Insert(AI_NearNode_t(node, flDist));
 			full = (result->Count() == iNodes);
 		}
+		else if (flDist >= result->ElementAtHead().dist)
+		{
+			if (getnearbynodes_debug.GetBool()) Warning("Not adding  %i to list. full is %s, %0.1f < %0.1f\n", pNode->GetId(), full ? "TRUE" : "FALSE", flDist, result->Count() > 0 ? result->ElementAtHead().dist : 1234);
+		}
 	}
+	Msg("list has %i nodes\n", result->Count());
 	return result;
 }
 CAI_Node *CChaosEffect::NearestNodeToPoint(const Vector &vPosition, bool bCheckVisibility)
@@ -5900,6 +5940,10 @@ bool CChaosEffect::MapIsLong(const char *pMapName)
 //plus it's less string comparisons this way
 bool CChaosEffect::MapGoodForCrane(const char *pMapName)
 {
+	//trigger_physics_trap can cause the magnet to become vaporized and i'm not coding in an exception just for that
+	CBaseEntity *pRemover = gEntList.FindEntityByClassname(NULL, "trigger_physics_trap");
+	if (pRemover)
+		return false;
 	return Q_strcmp(pMapName, "d1_trainstation_03")		&& Q_strcmp(pMapName, "d1_trainstation_04")			&& Q_strcmp(pMapName, "d1_trainstation_05")
 		&& Q_strcmp(pMapName, "d1_canals_02")			&& Q_strcmp(pMapName, "d1_canals_03")
 		&& Q_strcmp(pMapName, "d1_eli_01")
@@ -6228,7 +6272,7 @@ void CERandomWeaponGive::StartEffect()
 	//TODO: harpoon, stunstick, slam, alyxgun, annabelle, citizenpackage, citizensuitcase, cubemap
 	for (int iWeaponAttempts = 0; iWeaponAttempts <= 30; iWeaponAttempts++)
 	{
-		nRandom = chaos_rng1.GetInt() == -1 ? random->RandomInt(0, 9) : chaos_rng1.GetInt();
+		nRandom = chaos_rng1.GetInt() == -1 ? random->RandomInt(0, 10) : chaos_rng1.GetInt();
 		if (nRandom == 0) if (ChaosSpawnWeapon("weapon_crowbar", MAKE_STRING("Give Crowbar"))) return;
 		if (nRandom == 1) if (ChaosSpawnWeapon("weapon_physcannon", MAKE_STRING("Give Gravity Gun"))) return;
 		if (nRandom == 2) if (ChaosSpawnWeapon("weapon_pistol", MAKE_STRING("Give Pistol"), 255, "Pistol")) return;
@@ -6239,6 +6283,14 @@ void CERandomWeaponGive::StartEffect()
 		if (nRandom == 7) if (ChaosSpawnWeapon("weapon_crossbow", MAKE_STRING("Give Crossbow"), 16, "XBowBolt")) return;
 		if (nRandom == 8) if (ChaosSpawnWeapon("weapon_frag", MAKE_STRING("Give Grenade"), 5, "grenade")) return;
 		if (nRandom == 9) if (ChaosSpawnWeapon("weapon_rpg", MAKE_STRING("Give RPG"), 3, "rpg_round")) return;
+		if (nRandom == 10)
+		{
+			if (ChaosSpawnWeapon("weapon_bugbait", MAKE_STRING("Give Bugbait")))
+			{
+				GlobalEntity_Add(MAKE_STRING("antlion_allied"), gpGlobals->mapname, GLOBAL_ON);//antlions become friendly
+				return;
+			}
+		}
 	}
 }
 void CERandomVehicle::StartEffect()
@@ -7239,19 +7291,54 @@ void CETreeSpam::StartEffect()
 {
 	CAI_Node *pPlayerNode = NearestNodeToPoint(UTIL_GetLocalPlayer()->GetAbsOrigin(), false);
 	CAI_Node *pNode;
-	CNodeList *result = GetNearbyNodes(40);
+	CNodeList *result = GetNearbyNodes(80);
+	Msg("list has %i nodes\n", result->Count());
+	CUtlVector<Vector> vecTreeSpots;//positions of trees we've placed, or doors
+
+	//track doors because often nodes are placed around doorways, and trees often block necessary doorways
+	CBaseEntity *pDoor = gEntList.FindEntityByClassname(NULL, "prop_door_rotating");
+	while (pDoor)
+	{
+		vecTreeSpots.AddToTail(pDoor->GetAbsOrigin());
+		pDoor = gEntList.FindEntityByClassname(pDoor, "prop_door_rotating");
+	}
+
 	for (; result->Count(); result->RemoveAtHead())
 	{
 		pNode = g_pBigAINet->GetNode(result->ElementAtHead().nodeIndex);
+		Msg("node %i\n", pNode->GetId());
 		if (pPlayerNode == pNode)
-			continue;//avoid spawning tree inside player
+		{
+			Msg("Tree (node %i) too close to player\n");
+			continue;
+		}
 		CBaseEntity *pEnt = CreateEntityByName("prop_dynamic");
 		trace_t tr;
 		Vector vecNodePos = pNode->GetOrigin();
 		UTIL_TraceLine(vecNodePos + Vector(0, 0, 16), vecNodePos - Vector(0, 0, 100), MASK_SOLID, NULL, COLLISION_GROUP_NONE, &tr);
 		if (tr.m_pEnt->GetMoveType() == MOVETYPE_VPHYSICS || tr.m_pEnt->IsNPC())
-			return;//don't plant on something that moves, at least not moving that freely
+		{
+			Msg("Tree (node %i) on bad ground\n");
+			continue;
+		}
+		bool bDone = false;
+		for (int i = 0; vecTreeSpots.Size() >= i + 1; i++)
+		{
+			if ((vecTreeSpots[i] - tr.endpos).Length() < 100 && RandomInt(1, 10) != 1)
+			{
+				Warning("Tree (node %i) dist to other tree (node %i) is %0.1f\n", NearestNodeToPoint(vecTreeSpots[i], false)->GetId(), pNode->GetId(), (vecTreeSpots[i] - tr.endpos).Length());
+				bDone = true;
+				break;
+			}
+			else
+			{
+				Msg("Tree (node %i) dist to other tree (node %i) is %0.1f\n", NearestNodeToPoint(vecTreeSpots[i], false)->GetId(), pNode->GetId(), (vecTreeSpots[i] - tr.endpos).Length());
+			}
+		}
+		if (bDone)
+			continue;
 		pEnt->SetAbsOrigin(tr.endpos);
+		vecTreeSpots.AddToTail(pEnt->GetAbsOrigin());
 		pEnt->KeyValue("model", "models/props_foliage/tree_pine04.mdl");
 		pEnt->KeyValue("disableshadows", "1");//shadows may cause a surprising amount of lag
 		pEnt->KeyValue("solid", "6");
@@ -7760,8 +7847,8 @@ void CEPlayerBig::StopEffect()
 }
 void CEPlayerBig::MaintainEffect()
 {
-	if (!UTIL_GetLocalPlayer()->IsInAVehicle())
-		UTIL_GetLocalPlayer()->GetUnstuck(500, true);
+	//if (!UTIL_GetLocalPlayer()->IsInAVehicle())
+	//	UTIL_GetLocalPlayer()->GetUnstuck(500, true);
 }
 void CEPlayerSmall::StartEffect()
 {
@@ -7841,7 +7928,7 @@ void CEWeaponsDrop::FastThink()
 }
 void CEEarthquake::StartEffect()
 {
-	UTIL_ScreenShake(UTIL_GetLocalPlayer()->WorldSpaceCenter(), 100, 2, m_flTimeRem, 750, SHAKE_START, true);
+	UTIL_ScreenShake(UTIL_GetLocalPlayer()->WorldSpaceCenter(), 100 * UTIL_GetLocalPlayer()->GetModelScale(), 2, m_flTimeRem, 375, SHAKE_START, true);
 }
 void CEEarthquake::TransitionEffect()
 {

@@ -30,6 +30,8 @@
 	#include "waterbullet.h"
 	#include "func_break.h"
 #include "grenade_frag.h"
+#include "ai_basenpc.h"
+#include "npc_barnacle.h"
 
 #ifdef HL2MP
 	#include "te_hl2mp_shotgun_shot.h"
@@ -1994,6 +1996,26 @@ void CBaseEntity::FireBullets( const FireBulletsInfo_t &info )
 					//sleep the physics object so it won't move so much
 					bSleep = true;
 				}
+
+				//get us off barnacles. if not, the barnacle tongue stays on forever and can act very odd
+				if (IsEFlagSet(EFL_IS_BEING_LIFTED_BY_BARNACLE))
+				{
+					//surely not the fastest way to find which barnacle is lifting me, but this code won't run very often...
+					for (int i = 0; i < g_AI_Manager.NumAIs(); i++)
+					{
+						CAI_BaseNPC *pNPC = g_AI_Manager.AccessAIs()[i];
+						if (pNPC->Classify() == CLASS_BARNACLE && pNPC->GetEnemy() == this)
+						{
+							CNPC_Barnacle *pBarnacle = dynamic_cast<CNPC_Barnacle*>(pNPC);
+							if (pBarnacle)
+							{
+								pBarnacle->LostPrey(false);
+								break;
+							}
+						}
+					}
+				}
+
 				Teleport(&vecFinal, &aAngle, &vecVel);
 				if (bSleep)
 					VPhysicsGetObject()->Sleep();
@@ -2015,12 +2037,14 @@ bool CBaseEntity::GetUnstuck(float flMaxDist, bool bAllowNodeTeleport, bool bNoD
 	Msg("GetUnstuck called by %s named %s\n", STRING(m_iClassname), STRING(m_iName));
 	bool bDone = false;
 	Vector vecGoodSpot = GetAbsOrigin() + Vector(0, 0, 1);
-	//quickclip can interfere with UTIL_TraceEntity, possibly leading to us getting permastuck because it thinks we shouldn't be colliding with the thing we're stuck in
 	int iOldCollisionGroup = GetCollisionGroup();
 	bool bDucked = false;
+	float flModelScale = 1;
+	//quickclip can interfere with UTIL_TraceEntity, possibly leading to us getting permastuck because it thinks we aren't colliding with the thing we're stuck in
 	if (IsPlayer())
 	{
 		SetCollisionGroup(COLLISION_GROUP_PLAYER);
+		flModelScale = GetBaseAnimating()->GetModelScale();
 	}
 	//force ducking state
 	if (IsPlayer())
@@ -2030,27 +2054,54 @@ bool CBaseEntity::GetUnstuck(float flMaxDist, bool bAllowNodeTeleport, bool bNoD
 		pPlayer->m_Local.m_bDucked = false;
 	}
 	trace_t	trace;
-	UTIL_TraceEntity(this, vecGoodSpot, vecGoodSpot - Vector(0, 0, 10000), IsPlayer() ? MASK_PLAYERSOLID : MASK_NPCSOLID, &trace);
+	if (!IsPlayer())
+		UTIL_TraceEntity(this, vecGoodSpot, vecGoodSpot - Vector(0, 0, 10000), MASK_NPCSOLID, &trace);
+	else
+		UTIL_TraceHull(vecGoodSpot, vecGoodSpot, Vector(-16, -16, 0) * flModelScale, Vector(16, 16, 72) * flModelScale, MASK_PLAYERSOLID, this, COLLISION_GROUP_NONE, &trace);
 	trace_t	trace2;
 	UTIL_TraceLine(vecGoodSpot, vecGoodSpot, IsPlayer() ? MASK_PLAYERSOLID_BRUSHONLY : MASK_NPCSOLID_BRUSHONLY, this, COLLISION_GROUP_NONE, &trace2);
-	if (trace.startsolid || (trace.surface.flags & SURF_SKY) || (trace.surface.flags & SURF_NODRAW) || !trace.DidHit())
+	if (trace.fraction != 1.0f || (trace.surface.flags & SURF_SKY) || (trace.surface.flags & SURF_NODRAW) || !trace.DidHit())
 	{
-		//Msg("trace.startsolid\n");
-		Vector forward, right, up;
-		AngleVectors(vec3_angle, &forward, &right, &up);
-		for (int i = 10; i <= flMaxDist; i += 10)//don't actually do 500 tests. that's insane.
+		//d2_coast_01 setpos -10514 -3019 780
+		//UTIL_TraceHull can correctly identify we're stuck when stand on this slope and then do cte 23 (player huge)
+		//but when called from CEPlayerBig::MaintainEffect, at which point the player was standing on the ground all well and good, the trace would think we were hitting sky somehow, and with a fraction of 1
+		//so that's why this check is here
+		if (trace.fraction != 1.0f)
 		{
-			if (bDone)
-				break;
-			//Msg("Unstuck i %i\n", i);
-			//original noclip unstuck test only tested in cardinal directions, but we're better than that
-			for (int UFlip = 1; UFlip >= -1; UFlip--)
+			//if (trace.startsolid) Msg("trace.startsolid\n");
+			//if (trace.surface.flags & SURF_SKY) Msg("trace.surface.flags & SURF_SKY\n");
+			//if (trace.surface.flags & SURF_NODRAW) Msg("trace.surface.flags & SURF_NODRAW\n");
+			//if (!trace.DidHit()) Msg("!trace.DidHit()\n");
+			Vector forward, right, up;
+			AngleVectors(vec3_angle, &forward, &right, &up);
+			for (int i = 10; i <= flMaxDist; i += 10)//don't actually do 500 tests. that's insane.
 			{
-				//prefer to go straight up first or else beer bottles spawn to the side
-				//so we have to do this godawful shit
-				int RFlip;
-				for (RFlip = 0; RFlip >= -1; RFlip--)
+				if (bDone)
+					break;
+				//Msg("Unstuck i %i\n", i);
+				//original noclip unstuck test only tested in cardinal directions, but we're better than that
+				for (int UFlip = 1; UFlip >= -1; UFlip--)
 				{
+					//prefer to go straight up first or else beer bottles spawn to the side
+					//so we have to do this godawful shit
+					int RFlip;
+					for (RFlip = 0; RFlip >= -1; RFlip--)
+					{
+						int FFlip;
+						for (FFlip = 0; FFlip >= -1; FFlip--)
+						{
+							if (bDone)
+								break;
+							if (FindOffsetSpot(forward, FFlip, right, RFlip, up, UFlip, vecGoodSpot, i, trace2.startsolid, bNoDebug))
+								bDone = true;
+						}
+						FFlip = 1;
+						if (bDone)
+							break;
+						if (FindOffsetSpot(forward, FFlip, right, RFlip, up, UFlip, vecGoodSpot, i, trace2.startsolid, bNoDebug))
+							bDone = true;
+					}
+					RFlip = 1;
 					int FFlip;
 					for (FFlip = 0; FFlip >= -1; FFlip--)
 					{
@@ -2065,37 +2116,23 @@ bool CBaseEntity::GetUnstuck(float flMaxDist, bool bAllowNodeTeleport, bool bNoD
 					if (FindOffsetSpot(forward, FFlip, right, RFlip, up, UFlip, vecGoodSpot, i, trace2.startsolid, bNoDebug))
 						bDone = true;
 				}
-				RFlip = 1;
-				int FFlip;
-				for (FFlip = 0; FFlip >= -1; FFlip--)
-				{
-					if (bDone)
-						break;
-					if (FindOffsetSpot(forward, FFlip, right, RFlip, up, UFlip, vecGoodSpot, i, trace2.startsolid, bNoDebug))
-						bDone = true;
-				}
-				FFlip = 1;
-				if (bDone)
-					break;
-				if (FindOffsetSpot(forward, FFlip, right, RFlip, up, UFlip, vecGoodSpot, i, trace2.startsolid, bNoDebug))
-					bDone = true;
 			}
-		}
-		if (!bDone)
-		{
-			if (bAllowNodeTeleport)
+			if (!bDone)
 			{
-				if (unstuck_debug.GetBool() && !bNoDebug) Msg("Putting at node\n");
-				return PutAtNearestNode(flMaxDist, false);
+				if (bAllowNodeTeleport)
+				{
+					if (unstuck_debug.GetBool() && !bNoDebug) Msg("Putting at node\n");
+					return PutAtNearestNode(flMaxDist, false);
+				}
+				else
+				{
+					return false;//nowhere to go
+				}
 			}
 			else
 			{
-				return false;//nowhere to go
+				return true;//found a place to teleport to
 			}
-		}
-		else
-		{
-			return true;//found a place to teleport to
 		}
 	}
 	if (IsPlayer())

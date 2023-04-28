@@ -82,7 +82,8 @@ public:
 	virtual void	HandleAnimEvent( animevent_t *pEvent );
 	void			Event_Killed( const CTakeDamageInfo &info );
 	int				OnTakeDamage_Alive( const CTakeDamageInfo &info );
-	void			PlayerHasIlluminatedNPC( CBasePlayer *pPlayer, float flDot );
+	void			PlayerHasIlluminatedNPC(CBasePlayer *pPlayer, float flDot);
+	void			LostPrey(bool bRemoveRagdoll);
 
 	// The tongue's vphysics updated
 	void OnTongueTipUpdated();
@@ -99,7 +100,6 @@ private:
  	void AttachTongueToTarget( CBaseEntity *pTouchEnt, Vector vecGrabPos );
 	CRagdollProp *AttachRagdollToTongue( CBaseAnimating *pAnimating );
 	void RemoveRagdoll( bool bDestroyRagdoll );
-	void LostPrey( bool bRemoveRagdoll );
 	void BitePrey( void );
 
 	// Updates the tongue length

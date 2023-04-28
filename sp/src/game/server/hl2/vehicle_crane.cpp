@@ -724,8 +724,6 @@ void CPropCrane::RunCraneMovement( float flTime )
 		m_flNextDangerSoundTime = gpGlobals->curtime + 0.3;
 	}
 	*/
-	//PIN: we got a crash here on citadel 04 because apparently the magnet somehow removed itself. i'm curious how that's possible
-	//if this happens again, there's a breakpoint in CPhysMagnet::~CPhysMagnet() that should catch it
 
 	// Play creak sounds on the magnet if there's heavy weight on it
 	if ( (m_flNextCreakSound < gpGlobals->curtime) && (m_hCraneMagnet->GetTotalMassAttachedObjects() > 100) )

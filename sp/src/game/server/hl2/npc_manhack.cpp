@@ -2685,7 +2685,7 @@ void CNPC_Manhack::StartTask( const Task_t *pTask )
 
 	case TASK_MANHACK_FIND_SQUAD_CENTER:
 		{
-			if (!m_pSquad)
+			if (!m_pSquad || !m_pSquad->GetAnyMember())
 			{
 				m_vSavePosition = GetAbsOrigin();
 				TaskComplete();
@@ -2728,7 +2728,7 @@ void CNPC_Manhack::StartTask( const Task_t *pTask )
 
 	case TASK_MANHACK_FIND_SQUAD_MEMBER:
 		{
-			if (m_pSquad)
+			if (m_pSquad && m_pSquad->GetAnyMember())
 			{
 				CAI_BaseNPC *pSquadMember = m_pSquad->GetAnyMember();
 				m_vSavePosition = pSquadMember->GetAbsOrigin();

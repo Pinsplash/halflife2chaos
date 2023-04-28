@@ -676,7 +676,7 @@ void CViewEffects::Restore( IRestore *pRestore, bool fCreatePlayers )
 	if( !pSaveData->levelInfo.fUseLandmark )
 	{
 		ClearAllFades();
-		ClearAllShakes();
+		//ClearAllShakes();
 
 		// Read in the view fades
 		int iCount = pRestore->ReadInt();
@@ -690,7 +690,8 @@ void CViewEffects::Restore( IRestore *pRestore, bool fCreatePlayers )
 
 			m_FadeList.AddToTail( pNewFade );
 		}
-
+		//Don't want this in chaos. if a save is made when wobbly is on, but laoded once it's off, the shake from wobbly could still apply
+		/*
 		// Read in the view shakes
 		iCount = pRestore->ReadInt();
 		for ( int i = 0; i < iCount; i++ )
@@ -703,6 +704,7 @@ void CViewEffects::Restore( IRestore *pRestore, bool fCreatePlayers )
 
 			m_ShakeList.AddToTail( pNewShake );
 		}
+		*/
 	}	
 }
 

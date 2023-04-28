@@ -48,7 +48,8 @@ client.dylib.dSYM/
 server.dylib
 server.dylib.dSYM/
 
-# shader files
+config.cfg
+
 *.tmp
 *.bsp
 *.sav
@@ -60,3 +61,5 @@ server.dylib.dSYM/
 *.lib
 *.vpc.sentinel
 *.tga
+
+ep1_gamestats.dat

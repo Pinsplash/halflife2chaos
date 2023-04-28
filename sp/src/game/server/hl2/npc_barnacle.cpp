@@ -1335,8 +1335,10 @@ CRagdollProp *CNPC_Barnacle::AttachRagdollToTongue( CBaseAnimating *pAnimating )
 		pRagdoll->DisableAutoFade();
 		pRagdoll->SetThink(NULL);
 	}
+#ifdef DEBUG
 	else
 		Assert(0);
+#endif
 
 	return pRagdoll;
 }

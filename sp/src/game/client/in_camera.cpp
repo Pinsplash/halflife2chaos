@@ -39,8 +39,8 @@ static ConVar c_maxyaw( "c_maxyaw",   "135", FCVAR_ARCHIVE);
 static ConVar c_minyaw( "c_minyaw",   "-135", FCVAR_ARCHIVE );
 static ConVar c_maxdistance( "c_maxdistance",   "200", FCVAR_ARCHIVE );
 static ConVar c_mindistance( "c_mindistance",   "30", FCVAR_ARCHIVE );
-static ConVar c_orthowidth( "c_orthowidth",   "100", FCVAR_ARCHIVE );
-static ConVar c_orthoheight( "c_orthoheight",   "100", FCVAR_ARCHIVE );
+static ConVar c_orthowidth("c_orthowidth", "100", FCVAR_NONE);
+static ConVar c_orthoheight("c_orthoheight", "100", FCVAR_NONE);
 
 static kbutton_t cam_pitchup, cam_pitchdown, cam_yawleft, cam_yawright;
 static kbutton_t cam_in, cam_out; // -- "cam_move" is unused

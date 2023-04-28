@@ -4035,7 +4035,7 @@ void CGameMovement::FixPlayerCrouchStuck( bool upward )
 		return;
 	
 	VectorCopy( mv->GetAbsOrigin(), test );	
-	for ( i = 0; i < 36; i++ )
+	for (i = 0; i < 36 * player->GetModelScale(); i++)
 	{
 		Vector org = mv->GetAbsOrigin();
 		org.z += direction;
@@ -4322,7 +4322,7 @@ bool CGameMovement::CanUnDuckJump( trace_t &trace )
 	if ( trace.fraction < 1.0f )
 	{
 		// Find the endpoint.
-		vecEnd.z = mv->GetAbsOrigin().z + ( -36.0f * trace.fraction );
+		vecEnd.z = mv->GetAbsOrigin().z + (-36.0f * trace.fraction  * player->GetModelScale());
 
 		// Test a normal hull.
 		trace_t traceUp;
