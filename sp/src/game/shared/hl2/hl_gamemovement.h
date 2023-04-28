@@ -19,6 +19,8 @@
 
 struct LadderMove_t;
 class CInfoLadderDismount;
+extern IGameMovement *g_pGameMovement;
+extern CHL2GameMovement g_GameMovement;
 
 struct NearbyDismount_t
 {
@@ -42,7 +44,9 @@ public:
 	virtual bool OnLadder( trace_t &trace );
 	virtual int GetCheckInterval( IntervalType_t type );
 	virtual void	SetGroundEntity( trace_t *pm );
-	virtual bool CanAccelerate( void );
+	virtual bool CanAccelerate(void);
+	void		SetLadder(CFuncLadder *ladder);
+	LadderMove_t *GetLadderMove();
 
 private:
 
@@ -72,10 +76,8 @@ private:
 	bool		ExitLadderViaDismountNode( CFuncLadder *ladder, bool strict, bool useAlternate = false );
 	void		GetSortedDismountNodeList( const Vector &org, float radius, CFuncLadder *ladder, CUtlRBTree< NearbyDismount_t, int >& list );
 
-	LadderMove_t *GetLadderMove();
 	CHL2_Player	*GetHL2Player();
 
-	void		SetLadder( CFuncLadder *ladder );
 	CFuncLadder *GetLadder();
 };
 

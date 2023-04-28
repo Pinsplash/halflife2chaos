@@ -73,6 +73,7 @@
 #include "npc_headcrab.h"
 #include "npc_antlion.h"
 #include "ai_playerally.h"
+#include "hl_gamemovement.h"
 
 #ifdef HL2_EPISODIC
 #include "npc_alyx_episodic.h"
@@ -5742,6 +5743,11 @@ void CChaosEffect::RandomTeleport(bool bPlayerOnly)
 	}
 	else
 	{
+		if (pPlayer->GetMoveType() == MOVETYPE_NONE)
+		{
+			g_GameMovement.GetLadderMove()->m_bForceLadderMove = false;
+			pPlayer->SetMoveType(MOVETYPE_WALK);
+		}
 		pPlayer->Teleport(&vec, NULL, NULL);
 		pPlayer->GetUnstuck(500, true);
 	}
