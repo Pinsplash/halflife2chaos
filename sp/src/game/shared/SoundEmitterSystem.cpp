@@ -57,6 +57,36 @@ void ClearModelSoundsCache();
 
 #endif // !CLIENT_DLL
 
+#define MANIFEST_FILE "scripts/game_sounds_manifest.txt"
+
+bool SoundEmitter_ForceManifestReload = true;
+
+static void ReloadManifest()
+{
+	soundemitterbase->ClearSoundOverrides();
+
+	KeyValues* manifest = new KeyValues(MANIFEST_FILE);
+	if (manifest->LoadFromFile(filesystem, MANIFEST_FILE, "GAME")) {
+		for (KeyValues* sub = manifest->GetFirstSubKey(); sub != NULL; sub = sub->GetNextKey()) {
+			if (!Q_stricmp(sub->GetName(), "precache_file")) {
+				// Add and always precache
+				soundemitterbase->AddSoundOverrides(sub->GetString(), true);
+				continue;
+			}
+			else if (!Q_stricmp(sub->GetName(), "declare_file")) {
+				// Add but don't precache
+				soundemitterbase->AddSoundOverrides(sub->GetString(), false);
+				continue;
+			}
+
+			Warning("CSoundEmitterSystemBase::BaseInit:  Manifest '%s' with bogus file type '%s', expecting 'declare_file' or 'precache_file'\n",
+				MANIFEST_FILE, sub->GetName());
+		}
+	}
+
+	SoundEmitter_ForceManifestReload = false;
+}
+
 void WaveTrace( char const *wavname, char const *funcname )
 {
 	if ( IsX360() && !IsDebug() )

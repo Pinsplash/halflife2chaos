@@ -64,3 +64,5 @@ config.cfg
 
 ep1_gamestats.dat
 **/DownloadLists/*
+.vs*
+*.FileListAbsolute.txt
