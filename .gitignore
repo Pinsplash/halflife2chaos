@@ -63,4 +63,4 @@ config.cfg
 *.tga
 
 ep1_gamestats.dat
-!DownloadLists/*
+**/DownloadLists/*
