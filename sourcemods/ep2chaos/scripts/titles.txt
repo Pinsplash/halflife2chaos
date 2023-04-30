@@ -79,22 +79,22 @@ $fadeout 1.5
 
 GAMEOVER_ALLY
 {
-#HL2_GameOver_Ally
+#HL2chaos_GameOver_Ally
 }
 
 GAMEOVER_OBJECT
 {
-#HL2_GameOver_Object
+#HL2chaos_GameOver_Object
 }
 
 GAMEOVER_TIMER
 {
-#HL2_GameOver_Timer
+#HL2chaos_GameOver_Timer
 }
 
 GAMEOVER_STUCK
 {
-#HL2_GameOver_Stuck
+#HL2chaos_GameOver_Stuck
 }
 
 GAMEOVER_ALYXDEAD

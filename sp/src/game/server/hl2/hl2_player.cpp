@@ -5257,11 +5257,20 @@ bool CChaosEffect::CheckEffectContext()
 			return false;//bad map
 
 	//avoid maps that need striders or other NPCs to not teleport to god-knows-where
+	//d3_c17_11 have to kill gunship
+	//d3_c17_12b have to kill strider
+	//d3_c17_13 have to kill striders
+	//ep1_c17_00a alyx can become lost?
+	//ep1_c17_05 have to kill sniper and APC
+	//ep1_c17_06 have to kill strider
+	//ep2_outland_01 alyx can become lost?
+	//ep2_outland_08 have to kill helicopter
+	//ep2_outland_12 have to kill striders
 	if (m_nID == EFFECT_BULLET_TELEPORT)
-		if (!Q_strcmp(pMapName, "d3_c17_12b")			|| !Q_strcmp(pMapName, "d3_c17_13")
+		if (!Q_strcmp(pMapName, "d3_c17_11")			|| !Q_strcmp(pMapName, "d3_c17_12b")		|| !Q_strcmp(pMapName, "d3_c17_13")
 			|| !Q_strcmp(pMapName, "ep1_c17_00a")		|| !Q_strcmp(pMapName, "ep1_c17_05")		|| !Q_strcmp(pMapName, "ep1_c17_06")
-			|| !Q_strcmp(pMapName, "ep2_outland_01")	|| !Q_strcmp(pMapName, "ep2_outland_08")	|| !Q_strcmp(pMapName, "ep2_outland_08") || !Q_strcmp(pMapName, "ep2_outland_12"))
-			return false;//if striders get lost on this map, we softlock or near softlock
+			|| !Q_strcmp(pMapName, "ep2_outland_01")	|| !Q_strcmp(pMapName, "ep2_outland_08")	|| !Q_strcmp(pMapName, "ep2_outland_12"))
+			return false;
 
 	//avoid maps that would poorly fit a crane
 	if (m_nID == EFFECT_EVIL_NORIKO)
@@ -5279,12 +5288,13 @@ bool CChaosEffect::CheckEffectContext()
 			return false;//no sir no shotguns here
 
 	//Don't remove pickups on these maps
-	//ts05 suit has to be picked up to progress cutscene
+	//d1_trainstation_05 suit to progress cutscene
+	//d2_coast_10 rocket crate for gunship
+	//d2_prison_01 rocket crate for gunships
 	//d3_c17_09 grenades to save barney
 	//d3_c17_10b explosives for ground turrets
 	//d3_c17_11 rocket crate for shooting gunship
 	//ep1_c17_00 pistol and shotgun to shoot lock
-	//ep1_c17_00a too hard
 	//ep1_c17_05 rocket crate for shooting sniper
 	//ep1_c17_06 rocket crate for shooting strider
 	//ep2_outland_02 too hard
@@ -5400,7 +5410,7 @@ bool CChaosEffect::CheckEffectContext()
 				|| !Q_strcmp(pMapName, "d1_town_02a")		|| !Q_strcmp(pMapName, "d1_town_05")
 				|| !Q_strcmp(pMapName, "d2_coast_11")
 				|| !Q_strcmp(pMapName, "d2_prison_06")		|| !Q_strcmp(pMapName, "d2_prison_08")
-				|| !Q_strcmp(pMapName, "d3_c17_10b")
+				|| !Q_strcmp(pMapName, "d3_c17_06b")		|| !Q_strcmp(pMapName, "d3_c17_10b")
 				|| !Q_strcmp(pMapName, "d3_citadel_03")		|| !Q_strcmp(pMapName, "d3_citadel_04")
 				|| !Q_strcmp(pMapName, "d3_breen_01")
 				|| !Q_strcmp(pMapName, "ep1_citadel_03")	|| !Q_strcmp(pMapName, "ep1_c17_00")		|| !Q_strcmp(pMapName, "ep1_c17_00a")

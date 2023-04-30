@@ -1737,32 +1737,41 @@ void CBaseEntity::FireBullets( const FireBulletsInfo_t &info )
 				pBolt->SetAbsVelocity(vecDir * BOLT_AIR_VELOCITY);
 			}
 		}*/
+		if (IsPlayer() && info.m_iShots > 1 && iShot % 2)
+		{
+			// Half of the shotgun pellets are hulls that make it easier to hit targets with the shotgun.
+			AI_TraceHull(info.m_vecSrc, vecEnd, Vector(-3, -3, -3), Vector(3, 3, 3), MASK_SHOT, &traceFilter, &tr);
+		}
+		else
+		{
+			AI_TraceLine(info.m_vecSrc, vecEnd, MASK_SHOT, &traceFilter, &tr);
+		}
 
 #ifndef CLIENT_DLL
 		//QAngle angAiming;
 		//VectorAngles(vecEnd, angAiming);
 		if (chaos_replace_bullets_with_grenades.GetBool())
 		{
+			Vector vecMins = -Vector(4, 4, 4);
+			Vector vecMaxs = Vector(4, 4, 4);
 			float flForceScale = 80;
 			float flForceFracBoost = 3;
 			float flForce = max(pAmmoDef->NPCDamage(info.m_iAmmoType), max(pAmmoDef->PlrDamage(info.m_iAmmoType), max(info.m_iPlayerDamage, info.m_flDamage))) * flForceScale;
 			//Msg("%0.1f * %0.1f = %0.1f\n", flForce / flForceScale, flForceScale, flForce);
 			flForce *= flForceFracBoost;
 			//Msg("* %0.1f = %0.1f\n", flForceFracBoost, flForce);
+			if (!IsPlayer())
+			{
+				//NPCs need to be told to shoot upwards when fighting long range
+				Vector vecAimUp = VecCheckThrow(this, info.m_vecSrc, tr.endpos, flForce, 1.0, &vecMins, &vecMaxs);
+				if (vecAimUp != vec3_origin)
+					vecDir = vecAimUp;
+			}
 			Fraggrenade_Create(info.m_vecSrc, vec3_angle, vecDir * flForce, AngularImpulse(600, random->RandomInt(-1200, 1200), 0), pAttacker, 3, false);
 			iSeed++;
 			continue;
 		}
 #endif
-		if( IsPlayer() && info.m_iShots > 1 && iShot % 2 )
-		{
-			// Half of the shotgun pellets are hulls that make it easier to hit targets with the shotgun.
-			AI_TraceHull( info.m_vecSrc, vecEnd, Vector( -3, -3, -3 ), Vector( 3, 3, 3 ), MASK_SHOT, &traceFilter, &tr );
-		}
-		else
-		{
-			AI_TraceLine(info.m_vecSrc, vecEnd, MASK_SHOT, &traceFilter, &tr);
-		}
 		// Tracker 70354/63250:  ywb 8/2/07
 		// Fixes bug where trace from turret with attachment point outside of Vcollide
 		//  starts solid so doesn't hit anything else in the world and the final coord 

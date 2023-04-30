@@ -25,6 +25,7 @@
 
 extern ConVar sk_auto_reload_time;
 extern ConVar sk_plr_num_shotgun_pellets;
+extern ConVar chaos_no_reload;
 
 ConVar chaos_barrel_shotgun("chaos_barrel_shotgun", "0");
 
@@ -292,6 +293,8 @@ float CWeaponShotgun::GetFireRate()
 //-----------------------------------------------------------------------------
 bool CWeaponShotgun::StartReload( void )
 {
+	if (chaos_no_reload.GetBool())
+		return false;
 	CBaseCombatCharacter *pOwner  = GetOwner();
 	
 	if ( pOwner == NULL )
@@ -338,6 +341,8 @@ bool CWeaponShotgun::StartReload( void )
 bool CWeaponShotgun::Reload( void )
 {
 	// Check that StartReload was called first
+	if (chaos_no_reload.GetBool())
+		return false;
 	if (!m_bInReload)
 	{
 		Warning("ERROR: Shotgun Reload called incorrectly!\n");

@@ -2739,81 +2739,74 @@ CBaseEntity *CWeaponPhysCannon::FindObjectInCone( const Vector &vecOrigin, const
 //-----------------------------------------------------------------------------
 bool CGrabController::UpdateObject( CBasePlayer *pPlayer, float flError )
 {
- 	CBaseEntity *pEntity = GetAttached();
+	CBaseEntity *pEntity = GetAttached();
+	//LOAD BEARING ERROR COMPUTATION
+	//this alters a time-based variable. if phys_timescale is not 1, that variable may not behave as desired. we alter phys_timescale in chaos.
+	//if we don't do this, hopper mines cannot be picked up.
+	//i don't fully get how this works
+	ComputeError();
 	if ( !pEntity || ComputeError() > flError || pPlayer->GetGroundEntity() == pEntity || !pEntity->VPhysicsGetObject() )
 	{
 		return false;
 	}
-
 	//Adrian: Oops, our object became motion disabled, let go!
 	IPhysicsObject *pPhys = pEntity->VPhysicsGetObject();
 	if ( pPhys && pPhys->IsMoveable() == false )
 	{
 		return false;
 	}
-
 	Vector forward, right, up;
 	QAngle playerAngles = pPlayer->EyeAngles();
-	AngleVectors( playerAngles, &forward, &right, &up );
-
+	AngleVectors(playerAngles, &forward, &right, &up);
 	if ( HL2GameRules()->MegaPhyscannonActive() )
 	{
-		Vector los = ( pEntity->WorldSpaceCenter() - pPlayer->Weapon_ShootPosition() );
-		VectorNormalize( los );
+		Vector los = (pEntity->WorldSpaceCenter() - pPlayer->Weapon_ShootPosition());
+		VectorNormalize(los);
 
-		float flDot = DotProduct( los, forward );
+		float flDot = DotProduct(los, forward);
 
 		//Let go of the item if we turn around too fast.
-		if ( flDot <= 0.35f )
+		if (flDot <= 0.35f)
+		{
 			return false;
+		}
 	}
-	
-	float pitch = AngleDistance(playerAngles.x,0);
-
+	float pitch = AngleDistance(playerAngles.x, 0);
 	if( !m_bAllowObjectOverhead )
 	{
-		playerAngles.x = clamp( pitch, -75, 75 );
+		playerAngles.x = clamp(pitch, -75, 75);
 	}
 	else
 	{
-		playerAngles.x = clamp( pitch, -90, 75 );
+		playerAngles.x = clamp(pitch, -90, 75);
 	}
-
-	
-	
 	// Now clamp a sphere of object radius at end to the player's bbox
-	Vector radial = physcollision->CollideGetExtent( pPhys->GetCollide(), vec3_origin, pEntity->GetAbsAngles(), -forward );
+	Vector radial = physcollision->CollideGetExtent(pPhys->GetCollide(), vec3_origin, pEntity->GetAbsAngles(), -forward);
 	Vector player2d = pPlayer->CollisionProp()->OBBMaxs();
 	float playerRadius = player2d.Length2D();
-	float radius = playerRadius + fabs(DotProduct( forward, radial ));
-
-	float distance = 24 + ( radius * 2.0f );
-
+	float radius = playerRadius + fabs(DotProduct(forward, radial));
+	float distance = 24 + (radius * 2.0f);
 	// Add the prop's distance offset
 	distance += m_flDistanceOffset;
-
 	Vector start = pPlayer->Weapon_ShootPosition();
-	Vector end = start + ( forward * distance );
-
+	Vector end = start + (forward * distance);
 	trace_t	tr;
 	CTraceFilterSkipTwoEntities traceFilter( pPlayer, pEntity, COLLISION_GROUP_NONE );
 	Ray_t ray;
 	ray.Init( start, end );
-	enginetrace->TraceRay( ray, MASK_SOLID_BRUSHONLY, &traceFilter, &tr );
-
+	enginetrace->TraceRay(ray, MASK_SOLID_BRUSHONLY, &traceFilter, &tr);
 	if ( tr.fraction < 0.5 )
 	{
 		end = start + forward * (radius*0.5f);
 	}
 	else if ( tr.fraction <= 1.0f )
 	{
-		end = start + forward * ( distance - radius );
+		end = start + forward * (distance - radius);
 	}
 	Vector playerMins, playerMaxs, nearest;
-	pPlayer->CollisionProp()->WorldSpaceAABB( &playerMins, &playerMaxs );
+	pPlayer->CollisionProp()->WorldSpaceAABB(&playerMins, &playerMaxs);
 	Vector playerLine = pPlayer->CollisionProp()->WorldSpaceCenter();
-	CalcClosestPointOnLine( end, playerLine+Vector(0,0,playerMins.z), playerLine+Vector(0,0,playerMaxs.z), nearest, NULL );
-
+	CalcClosestPointOnLine(end, playerLine + Vector(0, 0, playerMins.z), playerLine + Vector(0, 0, playerMaxs.z), nearest, NULL);
 	if( !m_bAllowObjectOverhead )
 	{
 		Vector delta = end - nearest;
@@ -2823,7 +2816,6 @@ bool CGrabController::UpdateObject( CBasePlayer *pPlayer, float flError )
 			end = nearest + radius * delta;
 		}
 	}
-
 	//Show overlays of radius
 	if ( g_debug_physcannon.GetBool() )
 	{
@@ -2836,27 +2828,23 @@ bool CGrabController::UpdateObject( CBasePlayer *pPlayer, float flError )
 							true,
 							0.0f );
 	}
-
-	QAngle angles = TransformAnglesFromPlayerSpace( m_attachedAnglesPlayerSpace, pPlayer );
-	
+	QAngle angles = TransformAnglesFromPlayerSpace(m_attachedAnglesPlayerSpace, pPlayer);
 	// If it has a preferred orientation, update to ensure we're still oriented correctly.
-	Pickup_GetPreferredCarryAngles( pEntity, pPlayer, pPlayer->EntityToWorldTransform(), angles );
-
+	Pickup_GetPreferredCarryAngles(pEntity, pPlayer, pPlayer->EntityToWorldTransform(), angles);
 	// We may be holding a prop that has preferred carry angles
 	if ( m_bHasPreferredCarryAngles )
 	{
 		matrix3x4_t tmp;
-		ComputePlayerMatrix( pPlayer, tmp );
-		angles = TransformAnglesToWorldSpace( m_vecPreferredCarryAngles, tmp );
+		ComputePlayerMatrix(pPlayer, tmp);
+		angles = TransformAnglesToWorldSpace(m_vecPreferredCarryAngles, tmp);
 	}
 
 	matrix3x4_t attachedToWorld;
 	Vector offset;
 	AngleMatrix( angles, attachedToWorld );
-	VectorRotate( m_attachedPositionObjectSpace, attachedToWorld, offset );
+	VectorRotate(m_attachedPositionObjectSpace, attachedToWorld, offset);
 
-	SetTargetPosition( end - offset, angles );
-
+	SetTargetPosition(end - offset, angles);
 	return true;
 }
 
