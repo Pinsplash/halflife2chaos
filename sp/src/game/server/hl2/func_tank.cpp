@@ -989,7 +989,7 @@ bool CFuncTank::OnControls( CBaseEntity *pTest )
 		}
 		else//no control volume? use distance then
 		{
-			Msg("CFuncTank::OnControls user distance: %0.1f\n", (pTest->EyePosition() - GetAbsOrigin()).Length());
+			//Msg("CFuncTank::OnControls user distance: %0.1f\n", (pTest->EyePosition() - GetAbsOrigin()).Length());
 			return (pTest->EyePosition() - GetAbsOrigin()).Length() < 100;
 		}
 	}
@@ -1458,7 +1458,7 @@ void CFuncTank::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE use
 		// The player must be within the func_tank controls
 		if ( !m_hControlVolume )
 		{
-			Msg("CFuncTank::Use user distance: %0.1f\n", (pActivator->EyePosition() - GetAbsOrigin()).Length());
+			//Msg("CFuncTank::Use user distance: %0.1f\n", (pActivator->EyePosition() - GetAbsOrigin()).Length());
 			// Find our control volume
 			if ( m_iszControlVolume != NULL_STRING )
 			{
@@ -1699,7 +1699,7 @@ void CFuncTank::CalcPlayerCrosshairTarget( Vector *pVecTarget )
 	}
 	
 	// Make sure to start the trace outside of the player's bbox!
-	UTIL_TraceLine( vecStart + vecDir * 24, vecStart + vecDir * 8192, MASK_BLOCKLOS_AND_NPCS, this, COLLISION_GROUP_NONE, &tr );
+	UTIL_TraceLine( vecStart + vecDir * 80, vecStart + vecDir * 8192, MASK_BLOCKLOS_AND_NPCS, this, COLLISION_GROUP_NONE, &tr );
 
 	*pVecTarget = tr.endpos;
 }

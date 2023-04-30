@@ -3264,11 +3264,12 @@ static CBreakableProp *BreakModelCreate_Prop( CBaseEntity *pOwner, breakmodel_t 
 			pEntity->SetDmgModExplosive( pBreakableOwner->GetDmgModExplosive() );
 
 			// Copy over the dx7 fade too
-			pEntity->CopyFadeFrom( pBreakableOwner );
+			pEntity->CopyFadeFrom(pBreakableOwner);
 		}
 		pEntity->SetModelName( AllocPooledString( pModel->modelName ) );
 		pEntity->SetModel( STRING(pEntity->GetModelName()) );
-		pEntity->SetCollisionGroup( pModel->collisionGroup );
+		pEntity->SetCollisionGroup(pModel->collisionGroup);
+		pEntity->SetModelScale(pOwner->GetBaseAnimating()->GetModelScale());
 
 		if ( pModel->fadeMinDist > 0 && pModel->fadeMaxDist >= pModel->fadeMinDist )
 		{
@@ -3279,7 +3280,9 @@ static CBreakableProp *BreakModelCreate_Prop( CBaseEntity *pOwner, breakmodel_t 
 		{
 			pEntity->AddSpawnFlags( SF_PHYSPROP_IS_GIB );
 		}
-		pEntity->Spawn();
+		//pEntity->Spawn();
+		DispatchSpawn(pEntity);
+		pEntity->Activate();
 
 		// If we're burning, break into burning pieces
 		CBaseAnimating *pAnimating = dynamic_cast<CBreakableProp *>(pOwner);

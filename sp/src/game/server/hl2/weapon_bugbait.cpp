@@ -148,11 +148,22 @@ void CWeaponBugBait::Precache( void )
 //-----------------------------------------------------------------------------
 void CWeaponBugBait::Drop( const Vector &vecVelocity )
 {
-	BaseClass::Drop( vecVelocity );
-
+	BaseClass::Drop(vecVelocity);
+	CollisionProp()->UseTriggerBounds(true, 36);
+	VPhysicsInitNormal(SOLID_BBOX, GetSolidFlags() | FSOLID_TRIGGER, false);
+	IPhysicsObject *pObj = VPhysicsGetObject();
+	if (pObj != NULL)
+	{
+		AngularImpulse	angImp(200, 200, 200);
+		pObj->AddVelocity(&vecVelocity, &angImp);
+	}
+	else
+	{
+		SetAbsVelocity(vecVelocity);
+	}
 	// On touch, stick & stop moving. Increase our thinktime a bit so we don't stomp the touch for a bit
-	SetNextThink( gpGlobals->curtime + 3.0 );
-	SetTouch( &CWeaponBugBait::BugbaitStickyTouch );
+	//SetNextThink( gpGlobals->curtime + 3.0 );
+	//SetTouch( &CWeaponBugBait::BugbaitStickyTouch );
 
 	m_hSporeTrail = SporeExplosion::CreateSporeExplosion();
 	if ( m_hSporeTrail )

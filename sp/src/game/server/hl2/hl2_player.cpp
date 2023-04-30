@@ -296,7 +296,7 @@ CChaosStoredEnt *StoreEnt(CBaseEntity *pEnt)
 CBaseEntity *RetrieveStoredEnt(CChaosStoredEnt *pStoredEnt, bool bPersist)
 {
 	CBaseEntity *pEnt = CreateEntityByName(pStoredEnt->strClassname);
-	Msg("Spawning persist ent %i\n", pStoredEnt->chaosid);
+	//Msg("Spawning persist ent %i\n", pStoredEnt->chaosid);
 	//if we don't find a duplicate, that's also okay.
 	pEnt->KeyValue("targetname", STRING(pStoredEnt->targetname));
 	pEnt->m_iChaosID = pStoredEnt->chaosid;
@@ -5033,7 +5033,7 @@ ConVar chaos_prob_use_spam("chaos_prob_use_spam", "100");
 ConVar chaos_prob_ortho_cam("chaos_prob_ortho_cam", "100");
 ConVar chaos_prob_forest("chaos_prob_forest", "100");
 ConVar chaos_prob_spawn_mounted_gun("chaos_prob_spawn_mounted_gun", "100");
-ConVar chaos_prob_back_level("chaos_prob_back_level", "100");
+ConVar chaos_prob_restart_level("chaos_prob_restart_level", "100");
 ConVar chaos_prob_remove_pickups("chaos_prob_remove_pickups", "100");
 ConVar chaos_prob_clone_npcs("chaos_prob_clone_npcs", "100");
 ConVar chaos_prob_lock_pvs("chaos_prob_lock_pvs", "100");
@@ -5107,7 +5107,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<>(EFFECT_ORTHO_CAM,						MAKE_STRING("Orthographic Camera"),			EC_NONE,								chaos_time_ortho_cam.GetFloat(),			chaos_prob_ortho_cam.GetInt());
 	CreateEffect<CETreeSpam>(EFFECT_FOREST,					MAKE_STRING("Surprise Reforestation!"),		EC_NONE,								chaos_time_forest.GetFloat(),				chaos_prob_forest.GetInt());
 	CreateEffect<CEMountedGun>(EFFECT_SPAWN_MOUNTED_GUN,	MAKE_STRING("Spawn Mounted Gun"),			EC_NONE,								-1,											chaos_prob_spawn_mounted_gun.GetInt());
-	CreateEffect<CEBackLevel>(EFFECT_BACK_LEVEL,			MAKE_STRING("Go Back a Level"),				EC_NONE,								-1,											chaos_prob_back_level.GetInt());
+	CreateEffect<CERestartLevel>(EFFECT_RESTART_LEVEL,		MAKE_STRING("Restart Level"),				EC_NONE,								-1,											chaos_prob_restart_level.GetInt());
 	CreateEffect<CERemovePickups>(EFFECT_REMOVE_PICKUPS,	MAKE_STRING("Remove All Pickups"),			EC_PICKUPS | EC_NO_CITADEL | EC_HAS_WEAPON, -1,										chaos_prob_remove_pickups.GetInt());
 	CreateEffect<CECloneNPCs>(EFFECT_CLONE_NPCS,			MAKE_STRING("Suppression Field Hiccup"),	EC_NONE,								-1,											chaos_prob_clone_npcs.GetInt());
 	CreateEffect<CELockPVS>(EFFECT_LOCK_PVS,				MAKE_STRING("Vision Machine Broke"),		EC_NONE,								chaos_time_lock_pvs.GetFloat(),				chaos_prob_lock_pvs.GetInt());
@@ -5162,7 +5162,7 @@ int CHL2_Player::PickEffect(int iWeightSum)
 		}
 	}
 }
-
+ConVar groupcheck_debug("groupcheck_debug", "0");
 bool CHL2_Player::EffectOrGroupAlreadyActive(int iEffect)
 {
 	if (chaos_ignore_activeness.GetBool())
@@ -5178,20 +5178,26 @@ bool CHL2_Player::EffectOrGroupAlreadyActive(int iEffect)
 		return false;
 	
 	//check groups
-	//Msg("Checking groups for effect number %i\n", iEffect);
+	if (groupcheck_debug.GetBool()) Msg("Checking groups for effect number %i\n", iEffect);
 	bool bNotInAnyGroup = true;
 	//list of all groups
 	for (int i = 0; i < MAX_GROUPS; i++)
 	{
-		if (g_iGroups[i][0] == 0)//no more groups
+		if (g_iGroups[i][0] == 0)
+		{
+			if (groupcheck_debug.GetBool()) Msg("no more groups\n");
 			break;
-		//Msg("Looking in group %i\n", i);
+		}
+		if (groupcheck_debug.GetBool()) Msg("Looking in group %i\n", i);
 		//group's list of effects
 		for (int j = 1; j < MAX_EFFECTS_IN_GROUP + 1; j++)
 		{
-			if (g_iGroups[i][j] == 0)//no more effects in group
+			if (g_iGroups[i][j] == 0)
+			{
+				if (groupcheck_debug.GetBool()) Msg("no more effects in group\n");
 				break;
-			//Msg("Looking at effect %i group %i\n", j, i);
+			}
+			if (groupcheck_debug.GetBool()) Msg("Looking at effect %i group %i\n", j, i);
 			if (g_iGroups[i][j] == iEffect)
 			{
 				bNotInAnyGroup = false;
@@ -5201,15 +5207,19 @@ bool CHL2_Player::EffectOrGroupAlreadyActive(int iEffect)
 				{
 					if (!m_iActiveEffects[k])
 						continue;
+					if (groupcheck_debug.GetBool()) Msg("Cross-checking groups for effect number %i\n", m_iActiveEffects[k]);
 					//group's list again
 					for (int l = 1; l < MAX_EFFECTS_IN_GROUP + 1; l++)
 					{
-						if (g_iGroups[i][l] == 0)//no more effects in group
+						if (g_iGroups[i][l] == 0)
+						{
+							if (groupcheck_debug.GetBool()) Msg("crosscheck no more groups\n");
 							break;
-						//Msg("Group checking %i == %i\n", m_iActiveEffects[k], g_iGroups[i][l]);
+						}
+						if (groupcheck_debug.GetBool()) Msg("Group checking %i == %i\n", m_iActiveEffects[k], g_iGroups[i][l]);
 						if (m_iActiveEffects[k] == g_iGroups[i][l])
 						{
-							//Msg("Effect %i is active and in group %i, so effect %i can't be picked\n", m_iActiveEffects[k], i, iEffect);
+							if (groupcheck_debug.GetBool()) Msg("Effect %i is active and in group %i, so effect %i can't be picked\n", m_iActiveEffects[k], i, iEffect);
 							return true;
 						}
 					}
@@ -5232,7 +5242,7 @@ bool CChaosEffect::CheckEffectContext()
 		return true;
 
 	//avoid long maps
-	if (m_nID == EFFECT_BACK_LEVEL)
+	if (m_nID == EFFECT_RESTART_LEVEL)
 		if (MapIsLong(pMapName))
 			return false;//this is a long map
 
@@ -5277,13 +5287,13 @@ bool CChaosEffect::CheckEffectContext()
 	//ep1_c17_00a too hard
 	//ep1_c17_05 rocket crate for shooting sniper
 	//ep1_c17_06 rocket crate for shooting strider
-	//ep2_outland_03 too hard
+	//ep2_outland_02 too hard
 	//ep2_outland_09 grenades for autogun
 	//ep2_outland_12 removing seems to break the respawn system?
 	if (m_nID == EFFECT_REMOVE_PICKUPS)
-		if (!Q_strcmp(pMapName, "d1_trainstation_05")	|| !Q_strcmp(pMapName, "d3_c17_09")			|| !Q_strcmp(pMapName, "d3_c17_10b") || !Q_strcmp(pMapName, "d3_c17_11")
+		if (!Q_strcmp(pMapName, "d1_trainstation_05")	|| !Q_strcmp(pMapName, "d2_coast_10")		|| !Q_strcmp(pMapName, "d2_prison_01") || !Q_strcmp(pMapName, "d3_c17_09") || !Q_strcmp(pMapName, "d3_c17_10b") || !Q_strcmp(pMapName, "d3_c17_11")
 			|| !Q_strcmp(pMapName, "ep1_c17_00")		|| !Q_strcmp(pMapName, "ep1_c17_05")		|| !Q_strcmp(pMapName, "ep1_c17_06")
-			|| !Q_strcmp(pMapName, "ep2_outland_03")	|| !Q_strcmp(pMapName, "ep2_outland_09")	|| !Q_strcmp(pMapName, "ep2_outland_12"))
+			|| !Q_strcmp(pMapName, "ep2_outland_02")	|| !Q_strcmp(pMapName, "ep2_outland_09")	|| !Q_strcmp(pMapName, "ep2_outland_12"))
 			return false;
 
 	//this is essentially just a list of all maps with elevators. quickclip will cause you to phase through elevators.
@@ -5303,7 +5313,7 @@ bool CChaosEffect::CheckEffectContext()
 	//Ran Out Of Glue can cause serious issues on these maps
 	if (m_nID == EFFECT_PHYS_CONVERT)
 		if (!Q_strcmp(pMapName, "d1_trainstation_01")	|| !Q_strcmp(pMapName, "d1_canals_11")		|| !Q_strcmp(pMapName, "d1_eli_01")
-			||!Q_strcmp(pMapName, "d3_citadel_01")		|| !Q_strcmp(pMapName, "d3_citadel_02")		|| !Q_strcmp(pMapName, "d3_citadel_05")		|| !Q_strcmp(pMapName, "d3_breen_01")
+			|| !Q_strcmp(pMapName, "d3_c17_08")			|| !Q_strcmp(pMapName, "d3_citadel_01")		|| !Q_strcmp(pMapName, "d3_citadel_02")		|| !Q_strcmp(pMapName, "d3_citadel_05") || !Q_strcmp(pMapName, "d3_breen_01")
 			|| !Q_strcmp(pMapName, "ep1_c17_00a")
 			|| !Q_strcmp(pMapName, "ep2_outland_01")	|| !Q_strcmp(pMapName, "ep2_outland_03")	|| !Q_strcmp(pMapName, "ep2_outland_11")	|| !Q_strcmp(pMapName, "ep2_outland_11b"))
 			return false;//bad map
@@ -5332,7 +5342,7 @@ bool CChaosEffect::CheckEffectContext()
 
 	//need at least one pickup in the map
 	if (m_nContext & EC_PICKUPS)
-		if (gEntList.FindEntityByClassname(NULL, "it*") == NULL)
+		if (pPlayer->GetHealth() < 50 || gEntList.FindEntityByClassname(NULL, "it*") == NULL)
 			return false;//no pickups
 
 	//quickclip must be off
@@ -5388,6 +5398,7 @@ bool CChaosEffect::CheckEffectContext()
 				|| !Q_strcmp(pMapName, "d1_canals_01")		|| !Q_strcmp(pMapName, "d1_canals_05")		|| !Q_strcmp(pMapName, "d1_canals_06")		|| !Q_strcmp(pMapName, "d1_canals_08")		|| !Q_strcmp(pMapName, "d1_canals_11")
 				|| !Q_strcmp(pMapName, "d1_eli_01")			|| !Q_strcmp(pMapName, "d1_eli_02")
 				|| !Q_strcmp(pMapName, "d1_town_02a")		|| !Q_strcmp(pMapName, "d1_town_05")
+				|| !Q_strcmp(pMapName, "d2_coast_11")
 				|| !Q_strcmp(pMapName, "d2_prison_06")		|| !Q_strcmp(pMapName, "d2_prison_08")
 				|| !Q_strcmp(pMapName, "d3_c17_10b")
 				|| !Q_strcmp(pMapName, "d3_citadel_03")		|| !Q_strcmp(pMapName, "d3_citadel_04")
@@ -5932,8 +5943,11 @@ CBaseEntity *CChaosEffect::GetEntityWithID(int iChaosID)
 
 bool CChaosEffect::MapIsLong(const char *pMapName)
 {
-	return !Q_strcmp(pMapName, "d1_trainstation_01")	|| !Q_strcmp(pMapName, "d1_trainstation_05")		|| !Q_strcmp(pMapName, "d1_eli_01")				|| !Q_strcmp(pMapName, "d1_eli_02")
-		|| !Q_strcmp(pMapName, "d2_prison_06")			|| !Q_strcmp(pMapName, "d2_prison_07")				|| !Q_strcmp(pMapName, "d2_prison_08")
+	return !Q_strcmp(pMapName, "d1_trainstation_01")	|| !Q_strcmp(pMapName, "d1_trainstation_05")
+		|| !Q_strcmp(pMapName, "d1_eli_01")				|| !Q_strcmp(pMapName, "d1_eli_02")
+		|| !Q_strcmp(pMapName, "d1_town_02")
+		|| !Q_strcmp(pMapName, "d2_coast_07")			|| !Q_strcmp(pMapName, "d2_coast_08")
+		|| !Q_strcmp(pMapName, "d2_prison_05")			|| !Q_strcmp(pMapName, "d2_prison_06")				|| !Q_strcmp(pMapName, "d2_prison_07")			|| !Q_strcmp(pMapName, "d2_prison_08")
 		|| !Q_strcmp(pMapName, "d3_c17_13")				|| !Q_strcmp(pMapName, "d3_citadel_02")				|| !Q_strcmp(pMapName, "d3_citadel_05")			|| !Q_strcmp(pMapName, "d3_breen_01")
 
 		|| !Q_strcmp(pMapName, "ep1_citadel_00")		|| !Q_strcmp(pMapName, "ep1_citadel_01")			|| !Q_strcmp(pMapName, "ep1_citadel_03")
@@ -6083,7 +6097,6 @@ CAI_BaseNPC *CChaosEffect::ChaosSpawnNPC(const char *className, string_t strActu
 		if (FStrEq(className, "npc_cscanner")){ pNPC->KeyValue("ShouldInspect", "1"); }
 		if (FStrEq(className, "npc_sniper")){ pNPC->AddSpawnFlags(65536); }
 		if (FStrEq(className, "npc_strider")){ pNPC->AddSpawnFlags(65536); }
-		if (FStrEq(className, "npc_turret_ceiling")){ pNPC->AddSpawnFlags(32); }
 		if (FStrEq(className, "npc_vortigaunt")){ pNPC->KeyValue("ArmorRechargeEnabled", "1"); }
 		if (FStrEq(className, "npc_apcdriver"))
 		{
@@ -6182,6 +6195,12 @@ CAI_BaseNPC *CChaosEffect::ChaosSpawnNPC(const char *className, string_t strActu
 			if (nRandom == 1){ pNPC->KeyValue("BeamPower", "1"); }
 			if (nRandom == 2){ pNPC->KeyValue("BeamPower", "2"); }
 		}
+		if (FStrEq(className, "npc_turret_ceiling"))
+		{
+			pNPC->SetMaxHealth(700);
+			pNPC->SetHealth(700);
+			pNPC->AddSpawnFlags(32);
+		}
 
 		if (!FStrEq(strModel, "_"))
 			pNPC->KeyValue("model", strModel);
@@ -6235,7 +6254,7 @@ void CEPullToPlayer::TransitionEffect()
 }
 bool CEPullToPlayer::CheckStrike(const CTakeDamageInfo &info)
 {
-	return (info.GetDamageType() & DMG_CRUSH) != 0 || (info.GetDamageType() & DMG_SLASH) != 0 || (info.GetDamageType() & DMG_BLAST) != 0;
+	return (info.GetDamageType() & DMG_CRUSH | DMG_SLASH | DMG_BLAST) != 0;
 }
 void CEPushFromPlayer::StartEffect()
 {
@@ -6577,13 +6596,12 @@ void CESolidTriggers::StartEffect()
 		}
 		pEnt = gEntList.NextEnt(pEnt);
 	}
-	//500 is as far as i feel comfortable teleporting the player.
-	pPlayer->GetUnstuck(500, false);//HUGE triggers could make us teleport outside of entire buildings and such
 	//if we're still stuck, then we're probably in some HUGE triggers. just make them unsolid again
-	trace_t	trace;
-	UTIL_TraceEntity(pPlayer, pPlayer->GetAbsOrigin(), pPlayer->GetAbsOrigin(),  MASK_PLAYERSOLID, &trace);
-	while (trace.startsolid && trace.m_pEnt && trace.m_pEnt->VPhysicsGetObject() && trace.m_pEnt->VPhysicsGetObject()->IsTrigger())
+	//500 is as far as i feel comfortable teleporting the player. HUGE triggers could make us teleport outside of entire buildings and such
+	while (!pPlayer->GetUnstuck(500, false))
 	{
+		trace_t	trace;
+		UTIL_TraceEntity(pPlayer, pPlayer->GetAbsOrigin(), pPlayer->GetAbsOrigin(), MASK_PLAYERSOLID, &trace);
 		trace.m_pEnt->AddEffects(EF_NODRAW);
 		if (trace.m_pEnt->VPhysicsGetObject())
 		{
@@ -6592,7 +6610,6 @@ void CESolidTriggers::StartEffect()
 		trace.m_pEnt->AddSolidFlags(FSOLID_TRIGGER);
 		trace.m_pEnt->AddSolidFlags(FSOLID_NOT_SOLID);
 		trace.m_pEnt->PhysicsTouchTriggers();
-		UTIL_TraceEntity(pPlayer, pPlayer->GetAbsOrigin(), pPlayer->GetAbsOrigin(), MASK_PLAYERSOLID, &trace);
 	}
 }
 void CESolidTriggers::StopEffect()
@@ -6662,13 +6679,13 @@ void CECredits::MaintainEffect()
 }
 void CECredits::RestoreEffect()
 {
-	//if we relaod, the credits visual disappears and as far as i know we can't put it back to where it was at time of load, so we don't bother restoring it
+	//if we reload, the credits visual disappears and as far as i know we can't put it back to where it was at time of load, so we don't bother restoring it
 	//playing song 2 would make no sense without the visual
 	m_bPlayedSecondSong = true;
 }
 void CECredits::TransitionEffect()
 {
-	//if we relaod, the credits visual disappears and as far as i know we can't put it back to where it was at time of load, so we don't bother restoring it
+	//if we reload, the credits visual disappears and as far as i know we can't put it back to where it was at time of load, so we don't bother restoring it
 	//playing song 2 would make no sense without the visual
 	m_bPlayedSecondSong = true;
 }
@@ -6676,7 +6693,10 @@ void CESuperhot::FastThink()
 {
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
 	if (pPlayer->pl.deadflag)
-		cvar->FindVar("host_timescale")->SetValue(0);
+	{
+		cvar->FindVar("host_timescale")->SetValue(1);
+		return;
+	}
 	CBaseEntity *pVehicle = pPlayer->GetVehicleEntity();
 	Vector vecVelocity;
 	if (pVehicle && pVehicle->VPhysicsGetObject())
@@ -6695,7 +6715,10 @@ void CESupercold::FastThink()
 {
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
 	if (pPlayer->pl.deadflag)
-		cvar->FindVar("host_timescale")->SetValue(0);
+	{
+		cvar->FindVar("host_timescale")->SetValue(1);
+		return;
+	}
 	CBaseEntity *pVehicle = pPlayer->GetVehicleEntity();
 	Vector vecVelocity;
 	if (pVehicle && pVehicle->VPhysicsGetObject())
@@ -7027,8 +7050,8 @@ void CEBottle::StartEffect()
 	} while (trace.fraction == 1 && !trace.startsolid && i < 55 && i < chaos_beer_size_limit.GetInt());//yes this i limit actually matters, or else we will create a beer so big it hits a max coord related assert and brings the whole game to a screeching halt. what the fuck.
 	if (i > 1)
 		pEnt->SetModelScale(i - 1);
-	pEnt->SetMaxHealth(500 * i);
-	pEnt->SetHealth(500 * i);
+	pEnt->SetMaxHealth(100 * i);
+	pEnt->SetHealth(100 * i);
 	DispatchSpawn(pEnt);
 	pEnt->Activate();
 	vecOrigin = vecLastGoodPos;
@@ -7604,38 +7627,10 @@ void CEMountedGun::StartEffect()
 		}
 	}
 }
-void CEBackLevel::StartEffect()
+void CERestartLevel::StartEffect()
 {
 	g_bGoBackLevel = true;
-	const char *pMapName = STRING(gpGlobals->mapname);
-	const char *pPrevMap = "";
-	//TODO: fix prison 5 spawn
-	//TODO: rather spawn at 2nd half of town 02
-	//TODO: spawn at 2nd half of coast 7 with gate down
-	//technical issues come up when spawning fresh on prison 5, town 3, and coast 8
-	engine->ClientCommand(engine->PEntityOfEntIndex(1), "r_lockpvs 0; exec portalsopenall\n");
-	if (!Q_strcmp(pMapName, "d2_prison_06") || !Q_strcmp(pMapName, "d1_town_02a") || !Q_strcmp(pMapName, "d2_coast_09"))
-	{
-		engine->ClientCommand(engine->PEntityOfEntIndex(1), "restart");
-		return;
-	}
-	//find previous map
-	for (int i = 0; i < ARRAYSIZE(g_MapNames); i++)
-	{
-		if (!Q_strcmp(pMapName, g_MapNames[i]))
-		{
-			pPrevMap = g_MapNames[i - 1];
-		}
-	}
-	//avoid going back to a cutscene map
-	if (MapIsLong(pPrevMap) || !Q_strcmp(pPrevMap, ""))//blank means first map of campaign
-	{
-		engine->ClientCommand(engine->PEntityOfEntIndex(1), "restart");
-		return;
-	}
-	char szCommand[2048];
-	Q_snprintf(szCommand, sizeof(szCommand), "map %s", pPrevMap);
-	engine->ClientCommand(engine->PEntityOfEntIndex(1), "%s\n", szCommand);
+	engine->ClientCommand(engine->PEntityOfEntIndex(1), "restart");
 }
 void CERemovePickups::StartEffect()
 {
@@ -7892,6 +7887,10 @@ void CESuperGrab::StopEffect()
 	player_throwforce.SetValue(1000);
 	if (pHL2Player)
 		pHL2Player->m_bSuperGrab = false;
+}
+void CEWeaponsDrop::StartEffect()
+{
+	m_bDone = false;
 }
 void CEWeaponsDrop::FastThink()
 {

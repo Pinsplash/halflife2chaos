@@ -287,7 +287,8 @@ void CNPC_CeilingTurret::Spawn( void )
 	SetViewOffset( EyeOffset( ACT_IDLE ) );
 	m_flFieldOfView	= 0.0f;
 	m_takedamage	= DAMAGE_YES;
-	m_iHealth		= 1000;
+	if (m_iHealth == 0)//set a custom health if spawned by chaos
+		m_iHealth		= 1000;
 	m_bloodColor	= BLOOD_COLOR_MECH;
 	
 	SetSolid( SOLID_BBOX );

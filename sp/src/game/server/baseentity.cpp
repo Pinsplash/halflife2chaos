@@ -2746,6 +2746,8 @@ int CBaseEntity::VPhysicsGetObjectList( IPhysicsObject **pList, int listMax )
 //-----------------------------------------------------------------------------
 bool CBaseEntity::VPhysicsIsFlesh( void )
 {
+	if (IsBaseCombatWeapon())
+		return false;//always allowed to pick up bugbait
 	IPhysicsObject *pList[VPHYSICS_MAX_OBJECT_LIST_COUNT];
 	int count = VPhysicsGetObjectList( pList, ARRAYSIZE(pList) );
 	for ( int i = 0; i < count; i++ )
@@ -7533,7 +7535,7 @@ bool CBaseEntity::PutAtNearestNode(float flMaxDist, bool bNoDebug)
 					result->RemoveAtHead();
 				}
 				result->Insert(AI_NearNode_t(node, flDist));
-				full = (result->Count() == 40);
+				full = (result->Count() == 100);
 			}
 		}
 		for (; result->Count(); result->RemoveAtHead())

@@ -70,7 +70,7 @@ enum Effect_T
 	EFFECT_ORTHO_CAM,
 	EFFECT_FOREST,
 	EFFECT_SPAWN_MOUNTED_GUN,
-	EFFECT_BACK_LEVEL,
+	EFFECT_RESTART_LEVEL,
 	EFFECT_REMOVE_PICKUPS,
 	EFFECT_CLONE_NPCS,
 	EFFECT_LOCK_PVS,
@@ -242,7 +242,7 @@ class CERemovePickups : public CChaosEffect
 public:
 	void StartEffect() override;
 };
-class CEBackLevel : public CChaosEffect
+class CERestartLevel : public CChaosEffect
 {
 public:
 	void StartEffect() override;
@@ -431,6 +431,7 @@ public:
 class CEWeaponsDrop : public CChaosEffect
 {
 public:
+	void StartEffect() override;
 	void FastThink() override;
 	bool m_bDone = false;
 };

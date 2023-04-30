@@ -2060,7 +2060,11 @@ bool CBaseEntity::GetUnstuck(float flMaxDist, bool bAllowNodeTeleport, bool bNoD
 		UTIL_TraceHull(vecGoodSpot, vecGoodSpot, Vector(-16, -16, 0) * flModelScale, Vector(16, 16, 72) * flModelScale, MASK_PLAYERSOLID, this, COLLISION_GROUP_NONE, &trace);
 	trace_t	trace2;
 	UTIL_TraceLine(vecGoodSpot, vecGoodSpot, IsPlayer() ? MASK_PLAYERSOLID_BRUSHONLY : MASK_NPCSOLID_BRUSHONLY, this, COLLISION_GROUP_NONE, &trace2);
-	if (trace.fraction != 1.0f || (trace.surface.flags & SURF_SKY) || (trace.surface.flags & SURF_NODRAW) || !trace.DidHit())
+	if (unstuck_debug.GetBool() && !bNoDebug) if (trace.fraction != 1.0f) Msg("trace.fraction != 1.0f\n");
+	if (unstuck_debug.GetBool() && !bNoDebug) if (trace.surface.flags & SURF_SKY) Msg("trace.surface.flags & SURF_SKY\n");
+	if (unstuck_debug.GetBool() && !bNoDebug) if (trace.surface.flags & SURF_NODRAW) Msg("trace.surface.flags & SURF_NODRAW\n");
+	if (unstuck_debug.GetBool() && !bNoDebug) if (trace.DidHit()) Msg("trace.DidHit()\n");
+	if ((trace.surface.flags & SURF_SKY) || (trace.surface.flags & SURF_NODRAW) || trace.DidHit())
 	{
 		//d2_coast_01 setpos -10514 -3019 780
 		//UTIL_TraceHull can correctly identify we're stuck when stand on this slope and then do cte 23 (player huge)
@@ -2068,10 +2072,6 @@ bool CBaseEntity::GetUnstuck(float flMaxDist, bool bAllowNodeTeleport, bool bNoD
 		//so that's why this check is here
 		if (trace.fraction != 1.0f)
 		{
-			//if (trace.startsolid) Msg("trace.startsolid\n");
-			//if (trace.surface.flags & SURF_SKY) Msg("trace.surface.flags & SURF_SKY\n");
-			//if (trace.surface.flags & SURF_NODRAW) Msg("trace.surface.flags & SURF_NODRAW\n");
-			//if (!trace.DidHit()) Msg("!trace.DidHit()\n");
 			Vector forward, right, up;
 			AngleVectors(vec3_angle, &forward, &right, &up);
 			for (int i = 10; i <= flMaxDist; i += 10)//don't actually do 500 tests. that's insane.
@@ -2188,7 +2188,7 @@ bool CBaseEntity::FindPassableSpace(const Vector direction, float step, Vector& 
 	trace_t	trace;
 	//clear space?
 	UTIL_TraceEntity(this, vecDest, vecDest, IsPlayer() ? MASK_PLAYERSOLID : MASK_NPCSOLID, &trace);
-	if (trace.startsolid)
+	if (trace.startsolid || trace.fraction != 1)
 	{
 		if (unstuck_debug.GetBool() && !bNoDebug)
 		{
