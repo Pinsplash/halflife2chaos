@@ -74,7 +74,6 @@ These settings have been put in their own CFG files so you can control what they
 * The car compass HUD element does not display correctly.
 * If you play maps from something that isn't _Half-Life 2/Episode One/Two_, the "Node graph out of date" message will appear every time you go to a new map for the first time. This message is harmless, but if you wish, you can copy the `.AIN` files from the mod as well. It will also stop appearing after you've visited each map a single time, because the mod has now generated its own copy of the node graph. The `.AIN` files are included for _Half-Life 2/Episode One/Two_.
 * If you take a weird path through d3_c17_13, you may not activate the strider in the car pit. You will have to kill it before the intended route can continue.
-* It's easy to get stuck with **Player is Huge**, but only temporarily. The issue seems to only happen when jumping and not holding crouch.
 * **Super Grab** sometimes makes it harder to grab things.
 * Sometimes things are invisible with **Orthographic Camera**. Turning on the flashlight may fix it.
 * Collisions can be weird when **Slow Physics** is on.
