@@ -5337,6 +5337,11 @@ bool CChaosEffect::CheckEffectContext()
 			|| !Q_strcmp(pMapName, "ep2_outland_01") || !Q_strcmp(pMapName, "ep2_outland_07") || !Q_strcmp(pMapName, "ep2_outland_08") || !Q_strcmp(pMapName, "ep2_outland_10a"))
 			return false;//bad map
 
+	//if we miss the trigger_changelevel, the pod will get killed, killing us
+	if (m_nID == EFFECT_CANT_LEAVE_MAP)
+		if (!Q_strcmp(pMapName, "d3_citadel_01"))
+			return false;
+
 	if (m_nContext == EC_NONE)
 		return true;
 
@@ -7664,7 +7669,9 @@ void CECloneNPCs::StartEffect()
 	CBaseEntity *pNPC = gEntList.FindEntityByClassname(NULL, "n*");
 	while (pNPC)
 	{
-		if (pNPC->IsNPC())//avoid cloning non-NPC entities with an "npc_" prefix, like npc_maker
+		//avoid cloning non-NPC entities with an "npc_" prefix, like npc_maker
+		//avoid npc_furniture, it goes bad
+		if (pNPC->IsNPC() && !pNPC->ClassMatches("npc_furniture"))
 			vNPCs.AddToTail(*StoreEnt(pNPC));
 		pNPC = gEntList.FindEntityByClassname(pNPC, "n*");
 	}
@@ -7673,8 +7680,6 @@ void CECloneNPCs::StartEffect()
 		CBaseEntity *pCloneNPC = RetrieveStoredEnt(&vNPCs[i], false);
 		if (pCloneNPC)
 		{
-			if (pCloneNPC->ClassMatches("npc_furniture"))
-				continue;//don't clone furniture's, bad stuff can happen
 			Vector vecOrigin = pCloneNPC->GetAbsOrigin();
 			QAngle vecAngle = pCloneNPC->GetAbsAngles();
 			DispatchSpawn(pCloneNPC);

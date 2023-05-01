@@ -838,7 +838,7 @@ bool CNPC_Manhack::CorpseGib( const CTakeDamageInfo &info )
 		vecGibAVelocity.z = random->RandomFloat( -500, 500 );
 	}
 
-	PropBreakableCreateAll( GetModelIndex(), NULL, GetAbsOrigin(), GetAbsAngles(), vecGibVelocity, vecGibAVelocity, 1.0, 60, COLLISION_GROUP_DEBRIS );
+	PropBreakableCreateAll( GetModelIndex(), NULL, GetAbsOrigin(), GetAbsAngles(), vecGibVelocity, vecGibAVelocity, 1.0, 60, COLLISION_GROUP_DEBRIS, this);
 
 	RemoveDeferred();
 

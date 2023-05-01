@@ -363,7 +363,7 @@ void CPhysicsCannister::Explode( CBaseEntity *pAttacker )
 	IPhysicsObject *pPhysics = VPhysicsGetObject();
 
 	pPhysics->GetVelocity( &velocity, &angVelocity );
-	PropBreakableCreateAll( GetModelIndex(), pPhysics, GetAbsOrigin(), GetAbsAngles(), velocity, angVelocity, 1.0, 20, COLLISION_GROUP_DEBRIS );
+	PropBreakableCreateAll( GetModelIndex(), pPhysics, GetAbsOrigin(), GetAbsAngles(), velocity, angVelocity, 1.0, 20, COLLISION_GROUP_DEBRIS, this);
 	ExplosionCreate( GetAbsOrigin(), GetAbsAngles(), pAttacker, m_damage, 0, true );
 	UTIL_Remove( this );
 }
