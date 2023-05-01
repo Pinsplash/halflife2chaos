@@ -5,13 +5,8 @@
 3. Download latest `hl2c.zip` file from [releases](https://github.com/Pinsplash/halflife2chaos/releases).
 4. Extract `hl2chaos` from the dowloaded zip file into `Steam/steamapps/sourcemods/`. The path to gameinfo.txt should look like this: `Steam/steamapps/sourcemods/hl2chaos/gameinfo.txt`. Do the same for `ep1chaos` and `ep2chaos` if you want to play Chaos in Half-Life 2: Episode One/Two.
 5. Restart Steam for the mod(s) to appear in your library.
-6. Copy the map (`.bsp`) files from `Steam/steamapps/common/Half-Life 2/___/maps/` into `Steam/steamapps/sourcemods/***/maps/`.
-    In place of `___` and `***` you will want to fill:
-    * `hl2` and `hl2chaos` for Half-Life 2
-    * `episodic` and `ep1chaos` for Half-Life 2: Episode One
-    * `ep2` and `ep2chaos` for Half-Life 2: Episode Two
 
-Maps from mods (and Lost Coast) can also be used if you wish, though some things may not function correctly and additional original content (like textures and models) will need to be copied as well
+As of version 0.2.2, you no longer need to copy map files into the `maps` folders.
 
 ## Building from source for Linux
 No build enviroment setup required.
@@ -95,3 +90,5 @@ These settings have been put in their own CFG files so you can control what they
 * ender
 * 2838
 * UncraftedName
+* tmob03
+* ntrf

@@ -1,0 +1,20 @@
+"patch"
+{
+	"include"		"materials/NATURE/TOXICSLIME002A.vmt"
+	"replace"
+	{
+		"$envmap"		"maps/ep2_outland_06/c2560_1792_-288"
+		">=DX90"
+		{
+			"Proxies"
+			{
+			}
+		}
+		"<DX90"
+		{
+			"Proxies"
+			{
+			}
+		}
+	}
+}

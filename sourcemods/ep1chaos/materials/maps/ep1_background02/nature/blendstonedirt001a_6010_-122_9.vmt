@@ -1,0 +1,8 @@
+"patch"
+{
+	"include"		"materials/NATURE/BLENDSTONEDIRT001A.vmt"
+	"replace"
+	{
+		"$envmap"		"maps/ep1_background02/c6010_-122_9"
+	}
+}

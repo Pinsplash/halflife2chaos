@@ -1,0 +1,11 @@
+"patch"
+{
+	"include"		"materials/WOOD/WOODFLOOR008A.vmt"
+	"replace"
+	{
+		"LightmappedGeneric_DX9"
+		{
+			"$envmap"		"maps/ep2_outland_08/c-10839_-4838_136"
+		}
+	}
+}

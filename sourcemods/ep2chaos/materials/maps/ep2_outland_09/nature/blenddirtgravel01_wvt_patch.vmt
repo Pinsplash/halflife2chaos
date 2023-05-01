@@ -1,0 +1,6 @@
+"LightmappedGeneric"
+{
+	"$basetexture"		"nature/forest_dirt_02"
+	"$surfaceprop"		"dirt"
+	"%detailtype"		"forest_floor_01"
+}

@@ -1,0 +1,8 @@
+"patch"
+{
+	"include"		"materials/maps/ep2_outland_11a/nature/water_silo_01_-668_-11192_-1155.vmt"
+	"insert"
+	{
+		"$waterdepth"		"10"
+	}
+}

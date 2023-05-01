@@ -1,0 +1,17 @@
+"patch"
+{
+	"include"		"materials/NATURE/WATER_TUNNELS01_CHEAP.vmt"
+	"replace"
+	{
+		"$envmap"		"maps/ep2_outland_01a/c-5863_-5705_-61"
+		"Water_DX80"
+		{
+			"Proxies"
+			{
+			}
+		}
+		"Proxies"
+		{
+		}
+	}
+}

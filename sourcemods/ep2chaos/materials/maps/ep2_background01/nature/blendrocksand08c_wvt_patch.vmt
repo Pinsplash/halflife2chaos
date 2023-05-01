@@ -1,0 +1,8 @@
+"LightmappedGeneric"
+{
+	"$basetexture"		"nature/sandfloor008c"
+	"%tooltexture"		"nature/blendrocksand08b_tooltexture"
+	"$bumpmap"		"nature/sandfloor008c_normal"
+	"%keywords"		"wasteland"
+	"$surfaceprop"		"dirt"
+}

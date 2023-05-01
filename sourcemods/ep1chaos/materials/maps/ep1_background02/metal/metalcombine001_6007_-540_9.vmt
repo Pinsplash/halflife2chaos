@@ -1,0 +1,8 @@
+"patch"
+{
+	"include"		"materials/METAL/METALCOMBINE001.vmt"
+	"replace"
+	{
+		"$envmap"		"maps/ep1_background02/c6007_-540_9"
+	}
+}

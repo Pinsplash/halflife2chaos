@@ -1,0 +1,9 @@
+"patch"
+{
+	"include"		"materials/GLASS/GLASSWINDOWBREAK070A.vmt"
+	"replace"
+	{
+		"$envmap"		"maps/ep1_citadel_02b/c3328_4576_3574"
+		"$crackmaterial"		"maps/ep1_citadel_02b/glass/glasswindowbreak070b_3328_4576_3574"
+	}
+}

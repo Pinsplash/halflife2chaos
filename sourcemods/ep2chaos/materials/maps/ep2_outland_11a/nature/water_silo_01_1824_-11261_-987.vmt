@@ -1,0 +1,11 @@
+"patch"
+{
+	"include"		"materials/NATURE/WATER_SILO_01.vmt"
+	"replace"
+	{
+		"$envmap"		"maps/ep2_outland_11a/c1824_-11261_-987"
+		"Proxies"
+		{
+		}
+	}
+}

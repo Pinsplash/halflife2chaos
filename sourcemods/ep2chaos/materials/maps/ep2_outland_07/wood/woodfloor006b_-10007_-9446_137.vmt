@@ -1,0 +1,8 @@
+"patch"
+{
+	"include"		"materials/WOOD/WOODFLOOR006B.vmt"
+	"replace"
+	{
+		"$envmap"		"maps/ep2_outland_07/c-10007_-9446_137"
+	}
+}

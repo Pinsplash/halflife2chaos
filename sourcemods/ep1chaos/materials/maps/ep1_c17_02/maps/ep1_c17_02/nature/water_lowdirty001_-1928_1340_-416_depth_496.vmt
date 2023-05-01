@@ -1,0 +1,8 @@
+"patch"
+{
+	"include"		"materials/maps/ep1_c17_02/nature/water_lowdirty001_-1928_1340_-416.vmt"
+	"insert"
+	{
+		"$waterdepth"		"496"
+	}
+}

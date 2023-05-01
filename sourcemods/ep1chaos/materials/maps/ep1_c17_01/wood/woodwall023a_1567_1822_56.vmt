@@ -1,0 +1,8 @@
+"patch"
+{
+	"include"		"materials/WOOD/WOODWALL023A.vmt"
+	"replace"
+	{
+		"$envmap"		"maps/ep1_c17_01/c1567_1822_56"
+	}
+}

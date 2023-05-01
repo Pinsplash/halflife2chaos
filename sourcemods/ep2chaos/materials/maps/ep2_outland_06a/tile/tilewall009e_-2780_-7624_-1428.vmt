@@ -1,0 +1,8 @@
+"patch"
+{
+	"include"		"materials/TILE/TILEWALL009E.vmt"
+	"replace"
+	{
+		"$envmap"		"maps/ep2_outland_06a/c-2780_-7624_-1428"
+	}
+}

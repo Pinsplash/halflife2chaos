@@ -1,0 +1,11 @@
+"LightmappedGeneric"
+{
+	"$basetexture"		"nature/rockwall_antlion02a"
+	"$surfaceprop"		"antlion_eggshell"
+	"$ssbump"		"1"
+	"$bumpmap"		"Nature/antlion_web01a_ssbump"
+	"$envmaptint"		"[ .2 .2 .2 ]"
+	"$envmap"		"cubemaps/cubemap_cave01"
+	"%keywords"		"ep2"
+	"$seamless_scale"		"0.005000"
+}

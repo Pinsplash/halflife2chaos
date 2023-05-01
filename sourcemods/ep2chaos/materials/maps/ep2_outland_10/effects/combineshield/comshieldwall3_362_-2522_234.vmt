@@ -1,0 +1,11 @@
+"patch"
+{
+	"include"		"materials/EFFECTS/COMBINESHIELD/COMSHIELDWALL3.vmt"
+	"replace"
+	{
+		"$envmap"		"maps/ep2_outland_10/c362_-2522_234"
+		"Proxies"
+		{
+		}
+	}
+}

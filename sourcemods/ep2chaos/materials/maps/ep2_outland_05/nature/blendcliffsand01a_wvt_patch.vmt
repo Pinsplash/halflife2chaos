@@ -1,0 +1,8 @@
+"LightmappedGeneric"
+{
+	"$basetexture"		"nature/smallcliff"
+	"%tooltexture"		"nature/blendcliffsand01a_tooltexture"
+	"%keywords"		"wasteland"
+	"$surfaceprop"		"dirt"
+	"%detailtype"		"swamp_land_001"
+}

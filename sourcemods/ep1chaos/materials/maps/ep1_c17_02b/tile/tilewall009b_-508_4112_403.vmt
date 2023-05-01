@@ -1,0 +1,8 @@
+"patch"
+{
+	"include"		"materials/TILE/TILEWALL009B.vmt"
+	"replace"
+	{
+		"$envmap"		"maps/ep1_c17_02b/c-508_4112_403"
+	}
+}

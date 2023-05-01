@@ -1,0 +1,8 @@
+"patch"
+{
+	"include"		"materials/TILE/TILEFLOOR021A.vmt"
+	"replace"
+	{
+		"$envmap"		"maps/ep1_citadel_02/c-1293_567_809"
+	}
+}

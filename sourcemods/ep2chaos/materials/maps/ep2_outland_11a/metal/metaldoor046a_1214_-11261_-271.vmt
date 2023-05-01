@@ -1,0 +1,8 @@
+"patch"
+{
+	"include"		"materials/METAL/METALDOOR046A.vmt"
+	"replace"
+	{
+		"$envmap"		"maps/ep2_outland_11a/c1214_-11261_-271"
+	}
+}

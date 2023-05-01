@@ -1,0 +1,8 @@
+"patch"
+{
+	"include"		"materials/BUILDING_TEMPLATE/COURTYARD_TEMPLATE005C.vmt"
+	"replace"
+	{
+		"$envmap"		"maps/ep1_c17_02b/c1604_2282_-311"
+	}
+}

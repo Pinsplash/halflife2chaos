@@ -1,0 +1,8 @@
+"patch"
+{
+	"include"		"materials/METAL/METALWALL061G.vmt"
+	"replace"
+	{
+		"$envmap"		"maps/ep2_outland_11/c1826_-9734_-1347"
+	}
+}

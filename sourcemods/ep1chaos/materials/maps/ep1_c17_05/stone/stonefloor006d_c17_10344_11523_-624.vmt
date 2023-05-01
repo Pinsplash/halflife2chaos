@@ -1,0 +1,15 @@
+"patch"
+{
+	"include"		"materials/STONE/STONEFLOOR006D_C17.vmt"
+	"replace"
+	{
+		"LightmappedGeneric_DX9"
+		{
+			"$envmap"		"maps/ep1_c17_05/c10344_11523_-624"
+		}
+		"LightmappedGeneric_HDR_DX9"
+		{
+			"$envmap"		"maps/ep1_c17_05/c10344_11523_-624"
+		}
+	}
+}

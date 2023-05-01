@@ -1,0 +1,11 @@
+"patch"
+{
+	"include"		"materials/EFFECTS/COM_SHIELD003A.vmt"
+	"replace"
+	{
+		"$envmap"		"maps/ep1_citadel_03/c3799_12449_4745"
+		"Proxies"
+		{
+		}
+	}
+}

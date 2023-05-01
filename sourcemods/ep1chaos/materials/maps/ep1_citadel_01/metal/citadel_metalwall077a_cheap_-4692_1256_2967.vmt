@@ -1,0 +1,15 @@
+"patch"
+{
+	"include"		"materials/METAL/CITADEL_METALWALL077A_CHEAP.vmt"
+	"replace"
+	{
+		"LightmappedGeneric_DX9"
+		{
+			"$envmap"		"maps/ep1_citadel_01/c-4692_1256_2967"
+		}
+		"LightmappedGeneric_HDR_DX9"
+		{
+			"$envmap"		"maps/ep1_citadel_01/c-4692_1256_2967"
+		}
+	}
+}

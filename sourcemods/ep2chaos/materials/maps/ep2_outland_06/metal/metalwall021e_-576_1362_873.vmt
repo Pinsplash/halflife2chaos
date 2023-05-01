@@ -1,0 +1,11 @@
+"patch"
+{
+	"include"		"materials/METAL/METALWALL021E.vmt"
+	"replace"
+	{
+		"LightmappedGeneric_DX9"
+		{
+			"$envmap"		"maps/ep2_outland_06/c-576_1362_873"
+		}
+	}
+}

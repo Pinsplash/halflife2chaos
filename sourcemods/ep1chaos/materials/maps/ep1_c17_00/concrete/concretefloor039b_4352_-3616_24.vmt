@@ -1,0 +1,8 @@
+"patch"
+{
+	"include"		"materials/CONCRETE/CONCRETEFLOOR039B.vmt"
+	"replace"
+	{
+		"$envmap"		"maps/ep1_c17_00/c4352_-3616_24"
+	}
+}

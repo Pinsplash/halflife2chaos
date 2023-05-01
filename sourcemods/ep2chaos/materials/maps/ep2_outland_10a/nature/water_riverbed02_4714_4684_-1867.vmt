@@ -1,0 +1,11 @@
+"patch"
+{
+	"include"		"materials/NATURE/WATER_RIVERBED02.vmt"
+	"replace"
+	{
+		"$envmap"		"maps/ep2_outland_10a/c4714_4684_-1867"
+		"Proxies"
+		{
+		}
+	}
+}

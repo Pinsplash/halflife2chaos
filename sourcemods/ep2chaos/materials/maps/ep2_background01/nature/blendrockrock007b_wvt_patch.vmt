@@ -1,0 +1,8 @@
+"LightmappedGeneric"
+{
+	"$basetexture"		"nature/sandfloor008c"
+	"%tooltexture"		"nature/blendrockrock07b_tooltexture"
+	"%keywords"		"wasteland"
+	"$surfaceprop"		"dirt"
+	"%detailtype"		"canal_reeds2"
+}

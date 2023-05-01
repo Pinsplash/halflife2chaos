@@ -1,0 +1,11 @@
+"patch"
+{
+	"include"		"materials/PLASTER/PLASTERWALL030E_C17.vmt"
+	"replace"
+	{
+		"LightmappedGeneric_DX9"
+		{
+			"$envmap"		"maps/ep1_c17_01/c-777_1118_57"
+		}
+	}
+}

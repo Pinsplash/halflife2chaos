@@ -1,0 +1,8 @@
+"patch"
+{
+	"include"		"materials/maps/ep2_outland_04/nature/water_tunnels01_cheap_3582_-3930_-1952.vmt"
+	"insert"
+	{
+		"$waterdepth"		"55"
+	}
+}

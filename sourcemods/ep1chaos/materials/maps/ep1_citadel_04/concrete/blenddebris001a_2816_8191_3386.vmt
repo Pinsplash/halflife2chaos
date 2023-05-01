@@ -1,0 +1,11 @@
+"patch"
+{
+	"include"		"materials/CONCRETE/BLENDDEBRIS001A.vmt"
+	"replace"
+	{
+		"LightmappedGeneric_DX9"
+		{
+			"$envmap"		"maps/ep1_citadel_04/c2816_8191_3386"
+		}
+	}
+}

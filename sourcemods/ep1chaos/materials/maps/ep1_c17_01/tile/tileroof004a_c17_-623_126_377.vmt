@@ -1,0 +1,11 @@
+"patch"
+{
+	"include"		"materials/TILE/TILEROOF004A_C17.vmt"
+	"replace"
+	{
+		"LightmappedGeneric_DX9"
+		{
+			"$envmap"		"maps/ep1_c17_01/c-623_126_377"
+		}
+	}
+}

@@ -1,0 +1,8 @@
+"patch"
+{
+	"include"		"materials/DEV/DEV_WINDOWPORTAL.vmt"
+	"replace"
+	{
+		"$envmap"		"maps/ep2_outland_09/c455_-9153_275"
+	}
+}

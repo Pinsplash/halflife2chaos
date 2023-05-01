@@ -1,0 +1,8 @@
+"patch"
+{
+	"include"		"materials/METAL/METALDOOR043B.vmt"
+	"replace"
+	{
+		"$envmap"		"maps/ep1_c17_02a/c-8_7720_-2518"
+	}
+}

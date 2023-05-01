@@ -1,0 +1,8 @@
+"patch"
+{
+	"include"		"materials/METAL/METALROOF005A.vmt"
+	"replace"
+	{
+		"$envmap"		"maps/ep2_outland_10/c1296_-2160_215"
+	}
+}

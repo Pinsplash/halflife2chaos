@@ -1,0 +1,11 @@
+"patch"
+{
+	"include"		"materials/NATURE/WATER_LOWDIRTY001.vmt"
+	"replace"
+	{
+		"$envmap"		"maps/ep1_c17_02/c-1928_1340_-416"
+		"Proxies"
+		{
+		}
+	}
+}

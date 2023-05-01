@@ -1,0 +1,8 @@
+"patch"
+{
+	"include"		"materials/STONE/STONEWALL017C.vmt"
+	"replace"
+	{
+		"$envmap"		"maps/ep2_outland_07/c-9496_-9664_73"
+	}
+}

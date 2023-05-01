@@ -1,0 +1,8 @@
+"patch"
+{
+	"include"		"materials/METAL/METALPIPE005A.vmt"
+	"replace"
+	{
+		"$envmap"		"maps/ep2_outland_05/c436_5472_48"
+	}
+}

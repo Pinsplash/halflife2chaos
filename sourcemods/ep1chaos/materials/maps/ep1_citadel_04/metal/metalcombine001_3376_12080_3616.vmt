@@ -1,0 +1,8 @@
+"patch"
+{
+	"include"		"materials/METAL/METALCOMBINE001.vmt"
+	"replace"
+	{
+		"$envmap"		"maps/ep1_citadel_04/c3376_12080_3616"
+	}
+}

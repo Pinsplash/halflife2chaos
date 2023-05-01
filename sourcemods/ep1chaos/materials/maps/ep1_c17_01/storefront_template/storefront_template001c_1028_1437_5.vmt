@@ -1,0 +1,8 @@
+"patch"
+{
+	"include"		"materials/STOREFRONT_TEMPLATE/STOREFRONT_TEMPLATE001C.vmt"
+	"replace"
+	{
+		"$envmap"		"maps/ep1_c17_01/c1028_1437_5"
+	}
+}

@@ -1,0 +1,8 @@
+"patch"
+{
+	"include"		"materials/VEHICLE/METALTRAINGLASS001A.vmt"
+	"replace"
+	{
+		"$envmap"		"maps/ep2_outland_11a/c2356_-11142_4"
+	}
+}

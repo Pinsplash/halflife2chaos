@@ -1,0 +1,11 @@
+"patch"
+{
+	"include"		"materials/glass/glasswindowbreak070b.vmt"
+	"replace"
+	{
+		"$envmap"		"maps/ep1_citadel_03/c3581_14856_4961"
+		"Proxies"
+		{
+		}
+	}
+}

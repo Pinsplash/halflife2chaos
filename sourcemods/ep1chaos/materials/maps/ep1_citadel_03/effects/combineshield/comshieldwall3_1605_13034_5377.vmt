@@ -1,0 +1,11 @@
+"patch"
+{
+	"include"		"materials/EFFECTS/COMBINESHIELD/COMSHIELDWALL3.vmt"
+	"replace"
+	{
+		"$envmap"		"maps/ep1_citadel_03/c1605_13034_5377"
+		"Proxies"
+		{
+		}
+	}
+}

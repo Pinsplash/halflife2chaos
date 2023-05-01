@@ -1,0 +1,8 @@
+"patch"
+{
+	"include"		"materials/maps/ep2_outland_08/nature/water_riverbed01_-9008_-5184_101.vmt"
+	"insert"
+	{
+		"$waterdepth"		"52"
+	}
+}

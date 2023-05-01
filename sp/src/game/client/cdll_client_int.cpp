@@ -1123,6 +1123,33 @@ bool CHLClient::ReplayPostInit()
 #endif
 }
 
+const char *GetModDirectory()
+{
+	static char modDir[MAX_PATH];
+	if (Q_strlen(modDir) == 0)
+	{
+		const char *gamedir = CommandLine()->ParmValue("-game", CommandLine()->ParmValue("-defaultgamedir", "hl2"));
+		Q_strncpy(modDir, gamedir, sizeof(modDir));
+		if (strchr(modDir, '/') || strchr(modDir, '\\'))
+		{
+			Q_StripLastDir(modDir, sizeof(modDir));
+			int dirlen = Q_strlen(modDir);
+			Q_strncpy(modDir, gamedir + dirlen, sizeof(modDir) - dirlen);
+		}
+	}
+
+	return modDir;
+}
+CON_COMMAND(whereis, "print file location")
+{
+	if (args.ArgC() > 1)
+	{
+		Msg("trying to find %s\n", args[1]);
+		char szScratchFileName[MAX_PATH];
+		g_pFullFileSystem->RelativePathToFullPath(args[1], "GAME", szScratchFileName, sizeof(szScratchFileName));
+		Msg("is it %s\n", szScratchFileName);
+	}
+}
 //-----------------------------------------------------------------------------
 // Purpose: Called after client & server DLL are loaded and all systems initialized
 //-----------------------------------------------------------------------------
@@ -1137,6 +1164,20 @@ void CHLClient::PostInit()
 
 	g_ClientVirtualReality.StartupComplete();
 
+	const char *pGameDir = GetModDirectory();
+	Msg("pGameDir %s\n", pGameDir);
+	if (!Q_strcmp(pGameDir, "hl2chaos"))
+	{
+		char szPath[MAX_PATH*2];
+		int ccFolder = steamapicontext->SteamApps()->GetAppInstallDir(220, szPath, sizeof(szPath));
+		Msg("szPath %s\n", szPath);
+		if (ccFolder > 0)
+		{
+			Q_snprintf(szPath, sizeof(szPath), "%s\\%s", szPath, "hl2");
+			Msg("%s\n", szPath);
+			g_pFullFileSystem->AddSearchPath(szPath, "GAME");
+		}
+	}
 #ifdef HL1MP_CLIENT_DLL
 	if ( s_cl_load_hl1_content.GetBool() && steamapicontext && steamapicontext->SteamApps() )
 	{

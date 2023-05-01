@@ -1,0 +1,8 @@
+"patch"
+{
+	"include"		"materials/STONE/STONESTAIR001A.vmt"
+	"replace"
+	{
+		"$envmap"		"maps/ep1_c17_02b/c-929_1320_288"
+	}
+}

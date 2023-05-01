@@ -1,0 +1,8 @@
+"patch"
+{
+	"include"		"materials/METAL/METALCOMBINE001.vmt"
+	"replace"
+	{
+		"$envmap"		"maps/ep2_outland_10/c5904_2224_-905"
+	}
+}

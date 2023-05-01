@@ -1,0 +1,8 @@
+"patch"
+{
+	"include"		"materials/GLASS/COMBINEGLASS001A.vmt"
+	"replace"
+	{
+		"$envmap"		"maps/ep1_citadel_03/c2580_11083_5771"
+	}
+}
