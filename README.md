@@ -10,7 +10,7 @@ As of version 0.2.2, you no longer need to copy map files into the `maps` folder
 
 ## Building from source for Linux
 No build enviroment setup required.
-1. `git clone https://github.com/Pinsplash/halflife2chaos`
+1. `git clone --depth=1 https://github.com/Pinsplash/halflife2chaos`
 2. `cd halflife2chaos`
 3. `./sp/src/createallprojects` // TODO: this likely can be done with creategameprojects.
 4. `make -f ./sp/src/everything.mak client_hl2 server_hl2`
