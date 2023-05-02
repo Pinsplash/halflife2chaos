@@ -7521,7 +7521,7 @@ bool CBaseEntity::PutAtNearestNode(float flMaxDist, bool bNoDebug)
 				continue;
 			}
 			float flDist = (GetAbsOrigin() - pNode->GetPosition(HULL_HUMAN)).Length();
-			if (unstuck_debug.GetBool()) Msg("Node %i dist (%0.1f) < (%0.1f)\n", pNode->GetId(), flDist, flClosest);
+			if (unstuck_debug.GetBool() && !bNoDebug) Msg("Node %i dist (%0.1f) < (%0.1f)\n", pNode->GetId(), flDist, flClosest);
 			if (flDist < flClosest)
 			{
 				if (unstuck_debug.GetBool() && !bNoDebug) Msg("Node %i new closest\n", pNode->GetId());

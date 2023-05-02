@@ -480,6 +480,8 @@ CON_COMMAND(chaos_reset, "resets stuff like sv_gravity. executes chaos_restart.c
 	//Reset anything that persists forever
 	ClearChaosData();
 	engine->ClientCommand(engine->PEntityOfEntIndex(1), "exec chaos_restart\n");
+	sv_gravity.SetValue(600);
+	physenv->SetGravity(Vector(0, 0, -GetCurrentGravity()));
 }
 CON_COMMAND(chaos_restart, "restarts map and resets stuff like sv_gravity. executes chaos_restart.cfg.")
 {
@@ -1158,10 +1160,9 @@ void CHL2_Player::PreThink(void)
 			if (g_flNextEffectRem <= 0 && !pl.deadflag)//don't start new effects when dead
 			{
 				engine->ClientCommand(engine->PEntityOfEntIndex(1), "sv_cheats 1");//always force cheats on to ensure everything works
-				if (GetMoveType() != MOVETYPE_NOCLIP && chaos_unstuck_neweffect.GetBool())
-					GetUnstuck(500, true);
 				int nID = 0;
-				if (!chaos_vote_enable.GetBool()) {
+				if (!chaos_vote_enable.GetBool())
+				{
 					int iWeightSum = 0;
 					for (int i = 1; i < NUM_EFFECTS; i++)
 					{
@@ -1173,8 +1174,9 @@ void CHL2_Player::PreThink(void)
 							g_ChaosEffects[i]->m_iCurrentWeight = min(g_ChaosEffects[i]->m_iCurrentWeight + g_ChaosEffects[i]->m_iMaxWeight * 0.2, g_ChaosEffects[i]->m_iMaxWeight);
 					}
 					nID = PickEffect(iWeightSum);
-
-				} else {
+				}
+				else
+				{
 					nID = GetVoteWinnerEffect();
 				}
 				g_flEffectThinkRem = 0;
@@ -1183,9 +1185,10 @@ void CHL2_Player::PreThink(void)
 
 				//start effect
 				StartGivenEffect(nID);
-				if (chaos_vote_enable.GetBool()) {
+				if (chaos_vote_enable.GetBool())
 					ResetVotes();
-				}
+				if (GetMoveType() != MOVETYPE_NOCLIP && chaos_unstuck_neweffect.GetBool())
+					GetUnstuck(500, true);
 			}
 		}
 		else if (chaos_instant_off.GetBool())
@@ -7728,12 +7731,12 @@ void CEGravitySet::StartEffect()
 		Msg("Setting sv_gravity to 0\n");
 		break;
 	case EFFECT_SUPERG:
-		sv_gravity.SetValue(bNegative ? -1200 : 1200);
-		Msg("Setting sv_gravity to %i\n", bNegative ? -1200 : 1200);
+		sv_gravity.SetValue(bNegative ? -1800 : 1800);
+		Msg("Setting sv_gravity to %i\n", bNegative ? -1800 : 1800);
 		break;
 	case EFFECT_LOWG:
-		sv_gravity.SetValue(bNegative ? -300 : 300);
-		Msg("Setting sv_gravity to %i\n", bNegative ? -300 : 300);
+		sv_gravity.SetValue(bNegative ? -200 : 200);
+		Msg("Setting sv_gravity to %i\n", bNegative ? -200 : 200);
 		break;
 	case EFFECT_INVERTG:
 		Msg("Setting sv_gravity to %i\n", -sv_gravity.GetInt());
