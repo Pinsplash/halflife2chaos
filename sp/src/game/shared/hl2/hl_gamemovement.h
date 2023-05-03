@@ -20,7 +20,7 @@
 struct LadderMove_t;
 class CInfoLadderDismount;
 extern IGameMovement *g_pGameMovement;
-extern CHL2GameMovement g_GameMovement;
+extern class CHL2GameMovement g_GameMovement;
 
 struct NearbyDismount_t
 {

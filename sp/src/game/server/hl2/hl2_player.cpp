@@ -1785,7 +1785,7 @@ void CHL2_Player::ReplaceEffects()
 		{
 			if (pEffect->DoRestorationAbort())
 			{
-				Msg("Killing effect %s\n", pEffect->m_strHudName);
+				Msg("Killing effect %s\n", STRING(pEffect->m_strHudName));
 				pEffect->StopEffect();
 			}
 		}
@@ -1805,7 +1805,7 @@ void CHL2_Player::ReplaceEffects()
 
 		if (pEffect->DoRestorationAbort())
 		{
-			Msg("Restoring effect %s\n", pEffect->m_strHudName);
+			Msg("Restoring effect %s\n", STRING(pEffect->m_strHudName));
 			pEffect->RestoreEffect();
 		}
 		//make two lists equal again
@@ -5757,6 +5757,7 @@ void CChaosEffect::AbortEffect()
 	CHL2_Player *pHL2Player = static_cast<CHL2_Player*>(pPlayer);
 	pHL2Player->StopGivenEffect(m_nID);
 }
+
 void CChaosEffect::RandomTeleport(bool bPlayerOnly)
 {
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
@@ -5764,6 +5765,8 @@ void CChaosEffect::RandomTeleport(bool bPlayerOnly)
 	//teleport to a random node
 	int nRandom = chaos_rng1.GetInt() == -1 ? random->RandomInt(0, g_pBigAINet->NumNodes() - 1) : chaos_rng1.GetInt();
 	CAI_Node *pNode = g_pBigAINet->GetNode(nRandom);
+	if ( !pNode )
+		return; // Some maps may be lacking node graphs
 	Vector vec = pNode->GetPosition(HULL_HUMAN);
 	if (pPlayer->GetVehicle() && pPlayer->GetVehicle()->GetVehicleEnt())
 	{
@@ -7356,7 +7359,7 @@ void CETreeSpam::StartEffect()
 		Msg("node %i\n", pNode->GetId());
 		if (pPlayerNode == pNode)
 		{
-			Msg("Tree (node %i) too close to player\n");
+			Msg("Tree (node %i) too close to player\n", pNode->GetId());
 			continue;
 		}
 		CBaseEntity *pEnt = CreateEntityByName("prop_dynamic");
@@ -7365,7 +7368,7 @@ void CETreeSpam::StartEffect()
 		UTIL_TraceLine(vecNodePos + Vector(0, 0, 16), vecNodePos - Vector(0, 0, 100), MASK_SOLID, NULL, COLLISION_GROUP_NONE, &tr);
 		if (tr.m_pEnt->GetMoveType() == MOVETYPE_VPHYSICS || tr.m_pEnt->IsNPC())
 		{
-			Msg("Tree (node %i) on bad ground\n");
+			Msg("Tree (node %i) on bad ground\n", pNode->GetId());
 			continue;
 		}
 		bool bDone = false;
