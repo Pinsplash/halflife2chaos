@@ -5589,10 +5589,10 @@ void CChaosEffect::StartEffect()
 		engine->ClientCommand(engine->PEntityOfEntIndex(1), "mat_picmip 4;r_lod 6;mat_filtertextures 0;mat_filterlightmaps 0");
 		break;
 	case EFFECT_NO_MOUSE_HORIZONTAL:
-		engine->ClientCommand(engine->PEntityOfEntIndex(1), "sv_cheats 1;wait 10;m_yaw 0.0f");//speculative fix for movement becoming inverted
+		engine->ClientCommand(engine->PEntityOfEntIndex(1), "sv_cheats 1;wait 10;m_yaw 0.0f;cl_yawspeed 0");
 		break;
 	case EFFECT_NO_MOUSE_VERTICAL:
-		engine->ClientCommand(engine->PEntityOfEntIndex(1), "sv_cheats 1;wait 10;m_pitch 0.0f");//speculative fix for movement becoming inverted
+		engine->ClientCommand(engine->PEntityOfEntIndex(1), "sv_cheats 1;wait 10;m_pitch 0.0f;cl_pitchspeed 0");
 		break;
 	case EFFECT_GIVE_ALL_WEAPONS:
 		UTIL_GetLocalPlayer()->EquipSuit();
