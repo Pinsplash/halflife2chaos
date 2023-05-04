@@ -1738,8 +1738,8 @@ void CWeaponPhysCannon::PrimaryFireEffect( void )
 
 	pOwner->ViewPunch( QAngle(-6, random->RandomInt(-2,2) ,0) );
 	
-	color32 white = { 245, 245, 255, 32 };
-	UTIL_ScreenFade( pOwner, white, 0.1f, 0.0f, FFADE_IN );
+	//color32 white = { 245, 245, 255, 32 };
+	//UTIL_ScreenFade( pOwner, white, 0.1f, 0.0f, FFADE_IN );
 
 	WeaponSound( SINGLE );
 }

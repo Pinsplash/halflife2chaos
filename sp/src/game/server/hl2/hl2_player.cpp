@@ -465,6 +465,57 @@ CON_COMMAND(chaos_vote_debug, "prints info about the votes")
 		STRING(g_ChaosEffects[g_arriVoteEffects[3]]->m_strHudName)
 	);
 }
+void DisplayGeneratedCC()
+{
+	CBaseEntity *pCC = (CBaseEntity *)CreateEntityByName("color_correction");
+	if (pCC)
+	{
+		pCC->SetAbsOrigin(vec3_origin);
+		pCC->KeyValue("targetname", "chaos_cc");
+		pCC->KeyValue("minfalloff", "-1");
+		pCC->KeyValue("maxfalloff", "-1");
+		pCC->KeyValue("maxweight", "1");
+		pCC->KeyValue("fadeInDuration", "0");
+		pCC->KeyValue("fadeOutDuration", "0");
+		pCC->KeyValue("filename", "materials/chaos_random_cc.raw");
+		pCC->KeyValue("StartDisabled", "0");
+		pCC->Spawn();
+		pCC->Activate();
+	}
+}
+CON_COMMAND(cc_generate, "")
+{
+	FileHandle_t file_handle = filesystem->Open("materials/chaos_random_cc.raw", "wb");
+	int rOut = RandomInt(0, 255);
+	int gOut = RandomInt(0, 255);
+	int bOut = RandomInt(0, 255);
+	float flFrequency = 1;
+	for (int r = 0; r < 32; r++)
+	{
+		flFrequency += 1;
+		for (int g = 0; g < 32; g++)
+		{
+			for (int b = 0; b < 32; b++)
+			{
+				//change colors at a controlled rate
+				if (flFrequency >= 2)
+				{
+					rOut = (RandomInt(0, 255) + (r * 10) + (rOut * 4)) / 4;
+					gOut = (RandomInt(0, 255) + (g * 10) + (rOut * 4)) / 4;
+					bOut = (RandomInt(0, 255) + (b * 10) + (rOut * 4)) / 4;
+					flFrequency = 1;
+				}
+				color24 outColor;
+				outColor.r = rOut;
+				outColor.g = gOut;
+				outColor.b = bOut;
+				filesystem->Write(&outColor, sizeof(color24), file_handle);
+			}
+		}
+	}
+	filesystem->Close(file_handle);
+	DisplayGeneratedCC();
+}
 CON_COMMAND(chaos_vote_reset, "choses new effects and resets votes")
 {
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
@@ -5000,6 +5051,7 @@ ConVar chaos_time_npc_teleport("chaos_time_npc_teleport", "1");
 ConVar chaos_time_death_water("chaos_time_death_water", "1");
 ConVar chaos_time_quickclip_on("chaos_time_quickclip_on", "1");
 ConVar chaos_time_quickclip_off("chaos_time_quickclip_off", "1");
+ConVar chaos_time_random_cc("chaos_time_random_cc", "1");
 
 ConVar chaos_prob_zerog("chaos_prob_zerog", "100");
 ConVar chaos_prob_superg("chaos_prob_superg", "100");
@@ -5071,6 +5123,7 @@ ConVar chaos_prob_disable_save("chaos_prob_disable_save", "100");
 ConVar chaos_prob_no_reload("chaos_prob_no_reload", "100");
 ConVar chaos_prob_npc_teleport("chaos_prob_npc_teleport", "100");
 ConVar chaos_prob_death_water("chaos_prob_death_water", "100");
+ConVar chaos_prob_random_cc("chaos_prob_random_cc", "100");
 #define ERROR_WEIGHT 1
 void CHL2_Player::PopulateEffects()
 {
@@ -5145,6 +5198,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<>(EFFECT_NO_RELOAD,						MAKE_STRING("No One Can Reload"),			EC_HAS_WEAPON,							chaos_time_no_reload.GetFloat(),			chaos_prob_no_reload.GetInt());
 	CreateEffect<>(EFFECT_NPC_TELEPORT,						MAKE_STRING("You Teleport?"),				EC_NONE,								chaos_time_npc_teleport.GetFloat(),			chaos_prob_npc_teleport.GetInt());
 	CreateEffect<CEDeathWater>(EFFECT_DEATH_WATER,			MAKE_STRING("Death Water"),					EC_WATER,								chaos_time_death_water.GetFloat(),			chaos_prob_death_water.GetInt());
+	CreateEffect<CERandomCC>(EFFECT_RANDOM_CC,				MAKE_STRING("Color Incorrection"),			EC_NONE,								chaos_time_random_cc.GetBool(),				chaos_prob_random_cc.GetBool());
 }
 
 //Set the chaos_ignore_ convars if wanted
@@ -8261,4 +8315,28 @@ void CEDejaVu::MaintainEffect()
 	if (!m_bDone)
 		UTIL_GetLocalPlayer()->GetUnstuck(500, true);
 	m_bDone = true;
+}
+void CERandomCC::StartEffect()
+{
+	engine->ClientCommand(engine->PEntityOfEntIndex(1), "cc_generate");
+}
+void CERandomCC::StopEffect()
+{
+	CBaseEntity *pCC = gEntList.FindEntityByName(NULL, "chaos_cc");
+	while (pCC)
+	{
+		variant_t emptyVariant;
+		UTIL_Remove(pCC);
+		pCC = gEntList.FindEntityByName(pCC, "chaos_cc");
+	}
+}
+void CERandomCC::TransitionEffect()
+{
+	StopEffect();
+	DisplayGeneratedCC();
+}
+void CERandomCC::RestoreEffect()
+{
+	StopEffect();
+	DisplayGeneratedCC();
 }

@@ -86,6 +86,7 @@ enum Effect_T
 	EFFECT_NO_RELOAD,
 	EFFECT_NPC_TELEPORT,
 	EFFECT_DEATH_WATER,
+	EFFECT_RANDOM_CC,
 
 	NUM_EFFECTS
 };
@@ -514,5 +515,13 @@ public:
 	void StartEffect() override;
 	void MaintainEffect() override;
 	bool m_bDone = false;
+};
+class CERandomCC : public CChaosEffect
+{
+public:
+	void StartEffect() override;
+	void StopEffect() override;
+	void TransitionEffect() override;
+	void RestoreEffect() override;
 };
 #endif
