@@ -74,6 +74,7 @@
 #include "npc_antlion.h"
 #include "ai_playerally.h"
 #include "hl_gamemovement.h"
+#include "npc_PoisonZombie.h"
 
 #ifdef HL2_EPISODIC
 #include "npc_alyx_episodic.h"
@@ -240,6 +241,7 @@ CChaosStoredEnt *StoreEnt(CBaseEntity *pEnt)
 	{
 		pStoredEnt->animating = true;
 		pStoredEnt->skin = pAnimating->m_nSkin;
+		pStoredEnt->body = pAnimating->m_nBody;
 		CBaseCombatCharacter *pCombatCharacter = dynamic_cast<CBaseCombatCharacter*>(pAnimating);
 		if (pCombatCharacter)
 		{
@@ -262,18 +264,26 @@ CChaosStoredEnt *StoreEnt(CBaseEntity *pEnt)
 					pStoredEnt->hiding = pHeadcrab->m_bHidden;
 					pStoredEnt->ceiling = pHeadcrab->IsHangingFromCeiling();
 				}
-				//i hate including
-				if (pNPC->ClassMatches("npc_po*"))
+				CNPC_PoisonZombie *pPZombie = dynamic_cast<CNPC_PoisonZombie*>(pNPC);
+				if (pPZombie)
 				{
 					pStoredEnt->poisonzombie = true;
-					int crabs = 0;
-					if (pNPC->GetBodygroup(2))
-						crabs++;
-					if (pNPC->GetBodygroup(3))
-						crabs++;
-					if (pNPC->GetBodygroup(4))
-						crabs++;
-					pStoredEnt->crabcount = crabs;
+					pStoredEnt->crabcount = 0;
+					pStoredEnt->crabs[0] = pPZombie->m_bCrabs[0];
+					pStoredEnt->crabs[1] = pPZombie->m_bCrabs[1];
+					pStoredEnt->crabs[2] = pPZombie->m_bCrabs[2];
+					if (pStoredEnt->crabs[0])
+					{
+						pStoredEnt->crabcount++;
+					}
+					if (pStoredEnt->crabs[1])
+					{
+						pStoredEnt->crabcount++;
+					}
+					if (pStoredEnt->crabs[2])
+					{
+						pStoredEnt->crabcount++;
+					}
 				}
 				CNPC_Antlion *pAntlion = dynamic_cast<CNPC_Antlion*>(pNPC);
 				if (pAntlion)
@@ -325,7 +335,7 @@ CBaseEntity *RetrieveStoredEnt(CChaosStoredEnt *pStoredEnt, bool bPersist)
 	if (pStoredEnt->animating)//CBaseAnimating
 	{
 		pEnt->KeyValue("skin", pStoredEnt->skin);
-
+		pEnt->KeyValue("body", pStoredEnt->body);
 		if (pStoredEnt->combatcharacter)//CBaseCombatCharacter
 		{
 			if (pStoredEnt->npc)//CAI_BaseNPC
@@ -345,7 +355,8 @@ CBaseEntity *RetrieveStoredEnt(CChaosStoredEnt *pStoredEnt, bool bPersist)
 				}
 				if (pStoredEnt->poisonzombie)
 				{
-					pEnt->KeyValue("crabcount", pStoredEnt->crabcount);
+					CNPC_PoisonZombie *pPZombie = dynamic_cast<CNPC_PoisonZombie*>(pNPC);
+					pPZombie->m_nCrabCount = pStoredEnt->crabcount;
 				}
 				if (pStoredEnt->antlion)
 				{
@@ -1882,6 +1893,14 @@ void CHL2_Player::SpawnStoredEnts()
 			DispatchSpawn(pEnt);
 			pEnt->Activate();//according to some assert, we don't need this
 			//pEnt->Teleport(&vecOrigin, &vecAngle, NULL);
+			//this has to be done post spawn... ick
+			if (pStored->poisonzombie)
+			{
+				CNPC_PoisonZombie *pPZombie = dynamic_cast<CNPC_PoisonZombie*>(pEnt);
+				pPZombie->EnableCrab(0, pStored->crabs[0]);
+				pPZombie->EnableCrab(1, pStored->crabs[1]);
+				pPZombie->EnableCrab(2, pStored->crabs[2]);
+			}
 		}
 	}
 }

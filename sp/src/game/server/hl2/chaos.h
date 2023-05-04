@@ -185,6 +185,7 @@ public:
 
 	bool animating = false;
 	int skin;
+	int body;
 
 	bool combatcharacter = false;
 
@@ -200,6 +201,7 @@ public:
 	bool ceiling = false;
 
 	bool poisonzombie = false;
+	bool crabs[3];
 	int crabcount;
 
 	bool antlion = false;
