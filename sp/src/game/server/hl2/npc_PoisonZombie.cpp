@@ -29,7 +29,7 @@
 #include "tier0/memdbgon.h"
 
 #define BREATH_VOL_MAX  0.6
-
+extern int						g_iChaosSpawnCount;
 //
 // Controls how soon he throws the first headcrab after seeing his enemy (also when the first headcrab leaps off)
 //
@@ -576,7 +576,14 @@ void CNPC_PoisonZombie::HandleAnimEvent( animevent_t *pEvent )
 		SetBodygroup( ZOMBIE_BODYGROUP_THROW, 0 );
 
 		CBlackHeadcrab *pCrab = (CBlackHeadcrab *)CreateNoSpawn( GetHeadcrabClassname(), EyePosition(), vec3_angle, this );
-		pCrab->AddSpawnFlags( SF_NPC_FALL_TO_GROUND );
+		pCrab->AddSpawnFlags(SF_NPC_FALL_TO_GROUND);
+		if (m_bChaosSpawned)
+		{
+			g_iChaosSpawnCount++;
+			pCrab->m_iChaosID = g_iChaosSpawnCount;
+		}
+		pCrab->m_bChaosPersist = m_bChaosPersist;
+		pCrab->m_bChaosSpawned = m_bChaosSpawned;
 		
 		// Fade if our parent is supposed to
 		if ( HasSpawnFlags( SF_NPC_FADE_CORPSE ) )
@@ -692,9 +699,14 @@ void CNPC_PoisonZombie::EvacuateNest( bool bExplosion, float flDamage, CBaseEnti
 			// Now slam the angles because the attachment point will have pitch and roll, which we can't use.
 			vecAngles = QAngle( 0, random->RandomFloat( 0, 360 ), 0 );
 
-			CBlackHeadcrab *pCrab = (CBlackHeadcrab *)CreateNoSpawn( GetHeadcrabClassname(), vecPosition, vecAngles, this );
-			pCrab->Spawn();
-
+			CBlackHeadcrab *pCrab = (CBlackHeadcrab *)CreateNoSpawn(GetHeadcrabClassname(), vecPosition, vecAngles, this);
+			if (m_bChaosSpawned)
+			{
+				g_iChaosSpawnCount++;
+				pCrab->m_iChaosID = g_iChaosSpawnCount;
+			}
+			pCrab->m_bChaosPersist = m_bChaosPersist;
+			pCrab->m_bChaosSpawned = m_bChaosSpawned;
 			if( !HeadcrabFits(pCrab) )
 			{
 				UTIL_Remove(pCrab);

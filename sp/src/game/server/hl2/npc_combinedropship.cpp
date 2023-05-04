@@ -95,7 +95,7 @@ enum CRATE_TYPES
 ConVar	g_debug_dropship( "g_debug_dropship", "0" );
 ConVar  sk_dropship_container_health( "sk_dropship_container_health", "750" );
 ConVar	sk_npc_dmg_dropship( "sk_npc_dmg_dropship","5", FCVAR_NONE, "Dropship container cannon damage." );
-
+extern int						g_iChaosSpawnCount;
 //=====================================
 // Animation Events
 //=====================================
@@ -872,6 +872,13 @@ void CNPC_CombineDropship::Spawn( void )
 		m_hContainer = (CBaseAnimating*)CreateEntityByName( "prop_dropship_container" );
 		if ( m_hContainer )
 		{
+			if (m_bChaosSpawned)
+			{
+				g_iChaosSpawnCount++;
+				m_hContainer->m_iChaosID = g_iChaosSpawnCount;
+			}
+			m_hContainer->m_bChaosPersist = m_bChaosPersist;
+			m_hContainer->m_bChaosSpawned = m_bChaosSpawned;
 			m_hContainer->SetName( AllocPooledString("dropship_container") );
 			m_hContainer->SetAbsOrigin( GetAbsOrigin() );
 			m_hContainer->SetAbsAngles( GetAbsAngles() );
@@ -900,7 +907,14 @@ void CNPC_CombineDropship::Spawn( void )
 		break;
 
 	case CRATE_STRIDER:
-		m_hContainer = (CBaseAnimating*)CreateEntityByName( "npc_strider" );
+		m_hContainer = (CBaseAnimating*)CreateEntityByName("npc_strider");
+		if (m_bChaosSpawned)
+		{
+			g_iChaosSpawnCount++;
+			m_hContainer->m_iChaosID = g_iChaosSpawnCount;
+		}
+		m_hContainer->m_bChaosPersist = m_bChaosPersist;
+		m_hContainer->m_bChaosSpawned = m_bChaosSpawned;
 		m_hContainer->SetAbsOrigin( GetAbsOrigin() - Vector( 0, 0 , 100 ) );
 		m_hContainer->SetAbsAngles( GetAbsAngles() );
 		m_hContainer->SetParent(this, 0);
@@ -949,6 +963,13 @@ void CNPC_CombineDropship::Spawn( void )
 		m_hContainer = (CBaseAnimating*)CreateEntityByName( "prop_dynamic_override" );
 		if ( m_hContainer )
 		{
+			if (m_bChaosSpawned)
+			{
+				g_iChaosSpawnCount++;
+				m_hContainer->m_iChaosID = g_iChaosSpawnCount;
+			}
+			m_hContainer->m_bChaosPersist = m_bChaosPersist;
+			m_hContainer->m_bChaosSpawned = m_bChaosSpawned;
 			m_hContainer->SetModel( "models/buggy.mdl" );
 			m_hContainer->SetName( AllocPooledString("dropship_jeep") );
 
@@ -2435,6 +2456,13 @@ void CNPC_CombineDropship::SpawnTroop( void )
 		return;
 	}
 	CAI_BaseNPC	*pNPC = pEntity->MyNPCPointer();
+	if (m_bChaosSpawned)
+	{
+		g_iChaosSpawnCount++;
+		pNPC->m_iChaosID = g_iChaosSpawnCount;
+	}
+	pNPC->m_bChaosPersist = m_bChaosPersist;
+	pNPC->m_bChaosSpawned = m_bChaosSpawned;
 	Assert( pNPC );
 
 	// Spawn an entity blocker.

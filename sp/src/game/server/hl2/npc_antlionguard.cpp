@@ -41,7 +41,7 @@
 inline void TraceHull_SkipPhysics( const Vector &vecAbsStart, const Vector &vecAbsEnd, const Vector &hullMin, 
 					 const Vector &hullMax,	unsigned int mask, const CBaseEntity *ignore, 
 					 int collisionGroup, trace_t *ptr, float minMass );
-
+extern int						g_iChaosSpawnCount;
 ConVar	g_debug_antlionguard( "g_debug_antlionguard", "0" );
 ConVar	sk_antlionguard_dmg_charge( "sk_antlionguard_dmg_charge", "0" );
 ConVar	sk_antlionguard_dmg_shove( "sk_antlionguard_dmg_shove", "0" );
@@ -3199,7 +3199,13 @@ void CNPC_AntlionGuard::SummonAntlions( void )
 		CAI_BaseNPC	*pent = (CAI_BaseNPC*)CreateEntityByName( "npc_antlion" );
 		if ( !pent )
 			break;
-
+		if (m_bChaosSpawned)
+		{
+			g_iChaosSpawnCount++;
+			pent->m_iChaosID = g_iChaosSpawnCount;
+		}
+		pent->m_bChaosPersist = m_bChaosPersist;
+		pent->m_bChaosSpawned = m_bChaosSpawned;
 		CNPC_Antlion *pAntlion = assert_cast<CNPC_Antlion*>(pent);
 
 		if ( g_debug_antlionguard.GetInt() == 2 )

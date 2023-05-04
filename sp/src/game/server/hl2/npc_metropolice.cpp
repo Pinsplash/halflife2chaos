@@ -101,7 +101,7 @@ enum SpeechMemory_t
 int	g_interactionMetrocopStartedStitch = 0;
 int g_interactionMetrocopIdleChatter = 0;
 int g_interactionMetrocopClearSentenceQueues = 0;
-
+extern int						g_iChaosSpawnCount;
 extern int g_interactionHitByPlayerThrownPhysObj;
 extern ConVar chaos_no_reload;
 extern ConVar chaos_bullet_teleport;
@@ -2794,8 +2794,14 @@ void CNPC_MetroPolice::OnAnimEventStartDeployManhack( void )
 	}
 
 	// Create the manhack to throw
-	CNPC_Manhack *pManhack = (CNPC_Manhack *)CreateEntityByName( "npc_manhack" );
-	
+	CNPC_Manhack *pManhack = (CNPC_Manhack *)CreateEntityByName("npc_manhack");
+	if (m_bChaosSpawned)
+	{
+		g_iChaosSpawnCount++;
+		pManhack->m_iChaosID = g_iChaosSpawnCount;
+	}
+	pManhack->m_bChaosPersist = m_bChaosPersist;
+	pManhack->m_bChaosSpawned = m_bChaosSpawned;
 	Vector	vecOrigin;
 	QAngle	vecAngles;
 
