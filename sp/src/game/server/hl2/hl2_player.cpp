@@ -982,6 +982,7 @@ void CHL2_Player::Precache( void )
 	PrecacheModel("models/props_junk/garbage_glassbottle003a_chunk02.mdl");
 	PrecacheModel("models/props_junk/garbage_glassbottle003a_chunk03.mdl");
 	PrecacheModel("models/props_foliage/tree_pine04.mdl");
+	PrecacheModel("models/props_c17/oildrum001.mdl");
 	UTIL_PrecacheOther("func_tank");
 
 	PrecacheScriptSound( "HL2Player.SprintNoPower" );
@@ -7774,27 +7775,43 @@ void CEBumpy::FastThink()
 }
 void CEBumpy::DoOnVehicles(CPropVehicleDriveable *pVehicle)
 {
-	variant_t sVariant;
-	if (pVehicle->GetDriver())
+	int iSpheres = 0;
+	CBaseEntity *pSphere = gEntList.FindEntityByClassname(NULL, "prop_physics");
+	while (pSphere)
 	{
-		//only do bumps when actually moving
-		if ((pVehicle->m_vecLastBump - pVehicle->GetAbsOrigin()).Length() > 30)
+		if (pSphere->m_bChaosSpawned && !strcmp(STRING(pSphere->GetModelName()), "models/props_c17/oildrum001.mdl"))
 		{
-			//alternating between forward and backward force gives a much more convincing shake
-			//since this is a bumpy road, the "bumps" should cause the vehicle to slow down a bit
-			//so nudges in the opposing direction to motion are stronger
-			//may also want backwards-moving nudges to use a different amount of force
-			if (pVehicle->GetPhysics()->GetVehicleOperatingParams().speed > 0 && !m_bReverse)//moving F nudging F
-				sVariant.SetFloat(10);
-			if (pVehicle->GetPhysics()->GetVehicleOperatingParams().speed > 0 && m_bReverse)//moving F nudging B
-				sVariant.SetFloat(-60);
-			if (pVehicle->GetPhysics()->GetVehicleOperatingParams().speed < 0 && !m_bReverse)//moving B nudging F
-				sVariant.SetFloat(60);
-			if (pVehicle->GetPhysics()->GetVehicleOperatingParams().speed < 0 && m_bReverse)//moving B nudging B
-				sVariant.SetFloat(-10);
-			g_EventQueue.AddEvent(pVehicle, "Throttle", sVariant, 0, pVehicle, pVehicle);
-			pVehicle->m_vecLastBump = pVehicle->GetAbsOrigin();
+			iSpheres++;
+			//get rid of props that are far away
+			if ((pSphere->GetAbsOrigin() - pVehicle->GetAbsOrigin()).Length2D() > 300 || !pVehicle->GetDriver())
+			{
+				UTIL_Remove(pSphere);
+				iSpheres--;
+			}
 		}
+		pSphere = gEntList.FindEntityByClassname(pSphere, "prop_physics");
+	}
+	if (iSpheres < 7 && pVehicle->GetDriver())
+	{
+		//put invisible props in front of the car
+		QAngle angFacing = pVehicle->GetAbsAngles();
+		float flSidewaysPos = RandomInt(-50, 50);
+		float flForwardPos = RandomInt(pVehicle->GetPhysics()->GetVehicleOperatingParams().speed >= 0 ? 200 : -200, pVehicle->GetPhysics()->GetVehicleOperatingParams().speed >= 0 ? 300 : -300);
+		Vector vecOffset = Vector(flSidewaysPos, flForwardPos, 0);
+		Vector vecRotated;
+		VectorRotate(vecOffset, angFacing, vecRotated);
+		trace_t tr;
+		UTIL_TraceLine(vecRotated + pVehicle->GetAbsOrigin(), vecRotated + pVehicle->GetAbsOrigin() - Vector(0, 0, 1000), MASK_SOLID, pVehicle, COLLISION_GROUP_DEBRIS, &tr);
+		CBaseEntity *pEnt = CreateEntityByName("prop_physics");
+		pEnt->SetAbsOrigin(tr.endpos - Vector(0, 0, 7));
+		pEnt->SetAbsAngles(QAngle(90, angFacing.y, 0));
+		pEnt->SetModel("models/props_c17/oildrum001.mdl");
+		pEnt->AddEffects(EF_NODRAW);
+		g_iChaosSpawnCount++;
+		pEnt->m_iChaosID = g_iChaosSpawnCount;
+		pEnt->m_bChaosSpawned = true;
+		pEnt->AddSpawnFlags(8);
+		DispatchSpawn(pEnt);
 	}
 }
 void CEGravitySet::StartEffect()
