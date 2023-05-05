@@ -1,10 +1,12 @@
 # Half-Life 2 Chaos
 ## Installing
 1. Install `Source SDK Base 2013 Singleplayer` from Steam.
-2. Switch the SDK to the 'upcoming' beta. Press right click -> `Properties...` -> `Betas` and change the dropdown `None` to `upcoming - upcoming`. Changing this setting will prevent immediate crashes.
-3. Download latest `hl2c.zip` file from [releases](https://github.com/Pinsplash/halflife2chaos/releases).
-4. Extract `hl2chaos` from the dowloaded zip file into `Steam/steamapps/sourcemods/`. The path to gameinfo.txt should look like this: `Steam/steamapps/sourcemods/hl2chaos/gameinfo.txt`. Do the same for `ep1chaos` and `ep2chaos` if you want to play Chaos in Half-Life 2: Episode One/Two.
+2. Switch the SDK to the 'upcoming' beta. Right click on it in Steam and then click `Properties...` -> `Betas` and change the dropdown `None` to `upcoming - upcoming`. Changing this setting will prevent immediate crashes.
+3. Download latest `hl2c.zip` file from the [releases](https://github.com/Pinsplash/halflife2chaos/releases) page.
+4. Extract the `hl2chaos` folder from the zip file into `Steam/steamapps/sourcemods/`. The path to gameinfo.txt should look like this: `Steam/steamapps/sourcemods/hl2chaos/gameinfo.txt`. Do the same for `ep1chaos` and `ep2chaos` if you want to play Chaos in Half-Life 2: Episode One/Two.
 5. Restart Steam for the mod(s) to appear in your library.
+
+For Half-Life 2 Chaos, but not the Episodes, you must have Half-Life 2 installed for the mod to find the levels.
 
 As of version 0.2.2, you no longer need to copy map files into the `maps` folders.
 
@@ -21,7 +23,7 @@ Compiling for the episodes is an excercise for the reader. (Should be similar bu
 
 # Effect Voting on Twitch
 If you stream on Twitch, you can make it so that viewers can vote for effects by sending chat messages. These instructions are specifically for Windows. If you're on Linux, you can figure it out.
-1. Download and install [Python](https://www.python.org/) 3.10.11 from [here](https://www.python.org/downloads/release/python-31011/).
+1. Download and install [Python](https://www.python.org/) 3.10.11 from [here](https://www.python.org/downloads/release/python-31011/). Python 3.11 does not work with the latest version of OBS.
 2. Download the code. This is the green button that says "code" at the top. Click "Download ZIP" unless you want to use GitHub Desktop for some reason.
 3. Extract the contents to any place on your computer. The only part you need are the files in the `twitch-integration` folder.
 4. Press the Windows logo on your keyboard and R at the same time. It should bring up a small window named 'Run'. Type `cmd` in the text box and then click 'OK'. It should bring up a black text box.
@@ -31,7 +33,7 @@ If you stream on Twitch, you can make it so that viewers can vote for effects by
 8. Go to [twitch dev apps](https://dev.twitch.tv/console/apps) and register a new app.
 9. The name can be anything. In "OAuth Redirect URLs" put `http://localhost:17563`. The Category should be Game Integration.
 10. Press 'Manage' on your newly created app.
-11. Copy 'Client ID', create a new secret, and copy 'Client Secret'. Both of these strings will need to be remembered.
+11. Copy 'Client ID', create a new secret, and copy 'Client Secret'. Both of these will need to be remembered, so you may want to keep a note of them somewhere on your computer.
 12. In OBS, create a new text source.
 13. Open Tools -> Scripts -> Python Settings. Change the Install Path to the folder where Python 3.10 is installed. If you allowed it to install to it's default place, this should be `C:/Users/___/AppData/Local/Programs/Python/Python310`. Replace `___` with your Windows user name. You can find what the name is by simply looking in `C:/Users`. If set correctly, it should say "Loaded Python Version: 3.10".
 14. Click on "Scripts", click the `+` button, and select `twitch_integration.py` from the `twitch-integration` folder you extracted before.
