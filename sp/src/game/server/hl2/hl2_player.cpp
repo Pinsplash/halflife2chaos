@@ -6187,12 +6187,11 @@ CAI_BaseNPC *CChaosEffect::ChaosSpawnNPC(const char *className, string_t strActu
 		pNPC->SetAbsOrigin(vecOrigin);
 		pNPC->SetAbsAngles(vecAngles);
 		pNPC->m_bEvil = bEvil;
-		if (FStrEq(className, "npc_alyx")){ pNPC->KeyValue("ShouldHaveEMP", "1"); }
-		if (FStrEq(className, "npc_combinedropship")){ pNPC->KeyValue("CrateType", "1"); }//TODO: random crate type
-		if (FStrEq(className, "npc_cscanner")){ pNPC->KeyValue("ShouldInspect", "1"); }
-		if (FStrEq(className, "npc_sniper")){ pNPC->AddSpawnFlags(65536); }
-		if (FStrEq(className, "npc_strider")){ pNPC->AddSpawnFlags(65536); }
-		if (FStrEq(className, "npc_vortigaunt")){ pNPC->KeyValue("ArmorRechargeEnabled", "1"); }
+		if (FStrEq(className, "npc_alyx")) pNPC->KeyValue("ShouldHaveEMP", "1");
+		if (FStrEq(className, "npc_cscanner")) pNPC->KeyValue("ShouldInspect", "1");
+		if (FStrEq(className, "npc_sniper")) pNPC->AddSpawnFlags(65536);
+		if (FStrEq(className, "npc_strider")) pNPC->AddSpawnFlags(65536);
+		if (FStrEq(className, "npc_vortigaunt")) pNPC->KeyValue("ArmorRechargeEnabled", "1");
 		if (FStrEq(className, "npc_apcdriver"))
 		{
 			pNPC->KeyValue("vehicle", "apc");
@@ -6230,65 +6229,104 @@ CAI_BaseNPC *CChaosEffect::ChaosSpawnNPC(const char *className, string_t strActu
 			if (random->RandomInt(0, 1) == 1)//ammo resupplier
 			{
 				float nRandom = random->RandomInt(0, 10);
-				if (nRandom == 0){ pNPC->KeyValue("ammosupply", "AR2"); }
-				if (nRandom == 1){ pNPC->KeyValue("ammosupply", "Pistol"); }
-				if (nRandom == 2){ pNPC->KeyValue("ammosupply", "SMG1"); }
-				if (nRandom == 3){ pNPC->KeyValue("ammosupply", "357"); }
-				if (nRandom == 4){ pNPC->KeyValue("ammosupply", "XBowBolt"); }
-				if (nRandom == 5){ pNPC->KeyValue("ammosupply", "Buckshot"); }
-				if (nRandom == 6){ pNPC->KeyValue("ammosupply", "RPG_Round"); }
-				if (nRandom == 7){ pNPC->KeyValue("ammosupply", "SMG1_Grenade"); }
-				if (nRandom == 8){ pNPC->KeyValue("ammosupply", "Grenade"); }
-				if (nRandom == 9){ pNPC->KeyValue("ammosupply", "Battery"); }
-				if (nRandom == 10){ pNPC->KeyValue("ammosupply", "AR2AltFire"); }
+				if (nRandom == 0) pNPC->KeyValue("ammosupply", "AR2");
+				if (nRandom == 1) pNPC->KeyValue("ammosupply", "Pistol");
+				if (nRandom == 2) pNPC->KeyValue("ammosupply", "SMG1");
+				if (nRandom == 3) pNPC->KeyValue("ammosupply", "357");
+				if (nRandom == 4) pNPC->KeyValue("ammosupply", "XBowBolt");
+				if (nRandom == 5) pNPC->KeyValue("ammosupply", "Buckshot");
+				if (nRandom == 6) pNPC->KeyValue("ammosupply", "RPG_Round");
+				if (nRandom == 7) pNPC->KeyValue("ammosupply", "SMG1_Grenade");
+				if (nRandom == 8) pNPC->KeyValue("ammosupply", "Grenade");
+				if (nRandom == 9) pNPC->KeyValue("ammosupply", "Battery");
+				if (nRandom == 10) pNPC->KeyValue("ammosupply", "AR2AltFire");
 				pNPC->AddSpawnFlags(524288);
 				pNPC->KeyValue("ammoamount", "100");
 			}
-			float nRandom = random->RandomInt(0, 6);//weapon
-			if (nRandom == 0){ pNPC->KeyValue("additionalequipment", "weapon_ar2"); }
-			if (nRandom == 1){ pNPC->KeyValue("additionalequipment", "weapon_citizenpackage"); }
-			if (nRandom == 2){ pNPC->KeyValue("additionalequipment", "weapon_citizensuitcase"); }
-			if (nRandom == 3){ pNPC->KeyValue("additionalequipment", "weapon_crowbar"); }
-			if (nRandom == 4){ pNPC->KeyValue("additionalequipment", "weapon_rpg"); }
-			if (nRandom == 5){ pNPC->KeyValue("additionalequipment", "weapon_shotgun"); }
-			if (nRandom == 6){ pNPC->KeyValue("additionalequipment", "weapon_smg1"); }
+			int nRandom = random->RandomInt(0, 6);//weapon
+			if (nRandom == 0) pNPC->KeyValue("additionalequipment", "weapon_ar2");
+			if (nRandom == 1) pNPC->KeyValue("additionalequipment", "weapon_citizenpackage");
+			if (nRandom == 2) pNPC->KeyValue("additionalequipment", "weapon_citizensuitcase");
+			if (nRandom == 3) pNPC->KeyValue("additionalequipment", "weapon_crowbar");
+			if (nRandom == 4) pNPC->KeyValue("additionalequipment", "weapon_rpg");
+			if (nRandom == 5) pNPC->KeyValue("additionalequipment", "weapon_shotgun");
+			if (nRandom == 6) pNPC->KeyValue("additionalequipment", "weapon_smg1");
 
 			nRandom = random->RandomInt(0, 3);//clothing
-			if (nRandom == 0){ pNPC->KeyValue("citizentype", "0"); }
-			if (nRandom == 1){ pNPC->KeyValue("citizentype", "1"); }
-			if (nRandom == 2){ pNPC->KeyValue("citizentype", "2"); }
-			if (nRandom == 3){ pNPC->KeyValue("citizentype", "3"); }
+			if (nRandom == 0) pNPC->KeyValue("citizentype", "0");
+			if (nRandom == 1) pNPC->KeyValue("citizentype", "1");
+			if (nRandom == 2) pNPC->KeyValue("citizentype", "2");
+			if (nRandom == 3) pNPC->KeyValue("citizentype", "3");
 
 			pNPC->KeyValue("expressiontype", "0");
 		}
 		if (FStrEq(className, "npc_combine_s"))
 		{
 			pNPC->KeyValue("NumGrenades", "100");
-			float nRandom = random->RandomInt(0, 2);//model/elite status
-			if (nRandom == 0){ pNPC->KeyValue("model", "models/combine_soldier.mdl"); }
-			if (nRandom == 1){ pNPC->KeyValue("model", "models/combine_super_soldier.mdl"); }
-			if (nRandom == 2){ pNPC->KeyValue("model", "models/combine_soldier_prisonguard.mdl"); }
+			int nRandom = random->RandomInt(0, 2);//model/elite status
+			if (nRandom == 0) pNPC->KeyValue("model", "models/combine_soldier.mdl");
+			if (nRandom == 1) pNPC->KeyValue("model", "models/combine_super_soldier.mdl");
+			if (nRandom == 2) pNPC->KeyValue("model", "models/combine_soldier_prisonguard.mdl");
 
 			nRandom = random->RandomInt(0, 2);//weapon
-			if (nRandom == 0){ pNPC->KeyValue("additionalequipment", "weapon_ar2"); }
-			if (nRandom == 1){ pNPC->KeyValue("additionalequipment", "weapon_shotgun"); }
-			if (nRandom == 2){ pNPC->KeyValue("additionalequipment", "weapon_smg1"); }
+			if (nRandom == 0) pNPC->KeyValue("additionalequipment", "weapon_ar2");
+			if (nRandom == 1) pNPC->KeyValue("additionalequipment", "weapon_shotgun");
+			if (nRandom == 2) pNPC->KeyValue("additionalequipment", "weapon_smg1");
+		}
+		if (FStrEq(className, "npc_combinedropship"))
+		{
+			int nRandom = 1;// random->RandomInt(-3, 1);//cargo type. avoid 0 cause that does nothing
+			Msg("crate type %i\n", nRandom);
+			if (nRandom == -3) pNPC->KeyValue("CrateType", "-3");//jeep
+			if (nRandom == -2)//apc
+			{
+				pNPC->KeyValue("CrateType", "-2");
+				ChaosSpawnVehicle("prop_vehicle_apc", strActualName, SPAWNTYPE_VEHICLE, "models/combine_apc.mdl", "chaos_dropship_apc", "scripts/vehicles/apc_npc.txt");
+				pNPC->KeyValue("APCVehicleName", "chaos_dropship_apc");
+				variant_t emptyVariant;
+				g_EventQueue.AddEvent("combinedropship", "DropAPC", emptyVariant, 1, pNPC, pNPC);
+			}
+			if (nRandom == -1)//strider
+			{
+				pNPC->KeyValue("CrateType", "-1");
+				variant_t emptyVariant;
+				g_EventQueue.AddEvent("combinedropship", "DropStrider", emptyVariant, 1, pNPC, pNPC);
+			}
+			if (nRandom == 0) pNPC->KeyValue("CrateType", "2");//nothing
+			if (nRandom == 1)//soldier crate
+			{
+				pNPC->KeyValue("CrateType", "1");
+				pNPC->KeyValue("GunRange", "2000");
+				//soldiers are spawned in CNPC_CombineDropship::SpawnTroop
+				CBaseEntity *pTarget = CreateEntityByName("info_target");
+				pTarget->KeyValue("targetname", "dropship_target");
+				pTarget->SetAbsOrigin(vecOrigin);
+				pTarget->SetAbsAngles(vecAngles);
+				DispatchSpawn(pTarget);
+				pNPC->KeyValue("LandTarget", "dropship_target");
+				variant_t variant;
+				variant.SetInt(6);
+				if (random->RandomInt(0, 1))
+					g_EventQueue.AddEvent("combinedropship", "LandLeaveCrate", variant, 1, pNPC, pNPC);
+				else
+					g_EventQueue.AddEvent("combinedropship", "LandTakeCrate", variant, 1, pNPC, pNPC);
+			}
 		}
 		if (FStrEq(className, "npc_metropolice"))
 		{
 			pNPC->KeyValue("manhacks", "100");
 
-			float nRandom = random->RandomInt(0, 2);//weapon
-			if (nRandom == 0){ pNPC->KeyValue("additionalequipment", "weapon_smg1"); }
-			if (nRandom == 1){ pNPC->KeyValue("additionalequipment", "weapon_pistol"); }
-			if (nRandom == 2){ pNPC->KeyValue("additionalequipment", "weapon_stunstick"); }
+			int nRandom = random->RandomInt(0, 2);//weapon
+			if (nRandom == 0) pNPC->KeyValue("additionalequipment", "weapon_smg1");
+			if (nRandom == 1) pNPC->KeyValue("additionalequipment", "weapon_pistol");
+			if (nRandom == 2) pNPC->KeyValue("additionalequipment", "weapon_stunstick");
 		}
 		if (FStrEq(className, "npc_stalker"))
 		{
-			float nRandom = random->RandomInt(0, 2);
-			if (nRandom == 0){ pNPC->KeyValue("BeamPower", "0"); }
-			if (nRandom == 1){ pNPC->KeyValue("BeamPower", "1"); }
-			if (nRandom == 2){ pNPC->KeyValue("BeamPower", "2"); }
+			int nRandom = random->RandomInt(0, 2);
+			if (nRandom == 0) pNPC->KeyValue("BeamPower", "0");
+			if (nRandom == 1) pNPC->KeyValue("BeamPower", "1");
+			if (nRandom == 2) pNPC->KeyValue("BeamPower", "2");
 		}
 		if (FStrEq(className, "npc_turret_ceiling"))
 		{
