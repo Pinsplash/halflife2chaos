@@ -23,19 +23,19 @@ Compiling for the episodes is an excercise for the reader. (Should be similar bu
 
 # Effect Voting on Twitch
 If you stream on Twitch, you can make it so that viewers can vote for effects by sending chat messages. These instructions are specifically for Windows. If you're on Linux, you can figure it out.
-1. Download and install [Python](https://www.python.org/) 3.10.11 from [here](https://www.python.org/downloads/release/python-31011/). Python 3.11 does not work with the latest version of OBS.
+1. Download and install [Python](https://en.wikipedia.org/wiki/Python_(programming_language)) 3.11 from [here](https://www.python.org/downloads/release/python-3113/).
 2. Download the code. This is the green button that says "code" at the top. Click "Download ZIP" unless you want to use GitHub Desktop for some reason.
 3. Extract the contents to any place on your computer. The only part you need are the files in the `twitch-integration` folder.
 4. Press the Windows logo on your keyboard and R at the same time. It should bring up a small window named 'Run'. Type `cmd` in the text box and then click 'OK'. It should bring up a black text box.
 5. Select the extracted requirements.txt in File Explorer and view the file's properties. Copy the file path next to "Location".
 6. In cmd.exe, type `cd` followed by a space, then paste the file path and press Enter.
-7. Now type `pip install -r requirements.txt`. It should do a bunch of stuff.
+7. Now type `py -m pip install -U -r requirements.txt`. It should do a bunch of stuff.
 8. Go to [twitch dev apps](https://dev.twitch.tv/console/apps) and register a new app.
 9. The name can be anything. In "OAuth Redirect URLs" put `http://localhost:17563`. The Category should be Game Integration.
 10. Press 'Manage' on your newly created app.
 11. Copy 'Client ID', create a new secret, and copy 'Client Secret'. Both of these will need to be remembered, so you may want to keep a note of them somewhere on your computer.
 12. In OBS, create a new text source.
-13. Open Tools -> Scripts -> Python Settings. Change the Install Path to the folder where Python 3.10 is installed. If you allowed it to install to it's default place, this should be `C:/Users/___/AppData/Local/Programs/Python/Python310`. Replace `___` with your Windows user name. You can find what the name is by simply looking in `C:/Users`. If set correctly, it should say "Loaded Python Version: 3.10".
+13. Open Tools -> Scripts -> Python Settings. Change the Install Path to the folder where Python 3.11 is installed. If you allowed it to install to it's default place, this should be `C:/Users/___/AppData/Local/Programs/Python/Python311`. Replace `___` with your Windows user name. You can find what the name is by simply looking in `C:/Users`. If set correctly, it should say "Loaded Python Version: 3.11".
 14. Click on "Scripts", click the `+` button, and select `twitch_integration.py` from the `twitch-integration` folder you extracted before.
 15. Fill in 'App id' with the Client ID from Twitch and 'App secret' with the Client Secret from Twitch. Set 'Target channel' to your channel (i.e `acuifex` for `twitch.tv/acuifex`). Set 'Text Source' to your newly created text source's name. Set 'RCON password' to a password of your choice.
 16. Press 'Reconnect to twitch' if you didn't automatically connect.
@@ -43,6 +43,8 @@ If you stream on Twitch, you can make it so that viewers can vote for effects by
 18. In Steam, right click on the mod and then click "Properties...". In 'LAUNCH OPTIONS', put `+developer 0 -usercon +ip 127.0.0.1 +rcon_password ___ +net_start +chaos_vote_enable 1`. Replace `___` with the RCON password that you entered in OBS. The `+developer 0` part is necessary for some reason, despite not seeming like it should be. You will also have to do this in Ep1 & 2 chaos if you want to use Twitch voting in them.
 
 It should work now. If it doesn't, 'Script Log' button in OBS might have useful info. You can test voting commands by typing in your Twitch chat, even if you're not streaming.
+
+To remove Twitch integration, you can simply clear out the mod's launch options and select twitch-integration.py in OBS and then click the minus button.
 
 ## Tips
 * If issues arise while playing, try `chaos_restart` in the console. This should set everything back to normal and restart the map.
