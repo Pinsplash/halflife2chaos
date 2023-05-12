@@ -5399,7 +5399,7 @@ bool CChaosEffect::CheckEffectContext()
 
 	//Ran Out Of Glue can cause serious issues on these maps
 	if (m_nID == EFFECT_PHYS_CONVERT)
-		if (!Q_strcmp(pMapName, "d1_trainstation_01")	|| !Q_strcmp(pMapName, "d1_canals_11")		|| !Q_strcmp(pMapName, "d1_eli_01")
+		if (!Q_strcmp(pMapName, "d1_trainstation_01")	|| !Q_strcmp(pMapName, "d1_canals_11")		|| !Q_strcmp(pMapName, "d1_eli_01")			|| !Q_strcmp(pMapName, "d1_town_01")
 			|| !Q_strcmp(pMapName, "d3_c17_08")			|| !Q_strcmp(pMapName, "d3_citadel_01")		|| !Q_strcmp(pMapName, "d3_citadel_02")		|| !Q_strcmp(pMapName, "d3_citadel_05") || !Q_strcmp(pMapName, "d3_breen_01")
 			|| !Q_strcmp(pMapName, "ep1_c17_00a")
 			|| !Q_strcmp(pMapName, "ep2_outland_01")	|| !Q_strcmp(pMapName, "ep2_outland_03")	|| !Q_strcmp(pMapName, "ep2_outland_11")	|| !Q_strcmp(pMapName, "ep2_outland_11b"))
