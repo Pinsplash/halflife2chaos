@@ -205,6 +205,14 @@ void CNPC_GroundTurret::PostNPCInit()
 //---------------------------------------------------------
 int CNPC_GroundTurret::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 {
+	if (m_bChaosSpawned && info.GetDamageType() & DMG_BLAST)//spawned turrets don't have a bullseye cause that shit's stupid as hell
+	{
+		CTakeDamageInfo infoCopy = info;
+		infoCopy.SetDamage(GetHealth());
+		m_OnDeath.FireOutput(this, this);
+		return BaseClass::OnTakeDamage_Alive(infoCopy);
+	}
+
 	if( !info.GetInflictor() )
 	{
 		return 0;

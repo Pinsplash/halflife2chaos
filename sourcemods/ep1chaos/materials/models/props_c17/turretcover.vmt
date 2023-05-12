@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/props_c17/turretcover"
+	"$surfaceprop" "Metal"
+	"$nodecal" 1
+}
