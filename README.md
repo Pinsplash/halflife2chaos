@@ -10,6 +10,8 @@ For Half-Life 2 Chaos, but not the Episodes, you must have Half-Life 2 installed
 
 As of version 0.2.2, you no longer need to copy map files into the `maps` folders.
 
+If you want to play Chaos in other mods or Half-Life: Source, you can try, but there can be several issues.
+
 ## Building from source for Linux
 No build enviroment setup required.
 1. `git clone --depth=1 https://github.com/Pinsplash/halflife2chaos`
