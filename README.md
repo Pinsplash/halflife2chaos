@@ -12,9 +12,13 @@ As of version 0.2.2, you no longer need to copy map files into the `maps` folder
 
 If you want to play Chaos in other mods or Half-Life: Source, you can try, but there can be several issues that we wouldn't be able to fix.
 
-# Issues
+## Issues
 
 If you experience bugs with the mod, you can submit a bug report [here](https://github.com/Pinsplash/halflife2chaos/issues).
+
+## Wiki
+
+Check our GitHub [wiki](https://github.com/Pinsplash/halflife2chaos/wiki) if you're looking for info about how Half-Life 2 Chaos works.
 
 ## Building from source for Linux
 No build enviroment setup required.
