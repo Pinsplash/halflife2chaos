@@ -3,8 +3,10 @@
 1. Install `Source SDK Base 2013 Singleplayer` from Steam.
 2. Switch the SDK to the 'upcoming' beta. Right click on it in Steam and then click `Properties...` -> `Betas` and change the dropdown `None` to `upcoming - upcoming`. Changing this setting will prevent immediate crashes.
 3. Download latest `hl2c.zip` file from the [releases](https://github.com/Pinsplash/halflife2chaos/releases) page.
-4. Extract the `hl2chaos` folder from the zip file into `Steam/steamapps/sourcemods/`. The path to gameinfo.txt should look like this: `Steam/steamapps/sourcemods/hl2chaos/gameinfo.txt`. Do the same for `ep1chaos` and `ep2chaos` if you want to play Chaos in Half-Life 2: Episode One/Two.
+4. Extract the `hl2chaos` folder from the zip file into `Steam/steamapps/sourcemods/`. The path to gameinfo.txt should look like this: `Steam/steamapps/sourcemods/hl2chaos/gameinfo.txt` (see picture below). Do the same for `ep1chaos` and `ep2chaos` if you want to play Chaos in Half-Life 2: Episode One/Two.
 5. Restart Steam for the mod(s) to appear in your library.
+
+![image](https://github.com/Pinsplash/halflife2chaos/assets/39359267/854d1f1d-7c23-4b87-bd0d-ea840ea2e873)
 
 For Half-Life 2 Chaos, but not the Episodes, you must have Half-Life 2 installed for the mod to find the levels.
 
@@ -31,7 +33,7 @@ No build enviroment setup required.
 
 Compiling for the episodes is an excercise for the reader. (Should be similar but with `mod_episodic`, `client_episodic` and `server_episodic`.)
 
-# Effect Voting on Twitch
+## Effect Voting on Twitch
 If you stream on Twitch, you can make it so that viewers can vote for effects by sending chat messages. These instructions are specifically for Windows. If you're on Linux, you can figure it out.
 1. Download and install [Python](https://en.wikipedia.org/wiki/Python_(programming_language)) 3.11 from [here](https://www.python.org/downloads/release/python-3113/).
 2. Download the code. This is the green button that says "code" at the top. Click "Download ZIP" unless you want to use GitHub Desktop for some reason.
@@ -56,7 +58,7 @@ It should work now. If it doesn't, 'Script Log' button in OBS might have useful 
 
 To remove Twitch integration, you can simply clear out the mod's launch options and select twitch-integration.py in OBS and then click the minus button.
 
-# Tips
+## Tips
 * If issues arise while playing, try `chaos_restart` in the console. This should set everything back to normal and restart the map.
 * To modify things about Chaos like effect duration and probability, edit `hl2chaos/cfg/autoexec.cfg`.
 * Effect groups can be changed in `groups.cfg`.
@@ -82,7 +84,7 @@ These settings have been put in their own CFG files so you can control what they
 * `yaw.cfg`: Sets `m_yaw`, the horizontal sensitivity. Default 0.022.
 * `portalsopenall.cfg`: Sets `r_portalsopenall`. Force-opens all areaportals. Most users will want to use 1 because if 0, areas of levels may become invisible until you enter them. This was intended to help performance, but Chaos can disrupt this feature due to sequence breaking. Normally the default is 0, but in Chaos, it's 1.
 
-# Known issues
+## Known issues
 * Sometimes the bar at the top won't appear after loading a save/map. The mod is still working. The bar should appear once the next effect starts.
 * The "Saved..." message may not appear. The save is still made.
 * The car compass HUD element does not display correctly.
@@ -92,7 +94,7 @@ These settings have been put in their own CFG files so you can control what they
 * Sometimes things are invisible with **Orthographic Camera**. Turning on the flashlight may fix it.
 * Collisions can be weird when **Slow Physics** is on.
 
-# Thanks for big and small bits of help
+## Thanks for big and small bits of help
 * Blixibon
 * tmp64
 * BoxFigs
