@@ -2744,7 +2744,8 @@ bool CGrabController::UpdateObject( CBasePlayer *pPlayer, float flError )
 	//this alters a time-based variable. if phys_timescale is not 1, that variable may not behave as desired. we alter phys_timescale in chaos.
 	//if we don't do this, hopper mines cannot be picked up.
 	//i don't fully get how this works
-	ComputeError();
+	if (pEntity)
+		ComputeError();
 	if ( !pEntity || ComputeError() > flError || pPlayer->GetGroundEntity() == pEntity || !pEntity->VPhysicsGetObject() )
 	{
 		return false;

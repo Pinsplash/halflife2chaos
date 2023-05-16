@@ -7503,7 +7503,7 @@ bool CBaseEntity::PutAtNearestNode(float flMaxDist, bool bNoDebug)
 	float flClosest = FLT_MAX;
 	bool full = false;
 	CNodeList *result = new CNodeList;
-	result->SetLessFunc(CNodeList::RevIsLowerPriority);//this impacts sorting, MUST be kept
+	result->SetLessFunc(CNodeList::IsLowerPriority);//this impacts sorting, MUST be kept
 	bool bStayInZone = true;
 	while (true)
 	{

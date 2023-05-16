@@ -627,6 +627,10 @@ CON_COMMAND(getunstuck, "try to get unstuck right now")
 {
 	UTIL_GetLocalPlayer()->GetUnstuck(200, true);
 }
+CON_COMMAND(putatnearestnode, "failsafe part of unstuck test")
+{
+	UTIL_GetLocalPlayer()->PutAtNearestNode(200, false);
+}
 Vector CHL2_Player::RotatedOffset(Vector vecOffset, bool bNoVertical)
 {
 	QAngle angEye = GetAbsAngles();
@@ -5155,7 +5159,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CEPlayerSmall>(EFFECT_PLAYER_SMALL,		MAKE_STRING("Player is Tiny"),				EC_NONE,								chaos_time_player_small.GetFloat(),			chaos_prob_player_small.GetInt());
 	CreateEffect<>(EFFECT_NO_MOUSE_HORIZONTAL,				MAKE_STRING("No Looking Left/Right"),		EC_NONE,								chaos_time_no_mouse_horizontal.GetFloat(),	chaos_prob_no_mouse_horizontal.GetInt());
 	CreateEffect<>(EFFECT_NO_MOUSE_VERTICAL,				MAKE_STRING("No Looking Up/Down"),			EC_NONE,								chaos_time_no_mouse_vertical.GetFloat(),	chaos_prob_no_mouse_vertical.GetInt());
-	CreateEffect<CESuperGrab>(EFFECT_SUPER_GRAB,			MAKE_STRING("Super Grab"),					EC_NONE,								chaos_time_super_grab.GetFloat(),			chaos_prob_super_grab.GetInt());
+	CreateEffect<CESuperGrab>(EFFECT_SUPER_GRAB,			MAKE_STRING("Didn't Skip Arm Day"),			EC_NONE,								chaos_time_super_grab.GetFloat(),			chaos_prob_super_grab.GetInt());
 	CreateEffect<CERandomWeaponGive>(EFFECT_GIVE_WEAPON,	MAKE_STRING("Give Random Weapon"),			EC_NONE,								-1,											chaos_prob_give_weapon.GetInt());
 	CreateEffect<>(EFFECT_GIVE_ALL_WEAPONS,					MAKE_STRING("Give All Weapons"),			EC_NONE,								-1,											chaos_prob_give_all_weapons.GetInt());
 	CreateEffect<CEWeaponsDrop>(EFFECT_DROP_WEAPONS,		MAKE_STRING("Drop Weapons"),				EC_HAS_WEAPON | EC_NO_CITADEL,			-1,											chaos_prob_drop_weapons.GetInt());
@@ -5399,10 +5403,10 @@ bool CChaosEffect::CheckEffectContext()
 
 	//Ran Out Of Glue can cause serious issues on these maps
 	if (m_nID == EFFECT_PHYS_CONVERT)
-		if (!Q_strcmp(pMapName, "d1_trainstation_01")	|| !Q_strcmp(pMapName, "d1_canals_11")		|| !Q_strcmp(pMapName, "d1_eli_01")			|| !Q_strcmp(pMapName, "d1_town_01")
-			|| !Q_strcmp(pMapName, "d3_c17_08")			|| !Q_strcmp(pMapName, "d3_citadel_01")		|| !Q_strcmp(pMapName, "d3_citadel_02")		|| !Q_strcmp(pMapName, "d3_citadel_05") || !Q_strcmp(pMapName, "d3_breen_01")
+		if (!Q_strcmp(pMapName, "d1_trainstation_01")	|| !Q_strcmp(pMapName, "d1_trainstation_05")	|| !Q_strcmp(pMapName, "d1_canals_11")		|| !Q_strcmp(pMapName, "d1_eli_01")		|| !Q_strcmp(pMapName, "d1_town_01")
+			|| !Q_strcmp(pMapName, "d3_c17_08")			|| !Q_strcmp(pMapName, "d3_citadel_01")			|| !Q_strcmp(pMapName, "d3_citadel_02")		|| !Q_strcmp(pMapName, "d3_citadel_05") || !Q_strcmp(pMapName, "d3_breen_01")
 			|| !Q_strcmp(pMapName, "ep1_c17_00a")
-			|| !Q_strcmp(pMapName, "ep2_outland_01")	|| !Q_strcmp(pMapName, "ep2_outland_03")	|| !Q_strcmp(pMapName, "ep2_outland_11")	|| !Q_strcmp(pMapName, "ep2_outland_11b"))
+			|| !Q_strcmp(pMapName, "ep2_outland_01")	|| !Q_strcmp(pMapName, "ep2_outland_03")		|| !Q_strcmp(pMapName, "ep2_outland_11")	|| !Q_strcmp(pMapName, "ep2_outland_11b"))
 			return false;//bad map
 
 	//could distrupt cutscenes
@@ -6930,8 +6934,8 @@ void CESuperhot::FastThink()
 	{
 		vecVelocity = pPlayer->GetAbsVelocity();
 	}
-	//If Floor Is Lava causes all input to lock up, change 0.06 to something slightly higher
-	float flNum = min(3, 2 * max(0.06, 1 / (hl2_normspeed.GetFloat() / max(hl2_normspeed.GetFloat() * 0.05, vecVelocity.Length()))));
+	//If input locks up, change 0.07 to something higher
+	float flNum = min(3, 2 * max(0.07, 1 / (hl2_normspeed.GetFloat() / max(hl2_normspeed.GetFloat() * 0.05, vecVelocity.Length()))));
 	cvar->FindVar("host_timescale")->SetValue(flNum);
 }
 void CESupercold::FastThink()
@@ -7568,7 +7572,7 @@ void CETreeSpam::StartEffect()
 		trace_t tr;
 		Vector vecNodePos = pNode->GetOrigin();
 		UTIL_TraceLine(vecNodePos + Vector(0, 0, 16), vecNodePos - Vector(0, 0, 100), MASK_SOLID, NULL, COLLISION_GROUP_NONE, &tr);
-		if (tr.m_pEnt->GetMoveType() == MOVETYPE_VPHYSICS || tr.m_pEnt->IsNPC())
+		if (tr.m_pEnt && (tr.m_pEnt->GetMoveType() == MOVETYPE_VPHYSICS || tr.m_pEnt->IsNPC()))
 		{
 			Msg("Tree (node %i) on bad ground\n", pNode->GetId());
 			continue;
@@ -8172,7 +8176,7 @@ void CEWeaponsDrop::FastThink()
 }
 void CEEarthquake::StartEffect()
 {
-	UTIL_ScreenShake(UTIL_GetLocalPlayer()->WorldSpaceCenter(), 100 * UTIL_GetLocalPlayer()->GetModelScale(), 2, m_flTimeRem, 375, SHAKE_START, true);
+	UTIL_ScreenShake(UTIL_GetLocalPlayer()->WorldSpaceCenter(), 50 * UTIL_GetLocalPlayer()->GetModelScale(), 2, m_flTimeRem, 375, SHAKE_START, true);
 }
 void CEEarthquake::TransitionEffect()
 {
@@ -8214,8 +8218,9 @@ void CEFloorIsLava::FastThink()
 	if (!bSkipThisTick)
 	{
 		//trace hull lets us see when player is surfing. checking ground entity can't differentiate between surfing and being entirely in the air
+		float flHullWidth = 16 * pPlayer->GetModelScale();
 		trace_t	trace;
-		UTIL_TraceHull(pPlayer->GetAbsOrigin() + Vector(0, 0, 1), pPlayer->GetAbsOrigin() - Vector(0, 0, 1), Vector(-16, -16, -1), Vector(16, 16, 0), CONTENTS_SOLID, pPlayer, COLLISION_GROUP_NONE, &trace);
+		UTIL_TraceHull(pPlayer->GetAbsOrigin() + Vector(0, 0, 1), pPlayer->GetAbsOrigin() - Vector(0, 0, 1), Vector(-flHullWidth, -flHullWidth, -1), Vector(flHullWidth, flHullWidth, 0), CONTENTS_SOLID, pPlayer, COLLISION_GROUP_NONE, &trace);
 
 		//have to be on solid ground
 		//all entities get a free pass

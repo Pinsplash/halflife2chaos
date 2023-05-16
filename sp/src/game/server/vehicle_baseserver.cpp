@@ -1058,8 +1058,8 @@ void CBaseServerVehicle::HandlePassengerEntry( CBaseCombatCharacter *pPassenger,
 		if ( iEntryAnim == ACTIVITY_NOT_AVAILABLE )
 		{
 			// Normal get in refuses to allow entry
-			if ( !bAllowEntryOutsideZone )
-				return;
+			//if ( !bAllowEntryOutsideZone )
+			//	return;
 
 			// We failed to find a valid entry anim, but we've got to get back in because the player's
 			// got stuck exiting the vehicle. For now, just use the first get in anim
