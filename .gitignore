@@ -24,6 +24,7 @@ ipch
 *.mak
 *.mak.vpc_crc
 *.xcodeproj/
+*.project
 obj*/
 !devtools/*.mak
 !utils/smdlexp/smdlexp.mak
@@ -40,6 +41,8 @@ client.so
 client.so.dbg
 server.so
 server.so.dbg
+client_srv.so
+client_srv.so.dbg
 server_srv.so
 server_srv.so.dbg
 
