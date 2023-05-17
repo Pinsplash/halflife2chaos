@@ -63,7 +63,7 @@ public:
 	int		m_nHitBox;
 	
 	unsigned char	m_nColor;
-
+	color32 m_color;//fuck it
 	// Color customizability
 	bool							m_bCustomColors;
 	te_tf_particle_effects_colors_t	m_CustomColors;

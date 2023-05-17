@@ -560,7 +560,7 @@ CBaseEntity *CGlobalEntityList::FindEntityProcedural( const char *szName, CBaseE
 		else 
 		{
 			Warning( "Invalid entity search name %s\n", szName );
-			Assert(0);
+			//Assert(0);
 		}
 	}
 

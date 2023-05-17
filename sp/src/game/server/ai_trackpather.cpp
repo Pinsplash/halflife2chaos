@@ -848,7 +848,7 @@ CPathTrack *CAI_TrackPather::FindClosestPointOnPath( CPathTrack *pPath,
 	if ( CPathTrack::ValidPath( pPath ) == NULL )
 	{
 		//FIXME: Implement
-		Assert(0);
+		//Assert(0);
 		return NULL;
 	}
 
@@ -1086,6 +1086,8 @@ void CAI_TrackPather::SelectNewDestTarget()
 void CAI_TrackPather::UpdateCurrentTargetLeading()
 {
 	//Msg("CAI_TrackPather::UpdateCurrentTargetLeading\n");
+	if (!m_pCurrentPathTarget)
+		return;
 	bool bRestingAtDest = false;
 	CPathTrack *pAdjustedDest = m_pCurrentPathTarget;
 

@@ -115,6 +115,7 @@ public:
 	char			m_chMaterialType;
 	int				m_nRadius;
 	int				m_nMagnitude;
+	CNetworkColor32(m_color);
 
 	//CParticleCollision	m_ParticleCollision;
 	CParticleMgr		*m_pParticleMgr;
@@ -134,7 +135,8 @@ IMPLEMENT_CLIENTCLASS_EVENT_DT(C_TEExplosion, DT_TEExplosion, CTEExplosion)
 	RecvPropVector( RECVINFO(m_vecNormal)),
 	RecvPropInt( RECVINFO(m_chMaterialType)),
 	RecvPropInt( RECVINFO(m_nRadius)),
-	RecvPropInt( RECVINFO(m_nMagnitude)),
+	RecvPropInt(RECVINFO(m_nMagnitude)),
+	RecvPropInt(RECVINFO(m_color)),
 END_RECV_TABLE()
 
 
@@ -236,6 +238,7 @@ void C_TEExplosion::RecordExplosion( )
 		msg->SetInt( "materialtype", m_chMaterialType );
 		msg->SetInt( "radius", m_nRadius );
 		msg->SetInt( "magnitude", m_nMagnitude );
+		msg->SetColor("color", Color(m_color.GetR(), m_color.GetG(), m_color.GetB(), m_color.GetA()));
 
 		ToolFramework_PostToolMessage( HTOOLHANDLE_INVALID, msg );
 		msg->deleteThis();
@@ -256,7 +259,7 @@ void C_TEExplosion::PostDataUpdate( DataUpdateType_t updateType )
 	// Filter out a water explosion
 	if ( UTIL_PointContents( m_vecOrigin ) & CONTENTS_WATER )
 	{
-		WaterExplosionEffect().Create( m_vecOrigin, m_nMagnitude, m_fScale, m_nFlags );
+		WaterExplosionEffect().Create(m_vecOrigin, m_nMagnitude, m_fScale, m_color, m_nFlags);
 		return;
 	}
 
@@ -267,8 +270,10 @@ void C_TEExplosion::PostDataUpdate( DataUpdateType_t updateType )
 			pOverlay->m_flLifetime	= 0;
 			pOverlay->m_vPos		= m_vecOrigin;
 			pOverlay->m_nSprites	= 1;
-			
-			pOverlay->m_vBaseColors[0].Init( 1.0f, 0.9f, 0.7f );
+			float r = m_color.GetR() / 255;
+			float g = m_color.GetG() / 255 * 0.9;
+			float b = m_color.GetB() / 255 * 0.7;
+			pOverlay->m_vBaseColors[0].Init( r, g, b );
 
 			pOverlay->m_Sprites[0].m_flHorzSize = 0.05f;
 			pOverlay->m_Sprites[0].m_flVertSize = pOverlay->m_Sprites[0].m_flHorzSize*0.5f;
@@ -277,7 +282,7 @@ void C_TEExplosion::PostDataUpdate( DataUpdateType_t updateType )
 		}
 	}
 
-	BaseExplosionEffect().Create( m_vecOrigin, m_nMagnitude, m_fScale, m_nFlags );
+	BaseExplosionEffect().Create(m_vecOrigin, m_nMagnitude, m_fScale, m_color, m_nFlags);
 }
 
 void C_TEExplosion::RenderParticles( CParticleRenderIterator *pIterator )
@@ -292,7 +297,7 @@ void C_TEExplosion::SimulateParticles( CParticleSimulateIterator *pIterator )
 
 
 void TE_Explosion( IRecipientFilter& filter, float delay,
-	const Vector* pos, int modelindex, float scale, int framerate, int flags, int radius, int magnitude, 
+	const Vector* pos, int modelindex, float scale, int framerate, int flags, int radius, int magnitude, color32 color,
 	const Vector* normal = NULL, unsigned char materialType = 'C', bool bShouldAffectRagdolls = true )
 {
 	// Major hack to access singleton object for doing this event (simulate receiving network message)
@@ -305,6 +310,7 @@ void TE_Explosion( IRecipientFilter& filter, float delay,
 	__g_C_TEExplosion.m_chMaterialType = materialType;
 	__g_C_TEExplosion.m_nRadius = radius;
 	__g_C_TEExplosion.m_nMagnitude = magnitude;
+	__g_C_TEExplosion.m_color = color;
 	__g_C_TEExplosion.m_bShouldAffectRagdolls = bShouldAffectRagdolls;
 
 	__g_C_TEExplosion.PostDataUpdate( DATA_UPDATE_CREATED );
@@ -328,6 +334,10 @@ void TE_Explosion( IRecipientFilter& filter, float delay, KeyValues *pKeyValues 
 	int nMaterialType = pKeyValues->GetInt( "materialtype" );
 	int nRadius = pKeyValues->GetInt( "radius" );
 	int nMagnitude = pKeyValues->GetInt( "magnitude" );
+	int r, g, b, a;
+	pKeyValues->GetColor("color").GetColor(r, g, b, a);
+	color32 color = { r, g, b, a };
+	//color32 color = { pKeyValues->GetColor("color").r, pKeyValues->GetColor("color").g, pKeyValues->GetColor("color").b, pKeyValues->GetColor("color").a };
 	TE_Explosion( filter, 0.0f, &vecOrigin, nModelIndex, flScale, nFrameRate,
-		nFlags, nRadius, nMagnitude, &vecNormal, (unsigned char)nMaterialType, false );
+		nFlags, nRadius, nMagnitude, color, &vecNormal, (unsigned char)nMaterialType, false);
 }

@@ -3303,9 +3303,15 @@ void CBlackHeadcrab::TouchDamage( CBaseEntity *pOther )
 //-----------------------------------------------------------------------------
 void CBlackHeadcrab::Eject( const QAngle &vecAngles, float flVelocityScale, CBaseEntity *pEnemy )
 {
-	SetGroundEntity( NULL );
 	m_spawnflags |= SF_NPC_FALL_TO_GROUND;
+	//For some unknown reason, poison zombies stopped dropping their headcrabs properly.
+	//they would be invisible but NPCs would try to attack them hopelessly.
+	//they were passable and didn't do anything to suggest that they were really there.
+	//until they were recreated by chaos if they were persist entities, which would be well after the zombie died.
+	//this fixes it.
+	Spawn();
 
+	SetGroundEntity( NULL );
 	SetIdealState( NPC_STATE_ALERT );
 
 	if ( pEnemy )

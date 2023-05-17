@@ -61,7 +61,7 @@ void TE_Decal( IRecipientFilter& filter, float delay,
 void TE_DynamicLight( IRecipientFilter& filter, float delay,
 	const Vector* org, int r, int g, int b, int exponent, float radius, float time, float decay );
 void TE_Explosion( IRecipientFilter& filter, float delay,
-	const Vector* pos, int modelindex, float scale, int framerate, int flags, int radius, int magnitude, const Vector* normal = NULL, unsigned char materialType = 'C' );
+	const Vector* pos, int modelindex, float scale, int framerate, int flags, int radius, int magnitude, color32 color, const Vector* normal = NULL, unsigned char materialType = 'C' );
 void TE_ShatterSurface( IRecipientFilter& filter, float delay,
 	const Vector* pos, const QAngle* angle, const Vector* vForce, const Vector* vForcePos, 
 	float width, float height, float shardsize, ShatterSurface_t surfacetype,
@@ -318,11 +318,11 @@ public:
 		}
 	}
 	virtual void Explosion( IRecipientFilter& filter, float delay,
-		const Vector* pos, int modelindex, float scale, int framerate, int flags, int radius, int magnitude, const Vector* normal = NULL, unsigned char materialType = 'C' )
+		const Vector* pos, int modelindex, float scale, int framerate, int flags, int radius, int magnitude, color32 color, const Vector* normal = NULL, unsigned char materialType = 'C' )
 	{
 		if ( !SuppressTE( filter ) )
 		{
-			TE_Explosion( filter, delay, pos, modelindex, scale, framerate, flags, radius, magnitude, normal, materialType );
+			TE_Explosion( filter, delay, pos, modelindex, scale, framerate, flags, radius, magnitude, color, normal, materialType );
 		}
 	}
 	virtual void ShatterSurface( IRecipientFilter& filter, float delay,

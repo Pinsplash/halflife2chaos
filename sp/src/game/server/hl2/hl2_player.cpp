@@ -5278,7 +5278,7 @@ bool CHL2_Player::EffectOrGroupAlreadyActive(int iEffect)
 				if (groupcheck_debug.GetBool()) Msg("no more effects in group\n");
 				break;
 			}
-			if (groupcheck_debug.GetBool()) Msg("Looking at effect %i group %i\n", j, i);
+			if (groupcheck_debug.GetBool()) Msg("Looking at effect %i (ID %i) in group %i\n", j, g_iGroups[i][j], i);
 			if (g_iGroups[i][j] == iEffect)
 			{
 				bNotInAnyGroup = false;
@@ -5308,8 +5308,7 @@ bool CHL2_Player::EffectOrGroupAlreadyActive(int iEffect)
 			}
 		}
 	}
-	//if (bNotInAnyGroup)
-		//Msg("Effect %i wasn't in any group\n", iEffect);
+	if (groupcheck_debug.GetBool() && bNotInAnyGroup) Msg("Effect %i wasn't in any group\n", iEffect);
 	return false;//none in group active
 }
 
@@ -5329,7 +5328,7 @@ bool CChaosEffect::CheckEffectContext()
 
 	//potential softlock if clone npcs happens on some maps
 	if (m_nID == EFFECT_CLONE_NPCS)
-		if (!Q_strcmp(pMapName, "d1_trainstation_01") || !Q_strcmp(pMapName, "d1_eli_02") || !Q_strcmp(pMapName, "d3_breen_01") || !Q_strcmp(pMapName, "ep1_citadel_00") || !Q_strcmp(pMapName, "ep1_citadel_01"))
+		if (!Q_strcmp(pMapName, "d1_trainstation_01") || !Q_strcmp(pMapName, "d1_eli_01") || !Q_strcmp(pMapName, "d1_eli_02") || !Q_strcmp(pMapName, "d3_breen_01") || !Q_strcmp(pMapName, "ep1_citadel_00") || !Q_strcmp(pMapName, "ep1_citadel_01"))
 			return false;
 
 	//You Teleport is bad specifically on these maps
@@ -5403,10 +5402,13 @@ bool CChaosEffect::CheckEffectContext()
 
 	//Ran Out Of Glue can cause serious issues on these maps
 	if (m_nID == EFFECT_PHYS_CONVERT)
-		if (!Q_strcmp(pMapName, "d1_trainstation_01")	|| !Q_strcmp(pMapName, "d1_trainstation_05")	|| !Q_strcmp(pMapName, "d1_canals_11")		|| !Q_strcmp(pMapName, "d1_eli_01")		|| !Q_strcmp(pMapName, "d1_town_01")
-			|| !Q_strcmp(pMapName, "d3_c17_08")			|| !Q_strcmp(pMapName, "d3_citadel_01")			|| !Q_strcmp(pMapName, "d3_citadel_02")		|| !Q_strcmp(pMapName, "d3_citadel_05") || !Q_strcmp(pMapName, "d3_breen_01")
+		if (!Q_strcmp(pMapName, "d1_trainstation_01")	|| !Q_strcmp(pMapName, "d1_trainstation_05")
+			|| !Q_strcmp(pMapName, "d1_canals_11")		|| !Q_strcmp(pMapName, "d1_canals_13")
+			|| !Q_strcmp(pMapName, "d1_eli_01")			|| !Q_strcmp(pMapName, "d1_town_01")
+			|| !Q_strcmp(pMapName, "d3_c17_08")
+			|| !Q_strcmp(pMapName, "d3_citadel_01")		|| !Q_strcmp(pMapName, "d3_citadel_02")		|| !Q_strcmp(pMapName, "d3_citadel_05")		|| !Q_strcmp(pMapName, "d3_breen_01")
 			|| !Q_strcmp(pMapName, "ep1_c17_00a")
-			|| !Q_strcmp(pMapName, "ep2_outland_01")	|| !Q_strcmp(pMapName, "ep2_outland_03")		|| !Q_strcmp(pMapName, "ep2_outland_11")	|| !Q_strcmp(pMapName, "ep2_outland_11b"))
+			|| !Q_strcmp(pMapName, "ep2_outland_01")	|| !Q_strcmp(pMapName, "ep2_outland_03")	|| !Q_strcmp(pMapName, "ep2_outland_11")	|| !Q_strcmp(pMapName, "ep2_outland_11b"))
 			return false;//bad map
 
 	//could distrupt cutscenes
@@ -7251,7 +7253,8 @@ void CEBottle::StartEffect()
 	pEnt->SetModel("models/props_junk/garbage_glassbottle003a.mdl");
 	Vector vecOrigin = pPlayer->GetAbsOrigin() + vecForward * 128;
 	trace_t	trDown;
-	UTIL_TraceLine(vecOrigin, vecOrigin - Vector(0, 0, 1000), MASK_SOLID, pEnt, COLLISION_GROUP_NONE, &trDown);
+	//COLLISION_GROUP_WEAPON is to avoid hitting a vehicle that the player is in
+	UTIL_TraceLine(vecOrigin, vecOrigin - Vector(0, 0, 1000), MASK_SOLID, pEnt, COLLISION_GROUP_WEAPON, &trDown);
 	vecOrigin = trDown.endpos + Vector(0, 0, 1);
 	Vector vecLastGoodPos = vecOrigin;
 	pEnt->SetAbsOrigin(vecOrigin);

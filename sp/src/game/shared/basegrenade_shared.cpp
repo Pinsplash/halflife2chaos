@@ -149,6 +149,7 @@ void CBaseGrenade::Explode( trace_t *pTrace, int bitsDamageType )
 			TE_EXPLFLAG_NONE,
 			m_DmgRadius,
 			m_flDamage,
+			GetRenderColor(),
 			&vecNormal,
 			(char) pdata->game.material );
 	}
@@ -162,7 +163,8 @@ void CBaseGrenade::Explode( trace_t *pTrace, int bitsDamageType )
 			25,
 			TE_EXPLFLAG_NONE,
 			m_DmgRadius,
-			m_flDamage );
+			m_flDamage,
+			GetRenderColor());
 	}
 
 #if !defined( CLIENT_DLL )

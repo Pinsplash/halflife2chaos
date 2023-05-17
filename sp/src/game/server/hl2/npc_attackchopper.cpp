@@ -5514,7 +5514,7 @@ void CGrenadeHelicopter::DoExplosion( const Vector &vecOrigin, const Vector &vec
 	}
 
 	CEffectData data;
-
+	data.m_color = GetRenderColor();
 	// If we're under water do a water explosion
 	if ( GetWaterLevel() != 0 && (GetWaterType() & CONTENTS_WATER) )
 	{

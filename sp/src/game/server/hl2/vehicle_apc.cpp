@@ -435,7 +435,8 @@ void CPropAPC::Event_Killed( const CTakeDamageInfo &info )
 			g_sModelIndexFireball, random->RandomInt( 4, 10 ), 
 			random->RandomInt( 8, 15 ), 
 			( i < 2 ) ? TE_EXPLFLAG_NODLIGHTS : TE_EXPLFLAG_NOPARTICLES | TE_EXPLFLAG_NOFIREBALLSMOKE | TE_EXPLFLAG_NODLIGHTS,
-			100, 0 );
+			100, 0,
+			GetRenderColor());
 	}
 
 	// TODO: make the gibs spawn in sync with the delayed explosions

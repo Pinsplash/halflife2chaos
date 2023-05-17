@@ -391,7 +391,8 @@ void CGrenadeHomer::Detonate(void)
 		15,
 		TE_EXPLFLAG_NONE,
 		m_DmgRadius,
-		m_flDamage );
+		m_flDamage,
+		GetRenderColor());
 
 //	int magnitude = 1.0;
 //	int	colorRamp = random->RandomInt( 128, 255 );

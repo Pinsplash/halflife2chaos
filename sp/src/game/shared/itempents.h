@@ -75,7 +75,7 @@ public:
 	virtual void DynamicLight( IRecipientFilter& filer, float delay,
 		const Vector* org, int r, int g, int b, int exponent, float radius, float time, float decay ) = 0;
 	virtual void Explosion( IRecipientFilter& filer, float delay,
-		const Vector* pos, int modelindex, float scale, int framerate, int flags, int radius, int magnitude, const Vector* normal = NULL, unsigned char materialType = 'C' ) = 0;
+		const Vector* pos, int modelindex, float scale, int framerate, int flags, int radius, int magnitude, color32 color, const Vector* normal = NULL, unsigned char materialType = 'C' ) = 0;
 	virtual void ShatterSurface( IRecipientFilter& filer, float delay,
 		const Vector* pos, const QAngle* angle, const Vector* vForce, const Vector* vForcePos, 
 		float width, float height, float shardsize, ShatterSurface_t surfacetype,

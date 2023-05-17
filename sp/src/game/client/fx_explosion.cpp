@@ -113,9 +113,9 @@ public:
 		float	tLifetime = pParticle->m_flLifetime / pParticle->m_flDieTime;
 		float	ramp = Bias( 1.0f - tLifetime, 0.25f );
 
-		color[0] = ( (float) pParticle->m_uchColor[0] * ramp ) / 255.0f;
-		color[1] = ( (float) pParticle->m_uchColor[1] * ramp ) / 255.0f;
-		color[2] = ( (float) pParticle->m_uchColor[2] * ramp ) / 255.0f;
+		color[0] = ((float)pParticle->m_uchColor[0] * ramp) / 255.0f;
+		color[1] = ((float)pParticle->m_uchColor[1] * ramp) / 255.0f;
+		color[2] = ((float)pParticle->m_uchColor[2] * ramp) / 255.0f;
 
 		return color;
 	}
@@ -168,11 +168,11 @@ float C_BaseExplosionEffect::ScaleForceByDeviation( Vector &deviant, Vector &sou
 //			force - 
 // Output : virtual void
 //-----------------------------------------------------------------------------
-void C_BaseExplosionEffect::Create( const Vector &position, float force, float scale, int flags )
+void C_BaseExplosionEffect::Create( const Vector &position, float force, float scale, color32 color, int flags )
 {
 	m_vecOrigin = position;
 	m_fFlags	= flags;
-
+	m_color = color;
 	//Find the force of the explosion
 	GetForceDirection( m_vecOrigin, force, &m_vecDirection, &m_flForce );
 
@@ -293,10 +293,14 @@ void C_BaseExplosionEffect::CreateCore( void )
 				debugoverlay->AddLineOverlay( m_vecOrigin, m_vecOrigin + pParticle->m_vecVelocity, 255, 0, 0, false, 3 );
 				#endif
 
-				int nColor = random->RandomInt( luminosity*0.5f, luminosity );
-				pParticle->m_uchColor[0] = ( worldLight[0] * nColor );
-				pParticle->m_uchColor[1] = ( worldLight[1] * nColor );
-				pParticle->m_uchColor[2] = ( worldLight[2] * nColor );
+				//int nColor = random->RandomInt( luminosity*0.5f, luminosity );
+				float flBrightness = random->RandomFloat(0.5, 1);
+				int r = m_color.r*flBrightness;
+				int g = m_color.g*flBrightness;
+				int b = m_color.b*flBrightness;
+				pParticle->m_uchColor[0] = (worldLight[0] * r);
+				pParticle->m_uchColor[1] = (worldLight[1] * g);
+				pParticle->m_uchColor[2] = (worldLight[2] * b);
 				
 				pParticle->m_uchStartSize	= 72;
 				pParticle->m_uchEndSize		= pParticle->m_uchStartSize * 2;
@@ -348,11 +352,15 @@ void C_BaseExplosionEffect::CreateCore( void )
 				#if __EXPLOSION_DEBUG
 				debugoverlay->AddLineOverlay( m_vecOrigin, m_vecOrigin + pParticle->m_vecVelocity, 255, 0, 0, false, 3 );
 				#endif
-
-				int nColor = random->RandomInt( luminosity*0.5f, luminosity );
-				pParticle->m_uchColor[0] = ( worldLight[0] * nColor );
-				pParticle->m_uchColor[1] = ( worldLight[1] * nColor );
-				pParticle->m_uchColor[2] = ( worldLight[2] * nColor );
+				
+				//int nColor = random->RandomInt( luminosity*0.5f, luminosity );
+				float flBrightness = random->RandomFloat(0.5, 1);
+				int r = m_color.r*flBrightness;
+				int g = m_color.g*flBrightness;
+				int b = m_color.b*flBrightness;
+				pParticle->m_uchColor[0] = (worldLight[0] * r);
+				pParticle->m_uchColor[1] = (worldLight[1] * g);
+				pParticle->m_uchColor[2] = (worldLight[2] * b);
 						
 				pParticle->m_uchStartSize	= random->RandomInt( 32, 64 );
 				pParticle->m_uchEndSize		= pParticle->m_uchStartSize * 2;
@@ -414,10 +422,14 @@ void C_BaseExplosionEffect::CreateCore( void )
 				debugoverlay->AddLineOverlay( m_vecOrigin, m_vecOrigin + pParticle->m_vecVelocity, 255, 0, 0, false, 3 );
 				#endif
 
-				int nColor = random->RandomInt( luminosity*0.5f, luminosity );
-				pParticle->m_uchColor[0] = ( worldLight[0] * nColor );
-				pParticle->m_uchColor[1] = ( worldLight[1] * nColor );
-				pParticle->m_uchColor[2] = ( worldLight[2] * nColor );
+				//int nColor = random->RandomInt( luminosity*0.5f, luminosity );
+				float flBrightness = random->RandomFloat(0.5, 1);
+				int r = m_color.r*flBrightness;
+				int g = m_color.g*flBrightness;
+				int b = m_color.b*flBrightness;
+				pParticle->m_uchColor[0] = (worldLight[0] * r);
+				pParticle->m_uchColor[1] = (worldLight[1] * g);
+				pParticle->m_uchColor[2] = (worldLight[2] * b);
 
 				pParticle->m_uchStartSize	= random->RandomInt( 16, 32 );
 				pParticle->m_uchEndSize		= pParticle->m_uchStartSize * 4;
@@ -476,8 +488,14 @@ void C_BaseExplosionEffect::CreateCore( void )
 			debugoverlay->AddLineOverlay( m_vecOrigin, m_vecOrigin + pParticle->m_vecVelocity, 255, 0, 0, false, 3 );
 			#endif
 
-			int nColor = random->RandomInt( 192, 255 );
-			pParticle->m_uchColor[0]	= pParticle->m_uchColor[1] = pParticle->m_uchColor[2] = nColor;
+			//int nColor = random->RandomInt( 192, 255 );
+			float flBrightness = random->RandomInt(192, 255) / 255;
+			int r = m_color.r*flBrightness;
+			int g = m_color.g*flBrightness;
+			int b = m_color.b*flBrightness;
+			pParticle->m_uchColor[0] = r;
+			pParticle->m_uchColor[1] = g;
+			pParticle->m_uchColor[2] = b;
 			
 			pParticle->m_uchStartSize	= random->RandomInt( 8, 16 ) * vDev;
 
@@ -537,9 +555,17 @@ void C_BaseExplosionEffect::CreateCore( void )
 			debugoverlay->AddLineOverlay( m_vecOrigin, m_vecOrigin + pParticle->m_vecVelocity, 255, 0, 0, false, 3 );
 			#endif
 
+			float flBrightness = random->RandomInt(128, 255) / 255.0f;
+			int r = m_color.r*flBrightness;
+			int g = m_color.g*flBrightness;
+			int b = m_color.b*flBrightness;
+			pParticle->m_uchColor[0] = r;
+			pParticle->m_uchColor[1] = g;
+			pParticle->m_uchColor[2] = b;
+			/*
 			int nColor = random->RandomInt( 128, 255 );
 			pParticle->m_uchColor[0]	= pParticle->m_uchColor[1] = pParticle->m_uchColor[2] = nColor;
-			
+			*/
 			pParticle->m_uchStartSize	= random->RandomInt( 32, 85 ) * vDev;
 
 			pParticle->m_uchStartSize	= clamp( pParticle->m_uchStartSize, (uint8) 32, (uint8) 85 );
@@ -619,7 +645,7 @@ void C_BaseExplosionEffect::CreateDebris( void )
 		
 		tParticle->m_vecVelocity	= dir * random->RandomFloat( 1500, 2500 );
 
-		Color32Init( tParticle->m_color, 255, 255, 255, 255 );
+		Color32Init(tParticle->m_color, m_color.r, m_color.g, m_color.b, m_color.a);
 	}
 
 #ifndef _XBOX
@@ -636,12 +662,12 @@ void C_BaseExplosionEffect::CreateDebris( void )
 	fleckEmitter->m_ParticleCollision.Setup( m_vecOrigin, &m_vecDirection, 0.9f, 512, 1024, 800, 0.5f );
 	
 
+	
 #ifdef _XBOX
 	int	numFlecks = random->RandomInt( 8, 16 );
 #else	
 	int	numFlecks = random->RandomInt( 16, 32 );
 #endif // _XBOX
-
 
 	// Dump out flecks
 	for ( i = 0; i < numFlecks; i++ )
@@ -677,11 +703,12 @@ void C_BaseExplosionEffect::CreateDebris( void )
 		pParticle->m_flRoll			= random->RandomFloat( 0, 360 );
 		pParticle->m_flRollDelta	= random->RandomFloat( 0, 360 );
 
-		float colorRamp = random->RandomFloat( 0.5f, 1.5f );
-		pParticle->m_uchColor[0] = MIN( 1.0f, 0.25f*colorRamp )*255.0f;
-		pParticle->m_uchColor[1] = MIN( 1.0f, 0.25f*colorRamp )*255.0f;
-		pParticle->m_uchColor[2] = MIN( 1.0f, 0.25f*colorRamp )*255.0f;
+		float colorRamp = random->RandomFloat(0.5f, 1.5f);
+		pParticle->m_uchColor[0] = MIN(1.0f, 0.25f*colorRamp)*m_color.r;
+		pParticle->m_uchColor[1] = MIN(1.0f, 0.25f*colorRamp)*m_color.g;
+		pParticle->m_uchColor[2] = MIN(1.0f, 0.25f*colorRamp)*m_color.b;
 	}
+	
 #endif // !_XBOX
 }
 
@@ -798,7 +825,7 @@ void C_BaseExplosionEffect::GetForceDirection( const Vector &origin, float magni
 //-----------------------------------------------------------------------------
 void ExplosionCallback( const CEffectData &data )
 {
-	BaseExplosionEffect().Create( data.m_vOrigin, data.m_flMagnitude, data.m_flScale, data.m_fFlags );
+	BaseExplosionEffect().Create(data.m_vOrigin, data.m_flMagnitude, data.m_flScale, data.m_color, data.m_fFlags);
 }
 
 DECLARE_CLIENT_EFFECT( "Explosion", ExplosionCallback );
@@ -898,7 +925,7 @@ C_WaterExplosionEffect &WaterExplosionEffect( void )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void C_WaterExplosionEffect::Create( const Vector &position, float force, float scale, int flags )
+void C_WaterExplosionEffect::Create( const Vector &position, float force, float scale, color32 color, int flags )
 {
 	m_vecOrigin = position;
 
@@ -944,7 +971,7 @@ void C_WaterExplosionEffect::Create( const Vector &position, float force, float 
 	// Get our lighting information
 	FX_GetSplashLighting( m_vecOrigin + Vector( 0, 0, 32 ), &m_vecColor, &m_flLuminosity );
 
-	BaseClass::Create( position, force, scale, flags );
+	BaseClass::Create( position, force, scale, color, flags );
 }
 
 
@@ -1135,9 +1162,9 @@ void C_WaterExplosionEffect::CreateDebris( void )
 			debugoverlay->AddLineOverlay( m_vecOrigin, m_vecOrigin + pParticle->m_vecVelocity, 255, 0, 0, false, 3 );
 			#endif
 
-			pParticle->m_uchColor[0] = m_vecColor.x * 255;
-			pParticle->m_uchColor[1] = m_vecColor.y * 255;
-			pParticle->m_uchColor[2] = m_vecColor.z * 255;
+			pParticle->m_uchColor[0] = m_vecColor.x * m_color.r;
+			pParticle->m_uchColor[1] = m_vecColor.y * m_color.g;
+			pParticle->m_uchColor[2] = m_vecColor.z * m_color.b;
 			
 			pParticle->m_uchStartSize	= random->RandomInt( 32, 64 );
 			pParticle->m_uchEndSize		= pParticle->m_uchStartSize * 2;
@@ -1173,6 +1200,7 @@ void C_WaterExplosionEffect::CreateMisc( void )
 
 	TrailParticle	*tParticle;
 
+	
 	CSmartPtr<CTrailParticles> sparkEmitter = CTrailParticles::Create( "splash" );
 
 	if ( !sparkEmitter )
@@ -1197,20 +1225,21 @@ void C_WaterExplosionEffect::CreateMisc( void )
 
 		tParticle->m_flLifetime	= 0.0f;
 		tParticle->m_flDieTime	= random->RandomFloat( 0.5f, 1.0f );
-
+		tParticle->m_color = m_color;
 		offDir = Vector(0,0,1) + RandomVector( -1.0f, 1.0f );
 
 		tParticle->m_vecVelocity = offDir * random->RandomFloat( 50.0f * flScale * 2.0f, 100.0f * flScale * 2.0f );
 		tParticle->m_vecVelocity[2] += random->RandomFloat( 32.0f, 128.0f ) * flScale;
 
 		tParticle->m_flWidth		= clamp( random->RandomFloat( 1.0f, 3.0f ) * flScale, 0.1f, 4.0f );
-		tParticle->m_flLength		= random->RandomFloat( length*0.25f, length )/* * flScale*/;
-
+		
+		tParticle->m_flLength		= random->RandomFloat( length*0.25f, length );
+		
 		colorRamp = random->RandomFloat( 1.5f, 2.0f );
 
 		FloatToColor32( tParticle->m_color, MIN( 1.0f, m_vecColor[0] * colorRamp ), MIN( 1.0f, m_vecColor[1] * colorRamp ), MIN( 1.0f, m_vecColor[2] * colorRamp ), m_flLuminosity );
 	}
-
+	
 	//Dump out drops
 	for ( i = 0; i < 4; i++ )
 	{
@@ -1225,20 +1254,21 @@ void C_WaterExplosionEffect::CreateMisc( void )
 
 		tParticle->m_flLifetime	= 0.0f;
 		tParticle->m_flDieTime	= random->RandomFloat( 0.5f, 1.0f );
-
+		tParticle->m_color = m_color;
 		offDir = Vector(0,0,1) + RandomVector( -0.2f, 0.2f );
 
 		tParticle->m_vecVelocity = offDir * random->RandomFloat( 50 * flScale * 3.0f, 100 * flScale * 3.0f );
 		tParticle->m_vecVelocity[2] += random->RandomFloat( 32.0f, 128.0f ) * flScale;
 
 		tParticle->m_flWidth		= clamp( random->RandomFloat( 2.0f, 3.0f ) * flScale, 0.1f, 4.0f );
-		tParticle->m_flLength		= random->RandomFloat( length*0.25f, length )/* * flScale*/;
-
+		
+		tParticle->m_flLength		= random->RandomFloat( length*0.25f, length );
+		
 		colorRamp = random->RandomFloat( 1.5f, 2.0f );
 
 		FloatToColor32( tParticle->m_color, MIN( 1.0f, m_vecColor[0] * colorRamp ), MIN( 1.0f, m_vecColor[1] * colorRamp ), MIN( 1.0f, m_vecColor[2] * colorRamp ), m_flLuminosity );
 	}
-
+	
 #endif
 
 	CSmartPtr<CSplashParticle> pSimple = CSplashParticle::Create( "splish" );
@@ -1267,9 +1297,9 @@ void C_WaterExplosionEffect::CreateMisc( void )
 		
 		colorRamp = random->RandomFloat( 0.75f, 1.25f );
 
-		pParticle->m_uchColor[0]	= MIN( 1.0f, m_vecColor[0] * colorRamp ) * 255.0f;
-		pParticle->m_uchColor[1]	= MIN( 1.0f, m_vecColor[1] * colorRamp ) * 255.0f;
-		pParticle->m_uchColor[2]	= MIN( 1.0f, m_vecColor[2] * colorRamp ) * 255.0f;
+		pParticle->m_uchColor[0] = MIN(1.0f, m_vecColor[0] * colorRamp) * m_color.r;
+		pParticle->m_uchColor[1] = MIN(1.0f, m_vecColor[1] * colorRamp) * m_color.g;
+		pParticle->m_uchColor[2] = MIN(1.0f, m_vecColor[2] * colorRamp) * m_color.b;
 		
 		pParticle->m_uchStartSize	= 24 * flScale * RemapValClamped( i, 7, 0, 1, 0.5f );
 		pParticle->m_uchEndSize		= MIN( 255, pParticle->m_uchStartSize * 2 );
@@ -1308,7 +1338,7 @@ void C_WaterExplosionEffect::PlaySound( void )
 //-----------------------------------------------------------------------------
 void WaterSurfaceExplosionCallback( const CEffectData &data )
 {
-	WaterExplosionEffect().Create( data.m_vOrigin, data.m_flMagnitude, data.m_flScale, data.m_fFlags );
+	WaterExplosionEffect().Create(data.m_vOrigin, data.m_flMagnitude, data.m_flScale, data.m_color, data.m_fFlags);
 }
 
 DECLARE_CLIENT_EFFECT( "WaterSurfaceExplosion", WaterSurfaceExplosionCallback );
@@ -1412,7 +1442,7 @@ void C_MegaBombExplosionEffect::CreateCore( void )
 //-----------------------------------------------------------------------------
 void HelicopterMegaBombCallback( const CEffectData &data )
 {
-	C_MegaBombExplosionEffect().Create( data.m_vOrigin, 1.0f, 1.0f, 0 );
+	C_MegaBombExplosionEffect().Create( data.m_vOrigin, 1.0f, 1.0f, data.m_color, 0 );
 }
 
 DECLARE_CLIENT_EFFECT( "HelicopterMegaBomb", HelicopterMegaBombCallback );

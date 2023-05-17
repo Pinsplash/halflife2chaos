@@ -212,7 +212,8 @@ void CGrenadeAR2::Detonate(void)
 		15,
 		TE_EXPLFLAG_NONE,
 		m_DmgRadius,
-		m_flDamage );
+		m_flDamage,
+		GetRenderColor());
 
 	Vector vecForward = GetAbsVelocity();
 	VectorNormalize(vecForward);

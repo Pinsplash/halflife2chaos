@@ -317,7 +317,8 @@ void CEnvExplosion::InputExplode( inputdata_t &inputdata )
 		15,
 		nFlags,
 		iRadius,
-		m_iMagnitude );
+		m_iMagnitude,
+		GetRenderColor());
 
 	// do damage
 	if ( !( m_spawnflags & SF_ENVEXPLOSION_NODAMAGE ) )
@@ -391,6 +392,12 @@ void ExplosionCreate( const Vector &center, const QAngle &angles,
 	char *szKeyName = "iMagnitude";
 	char *szValue = buf;
 	pExplosion->KeyValue( szKeyName, szValue );
+
+	//inherit color
+	if (pInflictor)
+		pExplosion->SetRenderColor(pInflictor->GetRenderColor().r, pInflictor->GetRenderColor().g, pInflictor->GetRenderColor().b, pInflictor->GetRenderColor().a);
+	else if (pOwner)
+		pExplosion->SetRenderColor(pOwner->GetRenderColor().r, pOwner->GetRenderColor().g, pOwner->GetRenderColor().b, pOwner->GetRenderColor().a);
 
 	pExplosion->AddSpawnFlags( nSpawnFlags );
 

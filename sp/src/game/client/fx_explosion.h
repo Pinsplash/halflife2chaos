@@ -31,7 +31,7 @@ public:
 
 	static	C_BaseExplosionEffect &Instance( void )	{	return m_instance;	}
 
-	virtual void	Create( const Vector &position, float force, float scale, int flags );
+	virtual void	Create( const Vector &position, float force, float scale, color32 color, int flags );
 
 protected:
 					C_BaseExplosionEffect( void );
@@ -58,6 +58,7 @@ protected:
 	PMaterialHandle	m_Material_Smoke;
 	PMaterialHandle m_Material_Embers[2];
 	PMaterialHandle m_Material_FireCloud;
+	color32 m_color;
 };
 
 //Singleton accessor
@@ -90,7 +91,7 @@ class C_WaterExplosionEffect : public C_BaseExplosionEffect
 public:
 	static	C_WaterExplosionEffect &Instance( void )	{	return m_waterinstance;	}
 
-	virtual void	Create( const Vector &position, float force, float scale, int flags );
+	virtual void	Create( const Vector &position, float force, float scale, color32 color, int flags );
 
 protected:
 	virtual void	CreateCore( void );

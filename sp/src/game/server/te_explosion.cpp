@@ -41,7 +41,8 @@ public:
 	CNetworkVector( m_vecNormal );
 	CNetworkVar( unsigned char, m_chMaterialType );
 	CNetworkVar( int, m_nRadius );
-	CNetworkVar( int, m_nMagnitude );
+	CNetworkVar(int, m_nMagnitude);
+	CNetworkColor32(m_color);
 };
 
 //-----------------------------------------------------------------------------
@@ -81,7 +82,7 @@ void CTEExplosion::Test( const Vector& current_origin, const QAngle& current_ang
 	m_nFrameRate = 15;
 	m_nFlags = TE_EXPLFLAG_NONE;
 	m_vecOrigin = current_origin;
-	
+	m_color = color32{ 255, 255, 255, 255 };
 	Vector forward;
 
 	m_vecOrigin.GetForModify()[2] += 24;
@@ -104,14 +105,15 @@ IMPLEMENT_SERVERCLASS_ST(CTEExplosion, DT_TEExplosion)
 	SendPropVector( SENDINFO(m_vecNormal), -1, SPROP_COORD),
 	SendPropInt( SENDINFO(m_chMaterialType), 8, SPROP_UNSIGNED ),
 	SendPropInt( SENDINFO(m_nRadius), 32, SPROP_UNSIGNED ),
-	SendPropInt( SENDINFO(m_nMagnitude), 32, SPROP_UNSIGNED ),
+	SendPropInt(SENDINFO(m_nMagnitude), 32, SPROP_UNSIGNED),
+	SendPropInt(SENDINFO(m_color), 32, SPROP_UNSIGNED),
 END_SEND_TABLE()
 
 // Singleton to fire TEExplosion objects
 static CTEExplosion g_TEExplosion( "Explosion" );
 
 void TE_Explosion( IRecipientFilter& filter, float delay,
-	const Vector* pos, int modelindex, float scale, int framerate, int flags, int radius, int magnitude, const Vector* normal, unsigned char materialType )
+	const Vector* pos, int modelindex, float scale, int framerate, int flags, int radius, int magnitude, color32 color, const Vector* normal, unsigned char materialType )
 {
 	g_TEExplosion.m_vecOrigin		= *pos;
 	g_TEExplosion.m_nModelIndex		= modelindex;	
@@ -120,6 +122,7 @@ void TE_Explosion( IRecipientFilter& filter, float delay,
 	g_TEExplosion.m_nFlags			= flags;
 	g_TEExplosion.m_nRadius			= radius;
 	g_TEExplosion.m_nMagnitude		= magnitude;
+	g_TEExplosion.m_color			= color;
 
 	if ( normal )
 		g_TEExplosion.m_vecNormal	= *normal;
