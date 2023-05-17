@@ -62,6 +62,10 @@ config.cfg
 *.vpc.sentinel
 *.tga
 
+# Let's not include binary blobs because they can mess with build cache and cause linking errors.
+# All of the close source valve provided blobs should be already in the repository.
+*.a
+
 ep1_gamestats.dat
 **/DownloadLists/*
 chaos_random_cc.raw
