@@ -26,8 +26,8 @@ Check our GitHub [wiki](https://github.com/Pinsplash/halflife2chaos/wiki) if you
 No build enviroment setup required.
 1. `git clone --depth=1 https://github.com/Pinsplash/halflife2chaos`
 2. `cd halflife2chaos`
-3. `./sp/src/createallprojects` // TODO: this likely can be done with creategameprojects.
-4. `make -f ./sp/src/everything.mak client_hl2 server_hl2`
+3. `./sp/src/creategameprojects`
+4. `make -f ./sp/src/games.mak -j$(grep processor /proc/cpuinfo | wc -l) client_hl2 server_hl2`
 5. `ln -s $(pwd)/sp/game/mod_hl2/bin ./sourcemods/hl2chaos/` Link bin directory from our build directory
 6. `mkdir ~/.steam/steam/steamapps/sourcemods/hl2chaos; sudo mount --bind $(pwd)/sourcemods/hl2chaos ~/.steam/steam/steamapps/sourcemods/hl2chaos` Note the use of the bind mount instead of a symbolic link. Steam won't detect symbolic links. You can use `mv` or `cp` instead, if you don't care.
 

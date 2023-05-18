@@ -24,6 +24,7 @@ ipch
 *.mak
 *.mak.vpc_crc
 *.xcodeproj/
+*.project
 obj*/
 !devtools/*.mak
 !utils/smdlexp/smdlexp.mak
@@ -40,6 +41,8 @@ client.so
 client.so.dbg
 server.so
 server.so.dbg
+client_srv.so
+client_srv.so.dbg
 server_srv.so
 server_srv.so.dbg
 
@@ -61,6 +64,10 @@ config.cfg
 *.lib
 *.vpc.sentinel
 *.tga
+
+# Let's not include binary blobs because they can mess with build cache and cause linking errors.
+# All of the close source valve provided blobs should be already in the repository.
+*.a
 
 ep1_gamestats.dat
 **/DownloadLists/*
