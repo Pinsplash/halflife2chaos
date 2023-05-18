@@ -1535,6 +1535,7 @@ public:
 	bool GetUnstuck(float flMaxDist, bool bAllowNodeTeleport, bool bNoDebug = false);
 	bool FindPassableSpace(const Vector direction, float step, Vector& oldorigin, CUtlVector<Vector> &vecBadDirections, bool bSkipPreTrace, bool bNoDebug);
 	bool FindOffsetSpot(Vector forward, int FFlip, Vector right, int RFlip, Vector up, int UFlip, Vector& vecGoodSpot, int flDist, CUtlVector<Vector> &vecBadDirections, bool bSkipPreTrace, bool bNoDebug);
+	bool CheckIfBelowGround(Vector vecPos, bool bNoDebug);
 	bool PutAtNearestNode(float flMaxDist, bool bNoDebug);
 	// Add a discontinuity to a step
 	bool					AddStepDiscontinuity( float flTime, const Vector &vecOrigin, const QAngle &vecAngles );

@@ -993,7 +993,7 @@ void CPhysExplosion::Explode( CBaseEntity *pActivator, CBaseEntity *pCaller )
 					adjustedDamage = 1;
 				}
 
-				CTakeDamageInfo info( this, this, adjustedDamage, DMG_BLAST );
+				CTakeDamageInfo info( this, GetParent() ? GetParent() : this, adjustedDamage, DMG_BLAST );
 				CalculateExplosiveDamageForce( &info, (vecSpot - vecOrigin), vecOrigin );
 	
 				if ( HasSpawnFlags( SF_PHYSEXPLOSION_PUSH_PLAYER ) )

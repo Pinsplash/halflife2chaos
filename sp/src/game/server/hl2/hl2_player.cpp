@@ -596,8 +596,9 @@ CON_COMMAND_F(chaos_group, "Creates a chaos group.", FCVAR_SERVER_CAN_EXECUTE)
 {
 	if (args.ArgC() > 1)
 	{
+		/*
 		bool bFullOnGroups = true;
-		for (int i = 0; i < MAX_GROUPS; i++)
+		for (int i = 0; i < MAX_EFFECTS_IN_GROUP; i++)
 		{
 			if (g_iGroups[i][0] == 0)
 			{
@@ -609,7 +610,7 @@ CON_COMMAND_F(chaos_group, "Creates a chaos group.", FCVAR_SERVER_CAN_EXECUTE)
 				{
 					if (!atoi(args[j]))
 						break;
-					Msg("Adding effect %i to group %i\n", atoi(args[j]), i);
+					Msg("Adding effect %i to group %i\n", , i);
 					g_iGroups[i][j - 1] = atoi(args[j]);
 				}
 				break;
@@ -617,6 +618,20 @@ CON_COMMAND_F(chaos_group, "Creates a chaos group.", FCVAR_SERVER_CAN_EXECUTE)
 		}
 		if (bFullOnGroups)
 			Msg("Could not create group, no more groups can be made\n");
+		*/
+		for (int i = 1; atoi(args[i]); i++)
+		{
+			for (int j = 1; atoi(args[j]); j++)
+			{
+				int iAddMe = atoi(args[j]);
+				int iToMe = atoi(args[i]);
+				if (iAddMe == iToMe)//dont add an effect to its own exclude list because why
+					continue;
+				Msg("Added %s to effect %s's exclusion list in slot %i\n", STRING(g_ChaosEffects[iAddMe]->m_strGeneralName), STRING(g_ChaosEffects[iToMe]->m_strGeneralName), g_ChaosEffects[iToMe]->m_iExcludeCount);
+				g_ChaosEffects[iToMe]->m_iExclude[g_ChaosEffects[iToMe]->m_iExcludeCount] = iAddMe;
+				g_ChaosEffects[iToMe]->m_iExcludeCount++;
+			}
+		}
 	}
 	else
 	{
@@ -1231,14 +1246,16 @@ void CHL2_Player::PreThink(void)
 				if (!chaos_vote_enable.GetBool())
 				{
 					int iWeightSum = 0;
+					CChaosEffect *pEffect;
 					for (int i = 1; i < NUM_EFFECTS; i++)
 					{
-						if (chaos_print_rng.GetBool()) Msg("i %i, %s %i += %i\n", i, STRING(g_ChaosEffects[i]->m_strGeneralName), iWeightSum, g_ChaosEffects[i]->m_iCurrentWeight);
-						iWeightSum += g_ChaosEffects[i]->m_iCurrentWeight;
+						pEffect = g_ChaosEffects[i];
+						if (chaos_print_rng.GetBool()) Msg("i %i, %s %i += %i\n", i, STRING(pEffect->m_strGeneralName), iWeightSum, pEffect->m_iCurrentWeight);
+						iWeightSum += pEffect->m_iCurrentWeight;
 						//recover weight for recent effects
 						//add a fraction of the maximum weight on every interval
-						if (!EffectOrGroupAlreadyActive(i) && g_ChaosEffects[i]->m_iCurrentWeight < g_ChaosEffects[i]->m_iMaxWeight)
-							g_ChaosEffects[i]->m_iCurrentWeight = min(g_ChaosEffects[i]->m_iCurrentWeight + g_ChaosEffects[i]->m_iMaxWeight * 0.2, g_ChaosEffects[i]->m_iMaxWeight);
+						if (!EffectOrGroupAlreadyActive(i) && pEffect->m_iCurrentWeight < pEffect->m_iMaxWeight)
+							pEffect->m_iCurrentWeight = min(pEffect->m_iCurrentWeight + pEffect->m_iMaxWeight * 0.2, pEffect->m_iMaxWeight);
 					}
 					nID = PickEffect(iWeightSum);
 				}
@@ -2141,7 +2158,11 @@ void CHL2_Player::Spawn(void)
 			g_EventQueue.AddEvent(pAutosave, "Kill", 1.1, NULL, NULL);
 		}
 		//for some reason, we can't do this at the same time as autoexec...
-		engine->ClientCommand(engine->PEntityOfEntIndex(1), "exec groups\n");
+		if (!g_bGroupsMade)
+		{
+			engine->ClientCommand(engine->PEntityOfEntIndex(1), "exec groups\n");
+			g_bGroupsMade = true;
+		}
 	}
 #ifndef HL2MP
 #ifndef PORTAL
@@ -5162,7 +5183,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CESuperGrab>(EFFECT_SUPER_GRAB,			MAKE_STRING("Didn't Skip Arm Day"),			EC_NONE,								chaos_time_super_grab.GetFloat(),			chaos_prob_super_grab.GetInt());
 	CreateEffect<CERandomWeaponGive>(EFFECT_GIVE_WEAPON,	MAKE_STRING("Give Random Weapon"),			EC_NONE,								-1,											chaos_prob_give_weapon.GetInt());
 	CreateEffect<>(EFFECT_GIVE_ALL_WEAPONS,					MAKE_STRING("Give All Weapons"),			EC_NONE,								-1,											chaos_prob_give_all_weapons.GetInt());
-	CreateEffect<CEWeaponsDrop>(EFFECT_DROP_WEAPONS,		MAKE_STRING("Drop Weapons"),				EC_HAS_WEAPON | EC_NO_CITADEL,			-1,											chaos_prob_drop_weapons.GetInt());
+	CreateEffect<CEWeaponsDrop>(EFFECT_DROP_WEAPONS,		MAKE_STRING("Drop Weapons"),				EC_HAS_WEAPON | EC_NEED_PHYSGUN,		-1,											chaos_prob_drop_weapons.GetInt());
 	CreateEffect<>(EFFECT_NADE_GUNS,						MAKE_STRING("Grenade Guns"),				EC_NO_INVULN,							chaos_time_nade_guns.GetFloat(),			chaos_prob_nade_guns.GetFloat());
 	CreateEffect<CEEarthquake>(EFFECT_EARTHQUAKE,			MAKE_STRING("Wobbly"),						EC_NONE,								chaos_time_earthquake.GetFloat(),			chaos_prob_earthquake.GetInt());
 	CreateEffect<CE420Joke>(EFFECT_420_JOKE,				MAKE_STRING("Funny Number"),				EC_NO_INVULN,							-1,											chaos_prob_420_joke.GetInt());
@@ -5188,14 +5209,14 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CETreeSpam>(EFFECT_FOREST,					MAKE_STRING("Surprise Reforestation!"),		EC_NONE,								chaos_time_forest.GetFloat(),				chaos_prob_forest.GetInt());
 	CreateEffect<CEMountedGun>(EFFECT_SPAWN_MOUNTED_GUN,	MAKE_STRING("Spawn Mounted Gun"),			EC_NONE,								-1,											chaos_prob_spawn_mounted_gun.GetInt());
 	CreateEffect<CERestartLevel>(EFFECT_RESTART_LEVEL,		MAKE_STRING("Restart Level"),				EC_NONE,								-1,											chaos_prob_restart_level.GetInt());
-	CreateEffect<CERemovePickups>(EFFECT_REMOVE_PICKUPS,	MAKE_STRING("Remove All Pickups"),			EC_PICKUPS | EC_NO_CITADEL | EC_HAS_WEAPON, -1,										chaos_prob_remove_pickups.GetInt());
+	CreateEffect<CERemovePickups>(EFFECT_REMOVE_PICKUPS,	MAKE_STRING("Remove All Pickups"),			EC_PICKUPS | EC_NEED_PHYSGUN | EC_HAS_WEAPON, -1,									chaos_prob_remove_pickups.GetInt());
 	CreateEffect<CECloneNPCs>(EFFECT_CLONE_NPCS,			MAKE_STRING("Suppression Field Hiccup"),	EC_NONE,								-1,											chaos_prob_clone_npcs.GetInt());
 	CreateEffect<CELockPVS>(EFFECT_LOCK_PVS,				MAKE_STRING("Vision Machine Broke"),		EC_NONE,								chaos_time_lock_pvs.GetFloat(),				chaos_prob_lock_pvs.GetInt());
 	CreateEffect<CEDejaVu>(EFFECT_RELOAD_DEJA_VU,			MAKE_STRING("Deja Vu?"),					EC_PLAYER_TELEPORT,						-1,											chaos_prob_reload_deja_vu.GetInt());
 	CreateEffect<CEBumpy>(EFFECT_BUMPY,						MAKE_STRING("Bumpy Road"),					EC_BUGGY,								chaos_time_bumpy.GetFloat(),				chaos_prob_bumpy.GetInt());
 	CreateEffect<CENoBrake>(EFFECT_NO_BRAKE,				MAKE_STRING("Broken Brakes"),				EC_BUGGY,								chaos_time_no_brake.GetFloat(),				chaos_prob_no_brake.GetInt());
 	CreateEffect<CEForceInOutCar>(EFFECT_FORCE_INOUT_CAR,	MAKE_STRING("Force In/Out Vehicle"),		EC_BUGGY | EC_BOAT | EC_PLAYER_TELEPORT,-1,											chaos_prob_force_inout_car.GetInt());
-	CreateEffect<CEWeaponRemove>(EFFECT_WEAPON_REMOVE,		MAKE_STRING("Remove Random Weapon"),		EC_HAS_WEAPON | EC_NO_CITADEL,			-1,											chaos_prob_weapon_remove.GetInt());
+	CreateEffect<CEWeaponRemove>(EFFECT_WEAPON_REMOVE,		MAKE_STRING("Remove Random Weapon"),		EC_HAS_WEAPON | EC_NEED_PHYSGUN,		-1,											chaos_prob_weapon_remove.GetInt());
 	CreateEffect<>(EFFECT_INTERP_NPCS,						MAKE_STRING("Laggy NPCs"),					EC_NONE,								chaos_time_interp_npcs.GetFloat(),			chaos_prob_interp_npcs.GetInt());
 	CreateEffect<CEPhysConvert>(EFFECT_PHYS_CONVERT,		MAKE_STRING("Ran Out Of Glue"),				EC_NONE,								-1,											chaos_prob_phys_convert.GetInt());
 	CreateEffect<CEIncline>(EFFECT_INCLINE,					MAKE_STRING("No Climbing"),					EC_NONE,								chaos_time_incline.GetFloat(),				chaos_prob_incline.GetInt());
@@ -5203,7 +5224,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<>(EFFECT_NO_RELOAD,						MAKE_STRING("No One Can Reload"),			EC_HAS_WEAPON,							chaos_time_no_reload.GetFloat(),			chaos_prob_no_reload.GetInt());
 	CreateEffect<>(EFFECT_NPC_TELEPORT,						MAKE_STRING("You Teleport?"),				EC_NONE,								chaos_time_npc_teleport.GetFloat(),			chaos_prob_npc_teleport.GetInt());
 	CreateEffect<CEDeathWater>(EFFECT_DEATH_WATER,			MAKE_STRING("Death Water"),					EC_WATER,								chaos_time_death_water.GetFloat(),			chaos_prob_death_water.GetInt());
-	CreateEffect<CERandomCC>(EFFECT_RANDOM_CC,				MAKE_STRING("Color Incorrection"),			EC_NONE,								chaos_time_random_cc.GetBool(),				chaos_prob_random_cc.GetBool());
+	CreateEffect<CERandomCC>(EFFECT_RANDOM_CC,				MAKE_STRING("Color Incorrection"),			EC_NONE,								chaos_time_random_cc.GetFloat(),			chaos_prob_random_cc.GetFloat());
 }
 
 //Set the chaos_ignore_ convars if wanted
@@ -5215,7 +5236,7 @@ int CHL2_Player::PickEffect(int iWeightSum)
 		//pick effect
 		nRandom = random->RandomInt(0, iWeightSum);
 		int nRememberRandom = nRandom;
-		if (chaos_print_rng.GetBool()) Msg("nRandom is %i (%i - %i)\n", nRandom, 0, iWeightSum);
+		if (chaos_print_rng.GetBool()) Warning("nRandom is %i (%i - %i)\n", nRandom, 0, iWeightSum);
 		//weights
 		//start at 1 so ERROR doesn't get picked
 		for (int i = 1; i < NUM_EFFECTS; i++)
@@ -5248,66 +5269,39 @@ bool CHL2_Player::EffectOrGroupAlreadyActive(int iEffect)
 {
 	if (chaos_ignore_activeness.GetBool())
 		return false;
+
 	//Msg("Checking for effect number %i\n", g_ChaosEffects[iEffect]->m_nID);
 	if (g_ChaosEffects[iEffect]->m_bActive)
 	{
 		//Msg("Effect is already active %i\n", g_ChaosEffects[iEffect]->m_nID);
 		return true;
 	}
+
 	//not already active, but what about group
 	if (chaos_ignore_group.GetBool())
 		return false;
-	
+
 	//check groups
 	if (groupcheck_debug.GetBool()) Msg("Checking groups for effect number %i\n", iEffect);
 	bool bNotInAnyGroup = true;
-	//list of all groups
-	for (int i = 0; i < MAX_GROUPS; i++)
+	if (g_ChaosEffects[iEffect]->m_iExcludeCount > 0)
 	{
-		if (g_iGroups[i][0] == 0)
+		bNotInAnyGroup = false;
+		for (int i = 0; i < g_ChaosEffects[iEffect]->m_iExcludeCount; i++)
 		{
-			if (groupcheck_debug.GetBool()) Msg("no more groups\n");
-			break;
-		}
-		if (groupcheck_debug.GetBool()) Msg("Looking in group %i\n", i);
-		//group's list of effects
-		for (int j = 1; j < MAX_EFFECTS_IN_GROUP + 1; j++)
-		{
-			if (g_iGroups[i][j] == 0)
+			int iOtherEffect = g_ChaosEffects[iEffect]->m_iExclude[i];
+			if (g_ChaosEffects[iOtherEffect]->m_bActive)
 			{
-				if (groupcheck_debug.GetBool()) Msg("no more effects in group\n");
-				break;
+				if (groupcheck_debug.GetBool()) Msg("Effect %i is active, so %i cannot be chosen\n", iOtherEffect, iEffect);
+				return true;
 			}
-			if (groupcheck_debug.GetBool()) Msg("Looking at effect %i (ID %i) in group %i\n", j, g_iGroups[i][j], i);
-			if (g_iGroups[i][j] == iEffect)
+			else
 			{
-				bNotInAnyGroup = false;
-				//check list of active effects to find if any of those effects are in this group list
-				//active effect list
-				for (int k = 0; k < MAX_ACTIVE_EFFECTS; k++)
-				{
-					if (!m_iActiveEffects[k])
-						continue;
-					if (groupcheck_debug.GetBool()) Msg("Cross-checking groups for effect number %i\n", m_iActiveEffects[k]);
-					//group's list again
-					for (int l = 1; l < MAX_EFFECTS_IN_GROUP + 1; l++)
-					{
-						if (g_iGroups[i][l] == 0)
-						{
-							if (groupcheck_debug.GetBool()) Msg("crosscheck no more groups\n");
-							break;
-						}
-						if (groupcheck_debug.GetBool()) Msg("Group checking %i == %i\n", m_iActiveEffects[k], g_iGroups[i][l]);
-						if (m_iActiveEffects[k] == g_iGroups[i][l])
-						{
-							if (groupcheck_debug.GetBool()) Msg("Effect %i is active and in group %i, so effect %i can't be picked\n", m_iActiveEffects[k], i, iEffect);
-							return true;
-						}
-					}
-				}
+				if (groupcheck_debug.GetBool()) Msg("Effect %i is not active\n", iOtherEffect);
 			}
 		}
 	}
+
 	if (groupcheck_debug.GetBool() && bNotInAnyGroup) Msg("Effect %i wasn't in any group\n", iEffect);
 	return false;//none in group active
 }
@@ -5373,15 +5367,19 @@ bool CChaosEffect::CheckEffectContext()
 	//d2_prison_01 rocket crate for gunships
 	//d3_c17_09 grenades to save barney
 	//d3_c17_10b explosives for ground turrets
-	//d3_c17_11 rocket crate for shooting gunship
+	//d3_c17_11 rocket crate for gunship
+	//d3_c17_13 rocket crate for striders
 	//ep1_c17_00 pistol and shotgun to shoot lock
-	//ep1_c17_05 rocket crate for shooting sniper
-	//ep1_c17_06 rocket crate for shooting strider
+	//ep1_c17_05 rocket crate for sniper
+	//ep1_c17_06 rocket crate for strider
 	//ep2_outland_02 too hard
 	//ep2_outland_09 grenades for autogun
 	//ep2_outland_12 removing seems to break the respawn system?
 	if (m_nID == EFFECT_REMOVE_PICKUPS)
-		if (!Q_strcmp(pMapName, "d1_trainstation_05")	|| !Q_strcmp(pMapName, "d2_coast_10")		|| !Q_strcmp(pMapName, "d2_prison_01") || !Q_strcmp(pMapName, "d3_c17_09") || !Q_strcmp(pMapName, "d3_c17_10b") || !Q_strcmp(pMapName, "d3_c17_11")
+		if (!Q_strcmp(pMapName, "d1_trainstation_05")
+			|| !Q_strcmp(pMapName, "d2_coast_10")
+			|| !Q_strcmp(pMapName, "d2_prison_01")
+			|| !Q_strcmp(pMapName, "d3_c17_09")			|| !Q_strcmp(pMapName, "d3_c17_10b")		|| !Q_strcmp(pMapName, "d3_c17_11") || !Q_strcmp(pMapName, "d3_c17_13")
 			|| !Q_strcmp(pMapName, "ep1_c17_00")		|| !Q_strcmp(pMapName, "ep1_c17_05")		|| !Q_strcmp(pMapName, "ep1_c17_06")
 			|| !Q_strcmp(pMapName, "ep2_outland_02")	|| !Q_strcmp(pMapName, "ep2_outland_09")	|| !Q_strcmp(pMapName, "ep2_outland_12"))
 			return false;
@@ -5405,7 +5403,7 @@ bool CChaosEffect::CheckEffectContext()
 		if (!Q_strcmp(pMapName, "d1_trainstation_01")	|| !Q_strcmp(pMapName, "d1_trainstation_05")
 			|| !Q_strcmp(pMapName, "d1_canals_11")		|| !Q_strcmp(pMapName, "d1_canals_13")
 			|| !Q_strcmp(pMapName, "d1_eli_01")			|| !Q_strcmp(pMapName, "d1_town_01")
-			|| !Q_strcmp(pMapName, "d3_c17_08")
+			|| !Q_strcmp(pMapName, "d3_c17_07")			|| !Q_strcmp(pMapName, "d3_c17_08")
 			|| !Q_strcmp(pMapName, "d3_citadel_01")		|| !Q_strcmp(pMapName, "d3_citadel_02")		|| !Q_strcmp(pMapName, "d3_citadel_05")		|| !Q_strcmp(pMapName, "d3_breen_01")
 			|| !Q_strcmp(pMapName, "ep1_c17_00a")
 			|| !Q_strcmp(pMapName, "ep2_outland_01")	|| !Q_strcmp(pMapName, "ep2_outland_03")	|| !Q_strcmp(pMapName, "ep2_outland_11")	|| !Q_strcmp(pMapName, "ep2_outland_11b"))
@@ -5479,12 +5477,14 @@ bool CChaosEffect::CheckEffectContext()
 		}
 	}
 
-	//not citadel maps
-	if (m_nContext & EC_NO_CITADEL)
+	//this effect could permanently separate us from the gravity gun at a time where we need it
+	if (m_nContext & EC_NEED_PHYSGUN)
 		if (GlobalEntity_GetState("super_phys_gun") == GLOBAL_ON
+			|| !Q_strcmp(pMapName, "d3_c17_07")			|| !Q_strcmp(pMapName, "d3_c17_08")			|| !Q_strcmp(pMapName, "d3_c17_10b")
 			|| !Q_strcmp(pMapName, "d3_citadel_03")		|| !Q_strcmp(pMapName, "d3_citadel_04")		|| !Q_strcmp(pMapName, "d3_breen_01")
-			|| !Q_strcmp(pMapName, "ep1_citadel_00")	|| !Q_strcmp(pMapName, "ep1_citadel_01")	|| !Q_strcmp(pMapName, "ep1_citadel_03")	|| !Q_strcmp(pMapName, "ep1_citadel_04"))
-			return false;//citadel map (at least, one that matters)
+			|| !Q_strcmp(pMapName, "ep1_citadel_00")	|| !Q_strcmp(pMapName, "ep1_citadel_01")	|| !Q_strcmp(pMapName, "ep1_citadel_03")	|| !Q_strcmp(pMapName, "ep1_citadel_04")
+			|| !Q_strcmp(pMapName, "ep1_c17_00")		|| !Q_strcmp(pMapName, "ep1_c17_00a")		|| !Q_strcmp(pMapName, "ep1_c17_01")		|| !Q_strcmp(pMapName, "ep1_c17_02"))
+			return false;//bad time to lose the gravity gun
 
 	//NO TELEPORT LIST LEAKED
 	if (m_nContext & EC_PLAYER_TELEPORT)
@@ -5498,7 +5498,7 @@ bool CChaosEffect::CheckEffectContext()
 				|| !Q_strcmp(pMapName, "d1_town_02a")		|| !Q_strcmp(pMapName, "d1_town_05")
 				|| !Q_strcmp(pMapName, "d2_coast_11")
 				|| !Q_strcmp(pMapName, "d2_prison_06")		|| !Q_strcmp(pMapName, "d2_prison_08")
-				|| !Q_strcmp(pMapName, "d3_c17_06b")		|| !Q_strcmp(pMapName, "d3_c17_10b")
+				|| !Q_strcmp(pMapName, "d3_c17_06b")		|| !Q_strcmp(pMapName, "d3_c17_07")			|| !Q_strcmp(pMapName, "d3_c17_10b")		|| !Q_strcmp(pMapName, "d3_c17_13")
 				|| !Q_strcmp(pMapName, "d3_citadel_03")		|| !Q_strcmp(pMapName, "d3_citadel_04")
 				|| !Q_strcmp(pMapName, "d3_breen_01")
 				|| !Q_strcmp(pMapName, "ep1_citadel_03")	|| !Q_strcmp(pMapName, "ep1_c17_00")		|| !Q_strcmp(pMapName, "ep1_c17_00a")
@@ -5850,6 +5850,7 @@ void CChaosEffect::RandomTeleport(bool bPlayerOnly)
 	Vector vec = pNode->GetPosition(HULL_HUMAN);
 	if (pPlayer->GetVehicle() && pPlayer->GetVehicle()->GetVehicleEnt())
 	{
+		vec += Vector(0, 0, 64);
 		pPlayer->GetVehicle()->GetVehicleEnt()->Teleport(&vec, NULL, NULL);
 		pPlayer->GetVehicle()->GetVehicleEnt()->GetUnstuck(500, true);
 	}
@@ -5982,8 +5983,8 @@ CAI_Node *CChaosEffect::NearestNodeToPoint(const Vector &vPosition, bool bCheckV
 bool CChaosEffect::IterUsableVehicles(bool bFindOnly)
 {
 	bool bFoundSomething = false;
-	bool bFindBoat = m_nContext & EC_BOAT || m_nContext & EC_NO_VEHICLE;
-	bool bFindBuggy = m_nContext & EC_BUGGY || m_nContext & EC_NO_VEHICLE;
+	bool bFindBoat = m_nContext & EC_BOAT || m_nContext & EC_NO_VEHICLE || m_nContext == EC_NONE;
+	bool bFindBuggy = m_nContext & EC_BUGGY || m_nContext & EC_NO_VEHICLE || m_nContext == EC_NONE;
 	//there may be more than one useable car in a map cause chaos is chaotic
 	//iterate on boats then cars
 	CPropVehicleDriveable *pVehicle = NULL;
@@ -6069,7 +6070,7 @@ bool CChaosEffect::MapGoodForCrane(const char *pMapName)
 		&& Q_strcmp(pMapName, "d1_canals_02")			&& Q_strcmp(pMapName, "d1_canals_03")
 		&& Q_strcmp(pMapName, "d1_eli_01")
 		&& Q_strcmp(pMapName, "d1_town_04")
-		&& (Q_strnicmp("d2_p", pMapName, strlen(pMapName)) || !Q_strcmp(pMapName, "d2_prison_01"))//don't allow any prison map except 01 since that's outdoors
+		&& (Q_strnicmp("d2_p", pMapName, 4) || !Q_strcmp(pMapName, "d2_prison_01"))//don't allow any prison map except 01 since that's outdoors
 		&& Q_strcmp(pMapName, "d3_c17_01")				&& Q_strcmp(pMapName, "d3_c17_05")					&& Q_strcmp(pMapName, "d3_c17_06a")				&& Q_strcmp(pMapName, "d3_c17_06b")			&& Q_strcmp(pMapName, "d3_c17_10b")
 		&& Q_strcmp(pMapName, "d3_citadel_02")			&& Q_strcmp(pMapName, "d3_citadel_05")
 		&& Q_strcmp(pMapName, "d3_breen_01")
@@ -7001,6 +7002,16 @@ void CEColors::StartEffect()
 			colorVariant.SetColor32(random->RandomInt(0, 255), random->RandomInt(0, 255), random->RandomInt(0, 255), pEnt->GetRenderColor().a);
 			pEnt->AcceptInput("SetColorSecondary", pEnt, pEnt, colorVariant, 0);
 		}
+		//doing it the input way allows us to hit beams and other things that have their own coloring process
+		char szcolor[2048];
+		variant_t colorVariant;
+		int r = random->RandomInt(0, 255);
+		int g = random->RandomInt(0, 255);
+		int b = random->RandomInt(0, 255);
+		Q_snprintf(szcolor, sizeof(szcolor), "%i %i %i", r, g, b);
+		Msg("%s\n", szcolor);
+		colorVariant.SetString(MAKE_STRING(szcolor));
+		pEnt->AcceptInput("Color", UTIL_GetLocalPlayer(), UTIL_GetLocalPlayer(), colorVariant, 0);
 		pEnt = gEntList.NextEnt(pEnt);
 	}
 }
@@ -7009,9 +7020,19 @@ void CEColors::MaintainEffect()
 	CBaseEntity *pEnt = gEntList.FirstEnt();
 	while (pEnt)
 	{
-		if (pEnt->GetRenderColor().r == 255 && pEnt->GetRenderColor().g == 255 && pEnt->GetRenderColor().b == 255)
+		//make sure we don't recolor things that we already colored. this aint a rave.
+		if (255 == pEnt->GetRenderColor().r == pEnt->GetRenderColor().g == pEnt->GetRenderColor().b)
 		{
-			pEnt->SetRenderColor(random->RandomInt(0, 255), random->RandomInt(0, 255), random->RandomInt(0, 255));
+			//doing it the input way allows us to hit beams and other things that have their own coloring process
+			char szcolor[2048];
+			variant_t colorVariant;
+			int r = random->RandomInt(0, 255);
+			int g = random->RandomInt(0, 255);
+			int b = random->RandomInt(0, 255);
+			Q_snprintf(szcolor, sizeof(szcolor), "%i %i %i", r, g, b);
+			Msg("%s\n", szcolor);
+			colorVariant.SetString(MAKE_STRING(szcolor));
+			pEnt->AcceptInput("Color", UTIL_GetLocalPlayer(), UTIL_GetLocalPlayer(), colorVariant, 0);
 		}
 		pEnt = gEntList.NextEnt(pEnt);
 	}
@@ -7253,8 +7274,7 @@ void CEBottle::StartEffect()
 	pEnt->SetModel("models/props_junk/garbage_glassbottle003a.mdl");
 	Vector vecOrigin = pPlayer->GetAbsOrigin() + vecForward * 128;
 	trace_t	trDown;
-	//COLLISION_GROUP_WEAPON is to avoid hitting a vehicle that the player is in
-	UTIL_TraceLine(vecOrigin, vecOrigin - Vector(0, 0, 1000), MASK_SOLID, pEnt, COLLISION_GROUP_WEAPON, &trDown);
+	UTIL_TraceLine(vecOrigin, vecOrigin - Vector(0, 0, 1000), MASK_SOLID, pEnt, COLLISION_GROUP_DEBRIS, &trDown);
 	vecOrigin = trDown.endpos + Vector(0, 0, 1);
 	Vector vecLastGoodPos = vecOrigin;
 	pEnt->SetAbsOrigin(vecOrigin);
@@ -7548,12 +7568,11 @@ void CERandomSong::StartEffect()
 }
 void CETreeSpam::StartEffect()
 {
-	CAI_Node *pPlayerNode = NearestNodeToPoint(UTIL_GetLocalPlayer()->GetAbsOrigin(), false);
 	CAI_Node *pNode;
 	CNodeList *result = GetNearbyNodes(80);
 	Msg("list has %i nodes\n", result->Count());
-	CUtlVector<Vector> vecTreeSpots;//positions of trees we've placed, or doors
-
+	CUtlVector<Vector> vecTreeSpots;//positions of trees we've placed, or other places we'd like to avoid
+	vecTreeSpots.AddToTail(UTIL_GetLocalPlayer()->GetAbsOrigin());
 	//track doors because often nodes are placed around doorways, and trees often block necessary doorways
 	CBaseEntity *pDoor = gEntList.FindEntityByClassname(NULL, "prop_door_rotating");
 	while (pDoor)
@@ -7566,11 +7585,6 @@ void CETreeSpam::StartEffect()
 	{
 		pNode = g_pBigAINet->GetNode(result->ElementAtHead().nodeIndex);
 		Msg("node %i\n", pNode->GetId());
-		if (pPlayerNode == pNode)
-		{
-			Msg("Tree (node %i) too close to player\n", pNode->GetId());
-			continue;
-		}
 		CBaseEntity *pEnt = CreateEntityByName("prop_dynamic");
 		trace_t tr;
 		Vector vecNodePos = pNode->GetOrigin();
@@ -7583,15 +7597,10 @@ void CETreeSpam::StartEffect()
 		bool bDone = false;
 		for (int i = 0; vecTreeSpots.Size() >= i + 1; i++)
 		{
-			if ((vecTreeSpots[i] - tr.endpos).Length() < 100 && RandomInt(1, 10) != 1)
+			if ((vecTreeSpots[i] - tr.endpos).Length2D() < 90)
 			{
-				Warning("Tree (node %i) dist to other tree (node %i) is %0.1f\n", NearestNodeToPoint(vecTreeSpots[i], false)->GetId(), pNode->GetId(), (vecTreeSpots[i] - tr.endpos).Length());
 				bDone = true;
 				break;
-			}
-			else
-			{
-				Msg("Tree (node %i) dist to other tree (node %i) is %0.1f\n", NearestNodeToPoint(vecTreeSpots[i], false)->GetId(), pNode->GetId(), (vecTreeSpots[i] - tr.endpos).Length());
 			}
 		}
 		if (bDone)
@@ -8082,6 +8091,7 @@ void CELockPVS::TransitionEffect()
 void CEPlayerBig::StartEffect()
 {
 	UTIL_GetLocalPlayer()->SetModelScale(2);
+	UTIL_GetLocalPlayer()->GetUnstuck(500, true);//done here so that the player won't be stuck when reloading a save that was made before the effect was on
 }
 void CEPlayerBig::StopEffect()
 {
@@ -8379,6 +8389,14 @@ void CEPhysConvert::StartEffect()
 			variant_t emptyVariant;
 			pEnt->AcceptInput("Break", pEnt, pEnt, emptyVariant, 0);
 			pEnt->AcceptInput("Turnoff", pEnt, pEnt, emptyVariant, 0);//Also hit phys_thruster and torque
+			pEnt = gEntList.NextEnt(pEnt);
+			continue;
+		}
+		//tell crane drivers that their magnet just dropped stuff, or they may act odd
+		if (pEnt->ClassMatches("npc_cra*"))
+		{
+			variant_t emptyVariant;
+			pEnt->AcceptInput("MagnetDropped", pEnt, pEnt, emptyVariant, 0);
 			pEnt = gEntList.NextEnt(pEnt);
 			continue;
 		}

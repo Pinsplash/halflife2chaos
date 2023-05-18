@@ -60,6 +60,7 @@ To remove Twitch integration, you can simply clear out the mod's launch options 
 
 ## Tips
 * If issues arise while playing, try `chaos_restart` in the console. This should set everything back to normal and restart the map.
+* If you become physically stuck in something, the game will try to get you out of it the next time an effect starts. You can also use the console command `getunstuck`.
 * To modify things about Chaos like effect duration and probability, edit `hl2chaos/cfg/autoexec.cfg`.
 * Effect groups can be changed in `groups.cfg`.
 * Want a specific effect? Use `chaos_test_effect` followed by a number. You can get any effect's number through `chaos_print`.

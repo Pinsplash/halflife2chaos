@@ -2080,47 +2080,43 @@ bool CBaseEntity::GetUnstuck(float flMaxDist, bool bAllowNodeTeleport, bool bNoD
 		//but when called from CEPlayerBig::MaintainEffect, at which point the player was standing on the ground all well and good, the trace would think we were hitting sky somehow, and with a fraction of 1
 		//so that's why this check is here
 		if (trace.fraction != 1.0f)
-		{
 			bGotStuck = true;
-			//force ducking state
-			if (IsPlayer())
+		else
+			Msg("Not stuck a\n");
+	}
+	else
+		Msg("Not stuck b\n");
+	//we could be below a displacement
+	if (!CheckIfBelowGround(GetAbsOrigin(), bNoDebug))
+		bGotStuck = true;
+	else
+		Msg("Not stuck c\n");
+	if (bGotStuck)
+	{
+		//force ducking state
+		if (IsPlayer())
+		{
+			CBasePlayer *pPlayer = static_cast<CBasePlayer*>(this);
+			bDucked = pPlayer->m_Local.m_bDucked || (pPlayer->GetFlags() & FL_DUCKING) || pPlayer->m_Local.m_bDucking;
+			pPlayer->m_Local.m_bDucked = true;
+			pPlayer->AddFlag(FL_DUCKING);
+			pPlayer->SetCollisionBounds(VEC_DUCK_HULL_MIN_SCALED(pPlayer), VEC_DUCK_HULL_MAX_SCALED(pPlayer));
+		}
+		Vector forward, right, up;
+		AngleVectors(vec3_angle, &forward, &right, &up);
+		for (int i = 10; i <= flMaxDist; i += 10)//don't actually do 500 tests. that's insane.
+		{
+			if (bDone)
+				break;
+			//Msg("Unstuck i %i\n", i);
+			//original noclip unstuck test only tested in cardinal directions, but we're better than that
+			for (int UFlip = 1; UFlip >= -1; UFlip--)
 			{
-				CBasePlayer *pPlayer = static_cast<CBasePlayer*>(this);
-				bDucked = pPlayer->m_Local.m_bDucked || (pPlayer->GetFlags() & FL_DUCKING) || pPlayer->m_Local.m_bDucking;
-				pPlayer->m_Local.m_bDucked = true;
-				pPlayer->AddFlag(FL_DUCKING);
-				pPlayer->SetCollisionBounds(VEC_DUCK_HULL_MIN_SCALED(pPlayer), VEC_DUCK_HULL_MAX_SCALED(pPlayer));
-			}
-			Vector forward, right, up;
-			AngleVectors(vec3_angle, &forward, &right, &up);
-			for (int i = 10; i <= flMaxDist; i += 10)//don't actually do 500 tests. that's insane.
-			{
-				if (bDone)
-					break;
-				//Msg("Unstuck i %i\n", i);
-				//original noclip unstuck test only tested in cardinal directions, but we're better than that
-				for (int UFlip = 1; UFlip >= -1; UFlip--)
+				//prefer to go straight up first or else beer bottles spawn to the side
+				//so we have to do this godawful shit
+				int RFlip;
+				for (RFlip = 0; RFlip >= -1; RFlip--)
 				{
-					//prefer to go straight up first or else beer bottles spawn to the side
-					//so we have to do this godawful shit
-					int RFlip;
-					for (RFlip = 0; RFlip >= -1; RFlip--)
-					{
-						int FFlip;
-						for (FFlip = 0; FFlip >= -1; FFlip--)
-						{
-							if (bDone)
-								break;
-							if (FindOffsetSpot(forward, FFlip, right, RFlip, up, UFlip, vecGoodSpot, i, vecBadDirections, trace2.startsolid, bNoDebug))
-								bDone = true;
-						}
-						FFlip = 1;
-						if (bDone)
-							break;
-						if (FindOffsetSpot(forward, FFlip, right, RFlip, up, UFlip, vecGoodSpot, i, vecBadDirections, trace2.startsolid, bNoDebug))
-							bDone = true;
-					}
-					RFlip = 1;
 					int FFlip;
 					for (FFlip = 0; FFlip >= -1; FFlip--)
 					{
@@ -2135,23 +2131,37 @@ bool CBaseEntity::GetUnstuck(float flMaxDist, bool bAllowNodeTeleport, bool bNoD
 					if (FindOffsetSpot(forward, FFlip, right, RFlip, up, UFlip, vecGoodSpot, i, vecBadDirections, trace2.startsolid, bNoDebug))
 						bDone = true;
 				}
+				RFlip = 1;
+				int FFlip;
+				for (FFlip = 0; FFlip >= -1; FFlip--)
+				{
+					if (bDone)
+						break;
+					if (FindOffsetSpot(forward, FFlip, right, RFlip, up, UFlip, vecGoodSpot, i, vecBadDirections, trace2.startsolid, bNoDebug))
+						bDone = true;
+				}
+				FFlip = 1;
+				if (bDone)
+					break;
+				if (FindOffsetSpot(forward, FFlip, right, RFlip, up, UFlip, vecGoodSpot, i, vecBadDirections, trace2.startsolid, bNoDebug))
+					bDone = true;
 			}
-			if (!bDone)
+		}
+		if (!bDone)
+		{
+			if (bAllowNodeTeleport)
 			{
-				if (bAllowNodeTeleport)
-				{
-					if (unstuck_debug.GetBool() && !bNoDebug) Msg("Putting at node\n");
-					return PutAtNearestNode(flMaxDist, true);//i change this boolean purely on whatever i need at any moment. i am a good programmer.
-				}
-				else
-				{
-					return false;//nowhere to go
-				}
+				if (unstuck_debug.GetBool() && !bNoDebug) Msg("Putting at node\n");
+				return PutAtNearestNode(flMaxDist, true);//i change this boolean purely on whatever i need at any moment. i am a good programmer.
 			}
 			else
 			{
-				return true;//found a place to teleport to
+				return false;//nowhere to go
 			}
+		}
+		else
+		{
+			return true;//found a place to teleport to
 		}
 	}
 	if (IsPlayer())
@@ -2173,7 +2183,7 @@ bool CBaseEntity::FindOffsetSpot(Vector forward, int FFlip, Vector right, int RF
 	vecTestDir.NormalizeInPlace();
 	if (vecBadDirections.Find(vecTestDir) != -1)
 	{
-		//if (unstuck_debug.GetBool() && !bNoDebug) Warning("Direction %0.1f %0.1f %0.1f known to be bad\n", vecTestDir.x, vecTestDir.y, vecTestDir.z);
+		if (unstuck_debug.GetBool() && !bNoDebug) Warning("Direction %0.1f %0.1f %0.1f known to be bad\n", vecTestDir.x, vecTestDir.y, vecTestDir.z);
 		return false;
 	}
 	if (unstuck_debug.GetBool() && !bNoDebug)
@@ -2184,7 +2194,7 @@ bool CBaseEntity::FindOffsetSpot(Vector forward, int FFlip, Vector right, int RF
 			vecTestDir.z > 0 ? "UP" : vecTestDir.z < 0 ? "DOWN" : "");
 	}
 	Vector vecDest = GetAbsOrigin() + vecTestDir * flDist;
-	//if (unstuck_debug.GetBool() && !bNoDebug) Msg("Testing spot %0.1f %0.1f %0.1f\n", vecDest.x, vecDest.y, vecDest.z);
+	if (unstuck_debug.GetBool() && !bNoDebug) Msg("Testing spot %0.1f %0.1f %0.1f\n", vecDest.x, vecDest.y, vecDest.z);
 	if (FindPassableSpace(vecTestDir, flDist, vecGoodSpot, vecBadDirections, bSkipPreTrace, bNoDebug))
 	{
 		if (unstuck_debug.GetBool() && !bNoDebug) Warning("Found spot %0.1f %0.1f %0.1f\n", vecDest.x, vecDest.y, vecDest.z);
@@ -2212,10 +2222,10 @@ bool CBaseEntity::FindPassableSpace(const Vector direction, float step, Vector& 
 		{
 			if (unstuck_debug.GetBool() && !bNoDebug)
 			{
-				//Msg("Rejected spot %0.1f %0.1f %0.1f, Don't want to go through walls. Direction %s %s %s\n", vecDest.x, vecDest.y, vecDest.z,
-				//	direction.x > 0 ? "EAST" : direction.x < 0 ? "WEST" : "",
-				//	direction.y > 0 ? "NORTH" : direction.y < 0 ? "SOUTH" : "",
-				//	direction.z > 0 ? "UP" : direction.z < 0 ? "DOWN" : "");
+				Msg("Rejected spot %0.1f %0.1f %0.1f, Don't want to go through walls. Direction %s %s %s\n", vecDest.x, vecDest.y, vecDest.z,
+					direction.x > 0 ? "EAST" : direction.x < 0 ? "WEST" : "",
+					direction.y > 0 ? "NORTH" : direction.y < 0 ? "SOUTH" : "",
+					direction.z > 0 ? "UP" : direction.z < 0 ? "DOWN" : "");
 				NDebugOverlay::Line(GetAbsOrigin(), preTrace.endpos, 255, 0, 0, true, 30);
 			}
 			vecBadDirections.AddToTail(direction);
@@ -2239,7 +2249,7 @@ bool CBaseEntity::FindPassableSpace(const Vector direction, float step, Vector& 
 	{
 		if (unstuck_debug.GetBool() && !bNoDebug)
 		{
-			//Msg("Rejected spot %0.1f %0.1f %0.1f, Can't fit\n", vecDest.x, vecDest.y, vecDest.z);
+			Msg("Rejected spot %0.1f %0.1f %0.1f, Can't fit\n", vecDest.x, vecDest.y, vecDest.z);
 			NDebugOverlay::Cross3D(vecDest, 16, 0, 0, 0, true, 30);
 		}
 		return false;
@@ -2253,40 +2263,43 @@ bool CBaseEntity::FindPassableSpace(const Vector direction, float step, Vector& 
 	{
 		if (unstuck_debug.GetBool() && !bNoDebug)
 		{
-			//Msg("Rejected spot %0.1f %0.1f %0.1f, Bad ground\n", vecDest.x, vecDest.y, vecDest.z);
+			Msg("Rejected spot %0.1f %0.1f %0.1f, Bad ground\n", vecDest.x, vecDest.y, vecDest.z);
 			NDebugOverlay::Line(vecDest, vecDest - Vector(0, 0, 32768), 255, 0, 0, true, 30);
 		}
 		return false;
 	}
-	//the code below was written on the assumption that the code above was writ proper
-	//leaving it out until it proves necessary
-	/*
 	//ground we found could still be below a displacement
+	if (!CheckIfBelowGround(floorTrace.endpos, bNoDebug))
+		return false;
+	if (unstuck_debug.GetBool() && !bNoDebug) Msg("Good ground at %0.1f %0.1f %0.1f\n", vecDest.x, vecDest.y, vecDest.z);
+	oldorigin = vecDest;
+	return true;
+}
+bool CBaseEntity::CheckIfBelowGround(Vector vecPos, bool bNoDebug)
+{
+	//find floor (does not match with vecPos if we're on uneven terrain)
+	trace_t	groundTrace;
+	UTIL_TraceLine(vecPos, vecPos - Vector(0, 0, 32768), IsPlayer() ? MASK_PLAYERSOLID : MASK_NPCSOLID, this, COLLISION_GROUP_NONE, &groundTrace);
 	//trace up
 	trace_t	ceilingTrace1;
-	UTIL_TraceLine(floorTrace.endpos, floorTrace.endpos + Vector(0, 0, 32768), IsPlayer() ? MASK_PLAYERSOLID : MASK_NPCSOLID, this, COLLISION_GROUP_NONE, &ceilingTrace1);
+	UTIL_TraceLine(groundTrace.endpos, groundTrace.endpos + Vector(0, 0, 32768), IsPlayer() ? MASK_PLAYERSOLID : MASK_NPCSOLID, this, COLLISION_GROUP_NONE, &ceilingTrace1);
 	//now trace down again
 	trace_t	ceilingTrace2;
 	UTIL_TraceLine(ceilingTrace1.endpos, ceilingTrace1.endpos - Vector(0, 0, 32768), IsPlayer() ? MASK_PLAYERSOLID : MASK_NPCSOLID, this, COLLISION_GROUP_NONE, &ceilingTrace2);
-	Msg("floorTrace.endpos %0.1f %0.1f %0.1f\n", floorTrace.endpos.x, floorTrace.endpos.y, floorTrace.endpos.z);
-	Msg("ceilingTrace1.endpos %0.1f %0.1f %0.1f\n", ceilingTrace1.endpos.x, ceilingTrace1.endpos.y, ceilingTrace1.endpos.z);
-	Msg("ceilingTrace2.endpos %0.1f %0.1f %0.1f\n", ceilingTrace2.endpos.x, ceilingTrace2.endpos.y, ceilingTrace2.endpos.z);
+	if (unstuck_debug.GetBool() && !bNoDebug)
+	{
+		Msg("vecPos %0.1f %0.1f %0.1f\n", vecPos.x, vecPos.y, vecPos.z);
+		Msg("groundTrace.endpos %0.1f %0.1f %0.1f\n", groundTrace.endpos.x, groundTrace.endpos.y, groundTrace.endpos.z);
+		Msg("ceilingTrace1.endpos %0.1f %0.1f %0.1f\n", ceilingTrace1.endpos.x, ceilingTrace1.endpos.y, ceilingTrace1.endpos.z);
+		Msg("ceilingTrace2.endpos %0.1f %0.1f %0.1f\n", ceilingTrace2.endpos.x, ceilingTrace2.endpos.y, ceilingTrace2.endpos.z);
+	}
 	//these should be equal, otherwise ceilingTrace1 went through a displacement while ceilingTrace2 got blocked by it
-	//although floating point precision loss may play a role
-	if ((floorTrace.endpos - ceilingTrace2.endpos).Length() > 10)
+	//although floating point precision loss may play a role, so give it just a smidge of tolerance
+	if ((groundTrace.endpos - ceilingTrace2.endpos).Length() > 1)
 	{
-		Msg("Below displacement\n");
+		if (unstuck_debug.GetBool() && !bNoDebug) Msg("Below displacement\n");
 		return false;
 	}
-	//can we fit here
-	if (IsPlayer() && (ceilingTrace1.startpos - ceilingTrace1.endpos).Length() < 72 * GetBaseAnimating()->GetModelScale())
-	{
-		Msg("Failed height check\n");
-		return false;
-	}
-	*/
-	if (unstuck_debug.GetBool() && !bNoDebug) Msg("Good ground at %0.1f %0.1f %0.1f\n", vecDest.x, vecDest.y, vecDest.z);
-	oldorigin = vecDest;
 	return true;
 }
 #endif

@@ -113,7 +113,7 @@ CBaseFlex::CBaseFlex( void ) :
 CBaseFlex::~CBaseFlex( void )
 {
 	m_LocalToGlobal.RemoveAll();
-	Assert( m_SceneEvents.Count() == 0 );
+	//Assert( m_SceneEvents.Count() == 0 );
 }
 
 void CBaseFlex::SetModel( const char *szModelName )

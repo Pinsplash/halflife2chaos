@@ -84,9 +84,9 @@ public:
 	bool	OverrideMove( float flInterval );
 
 	// Inputs
-	void	InputForcePickup( inputdata_t &inputdata );
-	void	InputForceDrop( inputdata_t &inputdata );
-
+	void	InputForcePickup(inputdata_t &inputdata);
+	void	InputForceDrop(inputdata_t &inputdata);
+	void	InputMagnetDropped(inputdata_t &inputdata);
 protected:
 	CHandle<CPropCrane>	m_hCrane;
 
@@ -107,8 +107,9 @@ protected:
 
 BEGIN_DATADESC( CNPC_CraneDriver )
 	// Inputs
-	DEFINE_INPUTFUNC( FIELD_STRING, "ForcePickup", InputForcePickup ),
-	DEFINE_INPUTFUNC( FIELD_STRING, "ForceDrop", InputForceDrop ),
+	DEFINE_INPUTFUNC(FIELD_STRING, "ForcePickup", InputForcePickup),
+	DEFINE_INPUTFUNC(FIELD_STRING, "ForceDrop", InputForceDrop),
+	DEFINE_INPUTFUNC(FIELD_VOID, "MagnetDropped", InputMagnetDropped),
 
 	//DEFINE_FIELD( m_hCrane, FIELD_EHANDLE ),
 	DEFINE_FIELD( m_hPickupTarget, FIELD_EHANDLE ),
@@ -664,6 +665,13 @@ void CNPC_CraneDriver::InputForceDrop( inputdata_t &inputdata )
 		SetCondition( COND_PROVOKED );
 		CLEARBITS( m_spawnflags, SF_VEHICLEDRIVER_INACTIVE );
 	}
+}
+//
+//Tell driver that the magnet dropped unexpectedly
+//
+void CNPC_CraneDriver::InputMagnetDropped(inputdata_t &inputdata)
+{
+	m_OnDroppedObject.FireOutput(inputdata.pActivator, inputdata.pCaller);
 }
 
 //-----------------------------------------------------------------------------

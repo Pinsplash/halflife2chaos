@@ -5,7 +5,6 @@
 #include "ai_network.h"
 #include "vehicle_base.h"
 #define MAX_ACTIVE_EFFECTS 64
-#define MAX_GROUPS 32
 #define MAX_EFFECTS_IN_GROUP 32
 enum Effect_T
 {
@@ -102,7 +101,7 @@ enum Effect_T
 #define EC_QC_OFF			64
 //#define EC_NO_CUTSCENE		128//hate, fear, you tele
 #define EC_PICKUPS			256
-#define EC_NO_CITADEL		512
+#define EC_NEED_PHYSGUN		512
 #define EC_PLAYER_TELEPORT	1024
 #define EC_NO_VEHICLE		2048
 
@@ -134,7 +133,8 @@ public:
 	int m_nID;
 	string_t m_strHudName;
 	string_t m_strGeneralName;
-	//int m_nGroup;
+	int m_iExclude[NUM_EFFECTS];
+	int m_iExcludeCount = 0;
 	int m_nContext;
 	float m_flDuration;
 	//float m_flStartTime;
@@ -227,7 +227,7 @@ int							g_iVoteNumber = 0; // acts as a unique number for the external client
 CChaosStoredEnt *StoreEnt(CBaseEntity *pEnt);
 CBaseEntity *RetrieveStoredEnt(CChaosStoredEnt *pStoredEnt, bool bPersist);
 bool						g_bGoBackLevel = false;
-int							g_iGroups[MAX_GROUPS][MAX_EFFECTS_IN_GROUP];
+bool						g_bGroupsMade = false;
 
 class CEBumpy : public CChaosEffect
 {
