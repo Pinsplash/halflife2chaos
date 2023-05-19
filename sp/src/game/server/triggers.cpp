@@ -4548,21 +4548,26 @@ void CTriggerVPhysicsMotion::StartTouch( CBaseEntity *pOther )
 		pPlayer->SetPhysicsFlag( PFLAG_VPHYSICS_MOTIONCONTROLLER, true );
 		pPlayer->m_Local.m_bSlowMovement = true;
 	}
-	//PIN: had a crash here (not the one mentioned below(?)) while a ragdoll was in a trigger that was solid via Solid Triggers while that effect ended
+	//PIN: had a crash here while a ragdoll was in a trigger that was solid via Solid Triggers while that effect ended
 	//Skip this bit of code if we're solid
 	if (!g_bEndSolidTriggers)
 	{
 		triggerevent_t event;
-		PhysGetTriggerEvent(&event, this);
-		//PIN: had a crash here on citadel 02 when hitting the trigger at the end. i don't know why this would happen because i know nothing about this code but no effect active at the time seems to be responsible
-		if (event.pObject && event.pTriggerEntity != NULL && event.pTriggerPhysics != NULL)
+		if (PhysGetTriggerEvent(&event, this))//avoid using blank event
 		{
-			// these all get done again on save/load, so check
-			m_pController->AttachObject(event.pObject, true);
-		}
-		if (m_ParticleTrail.m_strMaterialName != NULL_STRING)
-		{
-			CEntityParticleTrail::Create(pOther, m_ParticleTrail, this);
+			//Msg("got trigger event.\n");
+			//Msg("pTriggerEntity is a %s named '%s'.\n", event.pTriggerEntity->GetClassname(), STRING(event.pTriggerEntity->GetEntityName()));
+			//Msg("pEntity is a %s named '%s'.\n", event.pEntity->GetClassname(), STRING(event.pEntity->GetEntityName()));
+			//Msg("bStart is %s.\n", event.bStart ? "TRUE" : "FALSE");
+			if (event.pObject && event.pTriggerEntity != NULL && event.pTriggerPhysics != NULL)
+			{
+				// these all get done again on save/load, so check
+				m_pController->AttachObject(event.pObject, true);
+			}
+			if (m_ParticleTrail.m_strMaterialName != NULL_STRING)
+			{
+				CEntityParticleTrail::Create(pOther, m_ParticleTrail, this);
+			}
 		}
 	}
 

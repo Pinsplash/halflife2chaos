@@ -12,6 +12,11 @@
 #endif
 
 #define TEAMNUM_NUM_BITS	6
+#define UF_NO_NODE_TELEPORT 1
+#define UF_NO_DEBUG 2
+#define UF_NO_DUCK 4
+#define UF_NO_PRETRACE 8
+#define UF_PRETRACE_SKIP_ENTS 16
 
 #include "entitylist.h"
 #include "entityoutput.h"
@@ -1532,9 +1537,9 @@ public:
 	bool					UseStepSimulationNetworkAngles( const QAngle **out_a );
 
 public:
-	bool GetUnstuck(float flMaxDist, bool bAllowNodeTeleport, bool bNoDebug = false);
-	bool FindPassableSpace(const Vector direction, float step, Vector& oldorigin, CUtlVector<Vector> &vecBadDirections, bool bSkipPreTrace, bool bNoDebug);
-	bool FindOffsetSpot(Vector forward, int FFlip, Vector right, int RFlip, Vector up, int UFlip, Vector& vecGoodSpot, int flDist, CUtlVector<Vector> &vecBadDirections, bool bSkipPreTrace, bool bNoDebug);
+	bool GetUnstuck(float flMaxDist, int flags = 0);
+	bool FindPassableSpace(const Vector direction, float step, Vector& oldorigin, CUtlVector<Vector> &vecBadDirections, int flags = 0);
+	bool FindOffsetSpot(Vector forward, int FFlip, Vector right, int RFlip, Vector up, int UFlip, Vector& vecGoodSpot, int flDist, CUtlVector<Vector> &vecBadDirections, int flags = 0);
 	bool CheckIfBelowGround(Vector vecPos, bool bNoDebug);
 	bool PutAtNearestNode(float flMaxDist, bool bNoDebug);
 	// Add a discontinuity to a step

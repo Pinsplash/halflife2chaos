@@ -1128,7 +1128,7 @@ int CAI_PlayerAlly::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 	// Don't do damage reduction for DMG_GENERIC. This allows SetHealth inputs to still do full damage.
 	if ( subInfo.GetDamageType() != DMG_GENERIC )
 	{
-		if ( Classify() == CLASS_PLAYER_ALLY_VITAL && !(subInfo.GetDamageType() & DMG_CRUSH) )
+		if (Classify() == CLASS_PLAYER_ALLY_VITAL && !(subInfo.GetDamageType() & DMG_CRUSH) && !(subInfo.GetDamageType() & DMG_PHYSGUN))
 		{
 			float flDamage = subInfo.GetDamage();
 			if ( flDamage > ( GetMaxHealth() * 0.25 ) )

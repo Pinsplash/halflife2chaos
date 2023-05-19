@@ -1270,7 +1270,7 @@ CON_COMMAND_F(setpos_exact, "Move player to an exact specified origin (must have
 
 	if ( !TestEntityPosition( pPlayer ) )
 	{
-		pPlayer->GetUnstuck(500, true);
+		pPlayer->GetUnstuck(500);
 	}
 }
 

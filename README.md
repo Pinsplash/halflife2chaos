@@ -87,6 +87,7 @@ These settings have been put in their own CFG files so you can control what they
 
 ## Known issues
 * Sometimes the bar at the top won't appear after loading a save/map. The mod is still working. The bar should appear once the next effect starts.
+* To ensure all effects work right, sv_cheats is automatically set to 1. Don't change it.
 * The "Saved..." message may not appear. The save is still made.
 * The car compass HUD element does not display correctly.
 * If you play maps from something that isn't _Half-Life 2/Episode One/Two_, the "Node graph out of date" message will appear every time you go to a new map for the first time. This message is harmless, but if you wish, you can copy the `.AIN` files from the mod as well. It will also stop appearing after you've visited each map a single time, because the mod has now generated its own copy of the node graph. The `.AIN` files are included for _Half-Life 2/Episode One/Two_.

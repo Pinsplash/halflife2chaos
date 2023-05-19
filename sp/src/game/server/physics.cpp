@@ -2141,6 +2141,10 @@ void CCollisionEvent::UpdateTouchEvents( void )
 	for ( i = 0; i < m_triggerEvents.Count(); i++ )
 	{
 		m_currentTriggerEvent = m_triggerEvents[i];
+		//Msg("m_currentTriggerEvent set to m_triggerEvents[%i].\n", i);
+		//Msg("pTriggerEntity is a %s named '%s'.\n", m_currentTriggerEvent.pTriggerEntity->GetClassname(), STRING(m_currentTriggerEvent.pTriggerEntity->GetEntityName()));
+		//Msg("pEntity is a %s named '%s'.\n", m_currentTriggerEvent.pEntity->GetClassname(), STRING(m_currentTriggerEvent.pEntity->GetEntityName()));
+		//Msg("bStart is %s.\n", m_currentTriggerEvent.bStart ? "TRUE" : "FALSE");
 		if ( m_currentTriggerEvent.bStart )
 		{
 			m_currentTriggerEvent.pTriggerEntity->StartTouch( m_currentTriggerEvent.pEntity );
@@ -2520,7 +2524,11 @@ void CCollisionEvent::ObjectEnterTrigger( IPhysicsObject *pTrigger, IPhysicsObje
 		else
 		{
 			CallbackContext check(this);
-			m_currentTriggerEvent.Init( pTriggerEntity, pTrigger, pEntity, pObject, true ); 
+			m_currentTriggerEvent.Init(pTriggerEntity, pTrigger, pEntity, pObject, true);
+			//Msg("m_currentTriggerEvent inited in ObjectEnterTrigger.\n");
+			//Msg("pTriggerEntity is a %s named '%s'.\n", m_currentTriggerEvent.pTriggerEntity->GetClassname(), STRING(m_currentTriggerEvent.pTriggerEntity->GetEntityName()));
+			//Msg("pEntity is a %s named '%s'.\n", m_currentTriggerEvent.pEntity->GetClassname(), STRING(m_currentTriggerEvent.pEntity->GetEntityName()));
+			//Msg("bStart is %s.\n", m_currentTriggerEvent.bStart ? "TRUE" : "FALSE");
 			pTriggerEntity->StartTouch( pEntity );
 			m_currentTriggerEvent.Clear();
 		}
@@ -2542,7 +2550,11 @@ void CCollisionEvent::ObjectLeaveTrigger( IPhysicsObject *pTrigger, IPhysicsObje
 		else
 		{
 			CallbackContext check(this);
-			m_currentTriggerEvent.Init( pTriggerEntity, pTrigger, pEntity, pObject, false ); 
+			m_currentTriggerEvent.Init(pTriggerEntity, pTrigger, pEntity, pObject, false);
+			//Msg("m_currentTriggerEvent inited in ObjectLeaveTrigger.\n");
+			//Msg("pTriggerEntity is a %s named '%s'.\n", m_currentTriggerEvent.pTriggerEntity->GetClassname(), STRING(m_currentTriggerEvent.pTriggerEntity->GetEntityName()));
+			//Msg("pEntity is a %s named '%s'.\n", m_currentTriggerEvent.pEntity->GetClassname(), STRING(m_currentTriggerEvent.pEntity->GetEntityName()));
+			//Msg("bStart is %s.\n", m_currentTriggerEvent.bStart ? "TRUE" : "FALSE");
 			pTriggerEntity->EndTouch( pEntity );
 			m_currentTriggerEvent.Clear();
 		}

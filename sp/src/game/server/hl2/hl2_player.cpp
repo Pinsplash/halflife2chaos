@@ -640,7 +640,7 @@ CON_COMMAND_F(chaos_group, "Creates a chaos group.", FCVAR_SERVER_CAN_EXECUTE)
 }
 CON_COMMAND(getunstuck, "try to get unstuck right now")
 {
-	UTIL_GetLocalPlayer()->GetUnstuck(200, true);
+	UTIL_GetLocalPlayer()->GetUnstuck(200);
 }
 CON_COMMAND(putatnearestnode, "failsafe part of unstuck test")
 {
@@ -1272,7 +1272,7 @@ void CHL2_Player::PreThink(void)
 				if (chaos_vote_enable.GetBool())
 					ResetVotes();
 				if (GetMoveType() != MOVETYPE_NOCLIP && chaos_unstuck_neweffect.GetBool())
-					GetUnstuck(500, true);
+					GetUnstuck(500);
 			}
 		}
 		else if (chaos_instant_off.GetBool())
@@ -5224,7 +5224,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<>(EFFECT_NO_RELOAD,						MAKE_STRING("No One Can Reload"),			EC_HAS_WEAPON,							chaos_time_no_reload.GetFloat(),			chaos_prob_no_reload.GetInt());
 	CreateEffect<>(EFFECT_NPC_TELEPORT,						MAKE_STRING("You Teleport?"),				EC_NONE,								chaos_time_npc_teleport.GetFloat(),			chaos_prob_npc_teleport.GetInt());
 	CreateEffect<CEDeathWater>(EFFECT_DEATH_WATER,			MAKE_STRING("Death Water"),					EC_WATER,								chaos_time_death_water.GetFloat(),			chaos_prob_death_water.GetInt());
-	CreateEffect<CERandomCC>(EFFECT_RANDOM_CC,				MAKE_STRING("Color Incorrection"),			EC_NONE,								chaos_time_random_cc.GetFloat(),			chaos_prob_random_cc.GetFloat());
+	CreateEffect<CERandomCC>(EFFECT_RANDOM_CC,				MAKE_STRING("Color Incorrection"),			EC_NONE,								chaos_time_random_cc.GetFloat(),			chaos_prob_random_cc.GetInt());
 }
 
 //Set the chaos_ignore_ convars if wanted
@@ -5322,7 +5322,8 @@ bool CChaosEffect::CheckEffectContext()
 
 	//potential softlock if clone npcs happens on some maps
 	if (m_nID == EFFECT_CLONE_NPCS)
-		if (!Q_strcmp(pMapName, "d1_trainstation_01") || !Q_strcmp(pMapName, "d1_eli_01") || !Q_strcmp(pMapName, "d1_eli_02") || !Q_strcmp(pMapName, "d3_breen_01") || !Q_strcmp(pMapName, "ep1_citadel_00") || !Q_strcmp(pMapName, "ep1_citadel_01"))
+		if (!Q_strcmp(pMapName, "d1_trainstation_01")	|| !Q_strcmp(pMapName, "d1_eli_01")			|| !Q_strcmp(pMapName, "d1_eli_02")			|| !Q_strcmp(pMapName, "d3_breen_01")
+			|| !Q_strcmp(pMapName, "ep1_citadel_00")	|| !Q_strcmp(pMapName, "ep1_citadel_01")	|| !Q_strcmp(pMapName, "ep1_citadel_03")	|| !Q_strcmp(pMapName, "ep1_citadel_04") || !Q_strcmp(pMapName, "ep1_c17_00"))
 			return false;
 
 	//You Teleport is bad specifically on these maps
@@ -5405,7 +5406,7 @@ bool CChaosEffect::CheckEffectContext()
 			|| !Q_strcmp(pMapName, "d1_eli_01")			|| !Q_strcmp(pMapName, "d1_town_01")
 			|| !Q_strcmp(pMapName, "d3_c17_07")			|| !Q_strcmp(pMapName, "d3_c17_08")
 			|| !Q_strcmp(pMapName, "d3_citadel_01")		|| !Q_strcmp(pMapName, "d3_citadel_02")		|| !Q_strcmp(pMapName, "d3_citadel_05")		|| !Q_strcmp(pMapName, "d3_breen_01")
-			|| !Q_strcmp(pMapName, "ep1_c17_00a")
+			|| !Q_strcmp(pMapName, "ep1_citadel_03")	|| !Q_strcmp(pMapName, "ep1_c17_00a")
 			|| !Q_strcmp(pMapName, "ep2_outland_01")	|| !Q_strcmp(pMapName, "ep2_outland_03")	|| !Q_strcmp(pMapName, "ep2_outland_11")	|| !Q_strcmp(pMapName, "ep2_outland_11b"))
 			return false;//bad map
 
@@ -5421,6 +5422,12 @@ bool CChaosEffect::CheckEffectContext()
 	//if we miss the trigger_changelevel, the pod will get killed, killing us
 	if (m_nID == EFFECT_CANT_LEAVE_MAP)
 		if (!Q_strcmp(pMapName, "d3_citadel_01"))
+			return false;
+
+	//on this map, zombies could spawn at just the right time that alyx will be scripted to stand in the control room,
+	//while the player is unable to reach it in a reasonable time to save alyx as she is scripted to stand in the room
+	if (m_nID == EFFECT_ZOMBIE_SPAM)
+		if (!Q_strcmp(pMapName, "ep1_citadel_03"))
 			return false;
 
 	if (m_nContext == EC_NONE)
@@ -5501,7 +5508,8 @@ bool CChaosEffect::CheckEffectContext()
 				|| !Q_strcmp(pMapName, "d3_c17_06b")		|| !Q_strcmp(pMapName, "d3_c17_07")			|| !Q_strcmp(pMapName, "d3_c17_10b")		|| !Q_strcmp(pMapName, "d3_c17_13")
 				|| !Q_strcmp(pMapName, "d3_citadel_03")		|| !Q_strcmp(pMapName, "d3_citadel_04")
 				|| !Q_strcmp(pMapName, "d3_breen_01")
-				|| !Q_strcmp(pMapName, "ep1_citadel_03")	|| !Q_strcmp(pMapName, "ep1_c17_00")		|| !Q_strcmp(pMapName, "ep1_c17_00a")
+				|| !Q_strcmp(pMapName, "ep1_citadel_01")	|| !Q_strcmp(pMapName, "ep1_citadel_03")	|| !Q_strcmp(pMapName, "ep1_citadel_04")
+				|| !Q_strcmp(pMapName, "ep1_c17_00")		|| !Q_strcmp(pMapName, "ep1_c17_00a")
 				|| !Q_strcmp(pMapName, "ep2_outland_01")	|| !Q_strcmp(pMapName, "ep2_outland_03")	|| !Q_strcmp(pMapName, "ep2_outland_06a")	|| !Q_strcmp(pMapName, "ep2_outland_09")
 				|| !Q_strcmp(pMapName, "ep2_outland_10")	|| !Q_strcmp(pMapName, "ep2_outland_11")	|| !Q_strcmp(pMapName, "ep2_outland_11a")	|| !Q_strcmp(pMapName, "ep2_outland_11b")	|| !Q_strcmp(pMapName, "ep2_outland_12") || !Q_strcmp(pMapName, "ep2_outland_12a"))
 				return false;//no
@@ -5852,7 +5860,7 @@ void CChaosEffect::RandomTeleport(bool bPlayerOnly)
 	{
 		vec += Vector(0, 0, 64);
 		pPlayer->GetVehicle()->GetVehicleEnt()->Teleport(&vec, NULL, NULL);
-		pPlayer->GetVehicle()->GetVehicleEnt()->GetUnstuck(500, true);
+		pPlayer->GetVehicle()->GetVehicleEnt()->GetUnstuck(500);
 	}
 	else
 	{
@@ -5862,7 +5870,7 @@ void CChaosEffect::RandomTeleport(bool bPlayerOnly)
 			pPlayer->SetMoveType(MOVETYPE_WALK);
 		}
 		pPlayer->Teleport(&vec, NULL, NULL);
-		pPlayer->GetUnstuck(500, true);
+		pPlayer->GetUnstuck(500);
 	}
 }
 CBaseEntity *CChaosEffect::ChaosSpawnVehicle(const char *className, string_t strActualName, int iSpawnType, const char *strModel, const char *strTargetname, const char *strScript)
@@ -5919,7 +5927,7 @@ CBaseEntity *CChaosEffect::ChaosSpawnVehicle(const char *className, string_t str
 		trace_t	trace;
 		UTIL_TraceEntity(pVehicle, vecOrigin, vecOrigin, MASK_SOLID, &trace);
 		if (trace.startsolid)
-			pVehicle->GetUnstuck(500, true);
+			pVehicle->GetUnstuck(500);
 	}
 	return pVehicle;
 }
@@ -6062,7 +6070,7 @@ bool CChaosEffect::MapIsLong(const char *pMapName)
 //plus it's less string comparisons this way
 bool CChaosEffect::MapGoodForCrane(const char *pMapName)
 {
-	//trigger_physics_trap can cause the magnet to become vaporized and i'm not coding in an exception just for that
+	//trigger_physics_trap can cause the magnet to become vaporized
 	CBaseEntity *pRemover = gEntList.FindEntityByClassname(NULL, "trigger_physics_trap");
 	if (pRemover)
 		return false;
@@ -6443,7 +6451,7 @@ CAI_BaseNPC *CChaosEffect::ChaosSpawnNPC(const char *className, string_t strActu
 		m_strHudName = strActualName;
 
 		if (iSpawnType != SPAWNTYPE_UNDERGROUND)//put the NPC in the ground
-			pNPC->GetUnstuck(500, true);
+			pNPC->GetUnstuck(500);
 	}
 	return pNPC;
 }
@@ -6561,7 +6569,7 @@ void CERandomVehicle::StartEffect()
 	//TODO: If there are two jalopies on the map, the radar stops working for them both? speculative fix
 	if (nRandom == 5)
 	{
-		if (gEntList.FindEntityByClassname(NULL, "prop_vehicle_jeep"))
+		if (gEntList.FindEntityByClassname(NULL, "prop_vehicle_jeep"))//avoid radar issues that come up when there is more than one jalopy in the map at a time
 		{
 			nRandom = chaos_rng1.GetInt() == -1 ? random->RandomInt(0, 4) : chaos_rng1.GetInt();
 		}
@@ -6574,65 +6582,73 @@ void CERandomVehicle::StartEffect()
 			pJalopy->AcceptInput("AddBusterToCargo", pJalopy, pJalopy, sVariant, 0);
 		}
 	}
+	if (nRandom == 4)
+	{
+		CBaseEntity *pRemover = gEntList.FindEntityByClassname(NULL, "trigger_physics_trap");//avoid dissolver triggers, easy crash
+		if (pRemover)
+		{
+			nRandom = chaos_rng1.GetInt() == -1 ? random->RandomInt(0, 3) : chaos_rng1.GetInt();
+		}
+		else
+		{
+			//crane
+			CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+			CHL2_Player *pHL2Player = static_cast<CHL2_Player*>(pPlayer);
+			g_iChaosSpawnCount++;
+			char szName[2048];
+
+			//crane magnet
+			Vector vecOrigin = pHL2Player->RotatedOffset(Vector(1034, 164, 750), true);
+			QAngle vecAngles = QAngle(0, pPlayer->GetAbsAngles().y - 90, 0);
+			CBaseEntity *pMagnet = CreateEntityByName("phys_magnet");
+			pMagnet->KeyValue("model", "models/props_wasteland/cranemagnet01a.mdl");
+			pMagnet->KeyValue("massScale", "1000");
+			Q_snprintf(szName, sizeof(szName), "crane_magnet_%i", g_iChaosSpawnCount);
+			pMagnet->KeyValue("targetname", szName);
+			pMagnet->KeyValue("overridescript", "damping,0.2,rotdamping,0.2,inertia,0.3");
+			DispatchSpawn(pMagnet);
+			pMagnet->Activate();
+			pMagnet->Teleport(&vecOrigin, &vecAngles, NULL);
+			pMagnet->GetUnstuck(500, UF_NO_NODE_TELEPORT);
+
+			//crane
+			vecOrigin = pHL2Player->RotatedOffset(Vector(400, 0, 64), true);
+			vecAngles = QAngle(0, pPlayer->GetAbsAngles().y - 90, 0);
+			CBaseEntity *pVehicle = CreateEntityByName("prop_vehicle_crane");
+			pVehicle->KeyValue("model", "models/Cranes/crane_docks.mdl");
+			pVehicle->KeyValue("solid", "6");
+			pVehicle->KeyValue("magnetname", szName);
+			Q_snprintf(szName, sizeof(szName), "crane%i", g_iChaosSpawnCount);
+			pVehicle->KeyValue("targetname", szName);
+			pVehicle->KeyValue("vehiclescript", "scripts/vehicles/crane.txt");
+			pVehicle->KeyValue("PlayerOn", "chaos_ladder,Disable,,0,-1");
+			pVehicle->KeyValue("PlayerOff", "chaos_ladder,Enable,,5,-1");
+			pVehicle->Teleport(&vecOrigin, &vecAngles, NULL);
+
+			//crane ladder
+			vecOrigin = pHL2Player->RotatedOffset(Vector(524, 84, 90), true);
+			vecAngles = QAngle(0, pPlayer->GetAbsAngles().y - 90, 0);
+			CFuncLadder *pLadder = (CFuncLadder *)CreateEntityByName("func_useableladder");
+			pLadder->KeyValue("parentname", szName);
+			pLadder->SetEndPoints(pHL2Player->RotatedOffset(Vector(524, 84, 90), true), pHL2Player->RotatedOffset(Vector(524, 84, 4), true));
+			pLadder->KeyValue("targetname", "chaos_ladder");
+			pLadder->KeyValue("spawnflags", "1");
+			Q_snprintf(szName, sizeof(szName), "crane%i,ForcePlayerIn,,0,-1", g_iChaosSpawnCount);
+			pLadder->KeyValue("OnPlayerGotOnLadder", szName);
+			DispatchSpawn(pLadder);
+			pLadder->Activate();
+			pLadder->Teleport(&vecOrigin, &vecAngles, NULL);
+
+			//activate crane last so everything works correctly
+			DispatchSpawn(pVehicle);
+			pVehicle->Activate();
+			m_strHudName = MAKE_STRING("Spawn Crane");
+		}
+	}
 	if (nRandom == 0) ChaosSpawnVehicle("prop_vehicle_jeep", MAKE_STRING("Spawn Buggy"), SPAWNTYPE_VEHICLE, "models/buggy.mdl", "jeep", "scripts/vehicles/jeep_test.txt");
 	if (nRandom == 1) ChaosSpawnVehicle("prop_vehicle_airboat", MAKE_STRING("Spawn Airboat"), SPAWNTYPE_VEHICLE, "models/airboat.mdl", "airboat", "scripts/vehicles/airboat.txt");
 	if (nRandom == 2) ChaosSpawnVehicle("prop_vehicle_prisoner_pod", MAKE_STRING("Spawn Pod"), SPAWNTYPE_EYELEVEL_SPECIAL, "models/vehicles/prisoner_pod_inner.mdl", "pod", "scripts/vehicles/prisoner_pod.txt");
 	if (nRandom == 3) ChaosSpawnVehicle("prop_vehicle_apc", MAKE_STRING("Spawn APC"), SPAWNTYPE_VEHICLE, "models/combine_apc.mdl", "apc", "scripts/vehicles/apc_npc.txt");
-	if (nRandom == 4)
-	{
-		//crane
-		CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
-		CHL2_Player *pHL2Player = static_cast<CHL2_Player*>(pPlayer);
-		g_iChaosSpawnCount++;
-		char szName[2048];
-
-		//crane magnet
-		Vector vecOrigin = pHL2Player->RotatedOffset(Vector(1034, 164, 750), true);
-		QAngle vecAngles = QAngle(0, pPlayer->GetAbsAngles().y - 90, 0);
-		CBaseEntity *pMagnet = CreateEntityByName("phys_magnet");
-		pMagnet->KeyValue("model", "models/props_wasteland/cranemagnet01a.mdl");
-		pMagnet->KeyValue("massScale", "1000");
-		Q_snprintf(szName, sizeof(szName), "crane_magnet_%i", g_iChaosSpawnCount);
-		pMagnet->KeyValue("targetname", szName);
-		pMagnet->KeyValue("overridescript", "damping,0.2,rotdamping,0.2,inertia,0.3");
-		DispatchSpawn(pMagnet);
-		pMagnet->Activate();
-		pMagnet->Teleport(&vecOrigin, &vecAngles, NULL);
-		pMagnet->GetUnstuck(500, false);
-
-		//crane
-		vecOrigin = pHL2Player->RotatedOffset(Vector(400, 0, 64), true);
-		vecAngles = QAngle(0, pPlayer->GetAbsAngles().y - 90, 0);
-		CBaseEntity *pVehicle = CreateEntityByName("prop_vehicle_crane");
-		pVehicle->KeyValue("model", "models/Cranes/crane_docks.mdl");
-		pVehicle->KeyValue("solid", "6");
-		pVehicle->KeyValue("magnetname", szName);
-		Q_snprintf(szName, sizeof(szName), "crane%i", g_iChaosSpawnCount);
-		pVehicle->KeyValue("targetname", szName);
-		pVehicle->KeyValue("vehiclescript", "scripts/vehicles/crane.txt");
-		pVehicle->KeyValue("PlayerOn", "chaos_ladder,Disable,,0,-1");
-		pVehicle->KeyValue("PlayerOff", "chaos_ladder,Enable,,5,-1");
-		pVehicle->Teleport(&vecOrigin, &vecAngles, NULL);
-
-		//crane ladder
-		vecOrigin = pHL2Player->RotatedOffset(Vector(524, 84, 90), true);
-		vecAngles = QAngle(0, pPlayer->GetAbsAngles().y - 90, 0);
-		CFuncLadder *pLadder = (CFuncLadder *)CreateEntityByName("func_useableladder");
-		pLadder->KeyValue("parentname", szName);
-		pLadder->SetEndPoints(pHL2Player->RotatedOffset(Vector(524, 84, 90), true), pHL2Player->RotatedOffset(Vector(524, 84, 4), true));
-		pLadder->KeyValue("targetname", "chaos_ladder");
-		pLadder->KeyValue("spawnflags", "1");
-		Q_snprintf(szName, sizeof(szName), "crane%i,ForcePlayerIn,,0,-1", g_iChaosSpawnCount);
-		pLadder->KeyValue("OnPlayerGotOnLadder", szName);
-		DispatchSpawn(pLadder);
-		pLadder->Activate();
-		pLadder->Teleport(&vecOrigin, &vecAngles, NULL);
-
-		//activate crane last so everything works correctly
-		DispatchSpawn(pVehicle);
-		pVehicle->Activate();
-		m_strHudName = MAKE_STRING("Spawn Crane");
-	}
 }
 void CERandomNPC::StartEffect()
 {
@@ -6828,7 +6844,7 @@ void CESolidTriggers::StartEffect()
 	}
 	//if we're still stuck, then we're probably in some HUGE triggers. just make them unsolid again
 	//500 is as far as i feel comfortable teleporting the player. HUGE triggers could make us teleport outside of entire buildings and such
-	while (!pPlayer->GetUnstuck(500, false))
+	while (!pPlayer->GetUnstuck(500, UF_NO_NODE_TELEPORT))
 	{
 		trace_t	trace;
 		UTIL_TraceEntity(pPlayer, pPlayer->GetAbsOrigin(), pPlayer->GetAbsOrigin(), MASK_PLAYERSOLID, &trace);
@@ -6837,7 +6853,9 @@ void CESolidTriggers::StartEffect()
 		{
 			trace.m_pEnt->VPhysicsGetObject()->EnableCollisions(true);
 		}
-		trace.m_pEnt->AddSolidFlags(FSOLID_TRIGGER);
+		CTriggerVPhysicsMotion *pTriggerVPhysicsMotion = dynamic_cast<CTriggerVPhysicsMotion *>(trace.m_pEnt);
+		if (!pTriggerVPhysicsMotion)//trigger_vphysics_motion doesn't use this according to a comment in CBaseVPhysicsTrigger::Spawn()
+			trace.m_pEnt->AddSolidFlags(FSOLID_TRIGGER);
 		trace.m_pEnt->AddSolidFlags(FSOLID_NOT_SOLID);
 		trace.m_pEnt->PhysicsTouchTriggers();
 	}
@@ -6858,7 +6876,8 @@ void CESolidTriggers::StopEffect()
 			{
 				pEnt->VPhysicsGetObject()->EnableCollisions(true);
 			}
-			pEnt->AddSolidFlags(FSOLID_TRIGGER);
+			if (!pTriggerVPhysicsMotion)//trigger_vphysics_motion doesn't use this according to a comment in CBaseVPhysicsTrigger::Spawn()
+				pEnt->AddSolidFlags(FSOLID_TRIGGER);//TODO: this may also fix the crash related to the use of g_bEndSolidTriggers
 			pEnt->AddSolidFlags(FSOLID_NOT_SOLID);
 			pEnt->PhysicsTouchTriggers();
 		}
@@ -7294,7 +7313,7 @@ void CEBottle::StartEffect()
 		//NDebugOverlay::Cross3D(pEnt->GetAbsOrigin(), 16, 0, 255, 0, true, 30);
 		pEnt->SetModelScale(i + 1);
 		vecLastGoodPos = pEnt->GetAbsOrigin();
-		pEnt->GetUnstuck(20, false);//only go up to 20 units away from previous position, instead of 500, which risks the beer spawning in some other random place, which is bad, i guess
+		pEnt->GetUnstuck(20, UF_NO_NODE_TELEPORT);//only go up to 20 units away from previous position, instead of 500, which risks the beer spawning in some other random place, which is bad, i guess
 		UTIL_TraceEntity(pEnt, pEnt->GetAbsOrigin(), pEnt->GetAbsOrigin(), MASK_SOLID, &trace);
 		i++;
 	} while (trace.fraction == 1 && !trace.startsolid && i < 55 && i < chaos_beer_size_limit.GetInt());//yes this i limit actually matters, or else we will create a beer so big it hits a max coord related assert and brings the whole game to a screeching halt. what the fuck.
@@ -7350,7 +7369,7 @@ void CEEvilNPC::EvilNoriko()
 	DispatchSpawn(pMagnet);
 	pMagnet->Activate();
 	pMagnet->Teleport(&vecOrigin, &vecAngles, NULL);
-	pMagnet->GetUnstuck(500, false);
+	pMagnet->GetUnstuck(500, UF_NO_NODE_TELEPORT);
 
 	//crane
 	vecOrigin = pHL2Player->RotatedOffset(Vector(634, 0, 64), true);
@@ -7616,7 +7635,7 @@ void CETreeSpam::StartEffect()
 		DispatchSpawn(pEnt);
 		pEnt->Activate();
 	}
-	UTIL_GetLocalPlayer()->GetUnstuck(500, false);//despite earlier check, we can still end up stuck in a tree if there are multiple nodes very closeby
+	UTIL_GetLocalPlayer()->GetUnstuck(500, UF_NO_NODE_TELEPORT);//despite earlier check, we can still end up stuck in a tree if there are multiple nodes very closeby
 }
 void CETreeSpam::StopEffect()
 {
@@ -8091,7 +8110,7 @@ void CELockPVS::TransitionEffect()
 void CEPlayerBig::StartEffect()
 {
 	UTIL_GetLocalPlayer()->SetModelScale(2);
-	UTIL_GetLocalPlayer()->GetUnstuck(500, true);//done here so that the player won't be stuck when reloading a save that was made before the effect was on
+	UTIL_GetLocalPlayer()->GetUnstuck(500);//done here so that the player won't be stuck when reloading a save that was made before the effect was on
 }
 void CEPlayerBig::StopEffect()
 {
@@ -8105,7 +8124,7 @@ void CEPlayerBig::StopEffect()
 void CEPlayerBig::MaintainEffect()
 {
 	//if (!UTIL_GetLocalPlayer()->IsInAVehicle())
-	//	UTIL_GetLocalPlayer()->GetUnstuck(500, true);
+	//	UTIL_GetLocalPlayer()->GetUnstuck(500);
 }
 void CEPlayerSmall::StartEffect()
 {
@@ -8114,7 +8133,7 @@ void CEPlayerSmall::StartEffect()
 void CEPlayerSmall::StopEffect()
 {
 	UTIL_GetLocalPlayer()->SetModelScale(1);
-	UTIL_GetLocalPlayer()->GetUnstuck(500, true);
+	UTIL_GetLocalPlayer()->GetUnstuck(500);
 	if (g_ChaosEffects[EFFECT_PLAYER_BIG]->m_bActive && g_ChaosEffects[EFFECT_PLAYER_BIG]->m_flTimeRem > 1)
 	{
 		//EFFECT_PLAYER_BIG is active and will outlast me, restore its effects
@@ -8124,7 +8143,7 @@ void CEPlayerSmall::StopEffect()
 void CEPlayerSmall::MaintainEffect()
 {
 	if (!UTIL_GetLocalPlayer()->IsInAVehicle())
-		UTIL_GetLocalPlayer()->GetUnstuck(500, true);
+		UTIL_GetLocalPlayer()->GetUnstuck(500);
 }
 void CESuperGrab::StartEffect()
 {
@@ -8484,7 +8503,7 @@ void CEDejaVu::StartEffect()
 void CEDejaVu::MaintainEffect()
 {
 	if (!m_bDone)
-		UTIL_GetLocalPlayer()->GetUnstuck(500, true);
+		UTIL_GetLocalPlayer()->GetUnstuck(500);
 	m_bDone = true;
 }
 void CERandomCC::StartEffect()

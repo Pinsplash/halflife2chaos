@@ -707,7 +707,7 @@ void CNPC_PoisonZombie::EvacuateNest( bool bExplosion, float flDamage, CBaseEnti
 			}
 			pCrab->m_bChaosPersist = m_bChaosPersist;
 			pCrab->m_bChaosSpawned = m_bChaosSpawned;
-			pCrab->GetUnstuck(100, false);
+			pCrab->GetUnstuck(100, UF_NO_NODE_TELEPORT);
 
 			float flVelocityScale = 0.2f;
 			if ( bExplosion && ( flDamage > 10 ) )

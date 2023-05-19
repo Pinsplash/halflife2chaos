@@ -332,8 +332,8 @@ void CNPC_Alyx::Spawn()
 		SetupAlyxWithoutParent();
 		CreateEmpTool( );
 	}
-
-	AddEFlags( EFL_NO_DISSOLVE | EFL_NO_MEGAPHYSCANNON_RAGDOLL | EFL_NO_PHYSCANNON_INTERACTION );
+	if (!m_bEvil)
+		AddEFlags(EFL_NO_DISSOLVE | EFL_NO_MEGAPHYSCANNON_RAGDOLL | EFL_NO_PHYSCANNON_INTERACTION);
 
 	m_iHealth			= 80;
 	m_bloodColor		= DONT_BLEED;

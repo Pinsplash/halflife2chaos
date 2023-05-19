@@ -1163,14 +1163,14 @@ bool CBaseServerVehicle::HandlePassengerExit( CBaseCombatCharacter *pPassenger )
 				// We may as well stand where we're going to get out at and stop being parented
 				pPlayer->SetAbsOrigin( vecExitFeetPoint );
 				pPlayer->SetParent( NULL );
-				pPlayer->GetUnstuck(500, false);
+				pPlayer->GetUnstuck(500, UF_NO_NODE_TELEPORT);
 				return true;
 			}
 		}
 
 		// Couldn't find an animation, so exit immediately
 		pPlayer->LeaveVehicle(vecNewPos, angNewAngles);
-		pPlayer->GetUnstuck(500, false);
+		pPlayer->GetUnstuck(500, UF_NO_NODE_TELEPORT);
 		return true;
 	}
 	else

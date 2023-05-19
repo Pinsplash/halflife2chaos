@@ -7556,7 +7556,7 @@ bool CBaseEntity::PutAtNearestNode(float flMaxDist, bool bNoDebug)
 			}
 			*/
 			SetAbsOrigin(pNode->GetPosition(HULL_HUMAN));
-			if (GetUnstuck(flMaxDist, false, true))
+			if (GetUnstuck(flMaxDist, UF_NO_NODE_TELEPORT | UF_NO_DEBUG))
 			{
 				if (unstuck_debug.GetBool() && !bNoDebug) Msg("Can fit at node %i\n", pNode->GetId());
 				return true;
