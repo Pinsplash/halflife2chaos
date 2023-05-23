@@ -1981,16 +1981,18 @@ void CBaseEntity::FireBullets( const FireBulletsInfo_t &info )
 			if (IsCombatCharacter())
 			{
 				//Vector vecShootOffset = GetAbsOrigin() - MyCombatCharacterPointer()->Weapon_ShootPosition();
-				//Msg("B %0.1f %0.1f %0.1f - %0.1f %0.1f %0.1f\n", tr.endpos.x, tr.endpos.y, tr.endpos.z, vecShootOffset.x, vecShootOffset.y, vecShootOffset.z);
 				//SetAbsOrigin();//position gun was shot from does not match our origin
 				Vector vecFinal = tr.endpos - vecDir * 5;//push them a bit out of the wall cause reasons
-				NDebugOverlay::Cross3D(vecFinal, 16, 0, 0, 255, true, 30);
-				NDebugOverlay::Line(MyCombatCharacterPointer()->Weapon_ShootPosition(), vecFinal, 0, 0, 255, true, 30);
+				if (unstuck_debug.GetBool())
+				{
+					NDebugOverlay::Cross3D(vecFinal, 16, 0, 0, 255, true, 30);
+					NDebugOverlay::Line(MyCombatCharacterPointer()->Weapon_ShootPosition(), vecFinal, 0, 0, 255, true, 30);
+				}
 				trace_t	zFixTrace;
 				Vector vecShootPos = GetAbsOrigin() - MyCombatCharacterPointer()->Weapon_ShootPosition();
 				UTIL_TraceLine(vecFinal, vecFinal + vecShootPos, MASK_NPCSOLID_BRUSHONLY, this, COLLISION_GROUP_NONE, &zFixTrace);
 				vecFinal = zFixTrace.endpos;
-				NDebugOverlay::Cross3D(vecFinal, 16, 255, 0, 255, true, 30);
+				if (unstuck_debug.GetBool()) NDebugOverlay::Cross3D(vecFinal, 16, 255, 0, 255, true, 30);
 				QAngle aAngle = GetAbsAngles();
 				Vector vecVel = GetAbsVelocity();
 				bool bSleep = false;

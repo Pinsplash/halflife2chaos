@@ -26,14 +26,14 @@
 
 ConVar hud_showemptyweaponslots( "hud_showemptyweaponslots", "1", FCVAR_ARCHIVE, "Shows slots for missing weapons when recieving weapons out of order" );
 
-#define SELECTION_TIMEOUT_THRESHOLD		0.5f	// Seconds
-#define SELECTION_FADEOUT_TIME			0.75f
+#define SELECTION_TIMEOUT_THRESHOLD		0.5f * cvar->FindVar("host_timescale")->GetFloat()	// Seconds
+#define SELECTION_FADEOUT_TIME			0.75f * cvar->FindVar("host_timescale")->GetFloat()
 
-#define PLUS_DISPLAY_TIMEOUT			0.5f	// Seconds
-#define PLUS_FADEOUT_TIME				0.75f
+#define PLUS_DISPLAY_TIMEOUT			0.5f * cvar->FindVar("host_timescale")->GetFloat()	// Seconds
+#define PLUS_FADEOUT_TIME				0.75f * cvar->FindVar("host_timescale")->GetFloat()
 
-#define FASTSWITCH_DISPLAY_TIMEOUT		1.5f
-#define FASTSWITCH_FADEOUT_TIME			1.5f
+#define FASTSWITCH_DISPLAY_TIMEOUT		1.5f * cvar->FindVar("host_timescale")->GetFloat()
+#define FASTSWITCH_FADEOUT_TIME			1.5f * cvar->FindVar("host_timescale")->GetFloat()
 
 #define CAROUSEL_SMALL_DISPLAY_ALPHA	200.0f
 #define FASTSWITCH_SMALL_DISPLAY_ALPHA	160.0f

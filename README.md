@@ -88,13 +88,14 @@ These settings have been put in their own CFG files so you can control what they
 * `portalsopenall.cfg`: Sets `r_portalsopenall`. Force-opens all areaportals. Most users will want to use 1 because if 0, areas of levels may become invisible until you enter them. This was intended to help performance, but Chaos can disrupt this feature due to sequence breaking. Normally the default is 0, but in Chaos, it's 1.
 
 ## Known issues
-* Sometimes the bar at the top won't appear after loading a save/map. The mod is still working. The bar should appear once the next effect starts.
+* Many people have been having an issue where their binds are incorrect. Check them in the keyboard menu before playing.
 * To ensure all effects work right, sv_cheats is automatically set to 1. Don't change it.
-* The "Saved..." message may not appear. The save is still made.
+* Sometimes the bar at the top won't appear after loading a save/map. The mod is still working. The bar should appear once the next effect starts.
+* The "Saved..." message may not appear. The save is still made. (As long as you pressed the right button. See first note.)
 * The car compass HUD element does not display correctly.
 * If you play maps from something that isn't _Half-Life 2/Episode One/Two_, the "Node graph out of date" message will appear every time you go to a new map for the first time. This message is harmless, but if you wish, you can copy the `.AIN` files from the mod as well. It will also stop appearing after you've visited each map a single time, because the mod has now generated its own copy of the node graph. The `.AIN` files are included for _Half-Life 2/Episode One/Two_.
 * If you take a weird path through d3_c17_13, you may not activate the strider in the car pit. You will have to kill it before the intended route can continue.
-* **Super Grab** sometimes makes it harder to grab things.
+* **Didn't Skip Arm Day** sometimes makes it harder to grab things.
 * Sometimes things are invisible with **Orthographic Camera**. Turning on the flashlight may fix it.
 * Collisions can be weird when **Slow Physics** is on.
 

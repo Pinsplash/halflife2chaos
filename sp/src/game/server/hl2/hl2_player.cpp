@@ -75,6 +75,7 @@
 #include "ai_playerally.h"
 #include "hl_gamemovement.h"
 #include "npc_PoisonZombie.h"
+#include "physics_saverestore.h"
 
 #ifdef HL2_EPISODIC
 #include "npc_alyx_episodic.h"
@@ -955,6 +956,7 @@ BEGIN_DATADESC( CHL2_Player )
 	DEFINE_AUTO_ARRAY(m_iActiveEffects, FIELD_INTEGER),
 	//DEFINE_UTLVECTOR(m_iTerminated, FIELD_INTEGER),
 	DEFINE_INPUTFUNC(FIELD_VOID, "InsideTransition", InputInsideTransition),
+	//DEFINE_PHYSPTR(m_pController),
 END_DATADESC()
 
 
@@ -2101,6 +2103,8 @@ void CHL2_Player::PlayerRunCommand(CUserCmd *ucmd, IMoveHelper *moveHelper)
 }
 void CHL2_Player::StartGame()
 {
+	//if (!m_pController)
+	//	m_pController = physenv->CreateMotionController(this);
 	const char *pMapName = STRING(gpGlobals->mapname);
 	//scripting of canals 11 requires an airboat to be present, give player a new one if they came here without one
 	if (!Q_strcmp(pMapName, "d1_canals_11"))
@@ -2136,6 +2140,7 @@ void CHL2_Player::StartGame()
 //-----------------------------------------------------------------------------
 void CHL2_Player::Spawn(void)
 {
+	//m_pController = physenv->CreateMotionController(this);
 	StartGame();
 	if (gpGlobals->eLoadType == MapLoad_NewGame)
 	{
@@ -4364,6 +4369,12 @@ void CHL2_Player::UpdateClientData( void )
 void CHL2_Player::OnRestore()
 {
 	BaseClass::OnRestore();
+	/*
+	if (m_pController)
+	{
+		m_pController->SetEventHandler(this);
+	}
+	*/
 	m_pPlayerAISquad = g_AI_SquadManager.FindCreateSquad(AllocPooledString(PLAYER_SQUADNAME));
 }
 
@@ -5412,11 +5423,11 @@ bool CChaosEffect::CheckEffectContext()
 
 	//could distrupt cutscenes
 	if (m_nID == EFFECT_NPC_HATE || m_nID == EFFECT_NPC_FEAR)
-		if (!Q_strcmp(pMapName, "d1_trainstation_04") || !Q_strcmp(pMapName, "d1_canals_03") || !Q_strcmp(pMapName, "d1_eli_01")
+		if (!Q_strcmp(pMapName, "d1_trainstation_01")	|| !Q_strcmp(pMapName, "d1_trainstation_04")	|| !Q_strcmp(pMapName, "d1_canals_03")		|| !Q_strcmp(pMapName, "d1_eli_01")
 			|| !Q_strcmp(pMapName, "d2_coast_10")
 			|| !Q_strcmp(pMapName, "d3_breen_01")
-			|| !Q_strcmp(pMapName, "ep1_citadel_03") || !Q_strcmp(pMapName, "ep1_c17_02b")
-			|| !Q_strcmp(pMapName, "ep2_outland_01") || !Q_strcmp(pMapName, "ep2_outland_07") || !Q_strcmp(pMapName, "ep2_outland_08") || !Q_strcmp(pMapName, "ep2_outland_10a"))
+			|| !Q_strcmp(pMapName, "ep1_citadel_03")	|| !Q_strcmp(pMapName, "ep1_c17_02b")
+			|| !Q_strcmp(pMapName, "ep2_outland_01")	|| !Q_strcmp(pMapName, "ep2_outland_07")		|| !Q_strcmp(pMapName, "ep2_outland_08")	|| !Q_strcmp(pMapName, "ep2_outland_10a"))
 			return false;//bad map
 
 	//if we miss the trigger_changelevel, the pod will get killed, killing us
@@ -5428,6 +5439,11 @@ bool CChaosEffect::CheckEffectContext()
 	//while the player is unable to reach it in a reasonable time to save alyx as she is scripted to stand in the room
 	if (m_nID == EFFECT_ZOMBIE_SPAM)
 		if (!Q_strcmp(pMapName, "ep1_citadel_03"))
+			return false;
+
+	//d1_trainstation_05 is a bad map to be introduced to No Climbing on
+	if (m_nID == EFFECT_INCLINE)
+		if (!Q_strcmp(pMapName, "d1_trainstation_05"))
 			return false;
 
 	if (m_nContext == EC_NONE)
@@ -7980,30 +7996,95 @@ void CEBumpy::DoOnVehicles(CPropVehicleDriveable *pVehicle)
 void CEGravitySet::StartEffect()
 {
 	bool bNegative = g_ChaosEffects[EFFECT_INVERTG]->m_bActive;
+	//CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+	//CHL2_Player *pHL2Player = static_cast<CHL2_Player*>(pPlayer);
+	CBaseEntity *pVehicle;
 	switch (m_nID)
 	{
 	case EFFECT_ZEROG:
 		sv_gravity.SetValue(0);
 		Msg("Setting sv_gravity to 0\n");
+		pVehicle = gEntList.FindEntityByClassname(NULL, "prop_v*");
+		/*
+		while (pVehicle)
+		{
+			IPhysicsObject *pList[VPHYSICS_MAX_OBJECT_LIST_COUNT];
+			int count = pVehicle->VPhysicsGetObjectList(pList, ARRAYSIZE(pList));
+			if (count)
+			{
+				for (int i = 0; i < count; i++)
+				{
+					pHL2Player->m_pController->AttachObject(pList[i], true);
+				}
+			}
+			pVehicle = gEntList.FindEntityByClassname(pVehicle, "prop_v*");
+		}
+		*/
 		break;
 	case EFFECT_SUPERG:
 		sv_gravity.SetValue(bNegative ? -1800 : 1800);
 		Msg("Setting sv_gravity to %i\n", bNegative ? -1800 : 1800);
+		pVehicle = gEntList.FindEntityByClassname(NULL, "prop_v*");
+		while (pVehicle)
+		{
+			pVehicle->SetGravity(3);
+			pVehicle = gEntList.FindEntityByClassname(pVehicle, "prop_v*");
+		}
 		break;
 	case EFFECT_LOWG:
 		sv_gravity.SetValue(bNegative ? -200 : 200);
 		Msg("Setting sv_gravity to %i\n", bNegative ? -200 : 200);
+		pVehicle = gEntList.FindEntityByClassname(NULL, "prop_v*");
+		while (pVehicle)
+		{
+			pVehicle->SetGravity(0.3333f);
+			pVehicle = gEntList.FindEntityByClassname(pVehicle, "prop_v*");
+		}
 		break;
 	case EFFECT_INVERTG:
 		Msg("Setting sv_gravity to %i\n", -sv_gravity.GetInt());
 		sv_gravity.SetValue(-sv_gravity.GetInt());
+		pVehicle = gEntList.FindEntityByClassname(NULL, "prop_v*");
+		while (pVehicle)
+		{
+			pVehicle->SetGravity(-pVehicle->GetGravity());
+			pVehicle = gEntList.FindEntityByClassname(pVehicle, "prop_v*");
+		}
 		break;
 	}
 	physenv->SetGravity(Vector(0, 0, -GetCurrentGravity()));
 }
+/*
+//this counteracts the force of gravity. i don't know why this number works well, it just does.
+//I decided to not do this because each vehicle needs its own gravity amount and it just seems like an entire can of worms
+ConVar gravity_counter_amount("gravity_counter_amount", "-0.4f");
+IMotionEvent::simresult_e CHL2_Player::Simulate(IPhysicsMotionController *pController, IPhysicsObject *pObject, float deltaTime, Vector &linear, AngularImpulse &angular)
+{
+	if (g_ChaosEffects[EFFECT_ZEROG]->m_bActive)
+	{
+		bool bNegative = g_ChaosEffects[EFFECT_INVERTG]->m_bActive;
+		float flAmt = gravity_counter_amount.GetFloat() * (bNegative ? -600 : 600);
+		linear.z -= flAmt;
+	}
+	return SIM_GLOBAL_ACCELERATION;
+}
+void CHL2_Player::UpdateOnRemove()
+{
+	if (m_pController)
+	{
+		physenv->DestroyMotionController(m_pController);
+		m_pController = NULL;
+	}
+
+	BaseClass::UpdateOnRemove();
+}
+*/
 void CEGravitySet::StopEffect()
 {
 	bool bNegative = g_ChaosEffects[EFFECT_INVERTG]->m_bActive;
+	//CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+	//CHL2_Player *pHL2Player = static_cast<CHL2_Player*>(pPlayer);
+	CBaseEntity *pVehicle;
 	switch (m_nID)
 	{
 	case EFFECT_ZEROG:
@@ -8011,6 +8092,22 @@ void CEGravitySet::StopEffect()
 	case EFFECT_LOWG:
 		sv_gravity.SetValue(bNegative ? -600 : 600);
 		Msg("Unsetting sv_gravity to %i\n", bNegative ? -600 : 600);
+		pVehicle = gEntList.FindEntityByClassname(NULL, "prop_v*");
+		/*
+		while (pVehicle)
+		{
+			IPhysicsObject *pList[VPHYSICS_MAX_OBJECT_LIST_COUNT];
+			int count = pVehicle->VPhysicsGetObjectList(pList, ARRAYSIZE(pList));
+			if (count)
+			{
+				for (int i = 0; i < count; i++)
+				{
+					pHL2Player->m_pController->DetachObject(pList[i]);
+				}
+			}
+			pVehicle = gEntList.FindEntityByClassname(pVehicle, "prop_v*");
+		}
+		*/
 		break;
 	case EFFECT_INVERTG:
 		Msg("Setting sv_gravity to %i\n", -sv_gravity.GetInt());
