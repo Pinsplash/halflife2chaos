@@ -242,6 +242,11 @@ void DebugDrawLine( const Vector& vecAbsStart, const Vector& vecAbsEnd, int r, i
 {
 	NDebugOverlay::Line( vecAbsStart + Vector( 0,0,0.1), vecAbsEnd + Vector( 0,0,0.1), r,g,b, test, duration );
 }
+void DebugSweptBox(const Vector &vecAbsStart, const Vector &vecAbsEnd, const Vector &hullMin,
+	const Vector &hullMax, int r, int g, int b, float duration)
+{
+	NDebugOverlay::SweptBox(vecAbsStart, vecAbsEnd, hullMin, hullMax, vec3_angle, r, g, b, 255, duration);
+}
 
 //-----------------------------------------------------------------------------
 // Purpose: Allow all debug overlays to be cleared at once

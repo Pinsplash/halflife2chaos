@@ -242,7 +242,7 @@ private:
 
 // helper
 void DebugDrawLine( const Vector& vecAbsStart, const Vector& vecAbsEnd, int r, int g, int b, bool test, float duration );
-
+void DebugSweptBox(const Vector &vecAbsStart, const Vector &vecAbsEnd, const Vector &hullMin, const Vector &hullMax, int r, int g, int b, float duration);
 extern ConVar r_visualizetraces;
 
 inline void UTIL_TraceLine( const Vector& vecAbsStart, const Vector& vecAbsEnd, unsigned int mask, 
@@ -287,6 +287,7 @@ inline void UTIL_TraceHull( const Vector &vecAbsStart, const Vector &vecAbsEnd, 
 	if( r_visualizetraces.GetBool() )
 	{
 		DebugDrawLine( ptr->startpos, ptr->endpos, 255, 255, 0, true, -1.0f );
+		DebugSweptBox(ptr->startpos, ptr->endpos, hullMin, hullMax, 255, 255, 0, 5);
 	}
 }
 

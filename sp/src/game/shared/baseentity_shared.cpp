@@ -1978,12 +1978,15 @@ void CBaseEntity::FireBullets( const FireBulletsInfo_t &info )
 		}
 		if (chaos_bullet_teleport.GetBool())
 		{
+			bool bTeleport = false;
+			Vector vecFinal = tr.endpos - vecDir * 5;//push them a bit out of the wall cause reasons
+			QAngle aAngle = GetAbsAngles();
+			Vector vecVel = GetAbsVelocity();
 			if (IsCombatCharacter())
 			{
 				//Vector vecShootOffset = GetAbsOrigin() - MyCombatCharacterPointer()->Weapon_ShootPosition();
 				//SetAbsOrigin();//position gun was shot from does not match our origin
-				Vector vecFinal = tr.endpos - vecDir * 5;//push them a bit out of the wall cause reasons
-				if (unstuck_debug.GetBool())
+				if (unstuck_debug.GetInt() == 1)
 				{
 					NDebugOverlay::Cross3D(vecFinal, 16, 0, 0, 255, true, 30);
 					NDebugOverlay::Line(MyCombatCharacterPointer()->Weapon_ShootPosition(), vecFinal, 0, 0, 255, true, 30);
@@ -1992,9 +1995,7 @@ void CBaseEntity::FireBullets( const FireBulletsInfo_t &info )
 				Vector vecShootPos = GetAbsOrigin() - MyCombatCharacterPointer()->Weapon_ShootPosition();
 				UTIL_TraceLine(vecFinal, vecFinal + vecShootPos, MASK_NPCSOLID_BRUSHONLY, this, COLLISION_GROUP_NONE, &zFixTrace);
 				vecFinal = zFixTrace.endpos;
-				if (unstuck_debug.GetBool()) NDebugOverlay::Cross3D(vecFinal, 16, 255, 0, 255, true, 30);
-				QAngle aAngle = GetAbsAngles();
-				Vector vecVel = GetAbsVelocity();
+				if (unstuck_debug.GetInt() == 1) NDebugOverlay::Cross3D(vecFinal, 16, 255, 0, 255, true, 30);
 				bool bSleep = false;
 				if (GetMoveType() == MOVETYPE_VPHYSICS)//floor turret
 				{
@@ -2034,8 +2035,7 @@ void CBaseEntity::FireBullets( const FireBulletsInfo_t &info )
 						}
 					}
 				}
-
-				Teleport(&vecFinal, &aAngle, &vecVel);
+				bTeleport = true;
 				if (bSleep)
 					VPhysicsGetObject()->Sleep();
 			}
@@ -2043,9 +2043,18 @@ void CBaseEntity::FireBullets( const FireBulletsInfo_t &info )
 			{
 				//don't let func_tank teleport, it breaks it
 				if (GetMoveType() == MOVETYPE_VPHYSICS)
-					SetAbsOrigin(tr.endpos);
+					bTeleport = true;
 			}
-			GetUnstuck(500);//get me out of the wall
+			if (bTeleport)
+			{
+				int flags = 0;
+				if (GetMoveType() == MOVETYPE_VPHYSICS)
+				{
+					flags = UF_NO_NODE_TELEPORT;//node teleporting isn't very appropriate for vehicles
+				}
+				Teleport(&vecFinal, &aAngle, &vecVel);
+				GetUnstuck(500, flags);//get me out of the wall
+			}
 		}
 	}
 #endif
@@ -2081,25 +2090,25 @@ bool CBaseEntity::GetUnstuck(float flMaxDist, int flags)
 	}
 	else
 	{
-		UTIL_TraceEntity(this, vecGoodSpot, vecGoodSpot - Vector(0, 0, 10000), MASK_NPCSOLID, &trace);
+		UTIL_TraceEntity(this, vecGoodSpot, vecGoodSpot, MASK_NPCSOLID, &trace);
 	}
 	//trace in place to find out what we should do for pretracing
 	trace_t	trace2;
 	UTIL_TraceLine(vecGoodSpot, vecGoodSpot, IsPlayer() ? MASK_PLAYERSOLID : MASK_NPCSOLID, this, COLLISION_GROUP_NONE, &trace2);
 	if (trace2.startsolid)
 	{
-		if (unstuck_debug.GetBool() && !bNoDebug) Msg("Skipping pretrace, origin inside world\n");
+		if (unstuck_debug.GetInt() == 1 && !bNoDebug) Msg("Skipping pretrace, origin inside world\n");
 		flags |= UF_NO_PRETRACE;
 	}
 	if (trace2.DidHitNonWorldEntity())
 	{
-		if (unstuck_debug.GetBool() && !bNoDebug) Msg("Skipping entities in pretrace, origin inside entity\n");
+		if (unstuck_debug.GetInt() == 1 && !bNoDebug) Msg("Skipping entities in pretrace, origin inside entity\n");
 		flags |= UF_PRETRACE_SKIP_ENTS;
 	}
-	if (unstuck_debug.GetBool() && !bNoDebug) if (trace.fraction != 1.0f) Msg("trace.fraction != 1.0f\n");
-	if (unstuck_debug.GetBool() && !bNoDebug) if (trace.surface.flags & SURF_SKY) Msg("trace.surface.flags & SURF_SKY\n");
-	if (unstuck_debug.GetBool() && !bNoDebug) if (trace.surface.flags & SURF_NODRAW) Msg("trace.surface.flags & SURF_NODRAW\n");
-	if (unstuck_debug.GetBool() && !bNoDebug) if (trace.DidHit()) Msg("trace.DidHit()\n");
+	if (unstuck_debug.GetInt() == 1 && !bNoDebug) if (trace.fraction != 1.0f) Msg("trace.fraction != 1.0f\n");
+	if (unstuck_debug.GetInt() == 1 && !bNoDebug) if (trace.surface.flags & SURF_SKY) Msg("trace.surface.flags & SURF_SKY\n");
+	if (unstuck_debug.GetInt() == 1 && !bNoDebug) if (trace.surface.flags & SURF_NODRAW) Msg("trace.surface.flags & SURF_NODRAW\n");
+	if (unstuck_debug.GetInt() == 1 && !bNoDebug) if (trace.DidHit()) Msg("trace.DidHit()\n");
 	if ((trace.surface.flags & SURF_SKY) || (trace.surface.flags & SURF_NODRAW) || trace.DidHit())
 	{
 		//d2_coast_01 setpos -10514 -3019 780
@@ -2131,80 +2140,83 @@ bool CBaseEntity::GetUnstuck(float flMaxDist, int flags)
 		}
 		Vector forward, right, up;
 		AngleVectors(vec3_angle, &forward, &right, &up);
-		for (int i = 10; i <= flMaxDist; i += 10)//don't actually do 500 tests. that's insane.
+		for (int i = 10; i <= flMaxDist && !bDone; i += 10)//don't actually do 500 tests. that's insane.
 		{
-			if (bDone)
-				break;
+			bool bGranular = i > flMaxDist / 2;
 			//Msg("Unstuck i %i\n", i);
 			//original noclip unstuck test only tested in cardinal directions, but we're better than that
-			for (int UFlip = 1; UFlip >= -1; UFlip--)
+			for (float UFlip = 1; UFlip >= -1 && !bDone; UFlip -= bGranular ? 0.5 : 1)
 			{
 				//prefer to go straight up first or else beer bottles spawn to the side
 				//so we have to do this godawful shit
-				int RFlip;
-				for (RFlip = 0; RFlip >= -1; RFlip--)
+				float RFlip;
+				for (RFlip = 0; RFlip >= -1 && !bDone; RFlip -= bGranular ? 0.5 : 1)
 				{
-					int FFlip;
-					for (FFlip = 0; FFlip >= -1; FFlip--)
+					float FFlip;
+					for (FFlip = 0; FFlip >= -1 && !bDone; FFlip -= bGranular ? 0.5 : 1)
 					{
-						if (bDone)
-							break;
 						if (FindOffsetSpot(forward, FFlip, right, RFlip, up, UFlip, vecGoodSpot, i, vecBadDirections, flags))
 							bDone = true;
 					}
-					FFlip = 1;
-					if (bDone)
-						break;
-					if (FindOffsetSpot(forward, FFlip, right, RFlip, up, UFlip, vecGoodSpot, i, vecBadDirections, flags))
-						bDone = true;
+					for (FFlip = 1; FFlip > 0 && !bDone; FFlip -= bGranular ? 0.5 : 1)
+					{
+						if (FindOffsetSpot(forward, FFlip, right, RFlip, up, UFlip, vecGoodSpot, i, vecBadDirections, flags))
+							bDone = true;
+					}
 				}
-				RFlip = 1;
-				int FFlip;
-				for (FFlip = 0; FFlip >= -1; FFlip--)
+				for (RFlip = 1; RFlip > 0 && !bDone; RFlip -= bGranular ? 0.5 : 1)
 				{
-					if (bDone)
-						break;
-					if (FindOffsetSpot(forward, FFlip, right, RFlip, up, UFlip, vecGoodSpot, i, vecBadDirections, flags))
-						bDone = true;
+					float FFlip;
+					for (FFlip = 0; FFlip >= -1 && !bDone; FFlip -= bGranular ? 0.5 : 1)
+					{
+						if (FindOffsetSpot(forward, FFlip, right, RFlip, up, UFlip, vecGoodSpot, i, vecBadDirections, flags))
+							bDone = true;
+					}
+					for (FFlip = 1; FFlip > 0 && !bDone; FFlip -= bGranular ? 0.5 : 1)
+					{
+						if (FindOffsetSpot(forward, FFlip, right, RFlip, up, UFlip, vecGoodSpot, i, vecBadDirections, flags))
+							bDone = true;
+					}
 				}
-				FFlip = 1;
-				if (bDone)
-					break;
-				if (FindOffsetSpot(forward, FFlip, right, RFlip, up, UFlip, vecGoodSpot, i, vecBadDirections, flags))
-					bDone = true;
 			}
 		}
 		if (!bDone)
 		{
 			if (bAllowNodeTeleport)
 			{
-				if (unstuck_debug.GetBool() && !bNoDebug) Msg("Putting at node\n");
+				if (unstuck_debug.GetInt() == 2 && !bNoDebug) Msg("Putting at node\n");
 				return PutAtNearestNode(flMaxDist, true);//i change this boolean purely on whatever i need at any moment. i am a good programmer.
 			}
 			else
 			{
-				return false;//nowhere to go
+				if (unstuck_debug.GetInt() == 2 && !bNoDebug) Msg("Can't fit\n");
+				return false;
 			}
 		}
 		else
 		{
+			if (unstuck_debug.GetInt() == 2 && !bNoDebug) Msg("Found place\n");
 			return true;//found a place to teleport to
 		}
 	}
-	if (IsPlayer() && !bNoDuck)
+	if (IsPlayer())
 	{
 		//set collisiongroup back
 		SetCollisionGroup(iOldCollisionGroup);
-		CBasePlayer *pPlayer = static_cast<CBasePlayer*>(this);
-		if (!bDucked && bGotStuck)
+		if (!bNoDuck)
 		{
-			pPlayer->m_Local.m_bDucked = false;
-			pPlayer->RemoveFlag(FL_DUCKING);
+			CBasePlayer *pPlayer = static_cast<CBasePlayer*>(this);
+			if (!bDucked && bGotStuck)
+			{
+				pPlayer->m_Local.m_bDucked = false;
+				pPlayer->RemoveFlag(FL_DUCKING);
+			}
 		}
 	}
+	Msg("Not stuck\n");
 	return true;//not stuck anyway
 }
-bool CBaseEntity::FindOffsetSpot(Vector forward, int FFlip, Vector right, int RFlip, Vector up, int UFlip, Vector& vecGoodSpot, int flDist, CUtlVector<Vector> &vecBadDirections, int flags)
+bool CBaseEntity::FindOffsetSpot(Vector forward, float FFlip, Vector right, float RFlip, Vector up, float UFlip, Vector& vecGoodSpot, int flDist, CUtlVector<Vector> &vecBadDirections, int flags)
 {
 	bool bNoDebug = (flags & UF_NO_DEBUG) != 0;
 	bool bNoDuck = (flags & UF_NO_DUCK) != 0;
@@ -2213,10 +2225,10 @@ bool CBaseEntity::FindOffsetSpot(Vector forward, int FFlip, Vector right, int RF
 	vecTestDir.NormalizeInPlace();
 	if (vecBadDirections.Find(vecTestDir) != -1)
 	{
-		if (unstuck_debug.GetBool() && !bNoDebug) Warning("Direction %0.1f %0.1f %0.1f known to be bad\n", vecTestDir.x, vecTestDir.y, vecTestDir.z);
+		if (unstuck_debug.GetInt() == 1 && !bNoDebug) Warning("Direction %0.1f %0.1f %0.1f known to be bad\n", vecTestDir.x, vecTestDir.y, vecTestDir.z);
 		return false;
 	}
-	if (unstuck_debug.GetBool() && !bNoDebug)
+	if (unstuck_debug.GetInt() == 1 && !bNoDebug)
 	{
 		Msg("Trying direction %s %s %s\n",
 			vecTestDir.x > 0 ? "EAST" : vecTestDir.x < 0 ? "WEST" : "",
@@ -2224,21 +2236,21 @@ bool CBaseEntity::FindOffsetSpot(Vector forward, int FFlip, Vector right, int RF
 			vecTestDir.z > 0 ? "UP" : vecTestDir.z < 0 ? "DOWN" : "");
 	}
 	Vector vecDest = GetAbsOrigin() + vecTestDir * flDist;
-	if (unstuck_debug.GetBool() && !bNoDebug) Msg("Testing spot %0.1f %0.1f %0.1f\n", vecDest.x, vecDest.y, vecDest.z);
+	if (unstuck_debug.GetInt() == 1 && !bNoDebug) Msg("Testing spot %0.1f %0.1f %0.1f\n", vecDest.x, vecDest.y, vecDest.z);
 	if (FindPassableSpace(vecTestDir, flDist, vecGoodSpot, vecBadDirections, flags))
 	{
-		if (unstuck_debug.GetBool() && !bNoDebug) Warning("Found spot %0.1f %0.1f %0.1f\n", vecDest.x, vecDest.y, vecDest.z);
+		if (unstuck_debug.GetInt() == 1 && !bNoDebug) Warning("Found spot %0.1f %0.1f %0.1f\n", vecDest.x, vecDest.y, vecDest.z);
 		Vector vecFinal = vecGoodSpot;// -vecShootOffset;
 		QAngle aAngle = GetAbsAngles();
 		Vector vecVel = GetAbsVelocity();
 		Teleport(&vecFinal, &aAngle, &vecVel);
 		//if (GetMoveType() != MOVETYPE_VPHYSICS)//airboat gun go brr. turret also go brr.
-		if (unstuck_debug.GetBool()) NDebugOverlay::Line(vecGoodSpot, vecGoodSpot - Vector(0, 0, 1), 0, 255, 0, true, 30);
+		if (unstuck_debug.GetInt() == 1 && !bNoDebug) NDebugOverlay::Line(vecGoodSpot, vecGoodSpot + Vector(0, 0, 1), 0, 255, 0, true, 30);
 		if (!bNoDuck && IsPlayer())
 			GetUnstuck(10, UF_NO_DUCK);//get us unducked if possible, otherwise we will be dropped in ducking for no real reason in most cases
 		return true;
 	}
-	if (unstuck_debug.GetBool()) NDebugOverlay::Line(vecDest, vecDest - Vector(0, 0, 1), flDist % 255, 128, !bSkipPreTrace ? 128 : 0, true, 30);
+	if (unstuck_debug.GetInt() == 1) NDebugOverlay::Line(vecDest, vecDest - Vector(0, 0, 1), flDist % 255, 128, !bSkipPreTrace ? 128 : 0, true, 30);
 	return false;
 }
 bool CBaseEntity::FindPassableSpace(const Vector direction, float step, Vector& oldorigin, CUtlVector<Vector> &vecBadDirections, int flags)
@@ -2271,7 +2283,7 @@ bool CBaseEntity::FindPassableSpace(const Vector direction, float step, Vector& 
 		UTIL_TraceLine(GetAbsOrigin() + Vector(0, 0, 1), vecDest, iMask, this, iCollisionGroup, &preTrace);
 		if (preTrace.fraction != 1.0)
 		{
-			if (unstuck_debug.GetBool() && !bNoDebug)
+			if (unstuck_debug.GetInt() == 1 && !bNoDebug)
 			{
 				Msg("Rejected spot %0.1f %0.1f %0.1f, Don't want to go through walls. Direction %s %s %s\n", vecDest.x, vecDest.y, vecDest.z,
 					direction.x > 0 ? "EAST" : direction.x < 0 ? "WEST" : "",
@@ -2298,7 +2310,7 @@ bool CBaseEntity::FindPassableSpace(const Vector direction, float step, Vector& 
 	}
 	if (mainTrace.startsolid || mainTrace.fraction != 1)
 	{
-		if (unstuck_debug.GetBool() && !bNoDebug)
+		if (unstuck_debug.GetInt() == 1 && !bNoDebug)
 		{
 			Msg("Rejected spot %0.1f %0.1f %0.1f, Can't fit\n", vecDest.x, vecDest.y, vecDest.z);
 			//NDebugOverlay::Cross3D(vecDest, 16, 0, 0, 0, true, 30);//a bit too much noise
@@ -2312,7 +2324,7 @@ bool CBaseEntity::FindPassableSpace(const Vector direction, float step, Vector& 
 	UTIL_TraceLine(vecDest, vecDest - Vector(0, 0, 32768), IsPlayer() ? MASK_PLAYERSOLID : MASK_NPCSOLID, this, COLLISION_GROUP_NONE, &floorTrace);
 	if (!floorTrace.DidHit() || (floorTrace.surface.flags & SURF_SKY) || ((floorTrace.surface.flags & SURF_NODRAW) && !floorTrace.m_pEnt) || (floorTrace.m_pEnt && floorTrace.m_pEnt->IsNPC()))
 	{
-		if (unstuck_debug.GetBool() && !bNoDebug)
+		if (unstuck_debug.GetInt() == 1 && !bNoDebug)
 		{
 			Msg("Rejected spot %0.1f %0.1f %0.1f, Bad ground\n", vecDest.x, vecDest.y, vecDest.z);
 			NDebugOverlay::Line(vecDest, vecDest - Vector(0, 0, 32768), 255, 0, 0, true, 30);
@@ -2322,7 +2334,8 @@ bool CBaseEntity::FindPassableSpace(const Vector direction, float step, Vector& 
 	//ground we found could still be below a displacement
 	if (!CheckIfBelowGround(floorTrace.endpos, bNoDebug))
 		return false;
-	if (unstuck_debug.GetBool() && !bNoDebug) Msg("Good ground at %0.1f %0.1f %0.1f\n", vecDest.x, vecDest.y, vecDest.z);
+	if (unstuck_debug.GetInt() == 2 && !bNoDebug) Msg("Good ground at %0.1f %0.1f %0.1f\n", vecDest.x, vecDest.y, vecDest.z);
+	if (unstuck_debug.GetInt() == 2 && !bNoDebug) DebugSweptBox(GetAbsOrigin(), vecDest, CollisionProp()->CollisionSpaceMins(), CollisionProp()->CollisionSpaceMaxs(), 255, 0, 0, 5);
 	oldorigin = vecDest;
 	return true;
 }
@@ -2337,7 +2350,7 @@ bool CBaseEntity::CheckIfBelowGround(Vector vecPos, bool bNoDebug)
 	//now trace down again
 	trace_t	ceilingTrace2;
 	UTIL_TraceLine(ceilingTrace1.endpos, ceilingTrace1.endpos - Vector(0, 0, 32768), IsPlayer() ? MASK_PLAYERSOLID : MASK_NPCSOLID, this, COLLISION_GROUP_NONE, &ceilingTrace2);
-	if (unstuck_debug.GetBool() && !bNoDebug)
+	if (unstuck_debug.GetInt() == 1 && !bNoDebug)
 	{
 		Msg("vecPos %0.1f %0.1f %0.1f\n", vecPos.x, vecPos.y, vecPos.z);
 		Msg("groundTrace.endpos %0.1f %0.1f %0.1f\n", groundTrace.endpos.x, groundTrace.endpos.y, groundTrace.endpos.z);
@@ -2348,7 +2361,7 @@ bool CBaseEntity::CheckIfBelowGround(Vector vecPos, bool bNoDebug)
 	//although floating point precision loss may play a role, so give it just a smidge of tolerance
 	if ((groundTrace.endpos - ceilingTrace2.endpos).Length() > 1)
 	{
-		if (unstuck_debug.GetBool() && !bNoDebug) Msg("Below displacement\n");
+		if (unstuck_debug.GetInt() == 1 && !bNoDebug) Msg("Below displacement\n");
 		return false;
 	}
 	return true;

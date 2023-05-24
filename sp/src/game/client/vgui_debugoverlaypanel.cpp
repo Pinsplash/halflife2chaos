@@ -179,3 +179,8 @@ void DebugDrawLine( const Vector& vecAbsStart, const Vector& vecAbsEnd, int r, i
 {
 	debugoverlay->AddLineOverlay( vecAbsStart + Vector( 0,0,0.1), vecAbsEnd + Vector( 0,0,0.1), r,g,b, test, duration );
 }
+void DebugSweptBox(const Vector &vecAbsStart, const Vector &vecAbsEnd, const Vector &hullMin,
+	const Vector &hullMax, int r, int g, int b, float duration)
+{
+	debugoverlay->AddSweptBoxOverlay(vecAbsStart, vecAbsEnd, hullMin, hullMax, vec3_angle, r, g, b, 255, duration);
+}

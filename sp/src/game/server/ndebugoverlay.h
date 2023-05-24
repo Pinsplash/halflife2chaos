@@ -30,5 +30,5 @@ extern void	UTIL_DrawPositioningOverlay( float flCrossDistance );
 extern void UTIL_DrawOverlayLines( void );
 
 extern void DebugDrawLine( const Vector& vecAbsStart, const Vector& vecAbsEnd, int r, int g, int b, bool test, float duration );
-
+extern void DebugSweptBox(const Vector &vecAbsStart, const Vector &vecAbsEnd, const Vector &hullMin, const Vector &hullMax, int r, int g, int b, float duration);
 #endif // NDEBUGOVERLAY_H
