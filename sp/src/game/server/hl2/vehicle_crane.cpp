@@ -159,47 +159,45 @@ void CPropCrane::Spawn( void )
 void CPropCrane::Activate( void )
 {
 	BaseClass::Activate();
-
-	// If we load a game, we don't need to set this all up again.
-	if ( m_hCraneMagnet )
-		return;
-
-	// Find our magnet
-	if ( m_iszMagnetName == NULL_STRING )
+	if (!m_hCraneTip)//we may have lost our crane tip by transitioning to a new map
 	{
-		Warning( "prop_vehicle_crane %s has no magnet entity specified!\n", STRING(GetEntityName()) );
-		UTIL_Remove( this );
-		return;
-	}
+		// Find our magnet
+		if (m_iszMagnetName == NULL_STRING)
+		{
+			Warning("prop_vehicle_crane %s has no magnet entity specified!\n", STRING(GetEntityName()));
+			UTIL_Remove(this);
+			return;
+		}
 
-	m_hCraneMagnet = dynamic_cast<CPhysMagnet *>(gEntList.FindEntityByName( NULL, STRING(m_iszMagnetName) ));
-	if ( !m_hCraneMagnet )
-	{
-		Warning( "prop_vehicle_crane %s failed to find magnet %s.\n", STRING(GetEntityName()), STRING(m_iszMagnetName) );
-		UTIL_Remove( this );
-		return;
+		m_hCraneMagnet = dynamic_cast<CPhysMagnet *>(gEntList.FindEntityByName(NULL, STRING(m_iszMagnetName)));
+		if (!m_hCraneMagnet)
+		{
+			Warning("prop_vehicle_crane %s failed to find magnet %s.\n", STRING(GetEntityName()), STRING(m_iszMagnetName));
+			UTIL_Remove(this);
+			return;
+		}
+
+		// Create our constraint group
+		constraint_groupparams_t group;
+		group.Defaults();
+		m_pConstraintGroup = physenv->CreateConstraintGroup(group);
+		m_hCraneMagnet->SetConstraintGroup(m_pConstraintGroup);
+
+		Vector vecOrigin;
+		QAngle vecAngles;
+		GetCraneTipPosition(&vecOrigin, &vecAngles);
+		m_hCraneTip = CCraneTip::Create(m_hCraneMagnet, m_pConstraintGroup, vecOrigin, vecAngles);
+
+		if (!m_hCraneTip)
+		{
+			UTIL_Remove(this);
+			return;
+		}
+		m_pConstraintGroup->Activate();
 	}
 
 	// We want the magnet to cast a long shadow
 	m_hCraneMagnet->SetShadowCastDistance( 2048 );
-
-	// Create our constraint group
-	constraint_groupparams_t group;
-	group.Defaults();
-	m_pConstraintGroup = physenv->CreateConstraintGroup( group );
-	m_hCraneMagnet->SetConstraintGroup( m_pConstraintGroup );
-
-	// Create our crane tip
-	Vector vecOrigin;
-	QAngle vecAngles;
-	GetCraneTipPosition( &vecOrigin, &vecAngles );
-	m_hCraneTip = CCraneTip::Create( m_hCraneMagnet, m_pConstraintGroup, vecOrigin, vecAngles );
-	if ( !m_hCraneTip )
-	{
-		UTIL_Remove( this );
-		return;
-	}
-	m_pConstraintGroup->Activate();
 
 	// Make a rope to connect 'em
 	int iIndex = m_hCraneMagnet->LookupAttachment("magnetcable_a");
@@ -412,8 +410,8 @@ void CPropCrane::DrawDebugGeometryOverlays(void)
 		{
 			m_hCraneMagnet->GetAttachment( iIndex, vecPoint );
 		}
-
-		NDebugOverlay::Line( m_hCraneTip->GetAbsOrigin(), vecPoint, 255,255,255, true, 0.1 );
+		if (m_hCraneTip)
+			NDebugOverlay::Line( m_hCraneTip->GetAbsOrigin(), vecPoint, 255,255,255, true, 0.1 );
 	}
 
 	BaseClass::DrawDebugGeometryOverlays();
@@ -610,7 +608,8 @@ void CPropCrane::DriveCrane( int iDriverButtons, int iButtonsPressed, float flNP
 			// Drop the magnet till it hits something
 			m_bDropping = true;
 			m_hCraneMagnet->ResetHasHitSomething();
-			m_hCraneTip->m_pSpring->SetSpringConstant( CRANE_SPRING_CONSTANT_LOWERING );
+			if (m_hCraneTip)
+				m_hCraneTip->m_pSpring->SetSpringConstant( CRANE_SPRING_CONSTANT_LOWERING );
 
 			m_ServerVehicle.PlaySound( VS_MISC1 );
 		}
@@ -643,6 +642,8 @@ void CPropCrane::DriveCrane( int iDriverButtons, int iButtonsPressed, float flNP
 //-----------------------------------------------------------------------------
 void CPropCrane::RecalculateCraneTip( void )
 {
+	if (!m_hCraneTip)
+		return;
 	Vector vecOrigin;
 	QAngle vecAngles;
 	GetCraneTipPosition( &vecOrigin, &vecAngles );
@@ -677,7 +678,8 @@ void CPropCrane::RunCraneMovement( float flTime )
 		if ( m_hCraneMagnet->HasHitSomething() )
 		{
 			// We hit the ground, stop dropping
-			m_hCraneTip->m_pSpring->SetSpringConstant( CRANE_SPRING_CONSTANT_INITIAL_RAISING );
+			if (m_hCraneTip)
+				m_hCraneTip->m_pSpring->SetSpringConstant( CRANE_SPRING_CONSTANT_INITIAL_RAISING );
 			m_bDropping = false;
 			m_flNextDropAllowedTime = gpGlobals->curtime + 3.0;
 			m_flSlowRaiseTime = gpGlobals->curtime;
@@ -691,7 +693,8 @@ void CPropCrane::RunCraneMovement( float flTime )
 
 		flDelta = clamp( flDelta, 0, CRANE_SLOWRAISE_TIME );
 		float flCurrentSpringConstant = RemapVal( flDelta, 0, CRANE_SLOWRAISE_TIME, CRANE_SPRING_CONSTANT_INITIAL_RAISING, CRANE_SPRING_CONSTANT_HANGING );
-		m_hCraneTip->m_pSpring->SetSpringConstant( flCurrentSpringConstant );
+		if (m_hCraneTip)
+			m_hCraneTip->m_pSpring->SetSpringConstant( flCurrentSpringConstant );
 	}
 
 	// If we've moved in any way, update the tip
@@ -784,7 +787,10 @@ void CPropCrane::TurnMagnetOff( void )
 //-----------------------------------------------------------------------------
 const Vector &CPropCrane::GetCraneTipPosition( void )
 {
-	return m_hCraneTip->GetAbsOrigin();
+	if (m_hCraneTip)
+		return m_hCraneTip->GetAbsOrigin();
+	else
+		return vec3_origin;
 }
 
 //-----------------------------------------------------------------------------

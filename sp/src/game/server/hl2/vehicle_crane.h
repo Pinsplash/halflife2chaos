@@ -61,7 +61,7 @@ public:
 			physenv->DestroySpring( m_pSpring );
 		}
 	}
-
+	virtual int ObjectCaps(void) { return BaseClass::ObjectCaps() | FCAP_ACROSS_TRANSITION; };
 	void	Spawn( void );
 	void	Precache( void );
 

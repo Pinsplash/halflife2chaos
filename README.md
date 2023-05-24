@@ -88,7 +88,7 @@ These settings have been put in their own CFG files so you can control what they
 * `portalsopenall.cfg`: Sets `r_portalsopenall`. Force-opens all areaportals. Most users will want to use 1 because if 0, areas of levels may become invisible until you enter them. This was intended to help performance, but Chaos can disrupt this feature due to sequence breaking. Normally the default is 0, but in Chaos, it's 1.
 
 ## Known issues
-* Many people have been having an issue where their binds are incorrect. Check them in the keyboard menu before playing.
+* Many people have been having an issue where their key binds are incorrect. Check them in the keyboard menu before playing.
 * To ensure all effects work right, sv_cheats is automatically set to 1. Don't change it.
 * Sometimes the bar at the top won't appear after loading a save/map. The mod is still working. The bar should appear once the next effect starts.
 * The "Saved..." message may not appear. The save is still made. (As long as you pressed the right button. See first note.)
@@ -98,6 +98,7 @@ These settings have been put in their own CFG files so you can control what they
 * **Didn't Skip Arm Day** sometimes makes it harder to grab things.
 * Sometimes things are invisible with **Orthographic Camera**. Turning on the flashlight may fix it.
 * Collisions can be weird when **Slow Physics** is on.
+* **Teleporter Bullets** does not apply to vehicle guns while a fix is in the works for a serious issue.
 
 ## Thanks for big and small bits of help
 * Blixibon
