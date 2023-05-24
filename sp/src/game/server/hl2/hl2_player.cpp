@@ -7088,7 +7088,7 @@ bool IsPlayerAlly(CBaseCombatCharacter *pCharacter)
 			//damage filter pertains to some invulnerable citizens in some maps
 			if (pCharacter->m_hDamageFilter)
 				return true;
-			if (pCharacter->ClassMatches("npc_a*") || pCharacter->ClassMatches("npc_b*") || pCharacter->ClassMatches("npc_v*"))
+			if (pCharacter->ClassMatches("npc_a*") || pCharacter->ClassMatches("npc_b*") || pCharacter->ClassMatches("npc_mon*") || pCharacter->ClassMatches("npc_v*"))
 				return true;
 		}
 	}
