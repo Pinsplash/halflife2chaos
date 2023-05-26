@@ -129,7 +129,7 @@ void CNPC_Barney::Spawn( void )
 
 	BaseClass::Spawn();
 
-	AddEFlags( EFL_NO_DISSOLVE | EFL_NO_MEGAPHYSCANNON_RAGDOLL | EFL_NO_PHYSCANNON_INTERACTION );
+	AddEFlags( EFL_NO_DISSOLVE );
 
 	NPCInit();
 

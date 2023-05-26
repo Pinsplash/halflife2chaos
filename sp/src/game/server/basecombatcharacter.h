@@ -40,20 +40,20 @@ typedef CHandle<CBaseCombatWeapon> CBaseCombatWeaponHandle;
 
 enum Capability_t 
 {
-	bits_CAP_MOVE_GROUND			= 0x00000001, // walk/run
-	bits_CAP_MOVE_JUMP				= 0x00000002, // jump/leap
-	bits_CAP_MOVE_FLY				= 0x00000004, // can fly, move all around
-	bits_CAP_MOVE_CLIMB				= 0x00000008, // climb ladders
-	bits_CAP_MOVE_SWIM				= 0x00000010, // navigate in water			// UNDONE - not yet implemented
-	bits_CAP_MOVE_CRAWL				= 0x00000020, // crawl						// UNDONE - not yet implemented
-	bits_CAP_MOVE_SHOOT				= 0x00000040, // tries to shoot weapon while moving
-	bits_CAP_SKIP_NAV_GROUND_CHECK	= 0x00000080, // optimization - skips ground tests while computing navigation
-	bits_CAP_USE					= 0x00000100, // open doors/push buttons/pull levers
-	//bits_CAP_HEAR					= 0x00000200, // can hear forced sounds
-	bits_CAP_AUTO_DOORS				= 0x00000400, // can trigger auto doors
-	bits_CAP_OPEN_DOORS				= 0x00000800, // can open manual doors
-	bits_CAP_TURN_HEAD				= 0x00001000, // can turn head, always bone controller 0
-	bits_CAP_WEAPON_RANGE_ATTACK1	= 0x00002000, // can do a weapon range attack 1
+	bits_CAP_MOVE_GROUND			= 0x00000001, // walk/run//1
+	bits_CAP_MOVE_JUMP				= 0x00000002, // jump/leap//2
+	bits_CAP_MOVE_FLY				= 0x00000004, // can fly, move all around//4
+	bits_CAP_MOVE_CLIMB				= 0x00000008, // climb ladders//8
+	bits_CAP_MOVE_SWIM				= 0x00000010, // navigate in water			// UNDONE - not yet implemented//16
+	bits_CAP_MOVE_CRAWL				= 0x00000020, // crawl						// UNDONE - not yet implemented//32
+	bits_CAP_MOVE_SHOOT				= 0x00000040, // tries to shoot weapon while moving//64
+	bits_CAP_SKIP_NAV_GROUND_CHECK	= 0x00000080, // optimization - skips ground tests while computing navigation//128
+	bits_CAP_USE					= 0x00000100, // open doors/push buttons/pull levers//256
+	//bits_CAP_HEAR					= 0x00000200, // can hear forced sounds//512
+	bits_CAP_AUTO_DOORS				= 0x00000400, // can trigger auto doors//1024
+	bits_CAP_OPEN_DOORS				= 0x00000800, // can open manual doors//2048
+	bits_CAP_TURN_HEAD				= 0x00001000, // can turn head, always bone controller 0//4096
+	bits_CAP_WEAPON_RANGE_ATTACK1	= 0x00002000, // can do a weapon range attack 1//8192
 	bits_CAP_WEAPON_RANGE_ATTACK2	= 0x00004000, // can do a weapon range attack 2
 	bits_CAP_WEAPON_MELEE_ATTACK1	= 0x00008000, // can do a weapon melee attack 1
 	bits_CAP_WEAPON_MELEE_ATTACK2	= 0x00010000, // can do a weapon melee attack 2
