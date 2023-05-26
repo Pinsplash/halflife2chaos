@@ -5162,6 +5162,7 @@ ConVar chaos_prob_npc_teleport("chaos_prob_npc_teleport", "100");
 ConVar chaos_prob_death_water("chaos_prob_death_water", "100");
 ConVar chaos_prob_random_cc("chaos_prob_random_cc", "100");
 ConVar chaos_prob_evil_barney("chaos_prob_evil_barney", "100");
+//ConVar chaos_prob_evil_eli("chaos_prob_evil_eli", "100");
 //ConVar chaos_prob_evil_breen("chaos_prob_evil_breen", "100");
 #define ERROR_WEIGHT 1
 void CHL2_Player::PopulateEffects()
@@ -5239,6 +5240,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CEDeathWater>(EFFECT_DEATH_WATER,			MAKE_STRING("Death Water"),					EC_WATER,								chaos_time_death_water.GetFloat(),			chaos_prob_death_water.GetInt());
 	CreateEffect<CERandomCC>(EFFECT_RANDOM_CC,				MAKE_STRING("Color Incorrection"),			EC_NONE,								chaos_time_random_cc.GetFloat(),			chaos_prob_random_cc.GetInt());
 	CreateEffect<CEEvilNPC>(EFFECT_EVIL_BARNEY,				MAKE_STRING("Bastard Barney"),				EC_HAS_WEAPON,							-1,											chaos_prob_evil_barney.GetInt());
+	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_ELI,				MAKE_STRING("Evil Eli"),					EC_HAS_WEAPON,							-1,											chaos_prob_evil_eli.GetInt());
 	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_BREEN,				MAKE_STRING("Hands-on Dr. Breen"),			EC_HAS_WEAPON,							-1,											chaos_prob_evil_breen.GetInt());
 }
 
@@ -7367,6 +7369,10 @@ void CEEvilNPC::StartEffect()
 	case EFFECT_EVIL_BARNEY:
 		m_iSavedChaosID = ChaosSpawnNPC("npc_barney", MAKE_STRING("Bastard Barney"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "barney", "weapon_ar2", true)->m_iChaosID;
 		break;
+		/*
+	case EFFECT_EVIL_ELI:
+		m_iSavedChaosID = ChaosSpawnNPC("npc_eli", MAKE_STRING("Evil Eli"), SPAWNTYPE_EYELEVEL_REGULAR, "models/eli.mdl", "eli", "weapon_crossbow", true)->m_iChaosID;
+		break;*/
 		/*
 	case EFFECT_EVIL_BREEN:
 		m_iSavedChaosID = ChaosSpawnNPC("npc_breen", MAKE_STRING("Hands-on Dr. Breen"), SPAWNTYPE_EYELEVEL_REGULAR, "models/breen.mdl", "breen", "weapon_357", true)->m_iChaosID;
