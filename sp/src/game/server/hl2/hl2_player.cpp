@@ -6021,11 +6021,22 @@ bool CChaosEffect::IterUsableVehicles(bool bFindOnly)
 	}
 	while (pVehicle)
 	{
-		//if iterating on cars, check model because some APCs use prop_vehicle_jeep
-		if (!bFindBoat && bFindBuggy)
+		if (!enginetrace->PointOutsideWorld(pVehicle->GetAbsOrigin()))
 		{
-			CPropJeep *pJeep = static_cast<CPropJeep *>(pVehicle);
-			if (pJeep->m_bJeep || pJeep->m_bJalopy)
+			//if iterating on cars, check model because some APCs use prop_vehicle_jeep
+			if (!bFindBoat && bFindBuggy)
+			{
+				CPropJeep *pJeep = static_cast<CPropJeep *>(pVehicle);
+				if (pJeep->m_bJeep || pJeep->m_bJalopy)
+				{
+					if (!bFindOnly)
+						DoOnVehicles(pVehicle);
+					bFoundSomething = true;
+					if (bFindOnly)
+						return true;
+				}
+			}
+			else
 			{
 				if (!bFindOnly)
 					DoOnVehicles(pVehicle);
@@ -6033,14 +6044,6 @@ bool CChaosEffect::IterUsableVehicles(bool bFindOnly)
 				if (bFindOnly)
 					return true;
 			}
-		}
-		else
-		{
-			if (!bFindOnly)
-				DoOnVehicles(pVehicle);
-			bFoundSomething = true;
-			if (bFindOnly)
-				return true;
 		}
 		//iterate on boats then cars
 		if (bFindBoat)
