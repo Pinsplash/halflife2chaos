@@ -5161,6 +5161,7 @@ ConVar chaos_prob_no_reload("chaos_prob_no_reload", "100");
 ConVar chaos_prob_npc_teleport("chaos_prob_npc_teleport", "100");
 ConVar chaos_prob_death_water("chaos_prob_death_water", "100");
 ConVar chaos_prob_random_cc("chaos_prob_random_cc", "100");
+ConVar chaos_prob_evil_barney("chaos_prob_evil_barney", "100");
 #define ERROR_WEIGHT 1
 void CHL2_Player::PopulateEffects()
 {
@@ -5236,6 +5237,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<>(EFFECT_NPC_TELEPORT,						MAKE_STRING("You Teleport?"),				EC_NONE,								chaos_time_npc_teleport.GetFloat(),			chaos_prob_npc_teleport.GetInt());
 	CreateEffect<CEDeathWater>(EFFECT_DEATH_WATER,			MAKE_STRING("Death Water"),					EC_WATER,								chaos_time_death_water.GetFloat(),			chaos_prob_death_water.GetInt());
 	CreateEffect<CERandomCC>(EFFECT_RANDOM_CC,				MAKE_STRING("Color Incorrection"),			EC_NONE,								chaos_time_random_cc.GetFloat(),			chaos_prob_random_cc.GetInt());
+	CreateEffect<CEEvilNPC>(EFFECT_EVIL_BARNEY,				MAKE_STRING("Bastard Barney"),				EC_HAS_WEAPON,							-1,											chaos_prob_evil_barney.GetInt());
 }
 
 //Set the chaos_ignore_ convars if wanted
@@ -7359,6 +7361,9 @@ void CEEvilNPC::StartEffect()
 		break;
 	case EFFECT_EVIL_NORIKO:
 		EvilNoriko();
+		break;
+	case EFFECT_EVIL_BARNEY:
+		m_iSavedChaosID = ChaosSpawnNPC("npc_barney", MAKE_STRING("Bastard Barney"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "barney", "weapon_ar2", true)->m_iChaosID;
 		break;
 	}
 }

@@ -46,25 +46,6 @@ void CAI_BaseNPC::AddActivityToSR(const char *actName, int actID)
 }
 
 //-----------------------------------------------------------------------------
-// Purpose: Given and activity ID, return the activity name
-//-----------------------------------------------------------------------------
-const char *CAI_BaseNPC::GetActivityName(int actID) 
-{
-	if ( actID == -1 )
-		return "ACT_INVALID";
-
-	// m_pActivitySR only contains public activities, ActivityList_NameForIndex() has them all
-	const char *name = ActivityList_NameForIndex(actID);	
-
-	if( !name )
-	{
-		AssertOnce( !"CAI_BaseNPC::GetActivityName() returning NULL!" );
-	}
-
-	return name;
-}
-
-//-----------------------------------------------------------------------------
 // Purpose: Given and activity name, return the activity ID
 //-----------------------------------------------------------------------------
 int CAI_BaseNPC::GetActivityID(const char* actName) 

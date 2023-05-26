@@ -1026,6 +1026,25 @@ Activity CBaseCombatCharacter::GetDeathActivity ( void )
 	return deathActivity;
 }
 
+//-----------------------------------------------------------------------------
+// Purpose: Given and activity ID, return the activity name
+//-----------------------------------------------------------------------------
+const char *CBaseCombatCharacter::GetActivityName(int actID)
+{
+	if (actID == -1)
+		return "ACT_INVALID";
+
+	// m_pActivitySR only contains public activities, ActivityList_NameForIndex() has them all
+	const char *name = ActivityList_NameForIndex(actID);
+
+	if (!name)
+	{
+		AssertOnce(!"CAI_BaseNPC::GetActivityName() returning NULL!");
+	}
+
+	return name;
+}
+
 
 // UNDONE: Should these operate on a list of weapon/items
 Activity CBaseCombatCharacter::Weapon_TranslateActivity( Activity baseAct, bool *pRequired )
@@ -1034,7 +1053,8 @@ Activity CBaseCombatCharacter::Weapon_TranslateActivity( Activity baseAct, bool 
 
 	if ( m_hActiveWeapon )
 	{
-		translated = m_hActiveWeapon->ActivityOverride( baseAct, pRequired );
+		translated = m_hActiveWeapon->ActivityOverride(baseAct, pRequired);
+		DevMsg("Weapon_TranslateActivity : %s: %s -> %s\n", GetClassname(), GetActivityName(baseAct), GetActivityName(translated));
 	}
 	else if (pRequired)
 	{

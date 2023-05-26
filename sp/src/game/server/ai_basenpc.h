@@ -1970,7 +1970,6 @@ public:
 	static int			GetTaskID		(const char* taskName);
 	static int			GetSquadSlotID	(const char* slotName);
 	virtual const char* GetSquadSlotDebugName( int iSquadSlot );
-	static const char*	GetActivityName	(int actID);	
 
 	static void			AddActivityToSR(const char *actName, int conID);
 	
