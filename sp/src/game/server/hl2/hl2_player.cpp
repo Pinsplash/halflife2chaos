@@ -5090,6 +5090,7 @@ ConVar chaos_time_death_water("chaos_time_death_water", "1");
 ConVar chaos_time_quickclip_on("chaos_time_quickclip_on", "1");
 ConVar chaos_time_quickclip_off("chaos_time_quickclip_off", "1");
 ConVar chaos_time_random_cc("chaos_time_random_cc", "1");
+ConVar chaos_time_secondary_spam("chaos_time_secondary_spam", "1");
 
 ConVar chaos_prob_zerog("chaos_prob_zerog", "100");
 ConVar chaos_prob_superg("chaos_prob_superg", "100");
@@ -5168,6 +5169,7 @@ ConVar chaos_prob_evil_kleiner("chaos_prob_evil_kleiner", "100");
 ConVar chaos_prob_evil_grigori("chaos_prob_evil_grigori", "100");
 ConVar chaos_prob_evil_mossman("chaos_prob_evil_mossman", "100");
 ConVar chaos_prob_evil_vort("chaos_prob_evil_vort", "100");
+ConVar chaos_prob_secondary_spam("chaos_prob_secondary_spam", "100");
 //ConVar chaos_prob_evil_eli("chaos_prob_evil_eli", "100");
 //ConVar chaos_prob_evil_breen("chaos_prob_evil_breen", "100");
 #define ERROR_WEIGHT 1
@@ -5251,6 +5253,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CEEvilNPC>(EFFECT_EVIL_GRIGORI,			MAKE_STRING("Griefing Grigori"),			EC_HAS_WEAPON,							-1,											chaos_prob_evil_grigori.GetInt());
 	CreateEffect<CEEvilNPC>(EFFECT_EVIL_MOSSMAN,			MAKE_STRING("Malignant Mossman"),			EC_HAS_WEAPON,							-1,											chaos_prob_evil_mossman.GetInt());
 	CreateEffect<CEEvilNPC>(EFFECT_EVIL_VORT,				MAKE_STRING("Vexing Vortigaunt"),			EC_HAS_WEAPON,							-1,											chaos_prob_evil_vort.GetInt());
+	CreateEffect<CESecondarySpam>(EFFECT_SECONDARY_SPAM,	MAKE_STRING("Spam Alt Fire"),				EC_NONE,								chaos_time_secondary_spam.GetFloat(),		chaos_prob_secondary_spam.GetInt());
 	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_ELI,				MAKE_STRING("Evil Eli"),					EC_HAS_WEAPON,							-1,											chaos_prob_evil_eli.GetInt());
 	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_BREEN,				MAKE_STRING("Hands-on Dr. Breen"),			EC_HAS_WEAPON,							-1,											chaos_prob_evil_breen.GetInt());
 }
@@ -8695,4 +8698,9 @@ void CERandomCC::RestoreEffect()
 {
 	StopEffect();
 	DisplayGeneratedCC();
+}
+void CESecondarySpam::MaintainEffect()
+{
+	engine->ClientCommand(engine->PEntityOfEntIndex(1),
+		"+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;\n");
 }

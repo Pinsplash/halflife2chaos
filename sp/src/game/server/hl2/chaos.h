@@ -92,6 +92,7 @@ enum Effect_T
 	EFFECT_EVIL_GRIGORI,
 	EFFECT_EVIL_MOSSMAN,
 	EFFECT_EVIL_VORT,
+	EFFECT_SECONDARY_SPAM,
 	//EFFECT_EVIL_ELI,
 	//EFFECT_EVIL_BREEN,
 
@@ -536,5 +537,10 @@ public:
 	void StopEffect() override;
 	void TransitionEffect() override;
 	void RestoreEffect() override;
+};
+class CESecondarySpam : public CChaosEffect
+{
+public:
+	void MaintainEffect() override;
 };
 #endif
