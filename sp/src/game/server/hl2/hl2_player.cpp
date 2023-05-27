@@ -5166,6 +5166,7 @@ ConVar chaos_prob_evil_barney("chaos_prob_evil_barney", "100");
 ConVar chaos_prob_good_gman("chaos_prob_good_gman", "100");
 ConVar chaos_prob_evil_kleiner("chaos_prob_evil_kleiner", "100");
 ConVar chaos_prob_evil_grigori("chaos_prob_evil_grigori", "100");
+ConVar chaos_prob_evil_mossman("chaos_prob_evil_mossman", "100");
 //ConVar chaos_prob_evil_eli("chaos_prob_evil_eli", "100");
 //ConVar chaos_prob_evil_breen("chaos_prob_evil_breen", "100");
 #define ERROR_WEIGHT 1
@@ -5247,6 +5248,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<>(EFFECT_GOOD_GMAN,						MAKE_STRING("Good Man"),					EC_NONE,								-1,											chaos_prob_good_gman.GetInt());
 	CreateEffect<CEEvilNPC>(EFFECT_EVIL_KLEINER,			MAKE_STRING("Krazy Kleiner"),				EC_HAS_WEAPON,							-1,											chaos_prob_evil_kleiner.GetInt());
 	CreateEffect<CEEvilNPC>(EFFECT_EVIL_GRIGORI,			MAKE_STRING("Griefing Grigori"),			EC_HAS_WEAPON,							-1,											chaos_prob_evil_grigori.GetInt());
+	CreateEffect<CEEvilNPC>(EFFECT_EVIL_MOSSMAN,			MAKE_STRING("Malignant Mossman"),			EC_HAS_WEAPON,							-1,											chaos_prob_evil_mossman.GetInt());
 	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_ELI,				MAKE_STRING("Evil Eli"),					EC_HAS_WEAPON,							-1,											chaos_prob_evil_eli.GetInt());
 	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_BREEN,				MAKE_STRING("Hands-on Dr. Breen"),			EC_HAS_WEAPON,							-1,											chaos_prob_evil_breen.GetInt());
 }
@@ -7406,6 +7408,9 @@ void CEEvilNPC::StartEffect()
 		break;
 	case EFFECT_EVIL_GRIGORI:
 		m_iSavedChaosID = ChaosSpawnNPC("npc_monk", MAKE_STRING("Griefing Grigori"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "monk", "weapon_annabelle", CSF_EVIL)->m_iChaosID;
+		break;
+	case EFFECT_EVIL_MOSSMAN:
+		m_iSavedChaosID = ChaosSpawnNPC("npc_mossman", MAKE_STRING("Malignant Mossman"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "mossman", "weapon_crowbar", CSF_EVIL)->m_iChaosID;
 		break;
 		/*
 	case EFFECT_EVIL_ELI:
