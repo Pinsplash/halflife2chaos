@@ -20,6 +20,7 @@
 #include "ai_playerally.h"
 #include "ai_senses.h"
 #include "soundent.h"
+#include "npc_playercompanion.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -32,7 +33,7 @@ extern ConVar chaos_no_reload;
 //-----------------------------------------------------------------------------
 int ACT_MONK_GUN_IDLE;
 
-class CNPC_Monk : public CAI_PlayerAlly
+class CNPC_Monk : public CNPC_PlayerCompanion
 {
 	DECLARE_CLASS( CNPC_Monk, CAI_PlayerAlly );
 

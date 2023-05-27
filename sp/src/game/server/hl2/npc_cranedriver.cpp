@@ -136,7 +136,7 @@ LINK_ENTITY_TO_CLASS( npc_cranedriver, CNPC_CraneDriver );
 void CNPC_CraneDriver::Spawn( void )
 {
 	BaseClass::Spawn();
-
+	AddFlag(FL_NOTARGET);
 	CapabilitiesClear();
 	CapabilitiesAdd( bits_CAP_INNATE_RANGE_ATTACK1 );
 

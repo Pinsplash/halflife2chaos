@@ -1054,7 +1054,7 @@ Activity CBaseCombatCharacter::Weapon_TranslateActivity( Activity baseAct, bool 
 	if ( m_hActiveWeapon )
 	{
 		translated = m_hActiveWeapon->ActivityOverride(baseAct, pRequired);
-		DevMsg("Weapon_TranslateActivity : %s: %s -> %s\n", GetClassname(), GetActivityName(baseAct), GetActivityName(translated));
+		//DevMsg("Weapon_TranslateActivity : %s: %s -> %s\n", GetClassname(), GetActivityName(baseAct), GetActivityName(translated));
 	}
 	else if (pRequired)
 	{

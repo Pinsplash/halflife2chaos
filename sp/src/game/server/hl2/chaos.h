@@ -87,6 +87,7 @@ enum Effect_T
 	EFFECT_DEATH_WATER,
 	EFFECT_RANDOM_CC,
 	EFFECT_EVIL_BARNEY,
+	EFFECT_GOOD_GMAN,
 	//EFFECT_EVIL_ELI,
 	//EFFECT_EVIL_BREEN,
 
@@ -107,6 +108,10 @@ enum Effect_T
 #define EC_NEED_PHYSGUN		512
 #define EC_PLAYER_TELEPORT	1024
 #define EC_NO_VEHICLE		2048
+
+//flags for spawning chaos npcs
+#define CSF_EVIL	1
+#define CSF_SQUAD	2
 
 enum
 {
@@ -148,7 +153,7 @@ public:
 	int m_iStrikes;
 	bool m_bTransient;
 	CBaseEntity *ChaosSpawnVehicle(const char *className, string_t strActualName, int iSpawnType, const char *strModel, const char *strTargetname, const char *strScript);
-	CAI_BaseNPC *ChaosSpawnNPC(const char *className, string_t strActualName, int iSpawnType, const char *strModel, const char *strTargetname, const char *strWeapon, bool bEvil = false);
+	CAI_BaseNPC *ChaosSpawnNPC(const char *className, string_t strActualName, int iSpawnType, const char *strModel, const char *strTargetname, const char *strWeapon, int flags = 0);
 	bool ChaosSpawnWeapon(const char *className, string_t strActualName, int iCount = 0, const char *strAmmoType = NULL, int iCount2 = 0, const char *strAmmoType2 = NULL);
 	void RandomTeleport(bool bPlayerOnly);
 	CNodeList *GetNearbyNodes(int iNodes);

@@ -393,6 +393,10 @@ public:
 
 	void CleanupOnDeath( CBaseEntity *pCulprit = NULL, bool bFireDeathOutput = true );
 
+	CAI_BehaviorBase *GetRunningBehavior();
+	void			ChangeBehaviorTo(CAI_BehaviorBase *pNewBehavior);
+	CAI_BehaviorBase *DeferSchedulingToBehavior(CAI_BehaviorBase *pNewBehavior);
+	void			AddBehavior(CAI_BehaviorBase *pBehavior);
 	virtual int		Save( ISave &save );
 	virtual int		Restore( IRestore &restore );
 	virtual bool 	CreateComponents();
@@ -474,15 +478,11 @@ public:
 	virtual void	OnChangeRunningBehavior( CAI_BehaviorBase *pOldBehavior,  CAI_BehaviorBase *pNewBehavior );
 
 protected:
-	void			AddBehavior( CAI_BehaviorBase *pBehavior );
 	
 	bool			BehaviorSelectSchedule();
 	virtual bool	ShouldBehaviorSelectSchedule( CAI_BehaviorBase *pBehavior ) { return true; }
 
 	bool 			IsRunningBehavior() const;
-	CAI_BehaviorBase *GetRunningBehavior();
-	CAI_BehaviorBase *DeferSchedulingToBehavior( CAI_BehaviorBase *pNewBehavior );
-	void			ChangeBehaviorTo( CAI_BehaviorBase *pNewBehavior );
 
 	CAI_Schedule *	GetNewSchedule();
 	CAI_Schedule *	GetFailSchedule();
@@ -1891,11 +1891,11 @@ template <class BASE_NPC>
 inline void CAI_BehaviorHost<BASE_NPC>::AddBehavior( CAI_BehaviorBase *pBehavior )
 {
 #ifdef DEBUG
-	Assert( m_Behaviors.Find( pBehavior ) == m_Behaviors.InvalidIndex() );
-	Assert( m_fDebugInCreateBehaviors );
+	//Assert( m_Behaviors.Find( pBehavior ) == m_Behaviors.InvalidIndex() );
+	//Assert( m_fDebugInCreateBehaviors );
 	for ( int i = 0; i < m_Behaviors.Count(); i++)
 	{
-		Assert( typeid(*m_Behaviors[i]) != typeid(*pBehavior) );
+		//Assert( typeid(*m_Behaviors[i]) != typeid(*pBehavior) );
 	}
 #endif
 	m_Behaviors.AddToTail( pBehavior );

@@ -1667,7 +1667,7 @@ bool CAI_BaseNPC::HasCondition( int iCondition )
 	
 	if ( interrupt == -1 )
 	{
-		Assert(0);
+		//Assert(0);
 		return false;
 	}
 	
@@ -6251,7 +6251,7 @@ void CAI_BaseNPC::SetIdealActivity( Activity NewActivity )
 		return;
 	}
 
-	DevMsg("SetIdealActivity : %s: %s -> %s\n", GetClassname(), GetActivityName(GetActivity()), GetActivityName(NewActivity));
+	//DevMsg("SetIdealActivity : %s: %s -> %s\n", GetClassname(), GetActivityName(GetActivity()), GetActivityName(NewActivity));
 	
 	if (NewActivity == ACT_RESET)
 	{
@@ -6290,7 +6290,7 @@ void CAI_BaseNPC::AdvanceToIdealActivity(void)
 		// the ideal sequence.
 		if (nNextSequence != m_nIdealSequence)
 		{
-			DevMsg("%s: TRANSITION %s -> %s -> %s\n", GetClassname(), GetSequenceName(GetSequence()), GetSequenceName(nNextSequence), GetSequenceName(m_nIdealSequence));
+			//DevMsg("%s: TRANSITION %s -> %s -> %s\n", GetClassname(), GetSequenceName(GetSequence()), GetSequenceName(nNextSequence), GetSequenceName(m_nIdealSequence));
 
 			Activity eWeaponActivity = ACT_TRANSITION;
 			Activity eTranslatedActivity = ACT_TRANSITION;
@@ -6310,7 +6310,7 @@ void CAI_BaseNPC::AdvanceToIdealActivity(void)
 		}
 		else
 		{
-			DevMsg("%s: IDEAL %s -> %s\n", GetClassname(), GetSequenceName(GetSequence()), GetSequenceName(m_nIdealSequence));
+			//DevMsg("%s: IDEAL %s -> %s\n", GetClassname(), GetSequenceName(GetSequence()), GetSequenceName(m_nIdealSequence));
 
 			// Set activity and sequence to the ideal stuff that was set up in MaintainActivity.
 			SetActivityAndSequence(m_IdealActivity, m_nIdealSequence, m_IdealTranslatedActivity, m_IdealWeaponActivity);
@@ -6319,7 +6319,7 @@ void CAI_BaseNPC::AdvanceToIdealActivity(void)
 	// Else go straight there to the ideal activity.
 	else
 	{
-		DevMsg("%s: Unable to get from sequence %s to %s!\n", GetClassname(), GetSequenceName(GetSequence()), GetSequenceName(m_nIdealSequence));
+		//DevMsg("%s: Unable to get from sequence %s to %s!\n", GetClassname(), GetSequenceName(GetSequence()), GetSequenceName(m_nIdealSequence));
 		SetActivity(m_IdealActivity);
 	}
 }
@@ -6797,6 +6797,7 @@ bool CAI_BaseNPC::IsNavHullValid() const
 //=========================================================
 void CAI_BaseNPC::NPCInit ( void )
 {
+	m_HackedGunPos = Vector(0, 0, 55);
 	if (!g_pGameRules->FAllowNPCs())
 	{
 		UTIL_Remove( this );

@@ -16,6 +16,7 @@
 #include "ai_hull.h"
 #include "ai_behavior_follow.h"
 #include "ai_playerally.h"
+#include "npc_playercompanion.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -27,7 +28,7 @@
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-class CNPC_GMan : public CAI_PlayerAlly
+class CNPC_GMan : public CNPC_PlayerCompanion
 {
 public:
 	DECLARE_CLASS( CNPC_GMan, CAI_PlayerAlly );
@@ -111,8 +112,8 @@ void CNPC_GMan::Spawn()
 	m_NPCState			= NPC_STATE_NONE;
 	SetImpactEnergyScale( 0.0f ); // no physics damage on the gman
 	
-	CapabilitiesAdd(bits_CAP_MOVE_GROUND | bits_CAP_OPEN_DOORS | bits_CAP_ANIMATEDFACE | bits_CAP_TURN_HEAD | bits_CAP_USE_WEAPONS);
-	CapabilitiesAdd( bits_CAP_FRIENDLY_DMG_IMMUNE );
+	CapabilitiesAdd(bits_CAP_MOVE_GROUND | bits_CAP_OPEN_DOORS | bits_CAP_ANIMATEDFACE | bits_CAP_TURN_HEAD | bits_CAP_USE_WEAPONS | bits_CAP_WEAPON_RANGE_ATTACK1);
+	CapabilitiesAdd(bits_CAP_FRIENDLY_DMG_IMMUNE | bits_CAP_SQUAD);
 	AddEFlags( EFL_NO_DISSOLVE | EFL_NO_MEGAPHYSCANNON_RAGDOLL );
 
 	NPCInit();
@@ -133,7 +134,7 @@ void CNPC_GMan::Precache()
 //-----------------------------------------------------------------------------
 Disposition_t CNPC_GMan::IRelationType(CBaseEntity *pTarget)
 {
-	return D_NU;
+	return m_bChaosSpawned ? BaseClass::IRelationType(pTarget) : D_NU;
 }
 
 

@@ -220,7 +220,8 @@ public:
 
 	//---------------------------------
 	//---------------------------------
-	bool PickTacticalLookTarget( AILookTargetArgs_t *pArgs );
+	bool PickTacticalLookTarget(AILookTargetArgs_t *pArgs);
+	virtual CAI_FollowBehavior &GetFollowBehavior(void) { return m_FollowBehavior; }
 
 	//---------------------------------
 	// Aiming
@@ -360,7 +361,6 @@ private:
 protected:
 	//-----------------------------------------------------
 
-	virtual CAI_FollowBehavior &GetFollowBehavior( void ) { return m_FollowBehavior; }
 
 	CAI_AssaultBehavior				m_AssaultBehavior;
 	CAI_FollowBehavior				m_FollowBehavior;

@@ -14,6 +14,7 @@
 #include	"ai_basenpc.h"
 #include	"ai_hull.h"
 #include "ai_baseactor.h"
+#include "npc_playercompanion.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -25,7 +26,7 @@
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-class CNPC_Kleiner : public CAI_BaseActor
+class CNPC_Kleiner : public CNPC_PlayerCompanion
 {
 public:
 	DECLARE_CLASS( CNPC_Kleiner, CAI_BaseActor );
