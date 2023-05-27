@@ -29,7 +29,7 @@
 class CNPC_Eli : public CNPC_PlayerCompanion
 {
 public:
-	DECLARE_CLASS( CNPC_Eli, CAI_BaseActor );
+	DECLARE_CLASS(CNPC_Eli, CNPC_PlayerCompanion);
 
 	void	Spawn( void );
 	void	Precache( void );

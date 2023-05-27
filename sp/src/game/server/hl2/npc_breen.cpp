@@ -27,7 +27,7 @@
 class CNPC_Breen : public CNPC_PlayerCompanion
 {
 public:
-	DECLARE_CLASS( CNPC_Breen, CAI_BaseActor );
+	DECLARE_CLASS(CNPC_Breen, CNPC_PlayerCompanion);
 
 	void	Spawn( void );
 	void	Precache( void );

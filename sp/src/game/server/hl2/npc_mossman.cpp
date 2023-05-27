@@ -31,7 +31,7 @@
 class CNPC_Mossman : public CNPC_PlayerCompanion
 {
 public:
-	DECLARE_CLASS( CNPC_Mossman, CAI_PlayerAlly );
+	DECLARE_CLASS(CNPC_Mossman, CNPC_PlayerCompanion);
 	DECLARE_DATADESC();
 
 	void	Spawn( void );

@@ -31,7 +31,7 @@
 class CNPC_Magnusson : public CNPC_PlayerCompanion
 {
 public:
-	DECLARE_CLASS( CNPC_Magnusson, CAI_BaseActor );
+	DECLARE_CLASS(CNPC_Magnusson, CNPC_PlayerCompanion);
 
 	void	Spawn( void );
 	void	Precache( void );

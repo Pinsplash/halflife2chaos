@@ -29,7 +29,7 @@
 class CNPC_Kleiner : public CNPC_PlayerCompanion
 {
 public:
-	DECLARE_CLASS( CNPC_Kleiner, CAI_BaseActor );
+	DECLARE_CLASS(CNPC_Kleiner, CNPC_PlayerCompanion);
 
 	void	Spawn( void );
 	void	Precache( void );
@@ -106,7 +106,7 @@ void CNPC_Kleiner::Spawn()
 	CapabilitiesAdd(bits_CAP_MOVE_GROUND | bits_CAP_OPEN_DOORS | bits_CAP_ANIMATEDFACE | bits_CAP_TURN_HEAD | bits_CAP_USE_WEAPONS);
 	CapabilitiesAdd( bits_CAP_FRIENDLY_DMG_IMMUNE );
 
-	AddEFlags( EFL_NO_DISSOLVE | EFL_NO_MEGAPHYSCANNON_RAGDOLL | EFL_NO_PHYSCANNON_INTERACTION );
+	AddEFlags( EFL_NO_DISSOLVE );
 
 	NPCInit();
 }

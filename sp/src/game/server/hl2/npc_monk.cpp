@@ -35,7 +35,7 @@ int ACT_MONK_GUN_IDLE;
 
 class CNPC_Monk : public CNPC_PlayerCompanion
 {
-	DECLARE_CLASS( CNPC_Monk, CAI_PlayerAlly );
+	DECLARE_CLASS(CNPC_Monk, CNPC_PlayerCompanion);
 
 public:
 
