@@ -115,7 +115,7 @@ void CNPC_Eli::Spawn()
 	CapabilitiesAdd(bits_CAP_USE_WEAPONS | bits_CAP_WEAPON_RANGE_ATTACK1);
 	AddEFlags( EFL_NO_DISSOLVE | EFL_NO_MEGAPHYSCANNON_RAGDOLL | EFL_NO_PHYSCANNON_INTERACTION );
 	SetBloodColor( BLOOD_COLOR_RED );
-	m_iHealth			= 8;
+	m_iHealth			= 80;
 	m_flFieldOfView		= 0.5;// indicates the width of this NPC's forward view cone ( as a dotproduct result )
 	m_NPCState			= NPC_STATE_NONE;
 
