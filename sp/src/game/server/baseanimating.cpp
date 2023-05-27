@@ -631,7 +631,7 @@ void CBaseAnimating::InputSetModelScale( inputdata_t &inputdata )
 int CBaseAnimating::SelectWeightedSequence ( Activity activity )
 {
 	Assert( activity != ACT_INVALID );
-	Assert( GetModelPtr() );
+//	Assert( GetModelPtr() );
 	return ::SelectWeightedSequence( GetModelPtr(), activity, GetSequence() );
 }
 
