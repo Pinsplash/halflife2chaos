@@ -5039,7 +5039,16 @@ void CHL2_Player::CreateEffect(int nEffect, string_t strHudName, int nContext, f
 	}
 	g_ChaosEffects.AddToTail(newEffect);
 }
-
+//effect consideration checklist:
+//probably make a class
+//add convar/s to autoexec.cfg
+//possibly add groups in groups.cfg
+//test starting effect
+//test ending effect
+//test loading save made while effect was active when effect is active
+//test loading save made while effect was NOT active when effect is active
+//test loading save made while effect was active after effect ends
+//should it be in DoRestorationAbort?
 ConVar chaos_time_zerog("chaos_time_zerog", "1");
 ConVar chaos_time_superg("chaos_time_superg", "1");
 ConVar chaos_time_lowg("chaos_time_lowg", "1");
@@ -5871,6 +5880,9 @@ bool CChaosEffect::DoRestorationAbort()
 
 	//if r_lockpvs is 1 when reloading, there is nothing visible at all
 	case EFFECT_LOCK_PVS:
+
+	//color_correction must be recreated or deleted
+	case EFFECT_RANDOM_CC:
 		return true;
 	}
 	return false;
