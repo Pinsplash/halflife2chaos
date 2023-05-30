@@ -1223,6 +1223,9 @@ void CHL2_Player::PreThink(void)
 		{
 			if (m_bRestartHUD)
 			{
+#ifdef DEBUG
+				UTIL_CenterPrintAll("DEBUG BUILD. If you're seeing this and don't know why, please tell Pinsplash.\n");
+#endif
 				m_bRestartHUD = false;
 				DoChaosHUDBar();
 				g_flEffectThinkRem = 0;
@@ -5247,7 +5250,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CEBumpy>(EFFECT_BUMPY,						MAKE_STRING("Bumpy Road"),					EC_BUGGY,								chaos_time_bumpy.GetFloat(),				chaos_prob_bumpy.GetInt());
 	CreateEffect<CENoBrake>(EFFECT_NO_BRAKE,				MAKE_STRING("Broken Brakes"),				EC_BUGGY,								chaos_time_no_brake.GetFloat(),				chaos_prob_no_brake.GetInt());
 	CreateEffect<CEForceInOutCar>(EFFECT_FORCE_INOUT_CAR,	MAKE_STRING("Force In/Out Vehicle"),		EC_BUGGY | EC_BOAT | EC_PLAYER_TELEPORT,-1,											chaos_prob_force_inout_car.GetInt());
-	CreateEffect<CEWeaponRemove>(EFFECT_WEAPON_REMOVE,		MAKE_STRING("Remove Random Weapon"),		EC_HAS_WEAPON | EC_NEED_PHYSGUN,		-1,											chaos_prob_weapon_remove.GetInt());
+	CreateEffect<CEWeaponRemove>(EFFECT_WEAPON_REMOVE,		MAKE_STRING("Remove Random Weapon"),		EC_NEED_PHYSGUN,						-1,											chaos_prob_weapon_remove.GetInt());
 	CreateEffect<>(EFFECT_INTERP_NPCS,						MAKE_STRING("Laggy NPCs"),					EC_NONE,								chaos_time_interp_npcs.GetFloat(),			chaos_prob_interp_npcs.GetInt());
 	CreateEffect<CEPhysConvert>(EFFECT_PHYS_CONVERT,		MAKE_STRING("Ran Out Of Glue"),				EC_NONE,								-1,											chaos_prob_phys_convert.GetInt());
 	CreateEffect<CEIncline>(EFFECT_INCLINE,					MAKE_STRING("No Climbing"),					EC_NONE,								chaos_time_incline.GetFloat(),				chaos_prob_incline.GetInt());
@@ -5475,6 +5478,33 @@ bool CChaosEffect::CheckEffectContext()
 		if (!Q_strcmp(pMapName, "d1_trainstation_05"))
 			return false;
 
+	if (m_nID == EFFECT_WEAPON_REMOVE)
+	{
+		if (UTIL_GetLocalPlayer()->GetActiveWeapon() == NULL)
+			return false;
+		CBaseCombatWeapon *pWeapon = (CBaseCombatWeapon *)gEntList.FindEntityByClassname(NULL, "we*");
+		CBaseCombatWeapon *pWeapon1 = NULL;
+		CBaseCombatWeapon *pWeapon2 = NULL;
+		while (pWeapon && !pWeapon2)
+		{
+			if (pWeapon->GetOwner() && pWeapon->GetOwner()->IsPlayer())
+			{
+				if (pWeapon1)
+				{
+					pWeapon2 = pWeapon;
+					break;
+				}
+				else
+				{
+					pWeapon1 = pWeapon;
+				}
+			}
+			pWeapon = (CBaseCombatWeapon *)gEntList.FindEntityByClassname(pWeapon, "we*");
+		}
+		if (!pWeapon2)
+			return false;
+	}
+
 	if (m_nContext == EC_NONE)
 		return true;
 
@@ -5544,19 +5574,19 @@ bool CChaosEffect::CheckEffectContext()
 		//don't need to check map list if we would be forcing out of a car, cause we don't teleport (far) in that case, unless you did the ladder bug thing
 		if (!(m_nID == EFFECT_FORCE_INOUT_CAR && pPlayer->IsInAVehicle()))
 		{
-			if (!Q_strcmp(pMapName, "d1_trainstation_01")	|| !Q_strcmp(pMapName, "d1_trainstation_04")|| !Q_strcmp(pMapName, "d1_trainstation_05")
-				|| !Q_strcmp(pMapName, "d1_canals_01")		|| !Q_strcmp(pMapName, "d1_canals_05")		|| !Q_strcmp(pMapName, "d1_canals_06")		|| !Q_strcmp(pMapName, "d1_canals_08")		|| !Q_strcmp(pMapName, "d1_canals_11")
+			if (!Q_strcmp(pMapName, "d1_trainstation_01")	|| !Q_strcmp(pMapName, "d1_trainstation_03")	|| !Q_strcmp(pMapName, "d1_trainstation_04")	|| !Q_strcmp(pMapName, "d1_trainstation_05")
+				|| !Q_strcmp(pMapName, "d1_canals_01")		|| !Q_strcmp(pMapName, "d1_canals_05")			|| !Q_strcmp(pMapName, "d1_canals_06")			|| !Q_strcmp(pMapName, "d1_canals_08")			|| !Q_strcmp(pMapName, "d1_canals_11")
 				|| !Q_strcmp(pMapName, "d1_eli_01")			|| !Q_strcmp(pMapName, "d1_eli_02")
 				|| !Q_strcmp(pMapName, "d1_town_02a")		|| !Q_strcmp(pMapName, "d1_town_05")
 				|| !Q_strcmp(pMapName, "d2_coast_11")
 				|| !Q_strcmp(pMapName, "d2_prison_06")		|| !Q_strcmp(pMapName, "d2_prison_08")
-				|| !Q_strcmp(pMapName, "d3_c17_06b")		|| !Q_strcmp(pMapName, "d3_c17_07")			|| !Q_strcmp(pMapName, "d3_c17_10b")		|| !Q_strcmp(pMapName, "d3_c17_13")
+				|| !Q_strcmp(pMapName, "d3_c17_06b")		|| !Q_strcmp(pMapName, "d3_c17_07")				|| !Q_strcmp(pMapName, "d3_c17_10b")			|| !Q_strcmp(pMapName, "d3_c17_13")
 				|| !Q_strcmp(pMapName, "d3_citadel_03")		|| !Q_strcmp(pMapName, "d3_citadel_04")
 				|| !Q_strcmp(pMapName, "d3_breen_01")
-				|| !Q_strcmp(pMapName, "ep1_citadel_01")	|| !Q_strcmp(pMapName, "ep1_citadel_03")	|| !Q_strcmp(pMapName, "ep1_citadel_04")
+				|| !Q_strcmp(pMapName, "ep1_citadel_01")	|| !Q_strcmp(pMapName, "ep1_citadel_03")		|| !Q_strcmp(pMapName, "ep1_citadel_04")
 				|| !Q_strcmp(pMapName, "ep1_c17_00")		|| !Q_strcmp(pMapName, "ep1_c17_00a")
-				|| !Q_strcmp(pMapName, "ep2_outland_01")	|| !Q_strcmp(pMapName, "ep2_outland_03")	|| !Q_strcmp(pMapName, "ep2_outland_06a")	|| !Q_strcmp(pMapName, "ep2_outland_09")
-				|| !Q_strcmp(pMapName, "ep2_outland_10")	|| !Q_strcmp(pMapName, "ep2_outland_11")	|| !Q_strcmp(pMapName, "ep2_outland_11a")	|| !Q_strcmp(pMapName, "ep2_outland_11b")	|| !Q_strcmp(pMapName, "ep2_outland_12") || !Q_strcmp(pMapName, "ep2_outland_12a"))
+				|| !Q_strcmp(pMapName, "ep2_outland_01")	|| !Q_strcmp(pMapName, "ep2_outland_03")		|| !Q_strcmp(pMapName, "ep2_outland_06a")		|| !Q_strcmp(pMapName, "ep2_outland_09")
+				|| !Q_strcmp(pMapName, "ep2_outland_10")	|| !Q_strcmp(pMapName, "ep2_outland_11")		|| !Q_strcmp(pMapName, "ep2_outland_11a")		|| !Q_strcmp(pMapName, "ep2_outland_11b")		|| !Q_strcmp(pMapName, "ep2_outland_12") || !Q_strcmp(pMapName, "ep2_outland_12a"))
 				return false;//no
 		}
 	}
@@ -7378,22 +7408,12 @@ void CEBottle::StartEffect()
 	int i = 0;
 	//try to make bottle as big as possible with whatever space is in front of player
 	do {
-		/*
-		pEnt->SetModelScale(i + 1);
-		vecOrigin += Vector(0, 0, 9);//move bottle up a bit to account for the origin being above the ground
-		vecOrigin += vecForward * 0.1 * i;//move bottle away as it gets bigger, or else we'll only get to about 45x before the trace fails because it's hitting the player
-		Msg("i %i vecOrigin %0.1f %0.1f %0.1f\n", i, vecOrigin.x, vecOrigin.y, vecOrigin.z);
-		//NDebugOverlay::Cross3D(vecOrigin, 16, 0, 255, 0, true, 30);
-		UTIL_TraceEntity(pEnt, vecOrigin, vecOrigin, MASK_SOLID, &trace);
-		i++;
-		*/
 		//NDebugOverlay::Cross3D(pEnt->GetAbsOrigin(), 16, 0, 255, 0, true, 30);
 		pEnt->SetModelScale(i + 1);
 		vecLastGoodPos = pEnt->GetAbsOrigin();
-		pEnt->GetUnstuck(20, UF_NO_NODE_TELEPORT);//only go up to 20 units away from previous position, instead of 500, which risks the beer spawning in some other random place, which is bad, i guess
-		UTIL_TraceEntity(pEnt, pEnt->GetAbsOrigin(), pEnt->GetAbsOrigin(), MASK_SOLID, &trace);
+		//only go up to 20 units away from previous position, instead of 500, which risks the beer spawning in some other random place, which is bad, i guess
 		i++;
-	} while (trace.fraction == 1 && !trace.startsolid && i < 55 && i < chaos_beer_size_limit.GetInt());//yes this i limit actually matters, or else we will create a beer so big it hits a max coord related assert and brings the whole game to a screeching halt. what the fuck.
+	} while (pEnt->GetUnstuck(20, UF_NO_NODE_TELEPORT) && i < chaos_beer_size_limit.GetInt());//yes this i limit actually matters, or else we will create a beer so big it hits a max coord related assert and brings the whole game to a screeching halt. what the fuck.
 	if (i > 1)
 		pEnt->SetModelScale(i - 1);
 	pEnt->SetMaxHealth(100 * i);
@@ -8553,14 +8573,27 @@ void CEWeaponRemove::StartEffect()
 	if (UTIL_GetLocalPlayer()->GetActiveWeapon() == NULL)
 		return;
 	CBaseCombatWeapon *pWeapon = (CBaseCombatWeapon *)gEntList.FindEntityByClassname(NULL, "we*");
-	while (pWeapon)
+	CBaseCombatWeapon *pWeapon1 = NULL;
+	CBaseCombatWeapon *pWeapon2 = NULL;
+	while (pWeapon && !pWeapon2)
 	{
 		if (pWeapon->GetOwner() && pWeapon->GetOwner()->IsPlayer())
-			break;
+		{
+			if (pWeapon1)
+			{
+				pWeapon2 = pWeapon;
+				break;
+			}
+			else
+			{
+				pWeapon1 = pWeapon;
+			}
+		}
 		pWeapon = (CBaseCombatWeapon *)gEntList.FindEntityByClassname(pWeapon, "we*");
 	}
-	if (!pWeapon)
+	if (!pWeapon2)
 		return;
+	pWeapon = RandomInt(0, 1) ? pWeapon1 : pWeapon2;
 	//hide model
 	CBaseViewModel *vm = UTIL_GetLocalPlayer()->GetViewModel(pWeapon->m_nViewModelIndex);
 	if (vm && pWeapon == UTIL_GetLocalPlayer()->GetActiveWeapon())

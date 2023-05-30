@@ -60,11 +60,12 @@ It should work now. If it doesn't, 'Script Log' button in OBS might have useful 
 
 To remove Twitch integration, you can simply clear out the mod's launch options and select twitch-integration.py in OBS and then click the minus button.
 
+Voting will not work if a map is not loaded. Menu background maps count. If no map loads upon opening the mod, please open an issue for it even if a closed one already exists, or contact Pinsplash in any other way.
+
 ## Tips
 * If issues arise while playing, try `chaos_restart` in the console. This should set everything back to normal and restart the map.
 * If you become physically stuck in something, the game will try to get you out of it the next time an effect starts. You can also use the console command `getunstuck`.
-* To modify things about Chaos like effect duration and probability, edit `hl2chaos/cfg/autoexec.cfg`.
-* Effect groups can be changed in `groups.cfg`.
+* To modify things about Chaos like effect duration and probability, edit `hl2chaos/cfg/autoexec.cfg`. Restart the game for changes to take effect. Effect groups can be changed in `groups.cfg`.
 * Want a specific effect? Use `chaos_test_effect` followed by a number. You can get any effect's number through `chaos_print`.
 * Any CFG files you change must have their change reflected in the same file in all three mods if you wish for the change to apply in all of them. You can simply copy the file into the other two mod folders and replace the old version.
 * Saving often will help you progress faster.

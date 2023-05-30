@@ -91,6 +91,8 @@ int CNPC_Mossman::GetSoundInterests ( void )
 //-----------------------------------------------------------------------------
 void CNPC_Mossman::Spawn()
 {
+	if (!m_bChaosSpawned)
+		AddSpawnFlags(SF_NPC_NO_PLAYER_PUSHAWAY);
 	Precache();
 
 	BaseClass::Spawn();

@@ -137,21 +137,21 @@ enum Interruptability_t
 //-------------------------------------
 // Spawn flags
 //-------------------------------------
-#define SF_NPC_WAIT_TILL_SEEN			( 1 << 0  )	// spawnflag that makes npcs wait until player can see them before attacking.
-#define SF_NPC_GAG						( 1 << 1  )	// no idle noises from this npc
-#define SF_NPC_FALL_TO_GROUND			( 1 << 2  )	// used my NPC_Maker
-#define SF_NPC_DROP_HEALTHKIT			( 1 << 3  )	// Drop a healthkit upon death
-#define SF_NPC_START_EFFICIENT			( 1 << 4  ) // Set into efficiency mode from spawn
-//										( 1 << 5  )
-//										( 1 << 6  )
-#define SF_NPC_WAIT_FOR_SCRIPT			( 1 << 7  )	// spawnflag that makes npcs wait to check for attacking until the script is done or they've been attacked
-#define SF_NPC_LONG_RANGE				( 1 << 8  )	// makes npcs look far and relaxes weapon range limit 
-#define SF_NPC_FADE_CORPSE				( 1 << 9  )	// Fade out corpse after death
-#define SF_NPC_ALWAYSTHINK				( 1 << 10 )	// Simulate even when player isn't in PVS.
-#define SF_NPC_TEMPLATE					( 1 << 11 )	// This NPC will be used as a template by an npc_maker -- do not spawn.
-#define SF_NPC_ALTCOLLISION				( 1 << 12 )
-#define SF_NPC_NO_WEAPON_DROP			( 1 << 13 )	// This NPC will not actually drop a weapon that can be picked up
-#define SF_NPC_NO_PLAYER_PUSHAWAY		( 1 << 14 )	
+#define SF_NPC_WAIT_TILL_SEEN			( 1 << 0  )	// spawnflag that makes npcs wait until player can see them before attacking.//1
+#define SF_NPC_GAG						( 1 << 1  )	// no idle noises from this npc//2
+#define SF_NPC_FALL_TO_GROUND			( 1 << 2  )	// used my NPC_Maker//4
+#define SF_NPC_DROP_HEALTHKIT			( 1 << 3  )	// Drop a healthkit upon death//8
+#define SF_NPC_START_EFFICIENT			( 1 << 4  ) // Set into efficiency mode from spawn//16
+//										( 1 << 5  )//32
+//										( 1 << 6  )//64
+#define SF_NPC_WAIT_FOR_SCRIPT			( 1 << 7  )	// spawnflag that makes npcs wait to check for attacking until the script is done or they've been attacked//128
+#define SF_NPC_LONG_RANGE				( 1 << 8  )	// makes npcs look far and relaxes weapon range limit //256
+#define SF_NPC_FADE_CORPSE				( 1 << 9  )	// Fade out corpse after death//512
+#define SF_NPC_ALWAYSTHINK				( 1 << 10 )	// Simulate even when player isn't in PVS.//1024
+#define SF_NPC_TEMPLATE					( 1 << 11 )	// This NPC will be used as a template by an npc_maker -- do not spawn.//2048
+#define SF_NPC_ALTCOLLISION				( 1 << 12 )//4096
+#define SF_NPC_NO_WEAPON_DROP			( 1 << 13 )	// This NPC will not actually drop a weapon that can be picked up//8192
+#define SF_NPC_NO_PLAYER_PUSHAWAY		( 1 << 14 )	//16384
 //										( 1 << 15 )	
 // !! Flags above ( 1 << 15 )	 are reserved for NPC sub-classes
 

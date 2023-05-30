@@ -139,6 +139,8 @@ void CNPC_Fisherman::SelectModel()
 //-----------------------------------------------------------------------------
 void CNPC_Fisherman::Spawn( void )
 {
+	if (!m_bChaosSpawned)
+		AddSpawnFlags(SF_NPC_NO_PLAYER_PUSHAWAY);
 	m_iHatLayer = -1;
 	m_iHatState = -1;
 

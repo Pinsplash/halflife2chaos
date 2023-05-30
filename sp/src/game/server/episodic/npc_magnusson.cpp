@@ -81,6 +81,8 @@ int CNPC_Magnusson::GetSoundInterests ( void )
 //-----------------------------------------------------------------------------
 void CNPC_Magnusson::Spawn()
 {
+	if (!m_bChaosSpawned)
+		AddSpawnFlags(SF_NPC_NO_PLAYER_PUSHAWAY);
 	// Allow custom model usage (mostly for monitors)
 	char *szModel = (char *)STRING( GetModelName() );
 	if (!szModel || !*szModel)

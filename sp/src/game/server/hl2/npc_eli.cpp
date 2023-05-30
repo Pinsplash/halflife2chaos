@@ -81,6 +81,8 @@ int CNPC_Eli::GetSoundInterests ( void )
 //-----------------------------------------------------------------------------
 void CNPC_Eli::Spawn()
 {
+	if (!m_bChaosSpawned)
+		AddSpawnFlags(SF_NPC_NO_PLAYER_PUSHAWAY);
 	// Eli is allowed to use multiple models, because he appears in the pod.
 	// He defaults to his normal model.
 	char *szModel = (char *)STRING( GetModelName() );

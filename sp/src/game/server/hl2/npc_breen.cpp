@@ -78,6 +78,8 @@ int CNPC_Breen::GetSoundInterests ( void )
 //-----------------------------------------------------------------------------
 void CNPC_Breen::Spawn()
 {
+	if (!m_bChaosSpawned)
+		AddSpawnFlags(SF_NPC_NO_PLAYER_PUSHAWAY);
 	// Breen is allowed to use multiple models, because he has a torso version for monitors.
 	// He defaults to his normal model.
 	char *szModel = (char *)STRING( GetModelName() );
