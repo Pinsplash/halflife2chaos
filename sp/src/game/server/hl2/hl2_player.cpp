@@ -1227,7 +1227,7 @@ void CHL2_Player::PreThink(void)
 				UTIL_CenterPrintAll("DEBUG BUILD. If you're seeing this and don't know why, please tell Pinsplash.\n");
 #endif
 				m_bRestartHUD = false;
-				DoChaosHUDBar();
+				//DoChaosHUDBar();
 				g_flEffectThinkRem = 0;
 			}
 			bool bNoEffectsOn = true;
@@ -1242,7 +1242,7 @@ void CHL2_Player::PreThink(void)
 				//m_bFirstEffect = true;
 				g_flNextEffectRem = chaos_effect_interval.GetFloat();
 				//m_flFirstEffectRem = 0;
-				DoChaosHUDBar();
+				//DoChaosHUDBar();
 				m_bRestartHUD = true;//Fixes bar not showing when map is loaded if chaos was enabled when no map was "on" at the time. Stupid but works.
 			}
 			if (g_flNextEffectRem <= 0 && !pl.deadflag)//don't start new effects when dead
@@ -1271,7 +1271,7 @@ void CHL2_Player::PreThink(void)
 				}
 				g_flEffectThinkRem = 0;
 				//send to HUD
-				DoChaosHUDBar();
+				//DoChaosHUDBar();
 
 				//start effect
 				StartGivenEffect(nID);
@@ -1313,6 +1313,7 @@ void CHL2_Player::PreThink(void)
 			//and you must consider dying, miscellaneous fails, manual reloads, and level transitions, including transitions to prior levels.
 			g_flEffectThinkRem -= gpGlobals->interval_per_tick / flTimeScale;
 			g_flNextEffectRem -= gpGlobals->interval_per_tick / flTimeScale;
+			DoChaosHUDBar();
 		}
 		bool bResetMaintainTimer = false;
 		for (int i = 0; g_ChaosEffects.Size() >= i + 1; i++)
@@ -5624,7 +5625,7 @@ void CHL2_Player::DoChaosHUDBar()
 	WRITE_FLOAT(chaos_bar_b.GetInt());
 	WRITE_FLOAT(chaos_bar_g.GetInt());
 	WRITE_FLOAT(chaos_bar_r.GetInt());
-	WRITE_FLOAT(chaos_effect_interval.GetFloat());// * cvar->FindVar("host_timescale")->GetFloat());
+	WRITE_FLOAT(g_flNextEffectRem / chaos_effect_interval.GetFloat());// * cvar->FindVar("host_timescale")->GetFloat());
 	MessageEnd();
 }
 

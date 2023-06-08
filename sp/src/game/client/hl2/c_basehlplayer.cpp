@@ -80,14 +80,12 @@ void CHudChaosBar::Init()
 static CUtlSymbolTable g_ScriptSymbols(0, 128, true);
 void CHudChaosBar::MsgFunc_Go(bf_read &msg)
 {
-	SetSize(0, GetTall());
 	SetBgColor(Color(msg.ReadFloat(), msg.ReadFloat(), msg.ReadFloat(), msg.ReadFloat()));
-
-	//Hack bar timing to match convar
 	g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("ChaosBarMove");
-	g_pClientMode->GetViewportAnimationController()->m_ActiveAnimations.Tail().endTime = g_pClientMode->GetViewportAnimationController()->m_ActiveAnimations.Tail().startTime + msg.ReadFloat();//bruh
-	//Msg("start %i\n", g_pClientMode->GetViewportAnimationController()->m_ActiveAnimations.Tail().startTime);
-	//Msg("end %i\n", g_pClientMode->GetViewportAnimationController()->m_ActiveAnimations.Tail().endTime);
+	float flPercent = msg.ReadFloat();
+	float flWidth = vgui::scheme()->GetProportionalScaledValueEx(GetScheme(), 853) * (1 - flPercent);//set bar width to a percent based on how much time until next effect. i don't know why the number 853 works, it just does.
+	SetSize(flWidth, GetTall());
+	//Msg("width %0.1f percent %0.01f\n", flWidth, 1 - flPercent);
 }
 void CHudChaosBar::ProcessInput()
 {
