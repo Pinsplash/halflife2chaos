@@ -100,6 +100,7 @@
 #include "collisionutils.h"
 
 extern ConVar sk_healthkit;
+extern ConVar chaos_steal_health;
 class CChaosEffect;
 //extern CUtlVector<CChaosEffect>	g_ActiveEffects;
 //extern CUtlVector<CChaosEffect>	g_ChaosEffects;
@@ -934,7 +935,14 @@ int CAI_BaseNPC::OnTakeDamage_Dying( const CTakeDamageInfo &info )
 	{
 		if ( m_takedamage != DAMAGE_EVENTS_ONLY )
 		{
+			int nPrevHealth = GetHealth();
 			m_iHealth -= info.GetDamage();
+			if (chaos_steal_health.GetBool())
+			{
+				if (m_iHealth <= 0)
+					m_iHealth = 0;
+				if (info.GetAttacker()) info.GetAttacker()->SetHealth(info.GetAttacker()->GetHealth() + (nPrevHealth - m_iHealth));
+			}
 
 			if (m_iHealth < -500)
 			{
@@ -981,7 +989,14 @@ int CAI_BaseNPC::OnTakeDamage_Dead( const CTakeDamageInfo &info )
 		// Accumulate corpse gibbing damage, so you can gib with multiple hits
 		if ( m_takedamage != DAMAGE_EVENTS_ONLY )
 		{
+			int nPrevHealth = GetHealth();
 			m_iHealth -= info.GetDamage() * 0.1;
+			if (chaos_steal_health.GetBool())
+			{
+				if (m_iHealth <= 0)
+					m_iHealth = 0;
+				if (info.GetAttacker()) info.GetAttacker()->SetHealth(info.GetAttacker()->GetHealth() + (nPrevHealth - m_iHealth));
+			}
 		}
 	}
 
@@ -989,7 +1004,14 @@ int CAI_BaseNPC::OnTakeDamage_Dead( const CTakeDamageInfo &info )
 	{
 		if ( m_takedamage != DAMAGE_EVENTS_ONLY )
 		{
+			int nPrevHealth = GetHealth();
 			m_iHealth -= info.GetDamage();
+			if (chaos_steal_health.GetBool())
+			{
+				if (m_iHealth <= 0)
+					m_iHealth = 0;
+				if (info.GetAttacker()) info.GetAttacker()->SetHealth(info.GetAttacker()->GetHealth() + (nPrevHealth - m_iHealth));
+			}
 
 			if (m_iHealth < -500)
 			{

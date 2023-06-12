@@ -24,7 +24,8 @@
 #include "tier0/memdbgon.h"
 
 //Debug visualization
-ConVar	g_debug_turret_ceiling( "g_debug_turret_ceiling", "0" );
+ConVar	g_debug_turret_ceiling("g_debug_turret_ceiling", "0");
+extern ConVar chaos_steal_health;
 
 #define	CEILING_TURRET_MODEL		"models/combine_turrets/ceiling_turret.mdl"
 #define CEILING_TURRET_GLOW_SPRITE	"sprites/glow1.vmt"
@@ -348,7 +349,14 @@ int CNPC_CeilingTurret::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 	if ( info.GetDamage() < m_iMinHealthDmg )
 		return 0;
 
+	int nPrevHealth = GetHealth();
 	m_iHealth -= info.GetDamage();
+	if (chaos_steal_health.GetBool())
+	{
+		if (m_iHealth <= 0)
+			m_iHealth = 0;
+		if (info.GetAttacker()) info.GetAttacker()->SetHealth(info.GetAttacker()->GetHealth() + (nPrevHealth - m_iHealth));
+	}
 
 	if ( m_iHealth <= 0 )
 	{

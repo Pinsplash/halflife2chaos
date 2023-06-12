@@ -98,6 +98,7 @@ bool CBaseEntity::s_bAbsQueriesValid = true;
 
 
 ConVar sv_netvisdist("sv_netvisdist", "10000", FCVAR_NONE, "Test networking visibility distance");
+ConVar chaos_steal_health("chaos_steal_health", "0", FCVAR_NONE);
 
 // This table encodes edict data.
 void SendProxy_AnimTime( const SendProp *pProp, const void *pStruct, const void *pVarData, DVariant *pOut, int iElement, int objectID )

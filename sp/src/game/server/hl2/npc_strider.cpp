@@ -106,7 +106,8 @@ ConVar sk_strider_num_missiles2("sk_strider_num_missiles2", "7");
 ConVar sk_strider_num_missiles3("sk_strider_num_missiles3", "7");
 
 ConVar strider_missile_suppress_dist( "strider_missile_suppress_dist", "240" );
-ConVar strider_missile_suppress_time( "strider_missile_suppress_time", "3" );
+ConVar strider_missile_suppress_time("strider_missile_suppress_time", "3");
+extern ConVar chaos_steal_health;
 
 
 //-----------------------------------------------------------------------------
@@ -3115,6 +3116,10 @@ int CNPC_Strider::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 			}
 
 			m_iHealth -= damage;
+			if (chaos_steal_health.GetBool())
+			{
+				if (info.GetAttacker()) info.GetAttacker()->SetHealth(info.GetAttacker()->GetHealth() + damage);
+			}
 
 			m_OnDamaged.FireOutput( info.GetAttacker(), this);
 
@@ -3159,24 +3164,7 @@ int CNPC_Strider::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 			}
 			return damage;
 		}
-
-// NOTE: Currently radius damage doesn't even call this because it uses the origin, not the box for distance
-#if 0
-		NDebugOverlay::Box( headPos, WorldAlignMins(), WorldAlignMaxs(), 255, 0, 0, 0, 5.0 );
-		NDebugOverlay::Cross3D( inf
-			o.GetDamagePosition(), 24, 0, 255, 0, false, 5.0 );
-		// too far from head, apply damage to nearest leg?
-#endif
 	}
-
-#if 0
-	if ( (info.GetDamageType() & DMG_BULLET) && info.GetDamage() > 1  && m_iHealth > 1 )
-	{
-		m_iHealth -= 1;
-		return 1;
-	}
-#endif
-
 	return 0;
 }
 
@@ -3212,6 +3200,10 @@ int CNPC_Strider::TakeDamageFromCombineBall( const CTakeDamageInfo &info )
 	PainSound( info );
 
 	m_iHealth -= damage;
+	if (chaos_steal_health.GetBool())
+	{
+		if (info.GetAttacker()) info.GetAttacker()->SetHealth(info.GetAttacker()->GetHealth() + damage);
+	}
 
 	return damage;
 }

@@ -62,6 +62,7 @@ extern int	g_interactionBarnacleVictimReleased;
 #endif //HL2_DLL
 
 extern ConVar weapon_showproficiency;
+extern ConVar chaos_steal_health;
 
 ConVar ai_show_hull_attacks( "ai_show_hull_attacks", "0" );
 ConVar ai_force_serverside_ragdoll( "ai_force_serverside_ragdoll", "0" );
@@ -2513,7 +2514,14 @@ int CBaseCombatCharacter::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 		if ( flIntegerDamage <= 0 )
 			return 0;
 
+		int nPrevHealth = GetHealth();
 		m_iHealth -= flIntegerDamage;
+		if (chaos_steal_health.GetBool())
+		{
+			if (m_iHealth <= 0)
+				m_iHealth = 0;
+			if (info.GetAttacker()) info.GetAttacker()->SetHealth(info.GetAttacker()->GetHealth() + (nPrevHealth - m_iHealth));
+		}
 	}
 
 	return 1;
@@ -2530,7 +2538,14 @@ int CBaseCombatCharacter::OnTakeDamage_Dead( const CTakeDamageInfo &info )
 	// do the damage
 	if ( m_takedamage != DAMAGE_EVENTS_ONLY )
 	{
+		int nPrevHealth = GetHealth();
 		m_iHealth -= info.GetDamage();
+		if (chaos_steal_health.GetBool())
+		{
+			if (m_iHealth <= 0)
+				m_iHealth = 0;
+			if (info.GetAttacker()) info.GetAttacker()->SetHealth(info.GetAttacker()->GetHealth() + (nPrevHealth - m_iHealth));
+		}
 	}
 
 	return 1;
