@@ -1170,20 +1170,24 @@ void CHL2_Player::Event_PreSaveGameLoaded(char const *pSaveName, bool bInGame)
 	//might end up not being able to see anything
 	engine->ClientCommand(engine->PEntityOfEntIndex(1), "r_lockpvs 0; exec portalsopenall\n");
 }
-
-void CHL2_Player::ResetVotes() 
+int CHL2_Player::FindWeightSum()
 {
-	g_iVoteNumber++;
 	int iWeightSum = 0;
+	CChaosEffect *pEffect;
 	for (int i = 1; i < NUM_EFFECTS; i++)
 	{
-		if (chaos_print_rng.GetBool()) Msg("i %i, %s %i += %i\n", i, STRING(g_ChaosEffects[i]->m_strGeneralName), iWeightSum, g_ChaosEffects[i]->m_iCurrentWeight);
-		iWeightSum += g_ChaosEffects[i]->m_iCurrentWeight;
+		pEffect = g_ChaosEffects[i];
+		if (chaos_print_rng.GetBool()) Msg("i %i, %s %i += %i\n", i, STRING(pEffect->m_strGeneralName), iWeightSum, pEffect->m_iCurrentWeight);
+		iWeightSum += pEffect->m_iCurrentWeight;
 		//recover weight for recent effects
 		//add a fraction of the maximum weight on every interval
-		if (!EffectOrGroupAlreadyActive(i) && g_ChaosEffects[i]->m_iCurrentWeight < g_ChaosEffects[i]->m_iMaxWeight)
-			g_ChaosEffects[i]->m_iCurrentWeight = min(g_ChaosEffects[i]->m_iCurrentWeight + g_ChaosEffects[i]->m_iMaxWeight * 0.2, g_ChaosEffects[i]->m_iMaxWeight);
+		if (!EffectOrGroupAlreadyActive(i) && pEffect->m_iCurrentWeight < pEffect->m_iMaxWeight)
+			pEffect->m_iCurrentWeight = min(pEffect->m_iCurrentWeight + pEffect->m_iMaxWeight * 0.2, pEffect->m_iMaxWeight);
 	}
+}
+void CHL2_Player::ResetVotes()
+{
+	int iWeightSum = FindWeightSum();
 	//choose effects to nominate
 	for (int i = 0; i < 4; i++)
 	{
@@ -1251,23 +1255,13 @@ void CHL2_Player::PreThink(void)
 				int nID = 0;
 				if (!chaos_vote_enable.GetBool())
 				{
-					int iWeightSum = 0;
-					CChaosEffect *pEffect;
-					for (int i = 1; i < NUM_EFFECTS; i++)
-					{
-						pEffect = g_ChaosEffects[i];
-						if (chaos_print_rng.GetBool()) Msg("i %i, %s %i += %i\n", i, STRING(pEffect->m_strGeneralName), iWeightSum, pEffect->m_iCurrentWeight);
-						iWeightSum += pEffect->m_iCurrentWeight;
-						//recover weight for recent effects
-						//add a fraction of the maximum weight on every interval
-						if (!EffectOrGroupAlreadyActive(i) && pEffect->m_iCurrentWeight < pEffect->m_iMaxWeight)
-							pEffect->m_iCurrentWeight = min(pEffect->m_iCurrentWeight + pEffect->m_iMaxWeight * 0.2, pEffect->m_iMaxWeight);
-					}
+					int iWeightSum = FindWeightSum();
 					nID = PickEffect(iWeightSum);
 				}
 				else
 				{
 					nID = GetVoteWinnerEffect();
+					//TODO: ResetVotes should probably be in here
 				}
 				g_flEffectThinkRem = 0;
 				//send to HUD

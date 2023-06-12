@@ -106,6 +106,7 @@ public:
 	void		ReplaceEffects();
 	void		RemoveDeadEnts();
 	void		SpawnStoredEnts();
+	int			FindWeightSum();
 	CHL2_Player();
 	~CHL2_Player( void );
 	
