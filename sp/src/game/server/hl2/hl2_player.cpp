@@ -5177,6 +5177,7 @@ ConVar chaos_prob_evil_mossman("chaos_prob_evil_mossman", "100");
 ConVar chaos_prob_evil_vort("chaos_prob_evil_vort", "100");
 ConVar chaos_prob_secondary_spam("chaos_prob_secondary_spam", "100");
 ConVar chaos_prob_steal_health("chaos_prob_steal_health", "100");
+ConVar chaos_prob_suit_swap("chaos_prob_suit_swap", "100");
 //ConVar chaos_prob_evil_eli("chaos_prob_evil_eli", "100");
 //ConVar chaos_prob_evil_breen("chaos_prob_evil_breen", "100");
 #define ERROR_WEIGHT 1
@@ -5262,6 +5263,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CEEvilNPC>(EFFECT_EVIL_VORT,				MAKE_STRING("Vexing Vortigaunt"),			EC_HAS_WEAPON,								-1,											chaos_prob_evil_vort.GetInt());
 	CreateEffect<CESecondarySpam>(EFFECT_SECONDARY_SPAM,	MAKE_STRING("Spam Alt Fire"),				EC_NONE,									chaos_time_secondary_spam.GetFloat(),		chaos_prob_secondary_spam.GetInt());
 	CreateEffect<>(EFFECT_STEAL_HEALTH,						MAKE_STRING("Vampires"),					EC_NONE,									chaos_time_steal_health.GetFloat(),			chaos_prob_steal_health.GetInt());
+	CreateEffect<CESuitSwap>(EFFECT_SUIT_SWAP,				MAKE_STRING("Swap Health & Suit Power"),	EC_NONE,									-1,											chaos_prob_suit_swap.GetInt());
 	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_ELI,				MAKE_STRING("Evil Eli"),					EC_HAS_WEAPON,								-1,											chaos_prob_evil_eli.GetInt());
 	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_BREEN,			MAKE_STRING("Hands-on Dr. Breen"),			EC_HAS_WEAPON,								-1,											chaos_prob_evil_breen.GetInt());
 }
@@ -8753,4 +8755,19 @@ void CESecondarySpam::MaintainEffect()
 {
 	engine->ClientCommand(engine->PEntityOfEntIndex(1),
 		"+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;\n");
+}
+void CESuitSwap::StartEffect()
+{
+	int iHealth = UTIL_GetLocalPlayer()->GetHealth();
+	int iSuit = UTIL_GetLocalPlayer()->m_ArmorValue;
+	//Msg("health %i suit %i\n", iHealth, iSuit);
+	UTIL_GetLocalPlayer()->SetHealth(iSuit);
+	UTIL_GetLocalPlayer()->SetArmorValue(iHealth);
+	if (iSuit == 0)
+	{
+		//so now player is dead, but damage them a bit more so the game properly registers their death
+		variant_t variant;
+		variant.SetInt(-1);
+		UTIL_GetLocalPlayer()->AcceptInput("SetHealth", UTIL_GetLocalPlayer(), UTIL_GetLocalPlayer(), variant, 0);
+	}
 }

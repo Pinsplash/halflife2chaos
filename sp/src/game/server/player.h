@@ -895,6 +895,9 @@ public:
 	CEconWearable			*GetWearable( int i ) { return m_hMyWearables[i]; }
 	int						GetNumWearables( void ) { return m_hMyWearables.Count(); }
 #endif
+	// from edict_t
+	// CBasePlayer doesn't send this but CCSPlayer does.
+	CNetworkVarForDerived(int, m_ArmorValue);
 
 private:
 
@@ -1042,9 +1045,6 @@ private:
 	// Multiplayer handling
 	PlayerConnectedState	m_iConnected;
 
-	// from edict_t
-	// CBasePlayer doesn't send this but CCSPlayer does.
-	CNetworkVarForDerived( int, m_ArmorValue );
 	float					m_AirFinished;
 	float					m_PainFinished;
 

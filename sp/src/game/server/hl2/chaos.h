@@ -94,6 +94,7 @@ enum Effect_T
 	EFFECT_EVIL_VORT,
 	EFFECT_SECONDARY_SPAM,
 	EFFECT_STEAL_HEALTH,
+	EFFECT_SUIT_SWAP,
 	//EFFECT_EVIL_ELI,
 	//EFFECT_EVIL_BREEN,
 
@@ -543,5 +544,10 @@ class CESecondarySpam : public CChaosEffect
 {
 public:
 	void MaintainEffect() override;
+};
+class CESuitSwap : public CChaosEffect
+{
+public:
+	void StartEffect() override;
 };
 #endif
