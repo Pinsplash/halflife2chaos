@@ -187,6 +187,14 @@ void ClearPersistEnts()
 {
 	g_PersistEnts.RemoveAll();
 }
+void ClearShuffleData()
+{
+	for (int k = 0; k < NUM_EFFECTS; k++)
+	{
+		if (chaos_shuffle_debug.GetBool()) Msg("clearing shuffle list\n");
+		g_iShufflePicked[k] = NULL;
+	}
+}
 void ClearChaosData()
 {
 	ClearPersistEnts();
@@ -208,12 +216,7 @@ void ClearChaosData()
 		g_iActiveEffects[j] = NULL;
 	}
 
-	for (int k = 0; k < NUM_EFFECTS; k++)
-	{
-		if (chaos_shuffle_debug.GetBool()) Msg("clearing shuffle list\n");
-		g_iShufflePicked[k] = NULL;
-	}
-	
+	ClearShuffleData();
 	
 	g_iTerminated.RemoveAll();
 	g_PersistEnts.RemoveAll();
@@ -435,7 +438,7 @@ CON_COMMAND(chaos_test_effect, "turn on a specific effect")
 		}
 	}
 }
-CON_COMMAND(chaos_vote_internal_poll, "used by an external client. returns vote number and possible choises for this vote")
+CON_COMMAND(chaos_vote_internal_poll, "used by an external client. returns vote number and possible choices for this vote")
 {
 	ConMsg("%d;%s;%s;%s;%s",
 		g_iVoteNumber,
@@ -5281,9 +5284,32 @@ void CHL2_Player::PopulateEffects()
 //Set the chaos_ignore_ convars if wanted
 int CHL2_Player::PickEffect(int iWeightSum)
 {
+	//find how many effects have been picked
+	int iPickedAmt = 0;
+	for (int j = 0; j < NUM_EFFECTS; j++)
+	{
+		if (g_iShufflePicked[j] != 0)
+			iPickedAmt++;
+	}
+
+	//list of effects we've already checked availability for. false means unchecked, true means checked and unpickable.
+	//if an effect is found to be pickable, then we would instantly return it instead, not tracked in this list because it'd be pointless, though it could be useful to in the future.
+	bool bEffectStatus[NUM_EFFECTS] = { true };//(Error) should never be picked
+	int iUnpickableAmt = 1;
+
 	int nRandom = 0;
 	while (true)//possible to be stuck in an infinite loop, but only if there's a very small number of effects
 	{
+		//shuffle: reset if we've picked everything we can
+		//if there are 80 effects including (Error) (NUM_EFFECTS is 81)
+		//say 60 have been picked and the last 21 are not pickable
+		//we need to reset if PickedAmt + UnpickableAmt == NUM_EFFECTS
+		if (iPickedAmt + iUnpickableAmt == NUM_EFFECTS)
+		{
+			UTIL_CenterPrintAll("Reshuffling effects!\n");
+			ClearShuffleData();
+		}
+
 		//pick effect
 		nRandom = random->RandomInt(0, iWeightSum);
 		int nRememberRandom = nRandom;
@@ -5296,23 +5322,30 @@ int CHL2_Player::PickEffect(int iWeightSum)
 			//shuffle: skip over already-picked effects since we took their weight out
 			if (g_ChaosEffects[i]->WasShufflePicked())
 				continue;
-			if (nRandom <= g_ChaosEffects[i]->m_iCurrentWeight)
+			CChaosEffect *candEffect = g_ChaosEffects[i];
+			if (bEffectStatus[i] == false)
 			{
-				CChaosEffect *candEffect = g_ChaosEffects[i];
 				bool bGoodActiveness = !EffectOrGroupAlreadyActive(candEffect->m_nID);
-				bool bGoodContext = candEffect->CheckEffectContext();
+				bool bGoodContext;
 				//check activeness and context
-				if (bGoodActiveness && bGoodContext)
+				if (bGoodActiveness)
 				{
-					Assert(candEffect->m_nID != EFFECT_ERROR);
-					if (chaos_print_rng.GetBool()) Msg("Chose effect i %i %s starting number %i\n", i, STRING(g_ChaosEffects[i]->m_strGeneralName), nRememberRandom);
-					return i;
+					bGoodContext = candEffect->CheckEffectContext();
+					if (bGoodContext)
+					{
+						if (nRandom <= g_ChaosEffects[i]->m_iCurrentWeight)
+						{
+							Assert(candEffect->m_nID != EFFECT_ERROR);
+							if (chaos_print_rng.GetBool()) Msg("Chose effect i %i %s starting number %i\n", i, STRING(g_ChaosEffects[i]->m_strGeneralName), nRememberRandom);
+							return i;
+						}
+						if (chaos_print_rng.GetBool()) Msg("Breaking for loop i %i %s starting number %i\n", i, STRING(g_ChaosEffects[i]->m_strGeneralName), nRememberRandom);
+						nRandom -= g_ChaosEffects[i]->m_iCurrentWeight;
+						continue;//or else we just go to the next available effect down
+					}
 				}
-				else
-				{
-					if (chaos_print_rng.GetBool()) Msg("Breaking for loop i %i %s starting number %i\n", i, STRING(g_ChaosEffects[i]->m_strGeneralName), nRememberRandom);
-					break;//break here or else we just go to the next available effect down
-				}
+				iUnpickableAmt++;
+				bEffectStatus[i] = true;
 			}
 			nRandom -= g_ChaosEffects[i]->m_iCurrentWeight;
 		}
@@ -7120,8 +7153,8 @@ void CESuperhot::FastThink()
 	{
 		vecVelocity = pPlayer->GetAbsVelocity();
 	}
-	//If input locks up, change 0.07 to something higher
-	float flNum = min(3, 2 * max(0.07, 1 / (hl2_normspeed.GetFloat() / max(hl2_normspeed.GetFloat() * 0.05, vecVelocity.Length()))));
+	//If input locks up, change 0.08 to something higher
+	float flNum = min(3, 2 * max(0.08, 1 / (hl2_normspeed.GetFloat() / max(hl2_normspeed.GetFloat() * 0.05, vecVelocity.Length()))));
 	cvar->FindVar("host_timescale")->SetValue(flNum);
 }
 void CESupercold::FastThink()
@@ -8085,6 +8118,7 @@ void CERemovePickups::StartEffect()
 }
 void CECloneNPCs::StartEffect()
 {
+	//find NPCs to clone
 	CUtlVector<CChaosStoredEnt> vNPCs;
 	CBaseEntity *pNPC = gEntList.FindEntityByClassname(NULL, "n*");
 	while (pNPC)
@@ -8095,12 +8129,32 @@ void CECloneNPCs::StartEffect()
 			vNPCs.AddToTail(*StoreEnt(pNPC));
 		pNPC = gEntList.FindEntityByClassname(pNPC, "n*");
 	}
+	//clone them
 	for (int i = 0; vNPCs.Size() >= i + 1; i++)
 	{
 		CBaseEntity *pCloneNPC = RetrieveStoredEnt(&vNPCs[i], false);
 		if (pCloneNPC)
 		{
 			Vector vecOrigin = pCloneNPC->GetAbsOrigin();
+			if (pCloneNPC->ClassMatches("npc_barnacle"))
+			{
+				//we don't want barnacles to be in the same spot as their original cause that just breaks both of them
+				//GetUnstuck doesn't work for whatever reason, so instead we manually find a good piece of ceiling nearby
+				trace_t tr;
+				int iAttempts = 0;
+				do
+				{
+					iAttempts++;
+					QAngle aBarnacleOffset = QAngle(0, RandomInt(1, 360), 0);
+					Vector vecBarnacleOffset;
+					AngleVectors(aBarnacleOffset, &vecBarnacleOffset);
+					vecBarnacleOffset *= 30;
+					UTIL_TraceLine(pCloneNPC->GetAbsOrigin() - Vector(0, 0, 4), pCloneNPC->GetAbsOrigin() + vecBarnacleOffset, MASK_SOLID_BRUSHONLY, NULL, COLLISION_GROUP_DEBRIS, &tr);
+				} while (tr.DidHit() && iAttempts < 10);
+				UTIL_TraceLine(tr.endpos, tr.endpos + Vector(0, 0, 100), MASK_SOLID_BRUSHONLY, NULL, COLLISION_GROUP_DEBRIS, &tr);
+				vecOrigin = tr.endpos - Vector(0, 0, 2);
+				pCloneNPC->SetAbsOrigin(vecOrigin);
+			}
 			QAngle vecAngle = pCloneNPC->GetAbsAngles();
 			DispatchSpawn(pCloneNPC);
 			pCloneNPC->Activate();
