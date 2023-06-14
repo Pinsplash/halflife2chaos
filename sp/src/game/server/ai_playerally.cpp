@@ -362,7 +362,54 @@ void CAI_PlayerAlly::DisplayDeathMessage( void )
 {
 	if ( m_bGameEndAlly == false )
 		return;
-
+	//in chaos, multiples of an ally NPC may exist at once. if so, transfer our importance onto them.
+	CBaseEntity *pOtherMe = gEntList.FindEntityByClassnameNearest(GetClassname(), GetAbsOrigin(), 100000);
+	if (pOtherMe)
+	{
+		CAI_PlayerAlly *pMe = dynamic_cast<CAI_PlayerAlly *>(pOtherMe);
+		if (pMe)
+		{
+			pMe->m_bGameEndAlly = true;
+			if (pMe->m_bEvil)
+			{
+				pMe->m_bEvil = false;
+				const int MAX_HANDLED = 512;
+				CUtlVectorFixed<CBaseCombatCharacter *, MAX_HANDLED> targetList;
+				//Search players first
+				for (int i = 1; i <= gpGlobals->maxClients; i++)
+				{
+					CBasePlayer	*pPlayer = UTIL_PlayerByIndex(i);
+					if (pPlayer)
+					{
+						targetList.AddToTail(pPlayer);
+					}
+				}
+				for (int i = 0; i < g_AI_Manager.NumAIs(); i++)
+				{
+					CAI_BaseNPC *pNPC = (g_AI_Manager.AccessAIs())[i];
+					if (pNPC)
+					{
+						targetList.AddToTail(pNPC);
+					}
+				}
+				if (targetList.Count() == 0)
+				{
+					Warning("Ally was evil, but didn't hate anyone?\n");
+					return;
+				}
+				CBaseCombatCharacter *pSubject = pMe;
+				for (int j = 0; j < targetList.Count(); j++)
+				{
+					CBaseCombatCharacter *pTarget = targetList[j];
+					if (pSubject == pTarget)
+						continue;
+					pSubject->RemoveEntityRelationship(pTarget);
+					pTarget->RemoveEntityRelationship(pSubject);
+				}
+			}
+			return;
+		}
+	}
 	if ( npc_ally_deathmessage.GetBool() == 0 )
 		return;
 

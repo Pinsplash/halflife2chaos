@@ -144,6 +144,7 @@ public:
 	virtual void RestoreEffect();
 	bool CheckEffectContext();
 	bool DoRestorationAbort();
+	bool WasShufflePicked();
 	bool m_bActive = false;
 	int m_nID;
 	string_t m_strHudName;
@@ -230,6 +231,7 @@ public:
 };
 //CUtlVector<int>				g_iActiveEffects;
 int g_iActiveEffects[MAX_ACTIVE_EFFECTS];
+int g_iShufflePicked[NUM_EFFECTS];
 CUtlVector<CChaosEffect *>	g_ChaosEffects;
 int							g_iChaosSpawnCount = 0;
 CUtlVector<int>				g_iTerminated;//list of chaos ids to NOT restore from txt. used to remember which NPCs are dead as it would not make sense for them to come back to life.

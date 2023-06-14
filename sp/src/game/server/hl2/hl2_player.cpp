@@ -168,6 +168,7 @@ ConVar chaos_print_rng("chaos_print_rng", "0");
 ConVar chaos_vote_enable("chaos_vote_enable", "0");
 ConVar chaos_unstuck_neweffect("chaos_unstuck_neweffect", "1", FCVAR_NONE, "Get the player unstuck every time a new effect starts. may not be wanted by some technical players.");
 ConVar chaos_shuffle_mode("chaos_shuffle_mode", "0");
+ConVar chaos_shuffle_debug("chaos_shuffle_debug", "0");
 
 void RandomizeReadiness(CBaseEntity *pNPC)
 {
@@ -202,9 +203,15 @@ void ClearChaosData()
 	g_flEffectThinkRem = 0;
 	g_flNextEffectRem = -1;
 	//g_iActiveEffects.RemoveAll();
-	for (int k = 0; k < MAX_ACTIVE_EFFECTS; k++)
+	for (int j = 0; j < MAX_ACTIVE_EFFECTS; j++)
 	{
-		g_iActiveEffects[k] = NULL;
+		g_iActiveEffects[j] = NULL;
+	}
+
+	for (int k = 0; k < NUM_EFFECTS; k++)
+	{
+		if (chaos_shuffle_debug.GetBool()) Msg("clearing shuffle list\n");
+		g_iShufflePicked[k] = NULL;
 	}
 	
 	
@@ -1179,6 +1186,8 @@ int CHL2_Player::FindWeightSum()
 	for (int i = 1; i < NUM_EFFECTS; i++)
 	{
 		pEffect = g_ChaosEffects[i];
+		if (g_ChaosEffects[i]->WasShufflePicked())
+			continue;
 		if (chaos_print_rng.GetBool()) Msg("i %i, %s %i += %i\n", i, STRING(pEffect->m_strGeneralName), iWeightSum, pEffect->m_iCurrentWeight);
 		iWeightSum += pEffect->m_iCurrentWeight;
 		//recover weight for recent effects
@@ -1266,7 +1275,6 @@ void CHL2_Player::PreThink(void)
 					//TODO: ResetVotes should probably be in here
 				}
 				g_flEffectThinkRem = 0;
-
 				//start effect
 				StartGivenEffect(nID);
 				if (chaos_vote_enable.GetBool())
@@ -5285,6 +5293,9 @@ int CHL2_Player::PickEffect(int iWeightSum)
 		for (int i = 1; i < NUM_EFFECTS; i++)
 		{
 			if (chaos_print_rng.GetBool()) Msg("i %i, %s %i <= %i\n", i, STRING(g_ChaosEffects[i]->m_strGeneralName), nRandom, g_ChaosEffects[i]->m_iCurrentWeight);
+			//shuffle: skip over already-picked effects since we took their weight out
+			if (g_ChaosEffects[i]->WasShufflePicked())
+				continue;
 			if (nRandom <= g_ChaosEffects[i]->m_iCurrentWeight)
 			{
 				CChaosEffect *candEffect = g_ChaosEffects[i];
@@ -5378,15 +5389,16 @@ bool CChaosEffect::CheckEffectContext()
 	//d3_c17_11 have to kill gunship
 	//d3_c17_12b have to kill strider
 	//d3_c17_13 have to kill striders
-	//ep1_c17_00a alyx can become lost?
+	//ep1_c17_00a alyx can become lost
+	//ep1_c17_01 alyx can become lost
 	//ep1_c17_05 have to kill sniper and APC
 	//ep1_c17_06 have to kill strider
-	//ep2_outland_01 alyx can become lost?
+	//ep2_outland_01 alyx can become lost
 	//ep2_outland_08 have to kill helicopter
 	//ep2_outland_12 have to kill striders
 	if (m_nID == EFFECT_BULLET_TELEPORT)
 		if (!Q_strcmp(pMapName, "d3_c17_11")			|| !Q_strcmp(pMapName, "d3_c17_12b")		|| !Q_strcmp(pMapName, "d3_c17_13")
-			|| !Q_strcmp(pMapName, "ep1_c17_00a")		|| !Q_strcmp(pMapName, "ep1_c17_05")		|| !Q_strcmp(pMapName, "ep1_c17_06")
+			|| !Q_strcmp(pMapName, "ep1_c17_00a")		|| !Q_strcmp(pMapName, "ep1_c17_01")		|| !Q_strcmp(pMapName, "ep1_c17_05")		|| !Q_strcmp(pMapName, "ep1_c17_06")
 			|| !Q_strcmp(pMapName, "ep2_outland_01")	|| !Q_strcmp(pMapName, "ep2_outland_08")	|| !Q_strcmp(pMapName, "ep2_outland_12"))
 			return false;
 
@@ -5584,7 +5596,7 @@ bool CChaosEffect::CheckEffectContext()
 				|| !Q_strcmp(pMapName, "d3_citadel_03")		|| !Q_strcmp(pMapName, "d3_citadel_04")
 				|| !Q_strcmp(pMapName, "d3_breen_01")
 				|| !Q_strcmp(pMapName, "ep1_citadel_01")	|| !Q_strcmp(pMapName, "ep1_citadel_03")		|| !Q_strcmp(pMapName, "ep1_citadel_04")
-				|| !Q_strcmp(pMapName, "ep1_c17_00")		|| !Q_strcmp(pMapName, "ep1_c17_00a")
+				|| !Q_strcmp(pMapName, "ep1_c17_00")		|| !Q_strcmp(pMapName, "ep1_c17_00a")			|| !Q_strcmp(pMapName, "ep1_c17_01")
 				|| !Q_strcmp(pMapName, "ep2_outland_01")	|| !Q_strcmp(pMapName, "ep2_outland_03")		|| !Q_strcmp(pMapName, "ep2_outland_06a")		|| !Q_strcmp(pMapName, "ep2_outland_09")
 				|| !Q_strcmp(pMapName, "ep2_outland_10")	|| !Q_strcmp(pMapName, "ep2_outland_11")		|| !Q_strcmp(pMapName, "ep2_outland_11a")		|| !Q_strcmp(pMapName, "ep2_outland_11b")		|| !Q_strcmp(pMapName, "ep2_outland_12") || !Q_strcmp(pMapName, "ep2_outland_12a"))
 				return false;//no
@@ -5593,6 +5605,29 @@ bool CChaosEffect::CheckEffectContext()
 
 	//you did it
 	return true;
+}
+
+bool CChaosEffect::WasShufflePicked()
+{
+	if (chaos_shuffle_mode.GetBool())
+	{
+		for (int j = 0; j < NUM_EFFECTS; j++)
+		{
+			if (!g_iShufflePicked[j])
+			{
+				//if (chaos_shuffle_debug.GetBool()) Msg("j %i\n", j);
+				continue;
+			}
+			if (g_iShufflePicked[j] == m_nID)
+			{
+				if (chaos_shuffle_debug.GetBool()) Msg("effect %i, %s skipped for being already picked\n", m_nID, STRING(g_ChaosEffects[m_nID]->m_strGeneralName));
+				return true;
+			}
+			if (chaos_shuffle_debug.GetBool()) Msg("effect in slot %i, %i, %s was not our target of %i, %s\n", j, g_iShufflePicked[j], STRING(g_ChaosEffects[g_iShufflePicked[j]]->m_strGeneralName), m_nID, STRING(g_ChaosEffects[m_nID]->m_strGeneralName));
+		}
+	}
+	if (chaos_shuffle_debug.GetBool()) Msg("effect %i, %s has not been picked\n", m_nID, STRING(g_ChaosEffects[m_nID]->m_strGeneralName));
+	return false;
 }
 
 ConVar chaos_text_x("chaos_text_x", "0.85");
@@ -5702,6 +5737,19 @@ void CHL2_Player::StartGivenEffect(int nID)
 	g_flNextEffectRem = chaos_effect_interval.GetFloat();
 	Msg("Effect %s\n", STRING(g_ChaosEffects[nID]->m_strHudName));
 	g_ChaosEffects[nID]->m_bActive = true;
+	//add to list of picked effects if shuffle mode is on
+	if (chaos_shuffle_mode.GetBool())
+	{
+		for (int j = 0; j < NUM_EFFECTS; j++)
+		{
+			if (!g_iShufflePicked[j])
+			{
+				if (chaos_shuffle_debug.GetBool()) Msg("added effect %i, %s to picked list\n", nID, STRING(g_ChaosEffects[nID]->m_strGeneralName));
+				g_iShufflePicked[j] = nID;
+				break;
+			}
+		}
+	}
 	for (int k = 0; k < MAX_ACTIVE_EFFECTS; k++)
 	{
 		if (!m_iActiveEffects[k])

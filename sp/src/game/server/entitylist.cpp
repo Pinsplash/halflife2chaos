@@ -823,7 +823,7 @@ CBaseEntity *CGlobalEntityList::FindEntityByClassnameNearest( const char *szName
 
 		float flDist2 = (pSearch->GetAbsOrigin() - vecSrc).LengthSqr();
 
-		if (flMaxDist2 > flDist2)
+		if (flMaxDist2 > flDist2 && flDist2 != 0)//if distance is 0, that's ourself
 		{
 			pEntity = pSearch;
 			flMaxDist2 = flDist2;

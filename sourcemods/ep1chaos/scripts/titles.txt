@@ -99,7 +99,7 @@ GAMEOVER_STUCK
 
 GAMEOVER_ALYXDEAD
 {
-#Episodic_GameOver_AlyxDead
+#ep1chaos_GameOver_AlyxDead
 }
 
 
