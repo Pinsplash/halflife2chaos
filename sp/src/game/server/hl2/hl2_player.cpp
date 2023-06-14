@@ -167,6 +167,7 @@ ConVar chaos_ignore_context("chaos_ignore_context", "0");
 ConVar chaos_print_rng("chaos_print_rng", "0");
 ConVar chaos_vote_enable("chaos_vote_enable", "0");
 ConVar chaos_unstuck_neweffect("chaos_unstuck_neweffect", "1", FCVAR_NONE, "Get the player unstuck every time a new effect starts. may not be wanted by some technical players.");
+ConVar chaos_shuffle_mode("chaos_shuffle_mode", "0");
 
 void RandomizeReadiness(CBaseEntity *pNPC)
 {
@@ -530,8 +531,8 @@ CON_COMMAND(chaos_vote_reset, "choses new effects and resets votes")
 	// TODO: do we really need this null check? i feel like the cast above is supposed to be dynamic_cast
 	if (!pHL2Player)
 		return;
-
-	pHL2Player->ResetVotes();
+	int iWeightSum = pHL2Player->FindWeightSum();
+	pHL2Player->ResetVotes(iWeightSum);
 	ConMsg("%d;%s;%s;%s;%s\n",
 		g_iVoteNumber,
 		STRING(g_ChaosEffects[g_arriVoteEffects[0]]->m_strHudName),
@@ -1187,9 +1188,8 @@ int CHL2_Player::FindWeightSum()
 	}
 	return iWeightSum;
 }
-void CHL2_Player::ResetVotes()
+void CHL2_Player::ResetVotes(int iWeightSum)
 {
-	int iWeightSum = FindWeightSum();
 	//choose effects to nominate
 	for (int i = 0; i < 4; i++)
 	{
@@ -1220,8 +1220,10 @@ int GetVoteWinnerEffect()
 void CHL2_Player::PreThink(void)
 {
 	if (g_arriVoteEffects[0] == 0 && chaos_vote_enable.GetBool()) 
-	{ // if haven't been set yet...
-		ResetVotes();
+	{
+		// if haven't been set yet...
+		int iWeightSum = FindWeightSum();
+		ResetVotes(iWeightSum);
 	}
 	if (gpGlobals->frametime != 0)//don't do anything if game is paused
 	{
@@ -1253,9 +1255,9 @@ void CHL2_Player::PreThink(void)
 			{
 				engine->ClientCommand(engine->PEntityOfEntIndex(1), "sv_cheats 1");//always force cheats on to ensure everything works
 				int nID = 0;
+				int iWeightSum = FindWeightSum();
 				if (!chaos_vote_enable.GetBool())
 				{
-					int iWeightSum = FindWeightSum();
 					nID = PickEffect(iWeightSum);
 				}
 				else
@@ -1268,7 +1270,7 @@ void CHL2_Player::PreThink(void)
 				//start effect
 				StartGivenEffect(nID);
 				if (chaos_vote_enable.GetBool())
-					ResetVotes();
+					ResetVotes(iWeightSum);
 				if (GetMoveType() != MOVETYPE_NOCLIP && chaos_unstuck_neweffect.GetBool())
 					GetUnstuck(500);
 			}
