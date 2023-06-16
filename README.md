@@ -14,7 +14,7 @@ As of version 0.2.2, you no longer need to copy map files into the `maps` folder
 
 If you want to play Chaos in other mods or Half-Life: Source, you can try, but there can be several issues that we wouldn't be able to fix.
 
-To uninstall Chaos, you should delete the entire `hl2chaos` folder of the old version. To install a new version, you should do the same. If you don't do this, you may experience some issues that were only in older versions or entirely new issues.
+To uninstall Chaos, you should delete the entire `hl2chaos` folder. To install a new version, you should do the same before installing the new version. If you don't do this, you may experience some issues that were only in older versions or entirely new issues.
 
 ## Issues
 
