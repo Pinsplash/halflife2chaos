@@ -71,7 +71,7 @@ Voting will not work if a map is not loaded. Menu background maps count. If no m
 * Saving often will help you progress faster.
 * If necessary, you can leave important NPCs behind, except Alyx in the driving parts of Episode Two. They will teleport into the next level with you.
 * Enemy NPCs spawned by Chaos are gone forever once killed and remain wounded forever once hurt (unless they regenerate health), even if you reload a save, so don't give up on them.
-* Fast weapon switch is best left off to easily know which weapons you have. You can hold jump to continuously jump in Chaos, so there's no need to change the scroll wheel binds.
+* Fast weapon switch is best left off to easily know which weapons you have. You can hold jump to continuously jump in Chaos, so there's no need to change the scroll wheel binds to bunnyhop.
 * Quickclip will not disable weapon switching if enabled by Chaos.
 * Make keybinds for loading quicksaves and autosaves.
 
