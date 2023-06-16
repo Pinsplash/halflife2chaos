@@ -14,7 +14,7 @@ As of version 0.2.2, you no longer need to copy map files into the `maps` folder
 
 If you want to play Chaos in other mods or Half-Life: Source, you can try, but there can be several issues that we wouldn't be able to fix.
 
-To uninstall Chaos or install a new version, you should delete the entire `hl2chaos` folder of the old version. If you don't do this, you may experience some issues that were only in older versions or entirely new issues.
+To uninstall Chaos, you should delete the entire `hl2chaos` folder of the old version. To install a new version, you should do the same. If you don't do this, you may experience some issues that were only in older versions or entirely new issues.
 
 ## Issues
 
@@ -64,38 +64,35 @@ Voting will not work if a map is not loaded. Menu background maps count. If no m
 
 ## Tips
 * If issues arise while playing, try `chaos_restart` in the console. This should set everything back to normal and restart the map.
-* If you become physically stuck in something, the game will try to get you out of it the next time an effect starts. You can also use the console command `getunstuck`.
-* To modify things about Chaos like effect duration and probability, edit `hl2chaos/cfg/autoexec.cfg`. Restart the game for changes to take effect. Effect groups can be changed in `groups.cfg`.
+* If you become physically stuck in something, the game will try to get you out of it the next time an effect starts. You can also use the console command `getunstuck`, or use `noclip` as is usual for Source games.
+* To modify things about Chaos like effect duration and probability, edit `hl2chaos/cfg/autoexec.cfg`. Restart the game for changes to take effect. Simply using `exec` is NOT sufficient depending on the circumstances. Effect groups can be changed in `groups.cfg`.
 * Want a specific effect? Use `chaos_test_effect` followed by a number. You can get any effect's number through `chaos_print`.
 * Any CFG files you change must have their change reflected in the same file in all three mods if you wish for the change to apply in all of them. You can simply copy the file into the other two mod folders and replace the old version.
 * Saving often will help you progress faster.
 * If necessary, you can leave important NPCs behind, except Alyx in the driving parts of Episode Two. They will teleport into the next level with you.
 * Enemy NPCs spawned by Chaos are gone forever once killed and remain wounded forever once hurt (unless they regenerate health), even if you reload a save, so don't give up on them.
-* Fast weapon switch is best left off to easily know which weapons you have.
+* Fast weapon switch is best left off to easily know which weapons you have. You can hold jump to continuously jump in Chaos, so there's no need to change the scroll wheel binds.
 * Quickclip will not disable weapon switching if enabled by Chaos.
-* Doing ep1_citadel_03 out of order is not recommended.
 * Make keybinds for loading quicksaves and autosaves.
 
 Some effect-specific advice, if you don't wish to figure it out on your own:
 * **Zero Gravity** and **Invert Gravity**: You can stick to the ground as long as you don't jump or move off it. Land in water to avoid fall damage. Landing on slopes can prevent fall damage.
 * **Water World**: Only the crowbar, gravity gun, pistol, and crossbow can be used underwater. Drowning damage heals once you leave water. If **Superhot** is on, stay still to minimize drowning damage. If **Supercold** is on, move around to minimize drowning damage. You can't drown in vehicles.
-* **Annoying Alyx**: Don't use burst damage weapons such as the shotgun. Alyx can only lose 25% of her health at once and regenerates health, so will take at least 5 hits to kill.
+* **Annoying Alyx** and similar: Don't use burst damage weapons such as the shotgun. Alyx can only lose 25% of her health at once and regenerates health, so will take at least 5 hits to kill.
 * Sometimes things are invisible with **Orthographic Camera**. Turning on the flashlight may fix it.
 
-Certain console variables are changed in this mod that you might want your own settings for.
+Certain console variables are changed by this mod during gameplay that you might want your own default settings for.
 These settings have been put in their own CFG files so you can control what they are, except when chaos effects modify them.
 * `pitch.cfg`: Sets `m_pitch`, the vertical sensitivity. Default 0.022.
 * `yaw.cfg`: Sets `m_yaw`, the horizontal sensitivity. Default 0.022.
 * `portalsopenall.cfg`: Sets `r_portalsopenall`. Force-opens all areaportals. Most users will want to use 1 because if 0, areas of levels may become invisible until you enter them. This was intended to help performance, but Chaos can disrupt this feature due to sequence breaking. Normally the default is 0, but in Chaos, it's 1.
 
 ## Known issues
-* Many people have been having an issue where their key binds are incorrect. Check them in the keyboard menu before playing.
 * To ensure all effects work right, sv_cheats is automatically set to 1. Don't change it.
-* Sometimes the bar at the top won't appear after loading a save/map. The mod is still working. The bar should appear once the next effect starts.
-* The "Saved..." message may not appear. The save is still made. (As long as you pressed the right button. See first note.)
+* The "Saved..." message may not appear. The save is still made.
 * The car compass HUD element does not display correctly.
 * If you play maps from something that isn't _Half-Life 2/Episode One/Two_, the "Node graph out of date" message will appear every time you go to a new map for the first time. This message is harmless, but if you wish, you can copy the `.AIN` files from the mod as well. It will also stop appearing after you've visited each map a single time, because the mod has now generated its own copy of the node graph. The `.AIN` files are included for _Half-Life 2/Episode One/Two_.
-* If you take a weird path through d3_c17_13, you may not activate the strider in the car pit. You will have to kill it before the intended route can continue.
+* If you take a weird path through certain maps, you may find that some things won't work as intended and softlocks will potentially exist.
 * **Didn't Skip Arm Day** sometimes makes it harder to grab things.
 * Sometimes things are invisible with **Orthographic Camera**. Turning on the flashlight may fix it.
 * Collisions can be weird when **Slow Physics** is on.
