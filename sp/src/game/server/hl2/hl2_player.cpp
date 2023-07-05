@@ -504,21 +504,24 @@ CON_COMMAND(cc_generate, "")
 	int gOut = RandomInt(0, 255);
 	int bOut = RandomInt(0, 255);
 	float flFrequency = 1;
-	for (int r = 0; r < 32; r++)
+	int r = 0;
+	int g = 0;
+	int b = 0;
+	for (r = 0; r < 32; r++)
 	{
-		flFrequency += 1;
-		for (int g = 0; g < 32; g++)
+		//change colors at a controlled rate
+		if (flFrequency >= 6)
 		{
-			for (int b = 0; b < 32; b++)
+			rOut = (RandomInt(0, 255) + (r * 10) + (rOut * 4)) / 4;
+			gOut = (RandomInt(0, 255) + (g * 10) + (rOut * 4)) / 4;
+			bOut = (RandomInt(0, 255) + (b * 10) + (rOut * 4)) / 4;
+			flFrequency = 1;
+		}
+		flFrequency += 1;
+		for (g = 0; g < 32; g++)
+		{
+			for (b = 0; b < 32; b++)
 			{
-				//change colors at a controlled rate
-				if (flFrequency >= 2)
-				{
-					rOut = (RandomInt(0, 255) + (r * 10) + (rOut * 4)) / 4;
-					gOut = (RandomInt(0, 255) + (g * 10) + (rOut * 4)) / 4;
-					bOut = (RandomInt(0, 255) + (b * 10) + (rOut * 4)) / 4;
-					flFrequency = 1;
-				}
 				color24 outColor;
 				outColor.r = rOut;
 				outColor.g = gOut;
@@ -5610,7 +5613,8 @@ bool CChaosEffect::CheckEffectContext()
 			|| !Q_strcmp(pMapName, "d3_c17_07")			|| !Q_strcmp(pMapName, "d3_c17_08")			|| !Q_strcmp(pMapName, "d3_c17_10b")
 			|| !Q_strcmp(pMapName, "d3_citadel_03")		|| !Q_strcmp(pMapName, "d3_citadel_04")		|| !Q_strcmp(pMapName, "d3_breen_01")
 			|| !Q_strcmp(pMapName, "ep1_citadel_00")	|| !Q_strcmp(pMapName, "ep1_citadel_01")	|| !Q_strcmp(pMapName, "ep1_citadel_03")	|| !Q_strcmp(pMapName, "ep1_citadel_04")
-			|| !Q_strcmp(pMapName, "ep1_c17_00")		|| !Q_strcmp(pMapName, "ep1_c17_00a")		|| !Q_strcmp(pMapName, "ep1_c17_01")		|| !Q_strcmp(pMapName, "ep1_c17_02"))
+			|| !Q_strcmp(pMapName, "ep1_c17_00")		|| !Q_strcmp(pMapName, "ep1_c17_00a")		|| !Q_strcmp(pMapName, "ep1_c17_01")		|| !Q_strcmp(pMapName, "ep1_c17_02")
+			|| !Q_strcmp(pMapName, "ep2_outland_01"))
 			return false;//bad time to lose the gravity gun
 
 	//NO TELEPORT LIST LEAKED
