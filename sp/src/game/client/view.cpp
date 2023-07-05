@@ -83,7 +83,8 @@ extern bool g_bRenderingScreenshot;
 extern ConVar sensitivity;
 #endif
 
-ConVar zoom_sensitivity_ratio( "zoom_sensitivity_ratio", "1.0", 0, "Additional mouse sensitivity scale factor applied when FOV is zoomed in." );
+ConVar zoom_sensitivity_ratio("zoom_sensitivity_ratio", "1.0", 0, "Additional mouse sensitivity scale factor applied when FOV is zoomed in.");
+ConVar chaos_yawroll("chaos_yawroll", "0");
 
 CViewRender g_DefaultViewRender;
 IViewRender *view = NULL;	// set in cldll_client_init.cpp if no mod creates their own
@@ -683,8 +684,9 @@ void CViewRender::SetUpViews()
 		// FIXME: What happens when there's no player?
 		if (pPlayer)
 		{
-			pPlayer->CalcView( view.origin, view.angles, view.zNear, view.zFar, view.fov );
-
+			pPlayer->CalcView(view.origin, view.angles, view.zNear, view.zFar, view.fov);
+			if (chaos_yawroll.GetBool())
+				view.angles.z = view.angles.y;
 			// If we are looking through another entities eyes, then override the angles/origin for view
 			int viewentity = render->GetViewEntity();
 
@@ -715,7 +717,7 @@ void CViewRender::SetUpViews()
 	}
 
 	// give the toolsystem a chance to override the view
-	ToolFramework_SetupEngineView( view.origin, view.angles, view.fov );
+	ToolFramework_SetupEngineView(view.origin, view.angles, view.fov);
 
 	if ( engine->IsPlayingDemo() )
 	{
@@ -787,7 +789,7 @@ void CViewRender::SetUpViews()
 	// Compute the world->main camera transform
     // This is only done for the main "middle-eye" view, not for the various other views.
 	ComputeCameraVariables( view.origin, view.angles, 
-		&g_vecVForward, &g_vecVRight, &g_vecVUp, &g_matCamInverse );
+		&g_vecVForward, &g_vecVRight, &g_vecVUp, &g_matCamInverse);
 
 	// set up the hearing origin...
 	AudioState_t audioState;

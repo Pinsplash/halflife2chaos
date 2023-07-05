@@ -5113,6 +5113,7 @@ ConVar chaos_time_quickclip_off("chaos_time_quickclip_off", "1");
 ConVar chaos_time_random_cc("chaos_time_random_cc", "1");
 ConVar chaos_time_secondary_spam("chaos_time_secondary_spam", "1");
 ConVar chaos_time_steal_health("chaos_time_steal_health", "1");
+ConVar chaos_time_yawroll("chaos_time_yawroll", "1");
 
 ConVar chaos_prob_zerog("chaos_prob_zerog", "100");
 ConVar chaos_prob_superg("chaos_prob_superg", "100");
@@ -5194,6 +5195,7 @@ ConVar chaos_prob_evil_vort("chaos_prob_evil_vort", "100");
 ConVar chaos_prob_secondary_spam("chaos_prob_secondary_spam", "100");
 ConVar chaos_prob_steal_health("chaos_prob_steal_health", "100");
 ConVar chaos_prob_suit_swap("chaos_prob_suit_swap", "100");
+ConVar chaos_prob_yawroll("chaos_prob_yawroll", "100");
 //ConVar chaos_prob_evil_eli("chaos_prob_evil_eli", "100");
 //ConVar chaos_prob_evil_breen("chaos_prob_evil_breen", "100");
 #define ERROR_WEIGHT 1
@@ -5280,6 +5282,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CESecondarySpam>(EFFECT_SECONDARY_SPAM,	MAKE_STRING("Spam Alt Fire"),				EC_NONE,									chaos_time_secondary_spam.GetFloat(),		chaos_prob_secondary_spam.GetInt());
 	CreateEffect<>(EFFECT_STEAL_HEALTH,						MAKE_STRING("Vampires"),					EC_NONE,									chaos_time_steal_health.GetFloat(),			chaos_prob_steal_health.GetInt());
 	CreateEffect<CESuitSwap>(EFFECT_SUIT_SWAP,				MAKE_STRING("Swap Health & Suit Power"),	EC_NONE,									-1,											chaos_prob_suit_swap.GetInt());
+	CreateEffect<>(EFFECT_YAWROLL,							MAKE_STRING("Yaw Is Roll"),					EC_NONE,									chaos_time_yawroll.GetFloat(),				chaos_prob_yawroll.GetInt());
 	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_ELI,				MAKE_STRING("Evil Eli"),					EC_HAS_WEAPON,								-1,											chaos_prob_evil_eli.GetInt());
 	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_BREEN,			MAKE_STRING("Hands-on Dr. Breen"),			EC_HAS_WEAPON,								-1,											chaos_prob_evil_breen.GetInt());
 }
@@ -5893,6 +5896,9 @@ void CChaosEffect::StartEffect()
 	case EFFECT_STEAL_HEALTH:
 		chaos_steal_health.SetValue(1);
 		break;
+	case EFFECT_YAWROLL:
+		engine->ClientCommand(engine->PEntityOfEntIndex(1), "chaos_yawroll 1");
+		break;
 	}
 }// StartEffect()
 void CChaosEffect::StopEffect()
@@ -5944,6 +5950,9 @@ void CChaosEffect::StopEffect()
 		break;
 	case EFFECT_STEAL_HEALTH:
 		chaos_steal_health.SetValue(0);
+		break;
+	case EFFECT_YAWROLL:
+		engine->ClientCommand(engine->PEntityOfEntIndex(1), "chaos_yawroll 0");
 		break;
 	}
 }// StopEffect()
