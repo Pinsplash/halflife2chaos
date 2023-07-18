@@ -5300,7 +5300,7 @@ int CHL2_Player::PickEffect(int iWeightSum, bool bTest)
 	}
 
 	//list of effects we've already checked availability for. false means unchecked, true means checked and unpickable.
-	//if an effect is found to be pickable, then we would instantly return it instead, not tracked in this list because it'd be pointless, though it could be useful to in the future.
+	//this does not track effects that are pickable but not chosen by the RNG, but in the future this should be done for optimization.
 	bool bEffectStatus[NUM_EFFECTS] = { true };//(Error) should never be picked
 	int iUnpickableAmt = 1;
 
@@ -5333,7 +5333,7 @@ int CHL2_Player::PickEffect(int iWeightSum, bool bTest)
 			if (bEffectStatus[i] == false)
 			{
 				bool bGoodActiveness = !EffectOrGroupAlreadyActive(candEffect->m_nID);
-				bool bGoodContext;
+				bool bGoodContext = false;
 				//check activeness and context
 				if (bGoodActiveness)
 				{
@@ -5358,8 +5358,11 @@ int CHL2_Player::PickEffect(int iWeightSum, bool bTest)
 				{
 					if (chaos_print_rng.GetBool()) Msg("Bad activeness for i %i %s\n", i, STRING(g_ChaosEffects[i]->m_strGeneralName), nRememberRandom);
 				}
-				iUnpickableAmt++;
-				bEffectStatus[i] = true;
+				if (!bGoodActiveness || !bGoodContext)
+				{
+					iUnpickableAmt++;
+					bEffectStatus[i] = true;
+				}
 			}
 			if (nRandom <= g_ChaosEffects[i]->m_iCurrentWeight)
 			{
