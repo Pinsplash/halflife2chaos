@@ -594,7 +594,7 @@ CON_COMMAND(chaos_test_rng, "Guess.")
 				}
 				for (int j = 0; j < atoi(args[1]); j++)
 				{
-					int nID = pHL2Player->PickEffect(iWeightSum);
+					int nID = pHL2Player->PickEffect(iWeightSum, true);
 					iPicks[nID]++;
 				}
 				for (int k = 0; k < NUM_EFFECTS; k++)
@@ -1205,6 +1205,7 @@ int CHL2_Player::FindWeightSum()
 }
 void CHL2_Player::ResetVotes(int iWeightSum)
 {
+	g_iVoteNumber++;
 	//choose effects to nominate
 	for (int i = 0; i < 4; i++)
 	{
@@ -5288,7 +5289,7 @@ void CHL2_Player::PopulateEffects()
 }
 
 //Set the chaos_ignore_ convars if wanted
-int CHL2_Player::PickEffect(int iWeightSum)
+int CHL2_Player::PickEffect(int iWeightSum, bool bTest)
 {
 	//find how many effects have been picked
 	int iPickedAmt = 0;
@@ -5310,7 +5311,7 @@ int CHL2_Player::PickEffect(int iWeightSum)
 		//if there are 80 effects including (Error) (NUM_EFFECTS is 81)
 		//say 60 have been picked and the last 21 are not pickable
 		//we need to reset if PickedAmt + UnpickableAmt == NUM_EFFECTS
-		if (iPickedAmt + iUnpickableAmt == NUM_EFFECTS)
+		if (chaos_shuffle_mode.GetBool() && iPickedAmt + iUnpickableAmt == NUM_EFFECTS)
 		{
 			UTIL_CenterPrintAll("Reshuffling effects!\n");
 			ClearShuffleData();
@@ -5345,14 +5346,27 @@ int CHL2_Player::PickEffect(int iWeightSum)
 							if (chaos_print_rng.GetBool()) Msg("Chose effect i %i %s starting number %i\n", i, STRING(g_ChaosEffects[i]->m_strGeneralName), nRememberRandom);
 							return i;
 						}
-						if (chaos_print_rng.GetBool()) Msg("Breaking for loop i %i %s starting number %i\n", i, STRING(g_ChaosEffects[i]->m_strGeneralName), nRememberRandom);
-						nRandom -= g_ChaosEffects[i]->m_iCurrentWeight;
-						continue;//or else we just go to the next available effect down
+						if (chaos_print_rng.GetBool()) Msg("%i > %i\n", nRandom, g_ChaosEffects[i]->m_iCurrentWeight);
+						//nRandom -= g_ChaosEffects[i]->m_iCurrentWeight;
 					}
+					else
+					{
+						if (chaos_print_rng.GetBool()) Msg("Bad context for i %i %s\n", i, STRING(g_ChaosEffects[i]->m_strGeneralName), nRememberRandom);
+					}
+				}
+				else
+				{
+					if (chaos_print_rng.GetBool()) Msg("Bad activeness for i %i %s\n", i, STRING(g_ChaosEffects[i]->m_strGeneralName), nRememberRandom);
 				}
 				iUnpickableAmt++;
 				bEffectStatus[i] = true;
 			}
+			if (nRandom <= g_ChaosEffects[i]->m_iCurrentWeight)
+			{
+				//our selected effect was not allowed. this check prevents us from going down to the next available effect and artificially inflating its odds
+				break;
+			}
+			if (chaos_print_rng.GetBool()) Msg("%i -= %i\n", nRandom, g_ChaosEffects[i]->m_iCurrentWeight);
 			nRandom -= g_ChaosEffects[i]->m_iCurrentWeight;
 		}
 	}
@@ -6381,6 +6395,9 @@ CAI_BaseNPC *CChaosEffect::ChaosSpawnNPC(const char *className, string_t strActu
 	if (pNPC)
 	{
 		Vector vecOrigin = pPlayer->GetAbsOrigin() + vecForward * flDistAway + Vector(0, 0, flExtraHeight);
+		trace_t wallTrace;
+		UTIL_TraceLine(pPlayer->GetAbsOrigin(), vecOrigin, MASK_SOLID, pPlayer, COLLISION_GROUP_NONE, &wallTrace);
+		vecOrigin = wallTrace.endpos;
 		if (iSpawnType == SPAWNTYPE_CEILING)//put the NPC on the ceiling
 		{
 			trace_t tr;
