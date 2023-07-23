@@ -385,6 +385,8 @@ class CEZombieSpam : public CChaosEffect
 {
 public:
 	void StartEffect() override;
+	void MaintainEffect() override;
+	bool bNewWay;
 };
 class CENPCRels : public CChaosEffect
 {
