@@ -27,6 +27,7 @@ voteKeywords = []
 class FakeUser:
     """
     This class mimics the functionality of the `twitchAPI.object.TwitchUser`.
+    Login `justinfanxxxx` allows to login anonymously, where `xxxx` any number.
     """
     login = "justinfan1337"
 
@@ -42,6 +43,7 @@ class FakeTwitch:
     session_timeout = sentinel
 
     async def get_refreshed_user_auth_token():
+        # When connecting anonymously to chat you can send any token.
         return "kappa"
 
     def has_required_auth(*args, **kwargs):
