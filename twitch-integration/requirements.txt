@@ -1,2 +1,2 @@
-twitchAPI
-rcon
+twitchAPI==3.11.0
+rcon==2.4.2
