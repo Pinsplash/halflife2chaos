@@ -42,8 +42,9 @@ class FakeTwitch:
 
 # this will be called when the event READY is triggered, which will be on bot start
 async def on_ready(ready_event: EventData):
-    print('Bot is ready for work, joining channels')
-    await ready_event.chat.join_room(TARGET_CHANNEL)
+    print('Bot is ready for work' + (", joining channels" if TARGET_CHANNEL else ""))
+    if TARGET_CHANNEL:
+        await ready_event.chat.join_room(TARGET_CHANNEL)
 
 
 async def on_message(msg: ChatMessage):
@@ -116,7 +117,8 @@ async def game_loop():
 
 chat: Optional[Chat] = None
 poll_task: Optional[asyncio.Task] = None
-
+channel_task: Optional[asyncio.Task] = None
+channel_queue = asyncio.Queue()
 
 async def try_starting_chat():
     global chat
@@ -179,6 +181,30 @@ def update_source():
         output = output + f"{keyword} {voteEffect}: {vote_count}\n"
     set_text(SOURCE_NAME, output[:-1])  # exclude final newline
 
+def channel_update(channel: str):
+    global channel_task
+    if not chat:
+        return
+    if channel and not chat.is_in_room(channel):
+        if not channel_task or channel_task.done():
+            channel_task = _LOOP.create_task(channel_loop())
+        channel_queue.put_nowait(channel)
+
+async def channel_loop():
+    try:
+        while True:
+            channel: str = await asyncio.wait_for(channel_queue.get(), 2)
+    except TimeoutError:
+        if channel and not chat.is_in_room(channel):
+            if chat.room_cache:
+                prev_channel = tuple(chat.room_cache.keys())[0]
+                await chat.leave_room(prev_channel)
+                print(f"Left from {prev_channel} channel.")
+            if not await chat.join_room(channel):
+                print(f"Joined {channel} channel.")
+            else:
+                print(f"Can't join {channel} channel.")
+
 
 _LOOP: Optional[asyncio.AbstractEventLoop] = None
 _THREAD: Optional[threading.Thread] = None
@@ -232,6 +258,7 @@ def script_update(settings):
     # i feel like i'm doing something wrong.
     global voteKeywords, TARGET_CHANNEL, SOURCE_NAME, RCON_HOST, RCON_PORT, RCON_PASSWORD
     TARGET_CHANNEL = obs.obs_data_get_string(settings, "target_channel")
+    channel_update(TARGET_CHANNEL)
     SOURCE_NAME = obs.obs_data_get_string(settings, "source")
     # TODO: Verify port here. We may have an error if we don't
     RCON_HOST, RCON_PORT = obs.obs_data_get_string(settings, "rcon_host").split(":", 1)
