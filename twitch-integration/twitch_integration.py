@@ -3,7 +3,7 @@ import threading
 from collections import Counter
 from typing import Optional
 
-from aiohttp import ClientTimeout
+from aiohttp.helpers import sentinel
 from twitchAPI.types import ChatEvent
 from twitchAPI.chat import Chat, EventData, ChatMessage
 # noinspection PyUnresolvedReferences
@@ -25,10 +25,24 @@ voteKeywords = []
 
 
 class FakeUser:
+    """
+    This class mimics the functionality of the `twitchAPI.object.TwitchUser`.
+    """
     login = "justinfan1337"
 
 class FakeTwitch:
-    session_timeout = ClientTimeout()
+    """
+    This class mimics the functionality of the `twitchAPI.Twitch` used in `twitchAPI.chat.Chat` 
+    and is required because `twitchAPI.chat.Chat` is heavily relies on `twitchAPI.Twitch` and is 
+    required for `twitchAPI.chat.Chat` to work. Since we do not use sending messages in this integration, 
+    we use the functionality of twitch to connect anonymously to the chat, which makes it easier 
+    for the user to connect the integration and allows to remove the code responsible for handling the token.
+    """
+
+    session_timeout = sentinel
+
+    async def get_refreshed_user_auth_token():
+        return "kappa"
 
     def has_required_auth(*args, **kwargs):
         return True
@@ -36,9 +50,6 @@ class FakeTwitch:
     async def get_users():
         while True:
             yield FakeUser
-    
-    async def get_refreshed_user_auth_token():
-        return "kappa"
 
 # this will be called when the event READY is triggered, which will be on bot start
 async def on_ready(ready_event: EventData):
