@@ -83,7 +83,9 @@ void CHudChaosBar::MsgFunc_Go(bf_read &msg)
 	SetBgColor(Color(msg.ReadFloat(), msg.ReadFloat(), msg.ReadFloat(), msg.ReadFloat()));
 	g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("ChaosBarMove");
 	float flPercent = msg.ReadFloat();
-	float flWidth = vgui::scheme()->GetProportionalScaledValueEx(GetScheme(), 853) * (1 - flPercent);//set bar width to a percent based on how much time until next effect. i don't know why the number 853 works, it just does.
+	//480 is the "hud resolution" in terms of granularity
+	int iScaledWidth = 480 * engine->GetScreenAspectRatio();
+	float flWidth = vgui::scheme()->GetProportionalScaledValueEx(GetScheme(), iScaledWidth) * (1 - flPercent);//set bar width to a percent based on how much time until next effect.
 	SetSize(flWidth, GetTall());
 	//Msg("width %0.1f percent %0.01f\n", flWidth, 1 - flPercent);
 }
