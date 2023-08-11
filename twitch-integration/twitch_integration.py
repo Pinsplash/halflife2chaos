@@ -1,22 +1,16 @@
+import asyncio
 import threading
 from collections import Counter
 from typing import Optional
 
-from twitchAPI.oauth import refresh_access_token
-from twitchAPI import Twitch
-from twitchAPI.oauth import UserAuthenticator
-from twitchAPI.types import AuthScope, ChatEvent, TwitchAPIException
+from aiohttp.helpers import sentinel
+from twitchAPI.types import ChatEvent
 from twitchAPI.chat import Chat, EventData, ChatMessage
 # noinspection PyUnresolvedReferences
 import obspython as obs
 from rcon.source import rcon
 from rcon.exceptions import WrongPassword
-import asyncio
 
-APP_ID = ''
-APP_SECRET = ''
-USER_SCOPE = [AuthScope.CHAT_READ]
-REFRESH_TOKEN = ''
 TARGET_CHANNEL = ''
 SOURCE_NAME = ''
 RCON_HOST = "127.0.0.1"
@@ -30,10 +24,40 @@ voteEffects = []
 voteKeywords = []
 
 
+class FakeUser:
+    """
+    This class mimics the functionality of the `twitchAPI.object.TwitchUser`.
+    Login `justinfanxxxx` allows to login anonymously, where `xxxx` any number.
+    """
+    login = "justinfan1337"
+
+class FakeTwitch:
+    """
+    This class mimics the functionality of the `twitchAPI.Twitch` used in `twitchAPI.chat.Chat` 
+    and is required because `twitchAPI.chat.Chat` is heavily relies on `twitchAPI.Twitch` and is 
+    required for `twitchAPI.chat.Chat` to work. Since we do not use sending messages in this integration, 
+    we use the functionality of twitch to connect anonymously to the chat, which makes it easier 
+    for the user to connect the integration and allows to remove the code responsible for handling the token.
+    """
+
+    session_timeout = sentinel
+
+    async def get_refreshed_user_auth_token():
+        # When connecting anonymously to chat you can send any token.
+        return "kappa"
+
+    def has_required_auth(*args, **kwargs):
+        return True
+
+    async def get_users():
+        while True:
+            yield FakeUser
+
 # this will be called when the event READY is triggered, which will be on bot start
 async def on_ready(ready_event: EventData):
-    print('Bot is ready for work, joining channels')
-    await ready_event.chat.join_room(TARGET_CHANNEL)
+    print('Bot is ready for work' + (", joining channels" if TARGET_CHANNEL else ""))
+    if TARGET_CHANNEL:
+        await ready_event.chat.join_room(TARGET_CHANNEL)
 
 
 async def on_message(msg: ChatMessage):
@@ -105,47 +129,29 @@ async def game_loop():
 
 
 chat: Optional[Chat] = None
-twitch: Optional[Twitch] = None
 poll_task: Optional[asyncio.Task] = None
+channel_task: Optional[asyncio.Task] = None
+channel_queue = asyncio.Queue()
+
+async def try_starting_chat():
+    global chat
+
+    chat = await Chat(FakeTwitch)
+    chat.register_event(ChatEvent.READY, on_ready)
+    chat.register_event(ChatEvent.MESSAGE, on_message)
+
+    # NOTE: this evil little library creates its own thread and loop.
+    # be careful inside its callbacks.
+    chat.start()
+    print("connection stuff done")
 
 
-async def try_starting_twitch():
-    global chat, twitch, REFRESH_TOKEN
-    if APP_ID != "" and APP_SECRET != "" and twitch is None:
-        twitch = await Twitch(APP_ID, APP_SECRET)
-        token = None
-        if REFRESH_TOKEN != "":
-            print("refreshing token")
-            try:
-                token, REFRESH_TOKEN = await refresh_access_token(REFRESH_TOKEN, APP_ID, APP_SECRET)
-            except TwitchAPIException as e:
-                print("token refresh failed", e)
-        if token is None:
-            print("querying new token")
-            auth = UserAuthenticator(twitch, USER_SCOPE)
-            token, REFRESH_TOKEN = await auth.authenticate()
-        await twitch.set_user_authentication(token, USER_SCOPE, REFRESH_TOKEN)
 
-        chat = await Chat(twitch)
-        chat.register_event(ChatEvent.READY, on_ready)
-        chat.register_event(ChatEvent.MESSAGE, on_message)
-
-        # NOTE: this evil little library creates its own thread and loop.
-        # be careful inside its callbacks.
-        chat.start()
-        print("connection stuff done")
-    else:
-        print("didn't connect because of missing values or a programming error")
-
-
-async def shutdown_twitch():
-    global chat, twitch
+async def shutdown_chat():
+    global chat
     if chat:
         chat.stop()
         chat = None
-    if twitch:
-        await twitch.close()
-        twitch = None
 
 
 async def startup():
@@ -155,15 +161,15 @@ async def startup():
     await asyncio.sleep(1)
     loop = asyncio.get_event_loop()
     poll_task = loop.create_task(game_loop())
-    await try_starting_twitch()
+    await try_starting_chat()
     print("startup done")
 
 
 async def shutdown():
-    global chat, twitch, poll_task
+    global chat, poll_task
     if poll_task:
         poll_task.cancel()
-    await shutdown_twitch()
+    await shutdown_chat()
     print("shutdown done")
 
 
@@ -188,14 +194,36 @@ def update_source():
         output = output + f"{keyword} {voteEffect}: {vote_count}\n"
     set_text(SOURCE_NAME, output[:-1])  # exclude final newline
 
+def channel_update(channel: str):
+    global channel_task
+    if not chat:
+        return
+    if channel and not chat.is_in_room(channel):
+        if not channel_task or channel_task.done():
+            channel_task = _LOOP.create_task(channel_loop())
+        channel_queue.put_nowait(channel)
+
+async def channel_loop():
+    try:
+        while True:
+            channel: str = await asyncio.wait_for(channel_queue.get(), 2)
+    except TimeoutError:
+        if channel and not chat.is_in_room(channel):
+            if chat.room_cache:
+                prev_channel = tuple(chat.room_cache.keys())[0]
+                await chat.leave_room(prev_channel)
+                print(f"Left from {prev_channel} channel.")
+            if not await chat.join_room(channel):
+                print(f"Joined {channel} channel.")
+            else:
+                print(f"Can't join {channel} channel.")
+
 
 _LOOP: Optional[asyncio.AbstractEventLoop] = None
 _THREAD: Optional[threading.Thread] = None
 
 def script_properties():
     props = obs.obs_properties_create()
-    obs.obs_properties_add_text(props, "app_id", "App id", obs.OBS_TEXT_DEFAULT)
-    obs.obs_properties_add_text(props, "app_secret", "App secret", obs.OBS_TEXT_PASSWORD)
     obs.obs_properties_add_text(props, "target_channel", "Target channel", obs.OBS_TEXT_DEFAULT)
 
     p = obs.obs_properties_add_list(props, "source", "Text Source", obs.OBS_COMBO_TYPE_EDITABLE,
@@ -215,8 +243,8 @@ def script_properties():
                                          None, None)
     async def reconnect():
         print("reconnecting to twitch")
-        await shutdown_twitch()
-        await try_starting_twitch()
+        await shutdown_chat()
+        await try_starting_chat()
 
     def call_reconnect(props, p):
         _LOOP.call_soon_threadsafe(lambda l: asyncio.ensure_future(reconnect()), _LOOP)
@@ -241,10 +269,9 @@ def script_defaults(settings):
 
 def script_update(settings):
     # i feel like i'm doing something wrong.
-    global voteKeywords, APP_ID, APP_SECRET, TARGET_CHANNEL, SOURCE_NAME, RCON_HOST, RCON_PORT, RCON_PASSWORD
-    APP_ID = obs.obs_data_get_string(settings, "app_id")
-    APP_SECRET = obs.obs_data_get_string(settings, "app_secret")
+    global voteKeywords, TARGET_CHANNEL, SOURCE_NAME, RCON_HOST, RCON_PORT, RCON_PASSWORD
     TARGET_CHANNEL = obs.obs_data_get_string(settings, "target_channel")
+    channel_update(TARGET_CHANNEL)
     SOURCE_NAME = obs.obs_data_get_string(settings, "source")
     # TODO: Verify port here. We may have an error if we don't
     RCON_HOST, RCON_PORT = obs.obs_data_get_string(settings, "rcon_host").split(":", 1)
@@ -260,15 +287,10 @@ def script_update(settings):
     obs.obs_data_array_release(obs_votes_keywords)
     print("data updated")
 
-
-def script_save(settings):
-    obs.obs_data_set_string(settings, "refresh_token", REFRESH_TOKEN)
-
 # https://gist.github.com/serializingme/5c1a6fd6c7ea58af77c7b80579737c5a
 
 def script_load(settings):
-    global _LOOP, _THREAD, REFRESH_TOKEN
-    REFRESH_TOKEN = obs.obs_data_get_string(settings, "refresh_token")
+    global _LOOP, _THREAD
 
     # let's be nice, and only call the obs's methods from its own thread.
     # TODO: call this every frame because why not?
@@ -311,5 +333,5 @@ def script_unload():
 def script_description():
     return """Twitch chat voting plugin for HL2Chaos mod
     
-Made by acuifex
+Made by acuifex, modified by holy-jesus
 Released under AGPLv3 license"""
