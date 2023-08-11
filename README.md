@@ -40,21 +40,21 @@ If you stream on Twitch, you can make it so that viewers can vote for effects by
 
 1. Download the code. This is the green button that says "code" at the top. Click "Download ZIP" unless you want to use GitHub Desktop for some reason.
 2. Extract the contents to any place on your computer. The only part you need are the files in the `twitch-integration` folder.
-3. _(Optional)_ Double click on `setup.bat` in `twitch-integration` folder, it will complete steps 4-10. You can skip this step if you prefer to do these steps manually.
-4. Download and install [Python](https://en.wikipedia.org/wiki/Python_(programming_language)) 3.11 from [here](https://www.python.org/downloads/release/python-3113/).
+3. Double click on `setup.bat` in the `twitch-integration` folder. It will install [Python](https://en.wikipedia.org/wiki/Python_(programming_language)) and set up OBS to use it. If you run into any issue using this script, it should tell you which of the following steps you need to complete manually. If it works perfectly, you can skip to step 11.
+4. Download and install Python 3.11 from [here](https://www.python.org/downloads/release/python-3113/).
 5. Press the Windows logo on your keyboard and R at the same time. It should bring up a small window named 'Run'. Type `cmd` in the text box and then click 'OK'. It should bring up a black text box.
 6. Select the extracted requirements.txt in File Explorer and view the file's properties. Copy the file path next to "Location".
 7. In cmd.exe, type `cd` followed by a space, then paste the file path and press Enter.
 8. Now type `py -m pip install -U -r requirements.txt`. It should do a bunch of stuff.
-9. Open Tools -> Scripts -> Python Settings. Change the Install Path to the folder where Python 3.11 is installed. If you allowed it to install to it's default place, this should be `C:/Users/___/AppData/Local/Programs/Python/Python311`. Replace `___` with your Windows user name. You can find what the name is by simply looking in `C:/Users`. If set correctly, it should say "Loaded Python Version: 3.11".
+9. Open Tools -> Scripts -> Python Settings. Change the Install Path to the folder where Python 3.11 is installed. If you allowed it to install to its default place, this should be `C:/Users/___/AppData/Local/Programs/Python/Python311`. Replace `___` with your Windows user name. You can find what the name is by simply looking in `C:/Users`. If set correctly, it should say "Loaded Python Version: 3.11".
 10. Click on "Scripts", click the `+` button, and select `twitch_integration.py` from the `twitch-integration` folder you extracted before.
 11. In OBS, create a new text source.
-12. Set 'Target channel' to your channel (i.e `acuifex` for `twitch.tv/acuifex`). Set 'Text Source' to your newly created text source's name. Set 'RCON password' to a password of your choice.
+12. Open Tools -> Scripts and click on `twitch-integration.py`. Set 'Target channel' to your channel (i.e `acuifex` for `twitch.tv/acuifex`). Set 'Text Source' to your newly created text source's name. Set 'RCON password' to a password of your choice.
 13. Press 'Reconnect to twitch' if you didn't automatically connect.
-14. In Steam, right click on the mod and then click "Properties...". In 'LAUNCH OPTIONS', put `+developer 0 -usercon +ip 127.0.0.1 +rcon_password ___ +net_start +chaos_vote_enable 1`. Replace `___` with the RCON password that you entered in OBS. The `+developer 0` part is necessary for some reason, despite not seeming like it should be. You will also have to do this in Ep1 & 2 chaos if you want to use Twitch voting in them.
-It should work now. If it doesn't, 'Script Log' button in OBS might have useful info. You can test voting commands by typing in your Twitch chat, even if you're not streaming.
+14. In Steam, right click on the mod and then click "Properties...". In 'LAUNCH OPTIONS', put `+developer 0 -usercon +ip 127.0.0.1 +rcon_password ___ +net_start +chaos_vote_enable 1`. Replace `___` with the RCON password that you entered in OBS. The `+developer 0` part is necessary for some reason, despite not seeming like it should be. You will also have to add these options in Ep1 & 2 chaos if you want to use Twitch voting in them.
+It should work now. If it doesn't, the 'Script Log' button in OBS might have useful info. You can test voting commands by typing in your Twitch chat, even if you're not streaming.
 
-To remove Twitch integration, you can simply clear out the mod's launch options and select twitch-integration.py in OBS and then click the minus button.
+To remove Twitch integration, you can simply clear out the mod's launch options and select `twitch-integration.py` in OBS and then click the minus button.
 
 Voting will not work if a map is not loaded. Menu background maps count. If no map loads upon opening the mod, please open an issue for it even if a closed one already exists, or contact Pinsplash in any other way.
 
