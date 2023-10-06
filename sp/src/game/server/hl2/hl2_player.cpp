@@ -7420,12 +7420,28 @@ void CENPCRels::StartEffect()
 		break;
 	}
 }
+static const char *zombieNPCs[] = { "npc_zombie", "npc_zombie_torso", "npc_poisonzombie", "npc_fastzombie", "npc_zombine", "npc_fastzombie_torso" };
 void CEZombieSpam::MaintainEffect()
 {
 	if (bNewWay)
 	{
-		m_strHudName = MAKE_STRING("Left 4 Dead 2");
 		//new way
+		char modDir[MAX_PATH];
+		int nRandom, nRandMax;
+
+		m_strHudName = MAKE_STRING("Left 4 Dead 2");
+
+		if (UTIL_GetModDir(modDir, sizeof(modDir)) == false)
+			return; //shouldn't happen?
+
+		//this is to stop us from spawning entities we don't have in our game
+		if (!Q_strcmp(modDir, "ep2chaos"))
+			nRandMax = 5; //ep2
+		else if (!Q_strcmp(modDir, "ep1chaos"))
+			nRandMax = 4; //ep1
+		else
+			nRandMax = 3; //hl2
+
 		while (true)
 		{
 			CAI_Node *pNode = g_pBigAINet->GetNode(random->RandomInt(0, g_pBigAINet->NumNodes() - 1));
@@ -7433,85 +7449,24 @@ void CEZombieSpam::MaintainEffect()
 			UTIL_TraceLine(UTIL_GetLocalPlayer()->GetAbsOrigin() + Vector(0, 0, 64), pNode->GetOrigin() + Vector(0, 0, 64), MASK_VISIBLE, UTIL_GetLocalPlayer(), COLLISION_GROUP_NONE, &tr);
 			if (tr.DidHit())
 			{
-				char modDir[MAX_PATH];
-				if (UTIL_GetModDir(modDir, sizeof(modDir)) == false)
-					return;
-				int nRandom;
-				if (!Q_strcmp(modDir, "ep2chaos"))
-					nRandom = chaos_rng1.GetInt() == -1 ? random->RandomInt(0, 5) : chaos_rng1.GetInt();
-				else if (!Q_strcmp(modDir, "ep1chaos"))
-					nRandom = chaos_rng1.GetInt() == -1 ? random->RandomInt(0, 4) : chaos_rng1.GetInt();
+				if (chaos_rng1.GetInt() == -1) 
+					nRandom = random->RandomInt(0, nRandMax);
 				else
-					nRandom = chaos_rng1.GetInt() == -1 ? random->RandomInt(0, 3) : chaos_rng1.GetInt();
-				if (nRandom == 0)
-				{
-					CBaseEntity *pNPC = (CBaseEntity *)CreateEntityByName("npc_zombie");
-					pNPC->SetAbsOrigin(pNode->GetOrigin());
-					pNPC->KeyValue("targetname", "l4d_zombie");
-					g_iChaosSpawnCount++; pNPC->KeyValue("chaosid", g_iChaosSpawnCount);
-					DispatchSpawn(pNPC);
-					pNPC->Activate();
-					pNPC->m_bChaosSpawned = true;
-					pNPC->m_bChaosPersist = true;
-				}
-				if (nRandom == 1)
-				{
-					CBaseEntity *pNPC = (CBaseEntity *)CreateEntityByName("npc_zombie_torso");
-					pNPC->SetAbsOrigin(pNode->GetOrigin());
-					pNPC->KeyValue("targetname", "l4d_zombie");
-					g_iChaosSpawnCount++; pNPC->KeyValue("chaosid", g_iChaosSpawnCount);
-					DispatchSpawn(pNPC);
-					pNPC->Activate();
-					pNPC->m_bChaosSpawned = true;
-					pNPC->m_bChaosPersist = true;
-				}
-				if (nRandom == 2)
-				{
-					CBaseEntity *pNPC = (CBaseEntity *)CreateEntityByName("npc_poisonzombie");
-					pNPC->SetAbsOrigin(pNode->GetOrigin());
-					pNPC->KeyValue("targetname", "l4d_zombie");
-					g_iChaosSpawnCount++; pNPC->KeyValue("chaosid", g_iChaosSpawnCount);
-					DispatchSpawn(pNPC);
-					pNPC->Activate();
-					pNPC->m_bChaosSpawned = true;
-					pNPC->m_bChaosPersist = true;
-				}
-				if (nRandom == 3)
-				{
-					CBaseEntity *pNPC = (CBaseEntity *)CreateEntityByName("npc_fastzombie");
-					pNPC->SetAbsOrigin(pNode->GetOrigin());
-					pNPC->KeyValue("targetname", "l4d_zombie");
-					g_iChaosSpawnCount++; pNPC->KeyValue("chaosid", g_iChaosSpawnCount);
-					DispatchSpawn(pNPC);
-					pNPC->Activate();
-					pNPC->m_bChaosSpawned = true;
-					pNPC->m_bChaosPersist = true;
-				}
-				//ep1
-				if (nRandom == 4)
-				{
-					CBaseEntity *pNPC = (CBaseEntity *)CreateEntityByName("npc_zombine");
-					pNPC->SetAbsOrigin(pNode->GetOrigin());
-					pNPC->KeyValue("targetname", "l4d_zombie");
-					g_iChaosSpawnCount++; pNPC->KeyValue("chaosid", g_iChaosSpawnCount);
-					DispatchSpawn(pNPC);
-					pNPC->Activate();
-					pNPC->m_bChaosSpawned = true;
-					pNPC->m_bChaosPersist = true;
-				}
-				//ep2
-				if (nRandom == 5)
-				{
-					CBaseEntity *pNPC = (CBaseEntity *)CreateEntityByName("npc_fastzombie_torso");
-					pNPC->SetAbsOrigin(pNode->GetOrigin());
-					pNPC->KeyValue("targetname", "l4d_zombie");
-					g_iChaosSpawnCount++; pNPC->KeyValue("chaosid", g_iChaosSpawnCount);
-					DispatchSpawn(pNPC);
-					pNPC->Activate();
-					pNPC->m_bChaosSpawned = true;
-					pNPC->m_bChaosPersist = true;
-				}
-				return;
+					nRandom = (int)abs(chaos_rng1.GetInt() % nRandMax); //don't go negative
+
+				CBaseEntity *pNPC = (CBaseEntity *)CreateEntityByName(zombieNPCs[nRandom]);
+
+				if (!pNPC)
+					return; //failed for some reason..
+				pNPC->SetAbsOrigin(pNode->GetOrigin());
+				pNPC->KeyValue("targetname", "l4d_zombie");
+				g_iChaosSpawnCount++; pNPC->KeyValue("chaosid", g_iChaosSpawnCount);
+				DispatchSpawn(pNPC);
+				pNPC->Activate();
+				pNPC->m_bChaosSpawned = true;
+				pNPC->m_bChaosPersist = true;
+
+				return; //seems kinda bad to have this in a while(true) til we hit something.. it isn't even iterating thru anything?
 			}
 		}
 	}
@@ -7519,98 +7474,60 @@ void CEZombieSpam::MaintainEffect()
 void CEZombieSpam::StartEffect()
 {
 	bNewWay = (chaos_rng1.GetInt() == -1 ? random->RandomInt(0, 1) : chaos_rng1.GetInt()) == 1;
-	if (!bNewWay)
+	if (bNewWay) {
+		return;
+	}
+
+	//old way
+	char modDir[MAX_PATH];
+	int nRandom, nRandMax;
+
+	if (UTIL_GetModDir(modDir, sizeof(modDir)) == false)
+		return; //also shouldn't happen?
+
+	//this is to stop us from spawning entities we don't have in our game
+	if (!Q_strcmp(modDir, "ep2chaos"))
+		nRandMax = 5; //ep2
+	else if (!Q_strcmp(modDir, "ep1chaos"))
+		nRandMax = 4; //ep1
+	else
+		nRandMax = 3; //hl2
+
+	CAI_Node *pNode;
+	CNodeList *result = GetNearbyNodes(20);
+	for (; result->Count(); result->RemoveAtHead())
 	{
-		//old way
-		char modDir[MAX_PATH];
-		if (UTIL_GetModDir(modDir, sizeof(modDir)) == false)
+		pNode = g_pBigAINet->GetNode(result->ElementAtHead().nodeIndex);
+		//trace_t trace;
+		//UTIL_TraceHull(pNode->GetPosition(HULL_HUMAN) + Vector(0, 0, 32), pNode->GetPosition(HULL_HUMAN) + Vector(0, 0, 32), NAI_Hull::Mins(HULL_HUMAN), NAI_Hull::Maxs(HULL_HUMAN), 0, NULL, COLLISION_GROUP_NONE, &trace);
+		//if (trace.fraction == 1)
+		//{
+
+		//ngl this rng code is fucking weird LMFAO..
+		//nRandom = fmod((chaos_rng1.GetInt() == -1 ? random->RandomInt(0, nRandMax) : chaos_rng1.GetInt()) + result->ElementAtHead().nodeIndex, nRandMax + 1);
+		int rng;
+		if (chaos_rng1.GetInt() == -1)
+			rng = (int)abs(chaos_rng1.GetInt()); //don't go negative
+		else
+			rng = random->RandomInt(0, nRandMax);
+
+		nRandom = (int)fmod(rng + result->ElementAtHead().nodeIndex, nRandMax + 1);
+		if (nRandom < 0 || nRandom > nRandMax) //just incase?  idk im not testing this..
 			return;
-		CAI_Node *pNode;
-		CNodeList *result = GetNearbyNodes(20);
-		for (; result->Count(); result->RemoveAtHead())
-		{
-			pNode = g_pBigAINet->GetNode(result->ElementAtHead().nodeIndex);
-			//trace_t trace;
-			//UTIL_TraceHull(pNode->GetPosition(HULL_HUMAN) + Vector(0, 0, 32), pNode->GetPosition(HULL_HUMAN) + Vector(0, 0, 32), NAI_Hull::Mins(HULL_HUMAN), NAI_Hull::Maxs(HULL_HUMAN), 0, NULL, COLLISION_GROUP_NONE, &trace);
-			//if (trace.fraction == 1)
-			//{
-			int nRandom;
-			if (!Q_strcmp(modDir, "ep2chaos"))
-				nRandom = fmod((chaos_rng1.GetInt() == -1 ? random->RandomInt(0, 5) : chaos_rng1.GetInt()) + result->ElementAtHead().nodeIndex, 6);
-			else if (!Q_strcmp(modDir, "ep1chaos"))
-				nRandom = fmod((chaos_rng1.GetInt() == -1 ? random->RandomInt(0, 4) : chaos_rng1.GetInt()) + result->ElementAtHead().nodeIndex, 5);
-			else
-				nRandom = fmod((chaos_rng1.GetInt() == -1 ? random->RandomInt(0, 3) : chaos_rng1.GetInt()) + result->ElementAtHead().nodeIndex, 4);
-			if (nRandom == 0)
-			{
-				CBaseEntity *pNPC = (CBaseEntity *)CreateEntityByName("npc_zombie");
-				pNPC->SetAbsOrigin(pNode->GetOrigin());
-				pNPC->KeyValue("targetname", "l4d_zombie");
-				g_iChaosSpawnCount++; pNPC->KeyValue("chaosid", g_iChaosSpawnCount);
-				DispatchSpawn(pNPC);
-				pNPC->Activate();
-				pNPC->m_bChaosSpawned = true;
-				pNPC->m_bChaosPersist = true;
-			}
-			if (nRandom == 1)
-			{
-				CBaseEntity *pNPC = (CBaseEntity *)CreateEntityByName("npc_zombie_torso");
-				pNPC->SetAbsOrigin(pNode->GetOrigin());
-				pNPC->KeyValue("targetname", "l4d_zombie");
-				g_iChaosSpawnCount++; pNPC->KeyValue("chaosid", g_iChaosSpawnCount);
-				DispatchSpawn(pNPC);
-				pNPC->Activate();
-				pNPC->m_bChaosSpawned = true;
-				pNPC->m_bChaosPersist = true;
-			}
-			if (nRandom == 2)
-			{
-				CBaseEntity *pNPC = (CBaseEntity *)CreateEntityByName("npc_poisonzombie");
-				pNPC->SetAbsOrigin(pNode->GetOrigin());
-				pNPC->KeyValue("targetname", "l4d_zombie");
-				g_iChaosSpawnCount++; pNPC->KeyValue("chaosid", g_iChaosSpawnCount);
-				DispatchSpawn(pNPC);
-				pNPC->Activate();
-				pNPC->m_bChaosSpawned = true;
-				pNPC->m_bChaosPersist = true;
-			}
-			if (nRandom == 3)
-			{
-				CBaseEntity *pNPC = (CBaseEntity *)CreateEntityByName("npc_fastzombie");
-				pNPC->SetAbsOrigin(pNode->GetOrigin());
-				pNPC->KeyValue("targetname", "l4d_zombie");
-				g_iChaosSpawnCount++; pNPC->KeyValue("chaosid", g_iChaosSpawnCount);
-				DispatchSpawn(pNPC);
-				pNPC->Activate();
-				pNPC->m_bChaosSpawned = true;
-				pNPC->m_bChaosPersist = true;
-			}
-			//ep1
-			if (nRandom == 4)
-			{
-				CBaseEntity *pNPC = (CBaseEntity *)CreateEntityByName("npc_zombine");
-				pNPC->SetAbsOrigin(pNode->GetOrigin());
-				pNPC->KeyValue("targetname", "l4d_zombie");
-				g_iChaosSpawnCount++; pNPC->KeyValue("chaosid", g_iChaosSpawnCount);
-				DispatchSpawn(pNPC);
-				pNPC->Activate();
-				pNPC->m_bChaosSpawned = true;
-				pNPC->m_bChaosPersist = true;
-			}
-			//ep2
-			if (nRandom == 5)
-			{
-				CBaseEntity *pNPC = (CBaseEntity *)CreateEntityByName("npc_fastzombie_torso");
-				pNPC->SetAbsOrigin(pNode->GetOrigin());
-				pNPC->KeyValue("targetname", "l4d_zombie");
-				g_iChaosSpawnCount++; pNPC->KeyValue("chaosid", g_iChaosSpawnCount);
-				DispatchSpawn(pNPC);
-				pNPC->Activate();
-				pNPC->m_bChaosSpawned = true;
-				pNPC->m_bChaosPersist = true;
-			}
-			//}
-		}
+
+		CBaseEntity *pNPC = (CBaseEntity *)CreateEntityByName(zombieNPCs[nRandom]);
+
+		if (!pNPC)
+			return; //failed for some reason..
+
+		pNPC->SetAbsOrigin(pNode->GetOrigin());
+		pNPC->KeyValue("targetname", "l4d_zombie");
+		g_iChaosSpawnCount++; pNPC->KeyValue("chaosid", g_iChaosSpawnCount);
+		DispatchSpawn(pNPC);
+		pNPC->Activate();
+		pNPC->m_bChaosSpawned = true;
+		pNPC->m_bChaosPersist = true;
+		//}
 	}
 }
 void CEBottle::StartEffect()
