@@ -183,6 +183,7 @@ def chat_loop():
         chat.terminate()
         chat = None
         CAN_CONNECT.set()
+    CAN_CONNECT.set()
 
 
 def set_text(source: str, text: str):
@@ -330,5 +331,5 @@ def script_unload():
 def script_description():
     return """Youtube chat voting plugin for HL2Chaos mod
     
-Made by holy-jesus
+Made by holy-jesus, based on code written by acuifex
 Released under AGPLv3 license"""
