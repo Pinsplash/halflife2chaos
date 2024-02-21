@@ -1,6 +1,6 @@
 import asyncio
 import threading
-from collections import Counter
+import traceback
 from typing import Optional
 
 from aiohttp.helpers import sentinel
@@ -9,7 +9,7 @@ from twitchAPI.chat import Chat, EventData, ChatMessage
 # noinspection PyUnresolvedReferences
 import obspython as obs
 from rcon.source import rcon
-from rcon.exceptions import WrongPassword
+from rcon.exceptions import WrongPassword, EmptyResponse
 
 TARGET_CHANNEL = ''
 SOURCE_NAME = ''
@@ -18,9 +18,8 @@ RCON_PORT = "27015"
 RCON_PASSWORD = ""
 
 voteNumber = -1
-# Counter(votes.values())
 votes = {}
-voteEffects = []
+voteEffectsNumber = []
 voteKeywords = []
 
 
@@ -59,6 +58,15 @@ async def on_ready(ready_event: EventData):
     if TARGET_CHANNEL:
         await ready_event.chat.join_room(TARGET_CHANNEL)
 
+async def update_game_votes(newVote, oldVote = None):
+    global voteNumber, voteEffectsNumber, votes
+    vote_params = [str(newVote)]
+    if oldVote is not None:
+        vote_params.append(str(oldVote))
+    await rcon(
+        'chaos_vote_internal_update', str(voteNumber), *vote_params,
+        host=RCON_HOST, port=int(RCON_PORT), passwd=RCON_PASSWORD, enforce_id=False
+    )
 
 async def on_message(msg: ChatMessage):
     global votes
@@ -66,6 +74,9 @@ async def on_message(msg: ChatMessage):
     uppercase_keywords = [kw.upper() for kw in voteKeywords]
     if msg.text.upper() in uppercase_keywords:
         kwIndex = uppercase_keywords.index(msg.text.upper())
+        oldVote = None
+        if msg.user.id in votes:
+            oldVote = votes[msg.user.id]
         #check range of index because we don't want a 2 when the range in OBS is 4-7
         if voteNumber % 2 == 0:
             if kwIndex >= 4:
@@ -73,25 +84,14 @@ async def on_message(msg: ChatMessage):
         else:
             if kwIndex <= 3:
                 votes[msg.user.id] = kwIndex
-
-
-async def update_game_votes():
-    global voteNumber, voteEffects, votes
-    vote_counts = Counter(votes.values())
-    vote_params = [""] * len(voteEffects)
-    for i in range(len(voteEffects)):
-        vote_params[i] = str(vote_counts.get(i) or 0)
-    await rcon(
-        'chaos_vote_internal_set', str(voteNumber), *vote_params,
-        host=RCON_HOST, port=int(RCON_PORT), passwd=RCON_PASSWORD
-    )
-
+        if msg.user.id in votes:
+            await update_game_votes(votes[msg.user.id], oldVote)
 
 async def poll_game():
-    global voteNumber, voteEffects, votes
+    global voteNumber, voteEffectsNumber, votes
     raw_resp = await rcon(
         'chaos_vote_internal_poll',
-        host=RCON_HOST, port=int(RCON_PORT), passwd=RCON_PASSWORD
+        host=RCON_HOST, port=int(RCON_PORT), passwd=RCON_PASSWORD, enforce_id=False
     )
     response = raw_resp.split("rcon from \"", 1)[0].strip()
     if response == "":
@@ -100,9 +100,9 @@ async def poll_game():
     vote_number, *effects = response.split(";")
     vote_number = int(vote_number)
 
+    voteEffectsNumber = effects
     if vote_number != voteNumber:
         voteNumber = vote_number
-        voteEffects = effects
         votes = {}
 
     return True
@@ -118,8 +118,7 @@ async def game_loop():
         else:
             faulty_password = ""
         try:
-            if await poll_game():
-                await update_game_votes()
+            await poll_game()
             if already_printed_err:
                 print("poll resumed as normal.")
             already_printed_err = False
@@ -130,9 +129,14 @@ async def game_loop():
         except WrongPassword:
             print("rcon wrong password")
             faulty_password = RCON_PASSWORD
+        except EmptyResponse:
+            pass
         except Exception as e:
-            print("poll unexpected exception:", e)  # i broke something. log and bail
-            return
+            if not already_printed_err:
+                print(
+                    "poll unexpected exception:", e
+                )  # i broke something. log and bail
+                already_printed_err = True
 
 
 chat: Optional[Chat] = None
@@ -194,14 +198,13 @@ def update_source():
     if SOURCE_NAME == "":
         return
     output = f"Vote #{voteNumber}\n"
-    vote_counts = Counter(votes.values())
     offset = 0
-    for i, voteEffect in enumerate(voteEffects):
+    for i, voteEffect in enumerate(voteEffectsNumber):
         if i == 0 and voteNumber % 2 == 0:
             offset = 4
-        keyword = '?' if i > len(voteKeywords) - 1 else voteKeywords[i + offset]
-        vote_count = vote_counts.get(i) or 0
-        output = output + f"{keyword} {voteEffect}: {vote_count}\n"
+        name, amount = voteEffect.split(":")
+        keyword = "?" if i > len(voteKeywords) - 1 else voteKeywords[i + offset]
+        output = output + f"{keyword} {name}: {amount}\n"
         if i == 3 and voteNumber % 2 == 1:
             break
     set_text(SOURCE_NAME, output[:-1])  # exclude final newline

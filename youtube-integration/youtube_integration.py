@@ -1,12 +1,12 @@
 import threading
-from collections import Counter
+import traceback
 from typing import Optional
 import time
 from queue import Queue, Empty
 
 from pytchat.core import PytchatCore
 from rcon.source import Client
-from rcon.exceptions import WrongPassword
+from rcon.exceptions import WrongPassword, EmptyResponse
 
 # noinspection PyUnresolvedReferences
 import obspython as obs
@@ -25,24 +25,22 @@ RCON_PORT = "27015"
 RCON_PASSWORD = ""
 
 voteNumber = -1
-# Counter(votes.values())
 votes = {}
-voteEffects = []
+voteEffectsNumber = []
 voteKeywords = []
 
 
-def update_game_votes(rcon):
-    global voteNumber, voteEffects, votes
-    vote_counts = Counter(votes.values())
-    vote_params = [""] * len(voteEffects)
-    for i in range(len(voteEffects)):
-        vote_params[i] = str(vote_counts.get(i) or 0)
-    rcon.run("chaos_vote_internal_set", str(voteNumber), *vote_params)
+def update_game_votes(newVote, oldVote = None):
+    global voteNumber, voteEffectsNumber, votes
+    vote_params = [str(newVote)]
+    if oldVote is not None:
+        vote_params.append(str(oldVote))
+    print(rcon.run("chaos_vote_internal_update", str(voteNumber), *vote_params, enforce_id=False))
 
 
-def poll_game(rcon):
-    global voteNumber, voteEffects, votes
-    raw_resp = rcon.run("chaos_vote_internal_poll")
+def poll_game():
+    global voteNumber, voteEffectsNumber, votes
+    raw_resp = rcon.run("chaos_vote_internal_poll", enforce_id=False)
     response = raw_resp.split('rcon from "', 1)[0].strip()
     if response == "":
         return False  # the game is not quite ready yet.
@@ -50,14 +48,15 @@ def poll_game(rcon):
     vote_number, *effects = response.split(";")
     vote_number = int(vote_number)
 
+    voteEffectsNumber = effects
     if vote_number != voteNumber:
         voteNumber = vote_number
-        voteEffects = effects
         votes = {}
     return True
 
 
 def game_loop():
+    global rcon
     STARTUP.wait()
     already_printed_err = False
     faulty_password = ""
@@ -75,8 +74,7 @@ def game_loop():
             if rcon is None:
                 rcon = Client(RCON_HOST, int(RCON_PORT), passwd=RCON_PASSWORD)
                 rcon.connect(True)
-            if poll_game(rcon):
-                update_game_votes(rcon)
+            poll_game()
             if already_printed_err:
                 print("poll resumed as normal.")
             already_printed_err = False
@@ -89,15 +87,16 @@ def game_loop():
             print("rcon wrong password")
             faulty_password = RCON_PASSWORD
             rcon = None
+        except EmptyResponse:
+            pass
         except Exception as e:
-            # traceback.print_exception(e)
             if not already_printed_err:
                 print(
-                    "poll unexpected exception:", e
+                    "poll unexpected exception:", eYT
                 )  # i broke something. log and bail
                 already_printed_err = True
             rcon = None
-            # return
+
 
 
 STARTUP = threading.Event()
@@ -105,6 +104,7 @@ CAN_CONNECT = threading.Event()
 CAN_CONNECT.set()
 SHUTDOWN = False
 chat: Optional[PytchatCore] = None
+rcon: Client = None
 game_thread: Optional[threading.Thread] = None
 chat_thread: Optional[threading.Thread] = None
 
@@ -172,6 +172,9 @@ def chat_loop():
                 uppercase_keywords = [kw.upper() for kw in voteKeywords]
                 if text in uppercase_keywords:
                     kwIndex = uppercase_keywords.index(text)
+                    oldVote = None
+                    if message.author.channelId in votes:
+                        oldVote = votes[message.author.channelId]
                     #check range of index because we don't want a 2 when the range in OBS is 4-7
                     if voteNumber % 2 == 0:
                         if kwIndex >= 4:
@@ -179,7 +182,8 @@ def chat_loop():
                     else:
                         if kwIndex <= 3:
                             votes[message.author.channelId] = kwIndex
-                        
+                    if message.author.channelId in votes:
+                        update_game_votes(votes[message.author.channelId], oldVote)
             time.sleep(1.5)
 
     except Exception as e:
@@ -208,14 +212,13 @@ def update_source():
     if SOURCE_NAME == "":
         return
     output = f"Vote #{voteNumber}\n"
-    vote_counts = Counter(votes.values())
     offset = 0
-    for i, voteEffect in enumerate(voteEffects):
+    for i, voteEffect in enumerate(voteEffectsNumber):
         if i == 0 and voteNumber % 2 == 0:
             offset = 4
+        name, amount = voteEffect.split(":")
         keyword = "?" if i > len(voteKeywords) - 1 else voteKeywords[i + offset]
-        vote_count = vote_counts.get(i) or 0
-        output = output + f"{keyword} {voteEffect}: {vote_count}\n"
+        output = output + f"{keyword} {name}: {amount}\n"
         if i == 3 and voteNumber % 2 == 1:
             break
     set_text(SOURCE_NAME, output[:-1])  # exclude final newline
