@@ -171,7 +171,15 @@ def chat_loop():
                 print(f"{message.author.name} said: {message.message}")
                 uppercase_keywords = [kw.upper() for kw in voteKeywords]
                 if text in uppercase_keywords:
-                    votes[message.author.channelId] = uppercase_keywords.index(text)
+                    kwIndex = uppercase_keywords.index(text)
+                    #check range of index because we don't want a 2 when the range in OBS is 4-7
+                    if voteNumber % 2 == 0:
+                        if kwIndex >= 4:
+                            votes[message.author.channelId] = kwIndex - 4
+                    else:
+                        if kwIndex <= 3:
+                            votes[message.author.channelId] = kwIndex
+                        
             time.sleep(1.5)
 
     except Exception as e:
@@ -201,10 +209,15 @@ def update_source():
         return
     output = f"Vote #{voteNumber}\n"
     vote_counts = Counter(votes.values())
+    offset = 0
     for i, voteEffect in enumerate(voteEffects):
-        keyword = "?" if i > len(voteKeywords) - 1 else voteKeywords[i]
+        if i == 0 and voteNumber % 2 == 0:
+            offset = 4
+        keyword = "?" if i > len(voteKeywords) - 1 else voteKeywords[i + offset]
         vote_count = vote_counts.get(i) or 0
         output = output + f"{keyword} {voteEffect}: {vote_count}\n"
+        if i == 3 and voteNumber % 2 == 1:
+            break
     set_text(SOURCE_NAME, output[:-1])  # exclude final newline
 
 
@@ -263,7 +276,7 @@ def script_defaults(settings):
     obs.obs_data_set_default_string(settings, "rcon_host", "127.0.0.1:27015")
 
     obs_array = obs.obs_data_array_create()
-    for i in ["!A", "!B", "!C", "!D"]:
+    for i in ["1", "2", "3", "4", "5", "6", "7", "8"]:
         item = obs.obs_data_create()
         obs.obs_data_set_string(item, "value", i)
         obs.obs_data_array_push_back(obs_array, item)

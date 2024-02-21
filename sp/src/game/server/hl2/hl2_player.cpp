@@ -1,13 +1,10 @@
 //========= Copyright Valve Corporation, All rights reserved. ============//
 //
-//Purpose:		Player for HL2.
+//Purpose: Player for HL2.
 //
-//=============================================================================//
-/*
-*/
+//========================================================================//
 
 #include "cbase.h"
-
 // do not include <string> !!! it breaks compilation with latest gcc
 // from stdstring.h: GCC 4.2.2 headers screw up our min/max defs.
 #include "stdstring.h"
