@@ -161,6 +161,10 @@ public:
 	int m_iCurrentWeight;
 	int m_iStrikes;
 	bool m_bTransient;
+	//only to be set true when selecting the 4 effects to use.
+	//g_arriVoteEffects will remember the effects that are in it until a new set of 4 need to be put in. other code is written with that in mind.
+	//the difference matters because we don't want to exclude an effect simply for being a current option.
+	bool m_bInVoteList = false;
 	CBaseEntity *ChaosSpawnVehicle(const char *className, string_t strActualName, int iSpawnType, const char *strModel, const char *strTargetname, const char *strScript);
 	CAI_BaseNPC *ChaosSpawnNPC(const char *className, string_t strActualName, int iSpawnType, const char *strModel, const char *strTargetname, const char *strWeapon, int flags = 0);
 	bool ChaosSpawnWeapon(const char *className, string_t strActualName, int iCount = 0, const char *strAmmoType = NULL, int iCount2 = 0, const char *strAmmoType2 = NULL);

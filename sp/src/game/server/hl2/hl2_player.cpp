@@ -1209,8 +1209,6 @@ void CHL2_Player::ResetVotes(int iWeightSum)
 	//choose effects to nominate
 	for (int i = 0; i < 4; i++)
 	{
-		// TODO: This likely can pick the same effect multiple times.
-		// I don't wanna reverse engineer the picking algorithm to avoid doing that.
 		g_arriVoteEffects[i] = PickEffect(iWeightSum);
 		g_arriVotes[i] = 0;
 	}
@@ -1222,10 +1220,12 @@ int GetVoteWinnerEffect()
 	int bestEffect = 0;
 	for (int i = 0; i < 4; i++)
 	{
-		if (g_arriVotes[i] > bestVotes) {
+		if (g_arriVotes[i] > bestVotes)
+		{
 			bestVotes = g_arriVotes[i];
 			bestEffect = g_arriVoteEffects[i];
 		}
+		g_ChaosEffects[g_arriVoteEffects[i]]->m_bInVoteList = false;
 	}
 	return bestEffect;
 }
@@ -5330,6 +5330,8 @@ int CHL2_Player::PickEffect(int iWeightSum, bool bTest)
 			//shuffle: skip over already-picked effects since we took their weight out
 			if (g_ChaosEffects[i]->WasShufflePicked())
 				continue;
+			if (g_ChaosEffects[i]->m_bInVoteList)
+				continue;
 			CChaosEffect *candEffect = g_ChaosEffects[i];
 			if (bEffectStatus[i] == false)
 			{
@@ -5345,6 +5347,8 @@ int CHL2_Player::PickEffect(int iWeightSum, bool bTest)
 						{
 							Assert(candEffect->m_nID != EFFECT_ERROR);
 							if (chaos_print_rng.GetBool()) Msg("Chose effect i %i %s starting number %i\n", i, STRING(g_ChaosEffects[i]->m_strGeneralName), nRememberRandom);
+							if (chaos_vote_enable.GetBool())
+								g_ChaosEffects[i]->m_bInVoteList = true;
 							return i;
 						}
 						if (chaos_print_rng.GetBool()) Msg("%i > %i\n", nRandom, g_ChaosEffects[i]->m_iCurrentWeight);
