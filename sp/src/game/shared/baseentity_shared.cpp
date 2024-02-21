@@ -1600,6 +1600,8 @@ public:
 typedef CTraceFilterSimpleList CBulletsTraceFilter;
 #endif
 
+int g_iGrenades = 0;
+
 void CBaseEntity::FireBullets( const FireBulletsInfo_t &info )
 {
 	static int	tracerCount;
@@ -1753,6 +1755,14 @@ void CBaseEntity::FireBullets( const FireBulletsInfo_t &info )
 		//VectorAngles(vecEnd, angAiming);
 		if (chaos_replace_bullets_with_grenades.GetBool())
 		{
+			if (g_iGrenades > 50 && !IsPlayer() && !GetServerVehicle())
+			{
+				if (random->RandomInt(g_iGrenades, 300) > 150)//hard cap at 150, but between 50 and 150, randomly omit more grenades so that NPCs don't abruptly stop firing when the limit is hit
+				{
+					Warning("WARNING: Hitting grenade limit!\n");
+					continue;
+				}
+			}
 			Vector vecMins = -Vector(4, 4, 4);
 			Vector vecMaxs = Vector(4, 4, 4);
 			float flForceScale = 80;
@@ -1770,6 +1780,7 @@ void CBaseEntity::FireBullets( const FireBulletsInfo_t &info )
 			}
 			Fraggrenade_Create(info.m_vecSrc, vec3_angle, vecDir * flForce, AngularImpulse(600, random->RandomInt(-1200, 1200), 0), pAttacker, 3, false);
 			iSeed++;
+			g_iGrenades++;
 			continue;
 		}
 #endif

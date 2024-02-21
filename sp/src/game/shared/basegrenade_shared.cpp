@@ -25,6 +25,7 @@ extern short	g_sModelIndexFireball;		// (in combatweapon.cpp) holds the index fo
 extern short	g_sModelIndexWExplosion;	// (in combatweapon.cpp) holds the index for the underwater explosion
 extern short	g_sModelIndexSmoke;			// (in combatweapon.cpp) holds the index for the smoke cloud
 extern ConVar    sk_plr_dmg_grenade;
+extern int g_iGrenades;
 
 #if !defined( CLIENT_DLL )
 
@@ -114,7 +115,7 @@ END_PREDICTION_DATA()
 void CBaseGrenade::Explode( trace_t *pTrace, int bitsDamageType )
 {
 #if !defined( CLIENT_DLL )
-	
+	g_iGrenades--;
 	SetModelName( NULL_STRING );//invisible
 	AddSolidFlags( FSOLID_NOT_SOLID );
 
