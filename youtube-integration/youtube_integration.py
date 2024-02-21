@@ -26,12 +26,12 @@ RCON_PASSWORD = ""
 
 voteNumber = -1
 votes = {}
-voteEffectsNumber = []
+voteOptions = []
 voteKeywords = []
 
 
 def update_game_votes(newVote, oldVote = None):
-    global voteNumber, voteEffectsNumber, votes
+    global voteNumber, voteOptions, votes
     vote_params = [str(newVote)]
     if oldVote is not None:
         vote_params.append(str(oldVote))
@@ -39,7 +39,7 @@ def update_game_votes(newVote, oldVote = None):
 
 
 def poll_game():
-    global voteNumber, voteEffectsNumber, votes
+    global voteNumber, voteOptions, votes
     raw_resp = rcon.run("chaos_vote_internal_poll", enforce_id=False)
     response = raw_resp.split('rcon from "', 1)[0].strip()
     if response == "":
@@ -48,7 +48,7 @@ def poll_game():
     vote_number, *effects = response.split(";")
     vote_number = int(vote_number)
 
-    voteEffectsNumber = effects
+    voteOptions = effects
     if vote_number != voteNumber:
         voteNumber = vote_number
         votes = {}
@@ -92,7 +92,7 @@ def game_loop():
         except Exception as e:
             if not already_printed_err:
                 print(
-                    "poll unexpected exception:", eYT
+                    "poll unexpected exception:", e
                 )  # i broke something. log and bail
                 already_printed_err = True
             rcon = None
@@ -213,7 +213,7 @@ def update_source():
         return
     output = f"Vote #{voteNumber}\n"
     offset = 0
-    for i, voteEffect in enumerate(voteEffectsNumber):
+    for i, voteEffect in enumerate(voteOptions):
         if i == 0 and voteNumber % 2 == 0:
             offset = 4
         name, amount = voteEffect.split(":")

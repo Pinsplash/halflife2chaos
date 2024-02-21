@@ -19,7 +19,7 @@ RCON_PASSWORD = ""
 
 voteNumber = -1
 votes = {}
-voteEffectsNumber = []
+voteOptions = []
 voteKeywords = []
 
 
@@ -59,7 +59,7 @@ async def on_ready(ready_event: EventData):
         await ready_event.chat.join_room(TARGET_CHANNEL)
 
 async def update_game_votes(newVote, oldVote = None):
-    global voteNumber, voteEffectsNumber, votes
+    global voteNumber
     vote_params = [str(newVote)]
     if oldVote is not None:
         vote_params.append(str(oldVote))
@@ -88,7 +88,7 @@ async def on_message(msg: ChatMessage):
             await update_game_votes(votes[msg.user.id], oldVote)
 
 async def poll_game():
-    global voteNumber, voteEffectsNumber, votes
+    global voteNumber, voteOptions, votes
     raw_resp = await rcon(
         'chaos_vote_internal_poll',
         host=RCON_HOST, port=int(RCON_PORT), passwd=RCON_PASSWORD, enforce_id=False
@@ -100,7 +100,7 @@ async def poll_game():
     vote_number, *effects = response.split(";")
     vote_number = int(vote_number)
 
-    voteEffectsNumber = effects
+    voteOptions = effects
     if vote_number != voteNumber:
         voteNumber = vote_number
         votes = {}
@@ -199,7 +199,7 @@ def update_source():
         return
     output = f"Vote #{voteNumber}\n"
     offset = 0
-    for i, voteEffect in enumerate(voteEffectsNumber):
+    for i, voteEffect in enumerate(voteOptions):
         if i == 0 and voteNumber % 2 == 0:
             offset = 4
         name, amount = voteEffect.split(":")
