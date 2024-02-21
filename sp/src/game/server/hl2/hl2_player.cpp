@@ -5553,6 +5553,8 @@ bool CChaosEffect::CheckEffectContext()
 
 	if (m_nID == EFFECT_WEAPON_REMOVE)
 	{
+		if (!Q_strcmp(pMapName, "d2_coast_11"))
+			return false;//bad map
 		if (UTIL_GetLocalPlayer()->GetActiveWeapon() == NULL)
 			return false;
 		CBaseCombatWeapon *pWeapon = (CBaseCombatWeapon *)gEntList.FindEntityByClassname(NULL, "we*");
@@ -5575,7 +5577,7 @@ bool CChaosEffect::CheckEffectContext()
 			pWeapon = (CBaseCombatWeapon *)gEntList.FindEntityByClassname(pWeapon, "we*");
 		}
 		if (!pWeapon2)
-			return false;
+			return false;//we only have one weapon
 	}
 
 	if (m_nContext == EC_NONE)
