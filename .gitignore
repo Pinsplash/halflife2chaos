@@ -24,6 +24,7 @@ ipch
 *.codeanalysis
 *.codeanalysisast
 *.nativecodeanalysis.all.xml
+*.pchast
 
 # OSX/Linux build products
 *.mak

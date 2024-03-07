@@ -31,6 +31,8 @@
 #include "EntityFlame.h"
 #include "entityblocker.h"
 #include "eventqueue.h"
+#include "ai_trackpather.h"
+#include "trains.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -75,6 +77,7 @@
 #define DROPSHIP_GUN_SPEED			10		// Rotation speed
 
 #define DROPSHIP_CRATE_ROCKET_HITS	4
+extern ConVar chaos_npc_teleport;
 
 enum DROP_STATES 
 {
@@ -2729,6 +2732,14 @@ void CNPC_CombineDropship::Hunt( void )
 	else if ( GetLandingState() == LANDING_NO )
 	{
 		UpdateTrackNavigation();
+	}
+
+	Vector targetPos;
+	if (chaos_npc_teleport.GetBool() && GetLandingState() != LANDING_DESCEND && GetLandingState() != LANDING_TOUCHDOWN && GetLandingState() != LANDING_UNLOADING)// && GetTrackPatherTarget(&targetPos))
+	{
+		//CPathTrack *pDest = BestPointOnPath(m_pCurrentPathTarget, targetPos, m_flAvoidDistance, true, m_bChooseFarthestPoint);
+		//if (pDest)
+		Teleport(&GetDesiredPosition(), NULL, NULL);
 	}
 
 	// don't face player ever, only face nav points

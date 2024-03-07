@@ -26,6 +26,7 @@ class CAI_TrackPather : public CAI_BaseNPC
 public:
 
 	bool			IsOnPathTrack()							{ return (m_pCurrentPathTarget != NULL); }
+	CPathTrack *	CurrentPathTrack()							{ return m_pCurrentPathTarget; }
 
 protected:	
 	void			InitPathingData( float flTrackArrivalTolerance, float flTargetDistance, float flAvoidDistance );
@@ -153,9 +154,12 @@ protected:
 	// Deal with teleportation
 	void Teleported();
 
-private:
+	CPathTrack		*BestPointOnPath(CPathTrack *pPath, const Vector &targetPos, float avoidRadius, bool visible, bool bFarthestPointOnPath);
+	CHandle<CPathTrack> m_pCurrentPathTarget;
+	float			m_flAvoidDistance;			//
+	bool			m_bChooseFarthestPoint;
 
-	CPathTrack		*BestPointOnPath( CPathTrack *pPath, const Vector &targetPos, float avoidRadius, bool visible, bool bFarthestPointOnPath );
+private:
 
 	// Input methods
 	void InputSetTrack( inputdata_t &inputdata );
@@ -218,7 +222,7 @@ private:
 	float ComputePathDistance( CPathTrack *pStart, CPathTrack *pDest, bool bForward ) const;
 
 	// Compute the distance to a particular point on the path
-	float ComputeDistanceAlongPathToPoint( CPathTrack *pStartTrack, CPathTrack *pDestTrack, const Vector &vecDestPosition, bool bMovingForward );
+	float ComputeDistanceAlongPathToPoint(CPathTrack *pStartTrack, CPathTrack *pDestTrack, const Vector &vecDestPosition, bool bMovingForward);
 
 private:
 	//---------------------------------
@@ -232,7 +236,6 @@ private:
 	// and *before* the desired point when moving backward.
 	// DestPathTarget + TargetNearestPath always represent points
 	// *after* the desired point.
-	CHandle<CPathTrack> m_pCurrentPathTarget;
 	CHandle<CPathTrack> m_pDestPathTarget;
 	CHandle<CPathTrack> m_pLastPathTarget;
 	CHandle<CPathTrack> m_pTargetNearestPath;	// Used only by leading, it specifies the path point *after* where the target is
@@ -251,13 +254,11 @@ private:
 
 	// Derived class pathing data
 	float			m_flTargetDistanceThreshold;// Distance threshold used to determine when a target has moved enough to update our navigation to it
-	float			m_flAvoidDistance;			//
 	
 	float			m_flTargetTolerance;		// How far from a path track do we need to be before we 'reached' it?
 	Vector			m_vecSegmentStartPoint;		// Starting point for the current segment
 	Vector			m_vecSegmentStartSplinePoint;	// Used to define a spline which is used to compute path velocity
 	bool			m_bMovingForward;
-	bool			m_bChooseFarthestPoint;
 	float			m_flFarthestPathDist;		// How far from a path track do we need to be before we 'reached' it?
 
 	float			m_flPathMaxSpeed;
