@@ -1755,7 +1755,7 @@ void CBaseEntity::FireBullets( const FireBulletsInfo_t &info )
 		//VectorAngles(vecEnd, angAiming);
 		if (chaos_replace_bullets_with_grenades.GetBool())
 		{
-			if (g_iGrenades > 50 && !IsPlayer() && !GetServerVehicle())
+			if (g_iGrenades > 50 && IsNPC())
 			{
 				if (random->RandomInt(g_iGrenades, 300) > 150)//hard cap at 150, but between 50 and 150, randomly omit more grenades so that NPCs don't abruptly stop firing when the limit is hit
 				{
@@ -1771,7 +1771,7 @@ void CBaseEntity::FireBullets( const FireBulletsInfo_t &info )
 			//Msg("%0.1f * %0.1f = %0.1f\n", flForce / flForceScale, flForceScale, flForce);
 			flForce *= flForceFracBoost;
 			//Msg("* %0.1f = %0.1f\n", flForceFracBoost, flForce);
-			if (!IsPlayer())
+			if (IsNPC())
 			{
 				//NPCs need to be told to shoot upwards when fighting long range
 				Vector vecAimUp = VecCheckThrow(this, info.m_vecSrc, tr.endpos, flForce, 1.0, &vecMins, &vecMaxs);
