@@ -5384,7 +5384,7 @@ int CHL2_Player::PickEffect(int iWeightSum, bool bTest, int iControl)
 					if (bGoodContext)
 					{
 						candEffect->m_iContextStatusCache = C_STATUS_GOOD;
-						if (nRandom <= iCurrentWeight)
+						if (nRandom < iCurrentWeight)
 						{
 							Assert(candEffect->m_nID != EFFECT_ERROR);
 							if (chaos_print_rng.GetBool()) Msg("Chose effect i %i %s starting number %i\n", i, STRING(g_ChaosEffects[i]->m_strGeneralName), nRememberRandom);
@@ -5411,7 +5411,7 @@ int CHL2_Player::PickEffect(int iWeightSum, bool bTest, int iControl)
 					bEffectStatus[i] = true;
 				}
 			}
-			if (nRandom <= iCurrentWeight)
+			if (nRandom < iCurrentWeight)
 			{
 				//our selected effect was not allowed. this check prevents us from going down to the next available effect and artificially inflating its odds
 				if (bTest)
