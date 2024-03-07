@@ -570,7 +570,7 @@ CON_COMMAND(chaos_restart, "restarts map and resets stuff like sv_gravity. execu
 //chaos_ignore_group
 //chaos_ignore_context
 //chaos_print_rng
-CON_COMMAND(chaos_test_rng, "Guess.")
+CON_COMMAND(chaos_test_rng, "test if RNG works well monte-carlo style. arg 1 is how many effects to pick.")
 {
 	if (args.ArgC() > 1)
 	{
@@ -589,6 +589,7 @@ CON_COMMAND(chaos_test_rng, "Guess.")
 					iWeightSum += g_ChaosEffects[i]->m_iCurrentWeight;
 					iPicks[i] = 0;
 				}
+				pHL2Player->ClearEffectContextCache();
 				for (int j = 0; j < atoi(args[1]); j++)
 				{
 					int nID = pHL2Player->PickEffect(iWeightSum, true);
@@ -604,6 +605,37 @@ CON_COMMAND(chaos_test_rng, "Guess.")
 	else
 	{
 		Msg("Specify number of times to run RNG\n");
+	}
+}
+CON_COMMAND(chaos_test_rng_uniform, "return result of every possible number. good for testing if picking logic is faulty.")
+{
+	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+	if (pPlayer)
+	{
+		CHL2_Player *pHL2Player = static_cast<CHL2_Player*>(pPlayer);
+		if (pHL2Player)
+		{
+			int iWeightSum = 0;
+			int iPicks[NUM_EFFECTS];
+			iPicks[0] = 0;
+			for (int i = 1; i < NUM_EFFECTS; i++)
+			{
+				if (chaos_print_rng.GetBool()) Msg("i %i, %s %i += %i\n", i, STRING(g_ChaosEffects[i]->m_strGeneralName), iWeightSum, g_ChaosEffects[i]->m_iCurrentWeight);
+				iWeightSum += g_ChaosEffects[i]->m_iCurrentWeight;
+				iPicks[i] = 0;
+			}
+			pHL2Player->ClearEffectContextCache();
+			for (int j = 0; j < iWeightSum; j++)
+			{
+				int nID = pHL2Player->PickEffect(iWeightSum, true, j);
+				if (nID >= 0)
+					iPicks[nID]++;
+			}
+			for (int k = 0; k < NUM_EFFECTS; k++)
+			{
+				Msg("%i: %s picked %i times\n", k, STRING(g_ChaosEffects[k]->m_strGeneralName), iPicks[k]);
+			}
+		}
 	}
 }
 CON_COMMAND_F(chaos_group, "Creates a chaos group.", FCVAR_SERVER_CAN_EXECUTE)
@@ -1203,6 +1235,7 @@ int CHL2_Player::FindWeightSum()
 void CHL2_Player::ResetVotes(int iWeightSum)
 {
 	g_iVoteNumber++;
+	ClearEffectContextCache();
 	//choose effects to nominate
 	for (int i = 0; i < 4; i++)
 	{
@@ -1271,6 +1304,7 @@ void CHL2_Player::PreThink(void)
 				int iWeightSum = FindWeightSum();
 				if (!chaos_vote_enable.GetBool())
 				{
+					ClearEffectContextCache();
 					nID = PickEffect(iWeightSum);
 				}
 				else
@@ -5286,8 +5320,16 @@ void CHL2_Player::PopulateEffects()
 	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_BREEN,			MAKE_STRING("Hands-on Dr. Breen"),			EC_HAS_WEAPON,								-1,											chaos_prob_evil_breen.GetInt());
 }
 
+void CHL2_Player::ClearEffectContextCache()
+{
+	Msg("CHL2_Player::ClearEffectContextCache()\n");
+	for (int i = 1; i < NUM_EFFECTS; i++)
+	{
+		g_ChaosEffects[i]->m_iContextStatusCache = C_STATUS_UNKNOWN;
+	}
+}
 //Set the chaos_ignore_ convars if wanted
-int CHL2_Player::PickEffect(int iWeightSum, bool bTest)
+int CHL2_Player::PickEffect(int iWeightSum, bool bTest, int iControl)
 {
 	//find how many effects have been picked
 	int iPickedAmt = 0;
@@ -5316,14 +5358,15 @@ int CHL2_Player::PickEffect(int iWeightSum, bool bTest)
 		}
 
 		//pick effect
-		nRandom = random->RandomInt(0, iWeightSum);
+		nRandom = bTest ? iControl : random->RandomInt(0, iWeightSum);
 		int nRememberRandom = nRandom;
 		if (chaos_print_rng.GetBool()) Warning("nRandom is %i (%i - %i)\n", nRandom, 0, iWeightSum);
 		//weights
 		//start at 1 so ERROR doesn't get picked
 		for (int i = 1; i < NUM_EFFECTS; i++)
 		{
-			if (chaos_print_rng.GetBool()) Msg("i %i, %s %i <= %i\n", i, STRING(g_ChaosEffects[i]->m_strGeneralName), nRandom, g_ChaosEffects[i]->m_iCurrentWeight);
+			int iCurrentWeight = g_ChaosEffects[i]->m_iCurrentWeight;
+			if (chaos_print_rng.GetBool()) Msg("i %i, %s %i <= %i\n", i, STRING(g_ChaosEffects[i]->m_strGeneralName), nRandom, iCurrentWeight);
 			//shuffle: skip over already-picked effects since we took their weight out
 			if (g_ChaosEffects[i]->WasShufflePicked())
 				continue;
@@ -5340,7 +5383,8 @@ int CHL2_Player::PickEffect(int iWeightSum, bool bTest)
 					bGoodContext = candEffect->CheckEffectContext();
 					if (bGoodContext)
 					{
-						if (nRandom <= g_ChaosEffects[i]->m_iCurrentWeight)
+						candEffect->m_iContextStatusCache = C_STATUS_GOOD;
+						if (nRandom <= iCurrentWeight)
 						{
 							Assert(candEffect->m_nID != EFFECT_ERROR);
 							if (chaos_print_rng.GetBool()) Msg("Chose effect i %i %s starting number %i\n", i, STRING(g_ChaosEffects[i]->m_strGeneralName), nRememberRandom);
@@ -5348,12 +5392,13 @@ int CHL2_Player::PickEffect(int iWeightSum, bool bTest)
 								g_ChaosEffects[i]->m_bInVoteList = true;
 							return i;
 						}
-						if (chaos_print_rng.GetBool()) Msg("%i > %i\n", nRandom, g_ChaosEffects[i]->m_iCurrentWeight);
+						if (chaos_print_rng.GetBool()) Msg("%i > %i\n", nRandom, iCurrentWeight);
 						//nRandom -= g_ChaosEffects[i]->m_iCurrentWeight;
 					}
 					else
 					{
 						if (chaos_print_rng.GetBool()) Msg("Bad context for i %i %s\n", i, STRING(g_ChaosEffects[i]->m_strGeneralName), nRememberRandom);
+						candEffect->m_iContextStatusCache = C_STATUS_BAD;
 					}
 				}
 				else
@@ -5366,13 +5411,16 @@ int CHL2_Player::PickEffect(int iWeightSum, bool bTest)
 					bEffectStatus[i] = true;
 				}
 			}
-			if (nRandom <= g_ChaosEffects[i]->m_iCurrentWeight)
+			if (nRandom <= iCurrentWeight)
 			{
 				//our selected effect was not allowed. this check prevents us from going down to the next available effect and artificially inflating its odds
-				break;
+				if (bTest)
+					return -i;//fixed result, negative to indicate effect i is unpickable
+				else
+					break;
 			}
-			if (chaos_print_rng.GetBool()) Msg("%i -= %i\n", nRandom, g_ChaosEffects[i]->m_iCurrentWeight);
-			nRandom -= g_ChaosEffects[i]->m_iCurrentWeight;
+			if (chaos_print_rng.GetBool()) Msg("%i -= %i\n", nRandom, iCurrentWeight);
+			nRandom -= iCurrentWeight;
 		}
 	}
 }
@@ -5426,6 +5474,9 @@ bool CChaosEffect::CheckEffectContext()
 
 	if (chaos_ignore_context.GetBool())
 		return true;
+
+	if (m_iContextStatusCache != C_STATUS_UNKNOWN)
+		return m_iContextStatusCache == C_STATUS_GOOD;
 
 	//avoid long maps
 	if (m_nID == EFFECT_RESTART_LEVEL)

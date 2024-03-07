@@ -121,6 +121,13 @@ enum Effect_T
 #define CSF_EVIL	1
 #define CSF_SQUAD	2
 
+//cache context result, for cases where code is intentionally being run many many times. kind of stepping on the toes of something in PickEffect()...
+enum
+{
+	C_STATUS_BAD,
+	C_STATUS_GOOD,
+	C_STATUS_UNKNOWN,
+};
 enum
 {
 	SPAWNTYPE_EYELEVEL_REGULAR,
@@ -161,6 +168,7 @@ public:
 	int m_iCurrentWeight;
 	int m_iStrikes;
 	bool m_bTransient;
+	int m_iContextStatusCache = C_STATUS_UNKNOWN;
 	//only to be set true when selecting the 4 effects to use.
 	//g_arriVoteEffects will remember the effects that are in it until a new set of 4 need to be put in. other code is written with that in mind.
 	//the difference matters because we don't want to exclude an effect simply for being a current option.
