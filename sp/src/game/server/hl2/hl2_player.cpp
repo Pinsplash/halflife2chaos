@@ -437,29 +437,33 @@ CON_COMMAND(chaos_test_effect, "turn on a specific effect")
 }
 CON_COMMAND(chaos_vote_internal_poll, "used by an external client. returns vote number and possible choices for this vote")
 {
-	ConMsg("%d;%s;%s;%s;%s",
+	ConMsg("%d;%s:%d;%s:%d;%s:%d;%s:%d",
 		g_iVoteNumber,
 		STRING(g_ChaosEffects[g_arriVoteEffects[0]]->m_strHudName),
+		g_arriVotes[0],
 		STRING(g_ChaosEffects[g_arriVoteEffects[1]]->m_strHudName),
+		g_arriVotes[1],
 		STRING(g_ChaosEffects[g_arriVoteEffects[2]]->m_strHudName),
-		STRING(g_ChaosEffects[g_arriVoteEffects[3]]->m_strHudName)
+		g_arriVotes[2],
+		STRING(g_ChaosEffects[g_arriVoteEffects[3]]->m_strHudName),
+		g_arriVotes[3]
 	);
 
 }
-CON_COMMAND(chaos_vote_internal_set, "used by an external client. sets current votes")
+CON_COMMAND(chaos_vote_internal_update, "used by an external client. updates current votes")
 {
-	// TODO: assumes vote number and 4 choices.
-	if (args.ArgC() < 6)
-		return;
-
 	int givenVoteNumber = atoi(args[1]);
 
 	if (givenVoteNumber != g_iVoteNumber)
 		return;
-
-	for (int i = 0; i < 4; ++i)
-	{
-		g_arriVotes[i] = atoi(args[i+2]);
+	
+	// New vote
+	if (args.ArgC() >= 3) {
+		g_arriVotes[atoi(args[2])] = g_arriVotes[atoi(args[2])] + 1;
+	}
+	// Old vote
+	if (args.ArgC() == 4) {
+		g_arriVotes[atoi(args[3])] = g_arriVotes[atoi(args[3])] - 1;
 	}
 }
 CON_COMMAND(chaos_vote_debug, "prints info about the votes")
