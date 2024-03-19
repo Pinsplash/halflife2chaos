@@ -1240,6 +1240,7 @@ void CHL2_Player::ResetVotes(int iWeightSum)
 	for (int i = 0; i < 4; i++)
 	{
 		g_arriVoteEffects[i] = PickEffect(iWeightSum);
+		Assert(g_arriVoteEffects[i] != EFFECT_ERROR);
 		g_arriVotes[i] = 0;
 	}
 }
@@ -1306,10 +1307,12 @@ void CHL2_Player::PreThink(void)
 				{
 					ClearEffectContextCache();
 					nID = PickEffect(iWeightSum);
+					Assert(nID != EFFECT_ERROR);
 				}
 				else
 				{
 					nID = GetVoteWinnerEffect();
+					Assert(nID != EFFECT_ERROR);
 					//TODO: ResetVotes should probably be in here
 				}
 				g_flEffectThinkRem = 0;
@@ -5331,6 +5334,8 @@ void CHL2_Player::ClearEffectContextCache()
 //Set the chaos_ignore_ convars if wanted
 int CHL2_Player::PickEffect(int iWeightSum, bool bTest, int iControl)
 {
+	int iTries = 0;
+	int iResets = 0;
 	//find how many effects have been picked
 	int iPickedAmt = 0;
 	for (int j = 0; j < NUM_EFFECTS; j++)
@@ -5347,14 +5352,25 @@ int CHL2_Player::PickEffect(int iWeightSum, bool bTest, int iControl)
 	int nRandom = 0;
 	while (true)//possible to be stuck in an infinite loop, but only if there's a very small number of effects
 	{
+		iTries++;
+		if (!chaos_shuffle_mode.GetBool() && iTries > 50)
+			return EFFECT_ERROR;
+		if (chaos_shuffle_mode.GetBool() && iResets > 2)
+			return EFFECT_ERROR;
 		//shuffle: reset if we've picked everything we can
 		//if there are 80 effects including (Error) (NUM_EFFECTS is 81)
 		//say 60 have been picked and the last 21 are not pickable
 		//we need to reset if PickedAmt + UnpickableAmt == NUM_EFFECTS
-		if (chaos_shuffle_mode.GetBool() && iPickedAmt + iUnpickableAmt == NUM_EFFECTS)
+		if (chaos_shuffle_mode.GetBool() && (iPickedAmt + iUnpickableAmt >= NUM_EFFECTS || iTries > 50))
 		{
+			iResets++;
 			UTIL_CenterPrintAll("Reshuffling effects!\n");
+			if (chaos_print_rng.GetBool()) Warning("Reshuffling effects\n");
 			ClearShuffleData();
+			for (int k = 0; k < NUM_EFFECTS; k++)
+				bEffectStatus[k] = false;
+			bEffectStatus[EFFECT_ERROR] = true;
+			iUnpickableAmt = 1;
 		}
 
 		//pick effect
@@ -5366,13 +5382,20 @@ int CHL2_Player::PickEffect(int iWeightSum, bool bTest, int iControl)
 		for (int i = 1; i < NUM_EFFECTS; i++)
 		{
 			int iCurrentWeight = g_ChaosEffects[i]->m_iCurrentWeight;
-			if (chaos_print_rng.GetBool()) Msg("i %i, %s %i <= %i\n", i, STRING(g_ChaosEffects[i]->m_strGeneralName), nRandom, iCurrentWeight);
-			//shuffle: skip over already-picked effects since we took their weight out
-			if (g_ChaosEffects[i]->WasShufflePicked())
-				continue;
-			if (g_ChaosEffects[i]->m_bInVoteList)
-				continue;
 			CChaosEffect *candEffect = g_ChaosEffects[i];
+			if (chaos_print_rng.GetBool()) Msg("i %i, %s %i <= %i\n", i, STRING(candEffect->m_strGeneralName), nRandom, iCurrentWeight);
+			//shuffle: skip over already-picked effects since we took their weight out
+			if (candEffect->WasShufflePicked())
+				continue;
+			if (candEffect->m_bInVoteList || iCurrentWeight <= 0)
+			{
+				if (bEffectStatus[i] == false)
+				{
+					iUnpickableAmt++;
+					bEffectStatus[i] = true;
+				}
+				continue;
+			}
 			if (bEffectStatus[i] == false)
 			{
 				bool bGoodActiveness = !EffectOrGroupAlreadyActive(candEffect->m_nID);
