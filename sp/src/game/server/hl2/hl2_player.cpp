@@ -186,11 +186,9 @@ void ClearPersistEnts()
 }
 void ClearShuffleData()
 {
+	if (chaos_shuffle_debug.GetBool()) Msg("clearing shuffle list\n");
 	for (int k = 0; k < NUM_EFFECTS; k++)
-	{
-		if (chaos_shuffle_debug.GetBool()) Msg("clearing shuffle list\n");
 		g_iShufflePicked[k] = NULL;
-	}
 }
 void ClearChaosData()
 {
@@ -638,6 +636,8 @@ CON_COMMAND(chaos_test_rng_uniform, "return result of every possible number. goo
 		}
 	}
 }
+
+//commands stored in groups.cfg, which is execed in CHL2_Player::Spawn()
 CON_COMMAND_F(chaos_group, "Creates a chaos group.", FCVAR_SERVER_CAN_EXECUTE)
 {
 	if (args.ArgC() > 1)
@@ -1227,8 +1227,8 @@ int CHL2_Player::FindWeightSum()
 		iWeightSum += pEffect->m_iCurrentWeight;
 		//recover weight for recent effects
 		//add a fraction of the maximum weight on every interval
-		if (!EffectOrGroupAlreadyActive(i) && pEffect->m_iCurrentWeight < pEffect->m_iMaxWeight)
-			pEffect->m_iCurrentWeight = min(pEffect->m_iCurrentWeight + pEffect->m_iMaxWeight * 0.2, pEffect->m_iMaxWeight);
+		//if (!EffectOrGroupAlreadyActive(i) && pEffect->m_iCurrentWeight < pEffect->m_iMaxWeight)
+		//	pEffect->m_iCurrentWeight = min(pEffect->m_iCurrentWeight + pEffect->m_iMaxWeight * 0.2, pEffect->m_iMaxWeight);
 	}
 	return iWeightSum;
 }
@@ -2210,7 +2210,7 @@ void CHL2_Player::Spawn(void)
 			g_EventQueue.AddEvent(pAutosave, "Save", 1.0, NULL, NULL);
 			g_EventQueue.AddEvent(pAutosave, "Kill", 1.1, NULL, NULL);
 		}
-		//for some reason, we can't do this at the same time as autoexec...
+		//must be done after PopulateEffects()
 		if (!g_bGroupsMade)
 		{
 			engine->ClientCommand(engine->PEntityOfEntIndex(1), "exec groups\n");
@@ -5058,6 +5058,7 @@ void CLogicPlayerProxy::InputSetLocatorTargetEntity( inputdata_t &inputdata )
 	CHL2_Player *pPlayer = static_cast<CHL2_Player*>(m_hPlayer.Get());
 	pPlayer->SetLocatorTargetEntity(pTarget);
 }
+ConVar chaos_nodurationscale("chaos_nodurationscale", "0");
 template<class T>
 void CHL2_Player::CreateEffect(int nEffect, string_t strHudName, int nContext, float flDurationMult, int iMaxWeight)
 {
@@ -5072,7 +5073,7 @@ void CHL2_Player::CreateEffect(int nEffect, string_t strHudName, int nContext, f
 	newEffect->m_iMaxWeight = iMaxWeight;
 	newEffect->m_iCurrentWeight = iMaxWeight;
 	newEffect->m_iStrikes = 0;
-	if (flDurationMult == -1)
+	if (flDurationMult == -1 || chaos_nodurationscale.GetBool())
 	{
 		newEffect->m_flTimeRem = chaos_effect_time.GetFloat();
 		newEffect->m_flDuration = chaos_effect_time.GetFloat();
@@ -5343,7 +5344,7 @@ int CHL2_Player::PickEffect(int iWeightSum, bool bTest, int iControl)
 		if (g_iShufflePicked[j] != 0)
 			iPickedAmt++;
 	}
-
+	if (chaos_print_rng.GetBool()) Warning("iPickedAmt is %i\n", iPickedAmt);
 	//list of effects we've already checked availability for. false means unchecked, true means checked and unpickable.
 	//this does not track effects that are pickable but not chosen by the RNG, but in the future this should be done for optimization.
 	bool bEffectStatus[NUM_EFFECTS] = { true };//(Error) should never be picked
@@ -5353,23 +5354,41 @@ int CHL2_Player::PickEffect(int iWeightSum, bool bTest, int iControl)
 	while (true)//possible to be stuck in an infinite loop, but only if there's a very small number of effects
 	{
 		iTries++;
-		if (!chaos_shuffle_mode.GetBool() && iTries > 50)
+		bool bTooManyTries = iTries > 50;
+		bool bTooManyResets = iResets > 2;
+		bool bNeedReshuffle = iPickedAmt + iUnpickableAmt >= NUM_EFFECTS;
+		if (!chaos_shuffle_mode.GetBool() && bTooManyTries)
+		{
+			if (chaos_print_rng.GetBool()) Warning("Too Many Tries, exiting! iTries %i, iResets %i, iPickedAmt %i, iUnpickableAmt %i\n", iTries, iResets, iPickedAmt, iUnpickableAmt);
 			return EFFECT_ERROR;
-		if (chaos_shuffle_mode.GetBool() && iResets > 2)
+		}
+		if (chaos_shuffle_mode.GetBool() && bTooManyResets)
+		{
+			if (chaos_print_rng.GetBool()) Warning("Too Many Resets, exiting! iTries %i, iResets %i, iPickedAmt %i, iUnpickableAmt %i\n", iTries, iResets, iPickedAmt, iUnpickableAmt);
 			return EFFECT_ERROR;
+		}
 		//shuffle: reset if we've picked everything we can
 		//if there are 80 effects including (Error) (NUM_EFFECTS is 81)
 		//say 60 have been picked and the last 21 are not pickable
 		//we need to reset if PickedAmt + UnpickableAmt == NUM_EFFECTS
-		if (chaos_shuffle_mode.GetBool() && (iPickedAmt + iUnpickableAmt >= NUM_EFFECTS || iTries > 50))
+		if (chaos_shuffle_mode.GetBool() && (bNeedReshuffle || bTooManyTries))
 		{
-			iResets++;
+			if (bTooManyTries)
+			{
+				if (chaos_print_rng.GetBool()) Warning("Too Many Tries, reshuffling effects iTries %i, iResets %i, iPickedAmt %i, iUnpickableAmt %i\n", iTries, iResets, iPickedAmt, iUnpickableAmt);
+				iResets++;
+			}
+			if (bNeedReshuffle)
+			{
+				if (chaos_print_rng.GetBool()) Warning("Need Reshuffle, reshuffling effects iTries %i, iResets %i, iPickedAmt %i, iUnpickableAmt %i\n", iTries, iResets, iPickedAmt, iUnpickableAmt);
+			}
+			iTries = 0;
 			UTIL_CenterPrintAll("Reshuffling effects!\n");
-			if (chaos_print_rng.GetBool()) Warning("Reshuffling effects\n");
 			ClearShuffleData();
 			for (int k = 0; k < NUM_EFFECTS; k++)
 				bEffectStatus[k] = false;
 			bEffectStatus[EFFECT_ERROR] = true;
+			iPickedAmt = 0;
 			iUnpickableAmt = 1;
 		}
 
@@ -5448,6 +5467,7 @@ int CHL2_Player::PickEffect(int iWeightSum, bool bTest, int iControl)
 	}
 }
 ConVar groupcheck_debug("groupcheck_debug", "0");
+ConVar chaos_grouponly("chaos_grouponly", "0");
 bool CHL2_Player::EffectOrGroupAlreadyActive(int iEffect)
 {
 	if (chaos_ignore_activeness.GetBool())
@@ -5485,7 +5505,12 @@ bool CHL2_Player::EffectOrGroupAlreadyActive(int iEffect)
 		}
 	}
 
-	if (groupcheck_debug.GetBool() && bNotInAnyGroup) Msg("Effect %i wasn't in any group\n", iEffect);
+	if (bNotInAnyGroup)
+	{
+		if (groupcheck_debug.GetBool()) Msg("Effect %i wasn't in any group\n", iEffect);
+		if (chaos_grouponly.GetBool())
+			return true;//if this is on, we only want effects that are in a group
+	}
 	return false;//none in group active
 }
 
@@ -5897,7 +5922,8 @@ void CHL2_Player::StartGivenEffect(int nID)
 	//m_iActiveEffects.AddToTail(nID);
 	//g_iActiveEffects.AddToTail(nID);
 	g_ChaosEffects[nID]->StartEffect();
-	g_ChaosEffects[nID]->m_iCurrentWeight = 0;
+	//temporarily(?) removing to fix shuffle problems
+	//g_ChaosEffects[nID]->m_iCurrentWeight = 0;
 }
 void CHL2_Player::StopGivenEffect(int nID)
 {
@@ -5934,6 +5960,8 @@ void CChaosEffect::StartEffect()
 	case EFFECT_ONLY_DRAW_WORLD:
 		engine->ClientCommand(engine->PEntityOfEntIndex(1), "r_drawfuncdetail 0;r_drawstaticprops 0;r_drawentities 0");
 		break;
+		//once had an unexplainable unhandled exception in studiorender.dll and i feel like this effect may be why
+		//things that were being rendered at that time: fisherman, oldmanharpoon, pod, fast zombie, antlion
 	case EFFECT_LOW_DETAIL:
 		engine->ClientCommand(engine->PEntityOfEntIndex(1), "mat_picmip 4;r_lod 6;mat_filtertextures 0;mat_filterlightmaps 0");
 		break;
