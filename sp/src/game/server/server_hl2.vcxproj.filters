@@ -1733,6 +1733,9 @@
     <ClInclude Include="hl2\weapon_rpg.h">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClInclude>
+    <ClInclude Include="hl2\weapon_slam.h">
+      <Filter>Source Files\HL2 DLL</Filter>
+    </ClInclude>
     <ClInclude Include="hl2\weapon_stunstick.h">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClInclude>
@@ -3248,6 +3251,9 @@
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
     <ClCompile Include="hl2\weapon_shotgun.cpp">
+      <Filter>Source Files\HL2 DLL</Filter>
+    </ClCompile>
+    <ClCompile Include="hl2\weapon_slam.cpp">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
     <ClCompile Include="hl2\weapon_smg1.cpp">

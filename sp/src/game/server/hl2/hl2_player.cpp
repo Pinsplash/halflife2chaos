@@ -56,7 +56,6 @@
 #include "physobj.h"
 #include "ai_network.h"
 #include "ai_node.h"
-#include "weapon_physcannon.h"
 #include "saverestoretypes.h"
 #include "saverestore.h"
 #include "chaos.h"

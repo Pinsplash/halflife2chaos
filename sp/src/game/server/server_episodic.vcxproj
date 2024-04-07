@@ -19,7 +19,7 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
     <TargetName>server</TargetName>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v120_xp</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -58,9 +58,6 @@
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</GenerateManifest>
     <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</PostBuildEventUseInBuild>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <RunCodeAnalysis>true</RunCodeAnalysis>
-  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <PreBuildEvent>
       <Command>if EXIST ..\..\..\game\mod_episodic\bin\.\$(TargetFileName) for /f "delims=" %%A in ('attrib "..\..\..\game\mod_episodic\bin\.\$(TargetFileName)"') do set valveTmpIsReadOnly="%%A"
@@ -74,7 +71,7 @@ if ERRORLEVEL 1 exit /b 1
       <AdditionalOptions>/Zm200 /Gw</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\..\common;..\..\public;..\..\public\tier0;..\..\public\tier1;..\..\game\server\generated_proto_mod_episodic;..\..\thirdparty\protobuf-2.3.0\src;.\;..\..\game\shared;..\..\utils\common;..\..\game\shared\econ;..\..\game\server\NextBot;..\..\game\shared\hl2;..\..\game\shared\episodic;.\hl2;.\episodic</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>VPC;RAD_TELEMETRY_DISABLED;_HAS_ITERATOR_DEBUGGING=0;WIN32;_WIN32;_DEBUG;DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_ALLOW_RUNTIME_LIBRARY_MISMATCH;_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH;_ALLOW_MSC_VER_MISMATCH;%(PreprocessorDefinitions);COMPILER_MSVC32;COMPILER_MSVC32;COMPILER_MSVC;_DLL_EXT=.dll;DLLNAME=server;BINK_VIDEO;AVI_VIDEO;WMV_VIDEO;DEV_BUILD;FRAME_POINTER_OMISSION_DISABLED;GAME_DLL;VECTOR;VERSION_SAFE_STEAM_API_INTERFACES;PROTECTED_THINGS_ENABLE;sprintf=use_Q_snprintf_instead_of_sprintf;strncpy=use_Q_strncpy_instead;_snprintf=use_Q_snprintf_instead;fopen=dont_use_fopen;HL2_DLL;HL2_EPISODIC;USES_SAVERESTORE;_EXTERNAL_DLL_EXT=.dll;VPCGAMECAPS=VALVE;PROJECTDIR=C:\sourceproject\halflife2chaos\sp\src\game\server;_DLL_EXT=.dll;VPCGAME=valve;SOURCE1=1</PreprocessorDefinitions>
+      <PreprocessorDefinitions>VPC;RAD_TELEMETRY_DISABLED;_HAS_ITERATOR_DEBUGGING=0;WIN32;_WIN32;_DEBUG;DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_ALLOW_RUNTIME_LIBRARY_MISMATCH;_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH;_ALLOW_MSC_VER_MISMATCH;%(PreprocessorDefinitions);COMPILER_MSVC32;COMPILER_MSVC32;COMPILER_MSVC;_DLL_EXT=.dll;DLLNAME=server;BINK_VIDEO;AVI_VIDEO;WMV_VIDEO;DEV_BUILD;FRAME_POINTER_OMISSION_DISABLED;GAME_DLL;VECTOR;VERSION_SAFE_STEAM_API_INTERFACES;PROTECTED_THINGS_ENABLE;sprintf=use_Q_snprintf_instead_of_sprintf;strncpy=use_Q_strncpy_instead;_snprintf=use_Q_snprintf_instead;fopen=dont_use_fopen;HL2_DLL;HL2_EPISODIC;USES_SAVERESTORE;_EXTERNAL_DLL_EXT=.dll;VPCGAMECAPS=VALVE;PROJECTDIR=C:\sourceproject\halflife2chaos\sp\src\game\server;_DLL_EXT=.dll;SOURCE1=1;VPCGAME=valve</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <ExceptionHandling>false</ExceptionHandling>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -100,7 +97,6 @@ if ERRORLEVEL 1 exit /b 1
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <BrowseInformationFile>$(IntDir)/</BrowseInformationFile>
       <ErrorReporting>Prompt</ErrorReporting>
-      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>;_DEBUG;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -119,8 +115,7 @@ if ERRORLEVEL 1 exit /b 1
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(IntDir)/$(TargetName).pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
-      <BaseAddress>
-      </BaseAddress>
+      <BaseAddress> </BaseAddress>
       <TargetMachine>MachineX86</TargetMachine>
       <LinkErrorReporting>PromptImmediately</LinkErrorReporting>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -174,7 +169,7 @@ if ERRORLEVEL 1 exit /b 1
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>..\..\common;..\..\public;..\..\public\tier0;..\..\public\tier1;..\..\game\server\generated_proto_mod_episodic;..\..\thirdparty\protobuf-2.3.0\src;.\;..\..\game\shared;..\..\utils\common;..\..\game\shared\econ;..\..\game\server\NextBot;..\..\game\shared\hl2;..\..\game\shared\episodic;.\hl2;.\episodic</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>VPC;RAD_TELEMETRY_DISABLED;WIN32;_WIN32;NDEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_ALLOW_RUNTIME_LIBRARY_MISMATCH;_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH;_ALLOW_MSC_VER_MISMATCH;%(PreprocessorDefinitions);COMPILER_MSVC32;COMPILER_MSVC32;COMPILER_MSVC;_DLL_EXT=.dll;DLLNAME=server;BINK_VIDEO;AVI_VIDEO;WMV_VIDEO;DEV_BUILD;FRAME_POINTER_OMISSION_DISABLED;GAME_DLL;VECTOR;VERSION_SAFE_STEAM_API_INTERFACES;PROTECTED_THINGS_ENABLE;sprintf=use_Q_snprintf_instead_of_sprintf;strncpy=use_Q_strncpy_instead;_snprintf=use_Q_snprintf_instead;fopen=dont_use_fopen;HL2_DLL;HL2_EPISODIC;USES_SAVERESTORE;_EXTERNAL_DLL_EXT=.dll;VPCGAMECAPS=VALVE;PROJECTDIR=C:\sourceproject\halflife2chaos\sp\src\game\server;_DLL_EXT=.dll;VPCGAME=valve;SOURCE1=1</PreprocessorDefinitions>
+      <PreprocessorDefinitions>VPC;RAD_TELEMETRY_DISABLED;WIN32;_WIN32;NDEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_ALLOW_RUNTIME_LIBRARY_MISMATCH;_ALLOW_ITERATOR_DEBUG_LEVEL_MISMATCH;_ALLOW_MSC_VER_MISMATCH;%(PreprocessorDefinitions);COMPILER_MSVC32;COMPILER_MSVC32;COMPILER_MSVC;_DLL_EXT=.dll;DLLNAME=server;BINK_VIDEO;AVI_VIDEO;WMV_VIDEO;DEV_BUILD;FRAME_POINTER_OMISSION_DISABLED;GAME_DLL;VECTOR;VERSION_SAFE_STEAM_API_INTERFACES;PROTECTED_THINGS_ENABLE;sprintf=use_Q_snprintf_instead_of_sprintf;strncpy=use_Q_strncpy_instead;_snprintf=use_Q_snprintf_instead;fopen=dont_use_fopen;HL2_DLL;HL2_EPISODIC;USES_SAVERESTORE;_EXTERNAL_DLL_EXT=.dll;VPCGAMECAPS=VALVE;PROJECTDIR=C:\sourceproject\halflife2chaos\sp\src\game\server;_DLL_EXT=.dll;SOURCE1=1;VPCGAME=valve</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <ExceptionHandling>false</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -220,8 +215,7 @@ if ERRORLEVEL 1 exit /b 1
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>false</EnableCOMDATFolding>
-      <BaseAddress>
-      </BaseAddress>
+      <BaseAddress> </BaseAddress>
       <TargetMachine>MachineX86</TargetMachine>
       <LinkErrorReporting>PromptImmediately</LinkErrorReporting>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -814,6 +808,7 @@ exit 1
     <ClInclude Include="hl2\npc_manhack.h" />
     <ClInclude Include="hl2\npc_metropolice.h" />
     <ClInclude Include="hl2\npc_playercompanion.h" />
+    <ClInclude Include="hl2\npc_PoisonZombie.h" />
     <ClInclude Include="hl2\npc_rollermine.h" />
     <ClInclude Include="hl2\npc_scanner.h" />
     <ClInclude Include="hl2\npc_stalker.h" />
@@ -832,6 +827,7 @@ exit 1
     <ClInclude Include="hl2\weapon_crowbar.h" />
     <ClInclude Include="hl2\weapon_physcannon.h" />
     <ClInclude Include="hl2\weapon_rpg.h" />
+    <ClInclude Include="hl2\weapon_slam.h" />
     <ClInclude Include="episodic\weapon_striderbuster.h" />
     <ClInclude Include="hl2\weapon_stunstick.h" />
     <ClInclude Include="hl2\grenade_beam.h" />
@@ -1447,6 +1443,7 @@ exit 1
     <ClCompile Include="hl2\weapon_pistol.cpp" />
     <ClCompile Include="hl2\weapon_rpg.cpp" />
     <ClCompile Include="hl2\weapon_shotgun.cpp" />
+    <ClCompile Include="hl2\weapon_slam.cpp" />
     <ClCompile Include="hl2\weapon_smg1.cpp" />
     <ClCompile Include="episodic\weapon_striderbuster.cpp" />
     <ClCompile Include="hl2\weapon_stunstick.cpp" />
@@ -1522,10 +1519,10 @@ exit 1
   <ItemGroup>
     <CustomBuild Include="..\..\public\tier0\pointeroverride.asm">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compiling pointeroverride.asm</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(VCInstallDir)bin\ml.exe" /safeseh /c /Cp /Zi /Fo"$(IntDir)\%(Filename).obj" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">&quot;$(VCInstallDir)bin\ml.exe&quot; /safeseh /c /Cp /Zi /Fo&quot;$(IntDir)\%(Filename).obj&quot; &quot;%(FullPath)&quot;</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)\%(Filename).obj</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compiling pointeroverride.asm</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(VCInstallDir)bin\ml.exe" /safeseh /c /Cp /Zi /Fo"$(IntDir)\%(Filename).obj" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">&quot;$(VCInstallDir)bin\ml.exe&quot; /safeseh /c /Cp /Zi /Fo&quot;$(IntDir)\%(Filename).obj&quot; &quot;%(FullPath)&quot;</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)\%(Filename).obj</Outputs>
     </CustomBuild>
     <CustomBuild Include="server_episodic.vpc">
