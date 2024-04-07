@@ -26,15 +26,13 @@
 
 #define	SLAM_PRIMARY_VOLUME		450
 
-ConVar    sk_plr_dmg_satchel		( "sk_plr_dmg_satchel","0");
-ConVar    sk_npc_dmg_satchel("sk_npc_dmg_satchel", "0");
-ConVar    sk_satchel_radius("sk_satchel_radius", "0");
+ConVar    sk_plr_dmg_satchel		( "sk_plr_dmg_satchel", "150");
+ConVar    sk_satchel_radius("sk_satchel_radius", "200");
 
 extern const char* g_pModelNameLaser;
 
-ConVar    sk_plr_dmg_tripmine("sk_plr_dmg_tripmine", "0");
-ConVar    sk_npc_dmg_tripmine("sk_npc_dmg_tripmine", "0");
-ConVar    sk_tripmine_radius("sk_tripmine_radius", "0");
+ConVar    sk_plr_dmg_tripmine("sk_plr_dmg_tripmine", "200");
+ConVar    sk_tripmine_radius("sk_tripmine_radius", "200");
 
 LINK_ENTITY_TO_CLASS(npc_tripmine, CTripmineGrenade);
 
@@ -372,8 +370,7 @@ void CSatchelCharge::KillSlideSound(void)
 void CSatchelCharge::SatchelUse(CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value)
 {
 	KillSlideSound();
-	SetThink(&CSatchelCharge::Detonate);
-	SetNextThink(gpGlobals->curtime);
+	Detonate();
 }
 
 //-----------------------------------------------------------------------------

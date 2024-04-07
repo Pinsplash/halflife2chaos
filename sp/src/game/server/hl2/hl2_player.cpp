@@ -5984,6 +5984,7 @@ void CChaosEffect::StartEffect()
 		ChaosSpawnWeapon("weapon_rpg", MAKE_STRING("Give All Weapons"), 3, "rpg_round");
 		ChaosSpawnWeapon("weapon_bugbait", MAKE_STRING("Give All Weapons"));
 		GlobalEntity_Add(MAKE_STRING("antlion_allied"), gpGlobals->mapname, GLOBAL_ON);//antlions become friendly
+		ChaosSpawnWeapon("weapon_slam", MAKE_STRING("Give All Weapons"), 5, "slam");
 		break;
 	case EFFECT_NADE_GUNS:
 		chaos_replace_bullets_with_grenades.SetValue(1);
@@ -6866,10 +6867,10 @@ void CERandomWeaponGive::StartEffect()
 {
 	UTIL_GetLocalPlayer()->EquipSuit();
 	int nRandom;
-	//TODO: harpoon, stunstick, slam, alyxgun, annabelle, citizenpackage, citizensuitcase, cubemap
+	//TODO: harpoon, stunstick, alyxgun, annabelle, citizenpackage, citizensuitcase, cubemap
 	for (int iWeaponAttempts = 0; iWeaponAttempts <= 30; iWeaponAttempts++)
 	{
-		nRandom = chaos_rng1.GetInt() == -1 ? random->RandomInt(0, 10) : chaos_rng1.GetInt();
+		nRandom = chaos_rng1.GetInt() == -1 ? random->RandomInt(0, 11) : chaos_rng1.GetInt();
 		if (nRandom == 0) if (ChaosSpawnWeapon("weapon_crowbar", MAKE_STRING("Give Crowbar"))) return;
 		if (nRandom == 1) if (ChaosSpawnWeapon("weapon_physcannon", MAKE_STRING("Give Gravity Gun"))) return;
 		if (nRandom == 2) if (ChaosSpawnWeapon("weapon_pistol", MAKE_STRING("Give Pistol"), 255, "Pistol")) return;
@@ -6888,6 +6889,7 @@ void CERandomWeaponGive::StartEffect()
 				return;
 			}
 		}
+		if (nRandom == 11) if (ChaosSpawnWeapon("weapon_slam", MAKE_STRING("Give S.L.A.M"), 5, "slam")) return;
 	}
 }
 void CERandomVehicle::StartEffect()
