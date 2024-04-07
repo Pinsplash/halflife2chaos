@@ -262,8 +262,8 @@ void CTripmineGrenade::Event_Killed(const CTakeDamageInfo &info)
 
 	SetThink(&CTripmineGrenade::DelayDeathThink);
 	SetNextThink(gpGlobals->curtime + 0.5);
-
-	EmitSound("TripmineGrenade.StopSound");
+	//no such sound
+	//EmitSound("TripmineGrenade.StopSound");
 }
 
 
@@ -590,7 +590,7 @@ void CSatchelCharge::Precache(void)
 	PrecacheModel("models/Weapons/w_slam.mdl");
 
 	PrecacheScriptSound("SatchelCharge.Pickup");
-	PrecacheScriptSound("SatchelCharge.Bounce");
+	PrecacheScriptSound("weapon.ImpactSoft");
 
 	PrecacheScriptSound("SatchelCharge.Slide");
 }
@@ -599,7 +599,7 @@ void CSatchelCharge::BounceSound(void)
 {
 	if (gpGlobals->curtime > m_flNextBounceSoundTime)
 	{
-		EmitSound("SatchelCharge.Bounce");
+		EmitSound("weapon.ImpactSoft");
 
 		m_flNextBounceSoundTime = gpGlobals->curtime + 0.1;
 	}
@@ -709,24 +709,11 @@ void CWeapon_SLAM::SetPickupTouch( void )
 void CWeapon_SLAM::SlamTouch( CBaseEntity *pOther )
 {
 	CBaseCombatCharacter* pBCC = ToBaseCombatCharacter( pOther );
-
-	// Can I even pick stuff up?
 	if ( pBCC && !pBCC->IsAllowedToPickupWeapons() )
 		return;
-
-	// ---------------------------------------------------
-	//  First give weapon to touching entity if allowed
-	// ---------------------------------------------------
 	BaseClass::DefaultTouch(pOther);
-
-	// ----------------------------------------------------
-	//  Give slam ammo if touching client
-	// ----------------------------------------------------
 	if (pOther->GetFlags() & FL_CLIENT)
 	{
-		// ------------------------------------------------
-		//  If already owned weapon of this type remove me
-		// ------------------------------------------------
 		CWeapon_SLAM* oldWeapon = (CWeapon_SLAM*)pBCC->Weapon_OwnsThisType( GetClassname() );
 		if (oldWeapon != this)
 		{
@@ -804,8 +791,6 @@ void CWeapon_SLAM::PrimaryAttack( void )
 //-----------------------------------------------------------------------------
 void CWeapon_SLAM::SecondaryAttack( void )
 {
-	return; // Nothin for now. SLAM's just a tripmine.
-
 	CBaseCombatCharacter *pOwner  = GetOwner();
 	if (!pOwner)
 	{
@@ -820,8 +805,8 @@ void CWeapon_SLAM::SecondaryAttack( void )
 	{
 		if (m_tSlamState == SLAM_TRIPMINE_READY)
 		{
-			// Play sound for going to throw mode
-			EmitSound( "Weapon_SLAM.ThrowMode" );
+			// Play sound for going to throw mode - no such sound
+			//EmitSound( "Weapon_SLAM.ThrowMode" );
 
 			if (CanAttachSLAM())
 			{
@@ -836,8 +821,8 @@ void CWeapon_SLAM::SecondaryAttack( void )
 		}
 		else
 		{
-			// Play sound for going to tripmine mode
-			EmitSound( "Weapon_SLAM.TripMineMode" );
+			// Play sound for going to tripmine mode - don't play here, there's an anim event for this already
+			//EmitSound( "Weapon_SLAM.TripMineMode" );
 
 			if (m_tSlamState == SLAM_SATCHEL_ATTACH)
 			{
@@ -967,8 +952,8 @@ void CWeapon_SLAM::TripmineAttach( void )
 			pMine->m_hOwner = GetOwner();
 
 			pOwner->RemoveAmmo( 1, m_iSecondaryAmmoType );
-
-			EmitSound( "Weapon_SLAM.TripMineAttach" );
+			//no such sound
+			//EmitSound( "Weapon_SLAM.TripMineAttach" );
 		}
 	}
 }
@@ -1129,8 +1114,8 @@ void CWeapon_SLAM::SatchelAttach( void )
 			angles.y -= 90;
 			angles.z -= 90;
 			tr.endpos.z -= 6.0f;
-
-			EmitSound( "Weapon_SLAM.SatchelAttach" );
+			//no such sound
+			//EmitSound( "Weapon_SLAM.SatchelAttach" );
 		
 			CSatchelCharge *pSatchel	= (CSatchelCharge*)CBaseEntity::Create( "npc_satchel", tr.endpos + tr.plane.normal * 3, angles, NULL );
 			pSatchel->SetMoveType( MOVETYPE_FLY ); // no gravity
@@ -1476,8 +1461,11 @@ void CWeapon_SLAM::WeaponIdle( void )
 		}
 		else if (pOwner->GetAmmoCount(m_iSecondaryAmmoType) <= 0)
 		{
+			//this was making the weapon disappear once the pickup animation was finished
+			/*
 			pOwner->Weapon_Drop( this );
 			UTIL_Remove(this);
+			*/
 		}
 
 		// If I don't need to reload just do the appropriate idle

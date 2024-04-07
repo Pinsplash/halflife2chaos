@@ -1,0 +1,16 @@
+"VertexLitGeneric"
+{
+	// Original shader: VertexLitSelfIlluminatedTexture
+	"$basetexture" "models/Weapons/w_slam/wslamnewlight1"
+	"$selfillum" 1
+	"Proxies"
+	{
+		"Sine"
+		{
+			"resultVar" "$selfIllumTint"
+			"sinemin" 0.10
+			"sinemax" 1.00
+			"sineperiod" 0.30
+		}
+	}
+}
