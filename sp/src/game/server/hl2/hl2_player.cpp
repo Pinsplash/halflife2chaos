@@ -2158,6 +2158,7 @@ void CHL2_Player::StartGame()
 		{
 			g_ChaosEffects[EFFECT_SPAWN_VEHICLE]->ChaosSpawnVehicle("prop_vehicle_airboat", MAKE_STRING("Spawn Airboat"), SPAWNTYPE_VEHICLE, "models/airboat.mdl", "airboat", "scripts/vehicles/airboat.txt");
 		}
+		return;
 	}
 	//remove the fucky-wucky triggers so that invert gravity doesn't softlock you
 	if (!Q_strcmp(pMapName, "d2_coast_04"))
@@ -2169,6 +2170,54 @@ void CHL2_Player::StartGame()
 			g_EventQueue.AddEvent(pFallTrigger, "Kill", emptyVariant, 0.1f, this, this);
 			pFallTrigger = gEntList.FindEntityByName(pFallTrigger, "fall_trigger");
 		}
+		return;
+	}
+	//this map doesn't spawn you with items, and the spawn is in the wrong place!
+	if (!Q_strcmp(pMapName, "d2_coast_08") && gpGlobals->eLoadType == MapLoad_NewGame)
+	{
+		//move spawn to better place
+		CBaseEntity *pSpawn = gEntList.FindEntityByClassname(NULL, "info_player_start");//there's only one spawn on this map, so this will always work
+		pSpawn->SetAbsOrigin(Vector(3328, 1500, 1580));//bridge start
+		pSpawn->SetAbsAngles(QAngle(0, 270, 0));
+		//spawn weapons on the spawn point, not the player
+		Vector vecOrigin = pSpawn->GetAbsOrigin() + Vector(0, 0, 32);
+		static const char *strWeapons[] = { "weapon_crowbar", "weapon_physcannon", "weapon_pistol", "weapon_357", "weapon_smg1", "weapon_ar2", "weapon_shotgun", "weapon_crossbow", "weapon_frag", "weapon_rpg" };
+		EquipSuit();
+		for (int i = 0; i < 10; i++)
+		{
+			CBaseEntity *pItem = (CBaseEntity *)CreateEntityByName(strWeapons[i]);
+			if (pItem)
+			{
+				pItem->SetAbsOrigin(vecOrigin);
+				pItem->Spawn();
+				pItem->Activate();
+			}
+		}
+		//spawn 16 item_dynamic_resupply's on us.
+		for (int i = 0; i < 16; i++)
+		{
+			CBaseEntity *pItem = (CBaseEntity *)CreateEntityByName("item_dynamic_resupply");
+			if (pItem)
+			{
+				//settings taken from prison 04
+				pItem->SetAbsOrigin(vecOrigin);
+				pItem->KeyValue("DesiredHealth", "1.0");
+				pItem->KeyValue("DesiredArmor", "0.5");
+				pItem->KeyValue("DesiredAmmoPistol", "1.0");
+				pItem->KeyValue("DesiredAmmoSMG1", "1.0");
+				pItem->KeyValue("DesiredAmmoSMG1_Grenade", "1.0");
+				pItem->KeyValue("DesiredAmmoAR2", "1.0");
+				pItem->KeyValue("DesiredAmmoBuckshot", "0.5");
+				pItem->KeyValue("DesiredAmmoRPG_Round", "1.0");
+				pItem->KeyValue("DesiredAmmoGrenade", "0.5");
+				pItem->KeyValue("DesiredAmmo357", "0.5");
+				pItem->KeyValue("DesiredAmmoCrossbow", "0.5");
+				pItem->KeyValue("DesiredAmmoAR2_AltFire", "0");
+				pItem->Spawn();
+				pItem->Activate();
+			}
+		}
+		return;
 	}
 	//this map doesn't spawn you with items!
 	if (!Q_strcmp(pMapName, "d2_prison_05") && gpGlobals->eLoadType == MapLoad_NewGame)
@@ -2211,6 +2260,7 @@ void CHL2_Player::StartGame()
 				pItem->Activate();
 			}
 		}
+		return;
 	}
 	//weapon destruction part requires a gravity gun in order to finish, but what if we lost it?
 	if (!Q_strcmp(pMapName, "d3_citadel_03"))
@@ -2220,6 +2270,7 @@ void CHL2_Player::StartGame()
 		{
 			g_ChaosEffects[EFFECT_GIVE_WEAPON]->ChaosSpawnWeapon("weapon_physcannon", MAKE_STRING("Give Gravity Gun"));
 		}
+		return;
 	}
 }
 //-----------------------------------------------------------------------------
