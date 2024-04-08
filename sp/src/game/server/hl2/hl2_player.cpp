@@ -2150,8 +2150,6 @@ void CHL2_Player::PlayerRunCommand(CUserCmd *ucmd, IMoveHelper *moveHelper)
 }
 void CHL2_Player::StartGame()
 {
-	//if (!m_pController)
-	//	m_pController = physenv->CreateMotionController(this);
 	const char *pMapName = STRING(gpGlobals->mapname);
 	//scripting of canals 11 requires an airboat to be present, give player a new one if they came here without one
 	if (!Q_strcmp(pMapName, "d1_canals_11"))
@@ -2170,6 +2168,48 @@ void CHL2_Player::StartGame()
 		{
 			g_EventQueue.AddEvent(pFallTrigger, "Kill", emptyVariant, 0.1f, this, this);
 			pFallTrigger = gEntList.FindEntityByName(pFallTrigger, "fall_trigger");
+		}
+	}
+	//this map doesn't spawn you with items!
+	if (!Q_strcmp(pMapName, "d2_prison_05") && gpGlobals->eLoadType == MapLoad_NewGame)
+	{
+		//spawning a weapon on top of the player is a weirdly difficult task at this point in code because the player hasn't been moved to their spawn point yet
+		Vector vecOrigin = EntSelectSpawnPoint()->GetAbsOrigin() + Vector(0, 0, 32);
+		static const char *strWeapons[] = { "weapon_crowbar", "weapon_physcannon", "weapon_pistol", "weapon_357", "weapon_smg1", "weapon_ar2", "weapon_shotgun", "weapon_crossbow", "weapon_frag", "weapon_rpg", "weapon_bugbait" };
+		EquipSuit();
+		for (int i = 0; i < 11; i++)
+		{
+			CBaseEntity *pItem = (CBaseEntity *)CreateEntityByName(strWeapons[i]);
+			if (pItem)
+			{
+				pItem->SetAbsOrigin(vecOrigin);
+				pItem->Spawn();
+				pItem->Activate();
+			}
+		}
+		//spawn 16 item_dynamic_resupply's on us.
+		for (int i = 0; i < 16; i++)
+		{
+			CBaseEntity *pItem = (CBaseEntity *)CreateEntityByName("item_dynamic_resupply");
+			if (pItem)
+			{
+				//settings taken from prison 04
+				pItem->SetAbsOrigin(vecOrigin);
+				pItem->KeyValue("DesiredHealth", "1.0");
+				pItem->KeyValue("DesiredArmor", "0.5");
+				pItem->KeyValue("DesiredAmmoPistol", "1.0");
+				pItem->KeyValue("DesiredAmmoSMG1", "1.0");
+				pItem->KeyValue("DesiredAmmoSMG1_Grenade", "1.0");
+				pItem->KeyValue("DesiredAmmoAR2", "1.0");
+				pItem->KeyValue("DesiredAmmoBuckshot", "0.5");
+				pItem->KeyValue("DesiredAmmoRPG_Round", "1.0");
+				pItem->KeyValue("DesiredAmmoGrenade", "0.5");
+				pItem->KeyValue("DesiredAmmo357", "0.5");
+				pItem->KeyValue("DesiredAmmoCrossbow", "0.5");
+				pItem->KeyValue("DesiredAmmoAR2_AltFire", "0");
+				pItem->Spawn();
+				pItem->Activate();
+			}
 		}
 	}
 	//weapon destruction part requires a gravity gun in order to finish, but what if we lost it?
