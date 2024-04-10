@@ -499,7 +499,7 @@ public:
 class CEUseSpam : public CChaosEffect
 {
 public:
-	void MaintainEffect() override;
+	void FastThink() override;
 	float m_flLastUseThink = -1;
 };
 class CENoBrake : public CChaosEffect

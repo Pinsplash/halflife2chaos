@@ -8882,16 +8882,9 @@ bool CEFloorIsLava::CheckStrike(const CTakeDamageInfo &info)
 {
 	return (info.GetDamageType() & DMG_BURN) != 0;
 }
-void CEUseSpam::MaintainEffect()
+void CEUseSpam::FastThink()
 {
-	//apparently maintain effect can become desynced or something, so yeah
-	//if (m_flLastUseThink < gpGlobals->curtime)
-	//{
-	//i don't know why, but the wait amounts don't match up with what really happens. despite this command string looking like it should last for 4 seconds, it only lasts for 1
-		engine->ClientCommand(engine->PEntityOfEntIndex(1),
-			"+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;+use;wait 5;-use;wait 5;\n");
-	//	m_flLastUseThink = gpGlobals->curtime + 1;
-	//}
+	UTIL_GetLocalPlayer()->m_afButtonPressed |= IN_USE;
 }
 void CENoBrake::StartEffect()
 {
