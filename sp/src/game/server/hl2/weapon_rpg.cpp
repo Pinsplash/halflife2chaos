@@ -41,7 +41,7 @@
 
 #define	RPG_SPEED	1500
 
-static ConVar sk_apc_missile_damage("sk_apc_missile_damage", "69");
+static ConVar sk_apc_missile_damage("sk_apc_missile_damage", "15");
 ConVar rpg_missle_use_custom_detonators( "rpg_missle_use_custom_detonators", "1" );
 
 #define APC_MISSILE_DAMAGE	sk_apc_missile_damage.GetFloat()
@@ -1421,7 +1421,7 @@ CWeaponRPG::CWeaponRPG()
 	m_bHideGuiding = false;
 	m_bGuiding = false;
 
-	m_fMinRange1 = m_fMinRange2 = 40*12;
+	m_fMinRange1 = m_fMinRange2 = CMissile::EXPLOSION_RADIUS;
 	m_fMaxRange1 = m_fMaxRange2 = 500*12;
 }
 

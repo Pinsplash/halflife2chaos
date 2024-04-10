@@ -25,6 +25,11 @@ ipch
 *.codeanalysisast
 *.nativecodeanalysis.all.xml
 *.pchast
+**/FileContentIndex/*
+Browse.VC.db
+Solution.VC.db
+DocumentLayout.json
+fileList.bin
 
 # OSX/Linux build products
 *.mak

@@ -5325,6 +5325,7 @@ ConVar chaos_prob_steal_health("chaos_prob_steal_health", "100");
 ConVar chaos_prob_suit_swap("chaos_prob_suit_swap", "100");
 ConVar chaos_prob_yawroll("chaos_prob_yawroll", "100");
 ConVar chaos_prob_normalvision("chaos_prob_normalvision", "100");
+ConVar chaos_prob_giveallrpg("chaos_prob_giveallrpg", "100");
 //ConVar chaos_prob_evil_eli("chaos_prob_evil_eli", "100");
 //ConVar chaos_prob_evil_breen("chaos_prob_evil_breen", "100");
 #define ERROR_WEIGHT 1
@@ -5413,6 +5414,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CESuitSwap>(EFFECT_SUIT_SWAP,				MAKE_STRING("Swap Health & Suit Power"),	EC_NONE,									-1,											chaos_prob_suit_swap.GetInt());
 	CreateEffect<>(EFFECT_YAWROLL,							MAKE_STRING("Yaw Is Roll"),					EC_NONE,									chaos_time_yawroll.GetFloat(),				chaos_prob_yawroll.GetInt());
 	CreateEffect<>(EFFECT_NORMAL_VISION,					MAKE_STRING("Normal Vision"),				EC_NONE,									chaos_time_normalvision.GetFloat(),			chaos_prob_normalvision.GetInt());
+	CreateEffect<CEGiveAllRPG>(EFFECT_GIVE_ALL_RPG,			MAKE_STRING("Give Everyone RPGs"),			EC_NONE,									-1,											chaos_prob_normalvision.GetInt());
 	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_ELI,				MAKE_STRING("Evil Eli"),					EC_HAS_WEAPON,								-1,											chaos_prob_evil_eli.GetInt());
 	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_BREEN,			MAKE_STRING("Hands-on Dr. Breen"),			EC_HAS_WEAPON,								-1,											chaos_prob_evil_breen.GetInt());
 }
@@ -9126,5 +9128,19 @@ void CESuitSwap::StartEffect()
 		variant_t variant;
 		variant.SetInt(-1);
 		UTIL_GetLocalPlayer()->AcceptInput("SetHealth", UTIL_GetLocalPlayer(), UTIL_GetLocalPlayer(), variant, 0);
+	}
+}
+void CEGiveAllRPG::StartEffect()
+{
+	//player
+	ChaosSpawnWeapon("weapon_rpg", MAKE_STRING("Give Everyone RPGs"), 3, "rpg_round");
+	//NPCs
+	CBaseEntity *pEnt = gEntList.FindEntityByClassname(NULL, "npc*");
+	while (pEnt)
+	{
+		CAI_BaseNPC *pNPC = dynamic_cast<CAI_BaseNPC*>(pEnt);
+		if (pNPC)
+			pNPC->GiveWeapon(MAKE_STRING("weapon_rpg"));
+		pEnt = gEntList.FindEntityByClassname(pEnt, "npc*");
 	}
 }

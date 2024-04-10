@@ -97,6 +97,7 @@ enum Effect_T
 	EFFECT_SUIT_SWAP,
 	EFFECT_YAWROLL,
 	EFFECT_NORMAL_VISION,
+	EFFECT_GIVE_ALL_RPG,
 	//EFFECT_EVIL_ELI,
 	//EFFECT_EVIL_BREEN,
 
@@ -564,6 +565,11 @@ public:
 	void MaintainEffect() override;
 };
 class CESuitSwap : public CChaosEffect
+{
+public:
+	void StartEffect() override;
+};
+class CEGiveAllRPG : public CChaosEffect
 {
 public:
 	void StartEffect() override;

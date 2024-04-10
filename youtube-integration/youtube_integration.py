@@ -256,6 +256,8 @@ def script_properties():
 
     def reconnect(*args, **kwargs):
         global chat_thread
+        if chat is None:
+            return
         print("reconnecting to youtube")
         chat.terminate()
         chat_thread.join()
