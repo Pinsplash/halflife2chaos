@@ -7597,6 +7597,11 @@ void CENPCRels::DoNPCRels(int disposition, bool bRevert)
 				}
 			}
 		}
+		if (disposition == D_FR)
+		{
+			variant_t emptyVariant;
+			pSubject->AcceptInput("SetReadinessPanic", pSubject, pSubject, emptyVariant, 0);
+		}
 	}
 }
 void CENPCRels::StopEffect()
