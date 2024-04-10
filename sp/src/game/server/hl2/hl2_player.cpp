@@ -5414,7 +5414,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CESuitSwap>(EFFECT_SUIT_SWAP,				MAKE_STRING("Swap Health & Suit Power"),	EC_NONE,									-1,											chaos_prob_suit_swap.GetInt());
 	CreateEffect<>(EFFECT_YAWROLL,							MAKE_STRING("Yaw Is Roll"),					EC_NONE,									chaos_time_yawroll.GetFloat(),				chaos_prob_yawroll.GetInt());
 	CreateEffect<>(EFFECT_NORMAL_VISION,					MAKE_STRING("Normal Vision"),				EC_NONE,									chaos_time_normalvision.GetFloat(),			chaos_prob_normalvision.GetInt());
-	CreateEffect<CEGiveAllRPG>(EFFECT_GIVE_ALL_RPG,			MAKE_STRING("Give Everyone RPGs"),			EC_NONE,									-1,											chaos_prob_normalvision.GetInt());
+	CreateEffect<CEGiveAllRPG>(EFFECT_GIVE_ALL_RPG,			MAKE_STRING("Give Everyone RPGs"),			EC_NONE,									-1,											chaos_prob_giveallrpg.GetInt());
 	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_ELI,				MAKE_STRING("Evil Eli"),					EC_HAS_WEAPON,								-1,											chaos_prob_evil_eli.GetInt());
 	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_BREEN,			MAKE_STRING("Hands-on Dr. Breen"),			EC_HAS_WEAPON,								-1,											chaos_prob_evil_breen.GetInt());
 }
