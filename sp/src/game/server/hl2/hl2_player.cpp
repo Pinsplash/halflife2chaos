@@ -166,6 +166,16 @@ ConVar chaos_unstuck_neweffect("chaos_unstuck_neweffect", "1", FCVAR_NONE, "Get 
 ConVar chaos_shuffle_mode("chaos_shuffle_mode", "0");
 ConVar chaos_shuffle_debug("chaos_shuffle_debug", "0");
 
+CON_COMMAND(logex, "logic explosion")
+{
+	CBaseEntity *pEnt = gEntList.FirstEnt();
+	while (pEnt)
+	{
+		pEnt->LogicExplode();
+		pEnt = gEntList.NextEnt(pEnt);
+	}
+}
+
 void RandomizeReadiness(CBaseEntity *pNPC)
 {
 	variant_t emptyVariant;

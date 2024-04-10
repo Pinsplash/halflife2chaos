@@ -7580,3 +7580,98 @@ bool CBaseEntity::PutAtNearestNode(float flMaxDist, bool bNoDebug)
 		}
 	}
 }
+void CBaseEntity::LogicExplode()
+{
+	int nRandom = random->RandomInt(0, 17);
+	CUtlVector<CBaseEntity *> ents;
+	variant_t variant;
+	switch (nRandom)
+	{
+	case 0:
+		AcceptInput("Kill", this, this, variant, 0);
+	//skipped killhierarchy
+	case 1:
+		AcceptInput("Use", this, this, variant, 0);
+	case 2:
+		nRandom = random->RandomInt(0, 255);
+		variant.SetInt(nRandom);
+		AcceptInput("Alpha", this, this, variant, 0);
+	case 3:
+		nRandom = random->RandomInt(0, 1);
+		variant.SetBool(nRandom);
+		AcceptInput("AlternativeSorting", this, this, variant, 0);
+	case 4:
+		char szcolor[2048];
+		int r = random->RandomInt(0, 255);
+		int g = random->RandomInt(0, 255);
+		int b = random->RandomInt(0, 255);
+		Q_snprintf(szcolor, sizeof(szcolor), "%i %i %i", r, g, b);
+		Msg("%s\n", szcolor);
+		variant.SetString(MAKE_STRING(szcolor));
+		AcceptInput("Color", this, this, variant, 0);
+	case 5:
+		if (gEntList.NextEnt(this))
+		{
+			SetParent(gEntList.NextEnt(this));
+		}
+	case 6:
+	case 7:
+		if (GetParent())
+		{
+			CStudioHdr *hdr = GetParent()->GetBaseAnimating()->GetModelPtr();
+			if (!hdr)
+				return;
+			// First move them all matching attachments into a list
+			CUtlVector<int> matchingAttachments;
+			// Extract the bone index from the name
+			for (int i = 0; i < hdr->GetNumAttachments(); i++)
+			{
+				matchingAttachments.AddToTail(i);
+			}
+			// Then randomly return one of the attachments
+			// NOTE: Currently, the network uses 0 to mean "no attachment" 
+			// thus the client must add one to the index of the attachment
+			// UNDONE: Make the server do this too to be consistent.
+			if (matchingAttachments.Size() > 0)
+				SetParent(m_pParent, matchingAttachments[RandomInt(0, matchingAttachments.Size() - 1)] + 1);
+			if (nRandom == 6)
+			{
+				SetLocalOrigin(vec3_origin);
+				SetLocalAngles(vec3_angle);
+			}
+		}
+	case 8:
+		AcceptInput("ClearParent", this, this, variant, 0);
+	case 9:
+		CBaseEntity *pEnt = gEntList.FindEntityByClassname(NULL, "fil*");
+		while (pEnt)
+		{
+			ents.AddToTail(pEnt);
+			pEnt = gEntList.FindEntityByClassname(NULL, "fil*");
+		}
+		variant.SetString(ents[random->RandomInt(0, ents.Size() - 1)]->GetEntityName());
+		AcceptInput("SetDamageFilter", this, this, variant, 0);
+	case 10:
+		AcceptInput("EnableDamageForces", this, this, variant, 0);
+	case 11:
+		AcceptInput("DisableDamageForces", this, this, variant, 0);
+	//skipped dispatcheffect
+	//skipped dispatchresponse
+	//skipped AddContext
+	//skipped RemoveContext
+	//skipped ClearContext
+	case 12:
+		AcceptInput("DisableShadow", this, this, variant, 0);
+	case 13:
+		AcceptInput("EnableShadow", this, this, variant, 0);
+	//skipped addoutput
+	case 14:
+		AcceptInput("FireUser1", this, this, variant, 0);
+	case 15:
+		AcceptInput("FireUser2", this, this, variant, 0);
+	case 16:
+		AcceptInput("FireUser3", this, this, variant, 0);
+	case 17:
+		AcceptInput("FireUser4", this, this, variant, 0);
+	}
+}
