@@ -274,5 +274,17 @@ int CAI_GoalEntity::DrawDebugTextOverlays()
 		
 	return offset;
 }
-
-
+void CAI_GoalEntity::LogicExplode()
+{
+	int nRandom = random->RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+	case 0:
+		AcceptInput("Activate", this, this, variant, 0);
+	case 1:
+		AcceptInput("Deactivate", this, this, variant, 0);
+	case 2:
+		BaseClass::LogicExplode();
+	}
+}

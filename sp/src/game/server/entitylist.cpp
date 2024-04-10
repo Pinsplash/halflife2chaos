@@ -1633,4 +1633,17 @@ CON_COMMAND(report_simthinklist, "Lists all simulating/thinking entities")
 	}
 	list.ReportEntityList();
 }
-
+CBaseEntity *CGlobalEntityList::RandomEntityByClassname(const char *szName)
+{
+	CUtlVector<CBaseEntity *> ents;
+	CBaseEntity *pEnt = gEntList.FindEntityByClassname(NULL, szName);
+	while (pEnt)
+	{
+		ents.AddToTail(pEnt);
+		pEnt = gEntList.FindEntityByClassname(pEnt, szName);
+	}
+	if (ents.Size() != 0)
+		return ents[RandomInt(0, ents.Size() - 1)];
+	else
+		return NULL;
+}

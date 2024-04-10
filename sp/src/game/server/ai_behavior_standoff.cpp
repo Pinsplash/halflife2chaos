@@ -1197,7 +1197,7 @@ public:
 		m_bAbandonIfEnemyHides = false;
 		m_customParams = AI_DEFAULT_STANDOFF_PARAMS;
 	}
-
+	virtual void LogicExplode();
 	//---------------------------------
 
 	void EnableGoal( CAI_BaseNPC *pAI )	
@@ -1336,3 +1336,17 @@ BEGIN_DATADESC( CAI_StandoffGoal )
 END_DATADESC()
 
 ///-----------------------------------------------------------------------------
+
+void CAI_StandoffGoal::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+	case 0:
+		variant.SetInt(RandomInt(0, 5));
+		AcceptInput("SetAggressiveness", this, this, variant, 0);
+	case 1:
+		BaseClass::LogicExplode();
+	}
+}

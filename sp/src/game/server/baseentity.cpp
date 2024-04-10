@@ -7583,8 +7583,8 @@ bool CBaseEntity::PutAtNearestNode(float flMaxDist, bool bNoDebug)
 void CBaseEntity::LogicExplode()
 {
 	int nRandom = random->RandomInt(0, 17);
-	CUtlVector<CBaseEntity *> ents;
 	variant_t variant;
+	int r, g, b;
 	switch (nRandom)
 	{
 	case 0:
@@ -7593,18 +7593,16 @@ void CBaseEntity::LogicExplode()
 	case 1:
 		AcceptInput("Use", this, this, variant, 0);
 	case 2:
-		nRandom = random->RandomInt(0, 255);
-		variant.SetInt(nRandom);
+		variant.SetInt(RandomInt(0, 255));
 		AcceptInput("Alpha", this, this, variant, 0);
 	case 3:
-		nRandom = random->RandomInt(0, 1);
-		variant.SetBool(nRandom);
+		variant.SetBool(RandomInt(0, 1) == 0);
 		AcceptInput("AlternativeSorting", this, this, variant, 0);
 	case 4:
 		char szcolor[2048];
-		int r = random->RandomInt(0, 255);
-		int g = random->RandomInt(0, 255);
-		int b = random->RandomInt(0, 255);
+		r = RandomInt(0, 255);
+		g = RandomInt(0, 255);
+		b = RandomInt(0, 255);
 		Q_snprintf(szcolor, sizeof(szcolor), "%i %i %i", r, g, b);
 		Msg("%s\n", szcolor);
 		variant.SetString(MAKE_STRING(szcolor));
@@ -7643,13 +7641,7 @@ void CBaseEntity::LogicExplode()
 	case 8:
 		AcceptInput("ClearParent", this, this, variant, 0);
 	case 9:
-		CBaseEntity *pEnt = gEntList.FindEntityByClassname(NULL, "fil*");
-		while (pEnt)
-		{
-			ents.AddToTail(pEnt);
-			pEnt = gEntList.FindEntityByClassname(NULL, "fil*");
-		}
-		variant.SetString(ents[random->RandomInt(0, ents.Size() - 1)]->GetEntityName());
+		variant.SetString(gEntList.RandomEntityByClassname("fil*")->GetEntityName());
 		AcceptInput("SetDamageFilter", this, this, variant, 0);
 	case 10:
 		AcceptInput("EnableDamageForces", this, this, variant, 0);

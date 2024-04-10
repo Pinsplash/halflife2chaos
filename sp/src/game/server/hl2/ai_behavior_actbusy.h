@@ -224,7 +224,7 @@ public:
 
 	int GetType() { return m_iType; }
 	bool IsCombatActBusyTeleportAllowed()	{ return m_bAllowCombatActBusyTeleport; }
-
+	virtual void LogicExplode();
 protected:
 	CAI_ActBusyBehavior *GetBusyBehaviorForNPC( const char *pszActorName, CBaseEntity *pActivator, CBaseEntity *pCaller, const char *sInputName );
 	CAI_ActBusyBehavior *GetBusyBehaviorForNPC( CBaseEntity *pEntity, const char *sInputName );
@@ -279,7 +279,7 @@ public:
 	virtual void NPCAbortedMoveTo( CAI_BaseNPC *pNPC );
 	virtual void NPCFinishedBusy( CAI_BaseNPC *pNPC );
 	virtual void NPCStartedLeavingBusy( CAI_BaseNPC *pNPC );
-
+	virtual void LogicExplode();
 	virtual void InputActivate( inputdata_t &inputdata );
 	void		 InputPlayerStartedBlocking( inputdata_t &inputdata );
 	void		 InputPlayerStoppedBlocking( inputdata_t &inputdata );

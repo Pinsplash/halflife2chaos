@@ -3148,4 +3148,58 @@ CAI_ActBusyBehavior *CAI_ActBusyQueueGoal::GetQueueBehaviorForNPC( CAI_BaseNPC *
 	Assert( pBehavior );
 	return pBehavior;
 }
-
+void CAI_ActBusyGoal::LogicExplode()
+{
+	int nRandom = RandomInt(0, 3);
+	variant_t variant;
+	int iTries = 0;
+	CBaseEntity *pEnt;
+	switch (nRandom)
+	{
+	case 0:
+		m_flBusySearchRange = RandomInt(m_flBusySearchRange / 2, m_flBusySearchRange * 2);
+		AcceptInput("SetBusySearchRange", this, this, variant, 0);
+	//skipped ForceNPCToActBusy
+	case 1:
+	case 2:
+		pEnt = gEntList.RandomEntityByClassname("npc*");
+		while (pEnt)
+		{
+			if (pEnt->IsNPC() && pEnt->GetEntityName() != NULL_STRING)
+			{
+				variant.SetString(pEnt->GetEntityName());
+				if (nRandom == 1)
+					AcceptInput("ForceThisNPCToActBusy", this, this, variant, 0);
+				else
+					AcceptInput("ForceThisNPCToLeave", this, this, variant, 0);
+			}
+			else
+			{
+				iTries++;
+				pEnt = gEntList.RandomEntityByClassname("npc*");
+			}
+			if (iTries > 10)
+				break;
+		}
+	case 3:
+		BaseClass::LogicExplode();
+	}
+}
+void CAI_ActBusyQueueGoal::LogicExplode()
+{
+	int nRandom = RandomInt(0, 3);
+	variant_t variant;
+	switch (nRandom)
+	{
+	case 0:
+		variant.SetInt(RandomInt(1, 20));
+		AcceptInput("PlayerStartedBlocking", this, this, variant, 0);
+	case 1:
+		variant.SetInt(RandomInt(1, 20));
+		AcceptInput("PlayerStoppedBlocking", this, this, variant, 0);
+	case 2:
+		AcceptInput("MoveQueueUp", this, this, variant, 0);
+	case 3:
+		BaseClass::LogicExplode();
+	}
+}

@@ -1385,7 +1385,7 @@ public:
 
 	virtual void InputActivate( inputdata_t &inputdata );
 	virtual void InputDeactivate( inputdata_t &inputdata );
-	
+	virtual void LogicExplode();
 	DECLARE_DATADESC();
 private:
 
@@ -1689,5 +1689,17 @@ void CAI_LeadGoal_Weapon::InputActivate( inputdata_t &inputdata )
 	if ( pBehavior )
 	{
 		pBehavior->SetWaitForWeapon( m_iszWeaponName );
+	}
+}
+void CAI_LeadGoal::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+	case 0:
+		AcceptInput("SetSuccess", this, this, variant, 0);
+	case 1:
+		BaseClass::LogicExplode();
 	}
 }
