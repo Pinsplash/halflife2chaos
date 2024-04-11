@@ -29,7 +29,7 @@ public:
 	virtual void Spawn( void );
 	virtual void Activate( void );
 	bool CreateVPhysics( void );
-
+	virtual void LogicExplode();
 	virtual int BloodColor( void ) { return DONT_BLEED; }
 
 #if defined( HL2_DLL )
@@ -251,5 +251,17 @@ void CGunTarget::InputToggle( inputdata_t &inputdata )
 	else
 	{
 		Start();
+	}
+}
+void CGunTarget::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+	case 0:
+		AcceptInput("Toggle", this, this, variant, 0);
+	case 1:
+		BaseClass::LogicExplode();
 	}
 }

@@ -26,7 +26,7 @@ public:
 
 	void	Spawn( void );
 	void	MoveThink( void );
-
+	virtual void LogicExplode();
 	// Inputs
 	void InputInvertOn( inputdata_t &inputdata );
 	void InputInvertOff( inputdata_t &inputdata );
@@ -234,4 +234,17 @@ void CLookDoor::MoveThink(void)
 	// Move the door
 	SetPosition( flMove );
 }
-
+void CLookDoor::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+	case 0:
+		AcceptInput("InvertOn", this, this, variant, 0);
+	case 1:
+		AcceptInput("InvertOff", this, this, variant, 0);
+	case 2:
+		BaseClass::LogicExplode();
+	}
+}

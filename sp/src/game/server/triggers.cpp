@@ -992,7 +992,7 @@ class CTriggerLook : public CTriggerOnce
 {
 	DECLARE_CLASS( CTriggerLook, CTriggerOnce );
 public:
-
+	virtual void LogicExplode();
 	EHANDLE m_hLookTarget;
 	float m_flFieldOfView;
 	float m_flLookTime;			// How long must I look for
@@ -4011,7 +4011,7 @@ class CTriggerImpact : public CTriggerMultiple
 	DECLARE_CLASS( CTriggerImpact, CTriggerMultiple );
 public:
 	DECLARE_DATADESC();
-
+	virtual void LogicExplode();
 	float	m_flMagnitude;
 	float	m_flNoise;
 	float	m_flViewkick;
@@ -4848,4 +4848,67 @@ bool IsTriggerClass(CBaseEntity *pEntity)
 		return true;
 
 	return false;
+}
+void CBaseTrigger::LogicExplode()
+{
+	int nRandom = RandomInt(0, 4);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped enable and disable
+	case 0:
+		AcceptInput("Toggle", this, this, variant, 0);
+	case 1:
+		AcceptInput("TouchTest", this, this, variant, 0);
+	case 2:
+		AcceptInput("StartTouch", this, this, variant, 0);
+	case 3:
+		AcceptInput("EndTouch", this, this, variant, 0);
+	case 4:
+		BaseClass::LogicExplode();
+	}
+}
+void CTriggerHurt::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+	case 0:
+		variant.SetFloat(RandomFloat(m_flDamage / 2, m_flDamage * 2));
+		AcceptInput("SetDamage", this, this, variant, 0);
+	case 1:
+		BaseClass::LogicExplode();
+	}
+}
+void CTriggerLook::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+	case 0:
+		variant.SetFloat(RandomFloat(-1, 1));
+		AcceptInput("FieldOfView", this, this, variant, 0);
+	case 1:
+		variant.SetFloat(RandomFloat(m_flLookTime / 2, m_flLookTime * 2));
+		AcceptInput("LookTime", this, this, variant, 0);
+	case 2:
+		BaseClass::LogicExplode();
+	}
+}
+void CTriggerImpact::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+	case 0:
+		AcceptInput("Impact", this, this, variant, 0);
+	case 1:
+		variant.SetFloat(RandomFloat(m_flMagnitude / 2, m_flMagnitude * 2));
+		AcceptInput("SetMagnitude", this, this, variant, 0);
+	case 2:
+		BaseClass::LogicExplode();
+	}
 }

@@ -42,7 +42,7 @@ public:
 	bool KeyValue( const char *szKeyName, const char *szValue );
 	void Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value );
 	virtual int	ObjectCaps( void ) { return (BaseClass::ObjectCaps() | FCAP_CONTINUOUS_USE); }
-
+	virtual void LogicExplode();
 private:
 	void InputRecharge( inputdata_t &inputdata );
 	
@@ -773,5 +773,17 @@ void CNewRecharge::Off(void)
 		{
 			SetThink( NULL );
 		}
+	}
+}
+void CRecharge::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+	case 0:
+		AcceptInput("Recharge", this, this, variant, 0);
+	case 1:
+		BaseClass::LogicExplode();
 	}
 }

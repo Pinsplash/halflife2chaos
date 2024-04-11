@@ -1585,3 +1585,37 @@ void CMomentaryRotButton::Disable( void )
 {
 	m_bDisabled = true;
 }
+void CBaseButton::LogicExplode()
+{
+	int nRandom = RandomInt(0, 5);
+	variant_t variant;
+	switch (nRandom)
+	{
+	case 0:
+		AcceptInput("Lock", this, this, variant, 0);
+	case 1:
+		AcceptInput("Unlock", this, this, variant, 0);
+	case 2:
+		AcceptInput("Press", this, this, variant, 0);
+	case 3:
+		AcceptInput("PressIn", this, this, variant, 0);
+	case 4:
+		AcceptInput("PressOut", this, this, variant, 0);
+	case 5:
+		BaseClass::LogicExplode();
+	}
+}
+void CMomentaryRotButton::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+	case 0:
+		variant.SetFloat(RandomFloat(0, 1));
+		AcceptInput("SetPosition", this, this, variant, 0);
+	//skipped everything else cause they kinda sucked
+	case 1:
+		BaseClass::LogicExplode();
+	}
+}

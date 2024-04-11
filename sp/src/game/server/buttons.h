@@ -23,7 +23,7 @@ public:
 	void RotSpawn( void );
 	bool KeyValue( const char *szKeyName, const char *szValue );
 	int DrawDebugTextOverlays();
-
+	virtual void LogicExplode();
 protected:
 
 	void ButtonActivate( );
@@ -116,7 +116,7 @@ public:
 	void	OutputMovementComplete(void);
 	void	SetPositionMoveDone(void);
 	void	UpdateSelf( float value, bool bPlaySound );
-
+	virtual void LogicExplode();
 	void	PlaySound( void );
 	void	UpdateTarget( float value, CBaseEntity *pActivator );
 

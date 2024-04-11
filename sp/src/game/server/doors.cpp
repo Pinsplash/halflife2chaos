@@ -1431,3 +1431,23 @@ void CRotDoor::SetToggleState( int state )
 	else
 		SetLocalAngles( m_vecAngle1 );
 }
+void CBaseDoor::LogicExplode()
+{
+	int nRandom = RandomInt(0, 4);
+	variant_t variant;
+	switch (nRandom)
+	{
+	//skipped open and close
+	case 0:
+		AcceptInput("Toggle", this, this, variant, 0);
+	case 1:
+		AcceptInput("Lock", this, this, variant, 0);
+	case 2:
+		AcceptInput("Unlock", this, this, variant, 0);
+	case 3:
+		variant.SetFloat(RandomFloat(m_flSpeed / 2, m_flSpeed * 2));
+		AcceptInput("SetSpeed", this, this, variant, 0);
+	case 4:
+		BaseClass::LogicExplode();
+	}
+}

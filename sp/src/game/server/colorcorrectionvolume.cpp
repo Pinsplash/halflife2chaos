@@ -29,7 +29,7 @@ public:
 	DECLARE_DATADESC();
 
 	CColorCorrectionVolume();
-
+	virtual void LogicExplode();
 	void Spawn( void );
 	bool KeyValue( const char *szKeyName, const char *szValue );
 	int  UpdateTransmitState();
@@ -233,4 +233,18 @@ void CColorCorrectionVolume::InputEnable( inputdata_t &inputdata )
 void CColorCorrectionVolume::InputDisable( inputdata_t &inputdata )
 {
 	m_bEnabled = false;
+}
+void CColorCorrectionVolume::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+	case 0:
+		AcceptInput("Enable", this, this, variant, 0);
+	case 1:
+		AcceptInput("Disable", this, this, variant, 0);
+	case 2:
+		BaseClass::LogicExplode();
+	}
 }

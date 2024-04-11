@@ -227,7 +227,7 @@ public:
 	void Precache( void );
 	bool CreateVPhysics();
 	void Setup( void );
-
+	virtual void LogicExplode();
 	virtual void Blocked( CBaseEntity *pOther );
 	void PlatUse( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value );
 
@@ -730,7 +730,7 @@ public:
 	void Precache( void );
 	void Activate( void );
 	void OnRestore( void );
-
+	virtual void LogicExplode();
 	void SetupTarget( void );
 	void Blocked( CBaseEntity *pOther );
 	void Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value );
@@ -3374,5 +3374,31 @@ void CFuncTrackAuto::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYP
 		}
 
 		UpdateAutoTargets( m_targetState );
+	}
+}
+void CFuncPlat::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped goup and godown
+	case 0:
+		AcceptInput("Toggle", this, this, variant, 0);
+	case 1:
+		BaseClass::LogicExplode();
+	}
+}
+void CFuncTrain::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped start and stop
+	case 0:
+		AcceptInput("Toggle", this, this, variant, 0);
+	case 1:
+		BaseClass::LogicExplode();
 	}
 }

@@ -51,7 +51,7 @@ public:
 	DECLARE_CLASS( CBaseDoor, CBaseToggle );
 
 	DECLARE_SERVERCLASS();
-
+	virtual void LogicExplode();
 	void Spawn( void );
 	void Precache( void );
 	bool CreateVPhysics();

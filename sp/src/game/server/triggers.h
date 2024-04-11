@@ -48,7 +48,7 @@ class CBaseTrigger : public CBaseToggle
 	DECLARE_CLASS( CBaseTrigger, CBaseToggle );
 public:
 	CBaseTrigger();
-	
+	virtual void LogicExplode();
 	void Activate( void );
 	virtual void PostClientActive( void );
 	void InitTrigger( void );
@@ -245,7 +245,7 @@ public:
 	}
 
 	DECLARE_CLASS( CTriggerHurt, CBaseTrigger );
-
+	virtual void LogicExplode();
 	void Spawn( void );
 	void RadiationThink( void );
 	void HurtThink( void );
