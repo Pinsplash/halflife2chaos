@@ -26,7 +26,7 @@ public:
 	void	Spawn( void );
 	void	Precache( void );
 	bool	KeyValue( const char *szKeyName, const char *szValue );
-
+	virtual void LogicExplode();
 	void	TurnOn( void );
 	void	TurnOff( void );
 	int		IsOn( void );

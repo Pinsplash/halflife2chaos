@@ -33,7 +33,7 @@ public:
 	void	Spawn( void );
 	void	Precache( void );
 	void	Activate( void );
-
+	virtual void LogicExplode();
 	void	StrikeThink( void );
 	void	UpdateThink( void );
 	void	RandomArea( void );
@@ -758,5 +758,20 @@ void CEnvBeam::BeamUpdateVars( void )
 	else if ( m_spawnflags & SF_BEAM_SHADEOUT )
 	{
 		SetBeamFlags( FBEAM_SHADEOUT );
+	}
+}
+void CEnvBeam::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+	//skipped turnon and turnoff
+	case 0:
+		AcceptInput("Toggle", this, this, variant, 0);
+	case 1:
+		AcceptInput("StrikeOnce", this, this, variant, 0);
+	case 2:
+		BaseClass::LogicExplode();
 	}
 }

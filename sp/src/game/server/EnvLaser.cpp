@@ -246,5 +246,16 @@ void CEnvLaser::StrikeThink( void )
 	FireAtPoint( tr );
 	SetNextThink( gpGlobals->curtime );
 }
-
-
+void CEnvLaser::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped turnon and turnoff
+	case 0:
+		AcceptInput("Toggle", this, this, variant, 0);
+	case 1:
+		BaseClass::LogicExplode();
+	}
+}

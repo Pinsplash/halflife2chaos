@@ -1199,3 +1199,30 @@ void CBeam::ComputeBounds( Vector& mins, Vector& maxs )
 	maxs -= vecAbsOrigin;
 }
 #endif
+
+void CBeam::LogicExplode()
+{
+	int nRandom = RandomInt(0, 6);
+	variant_t variant;
+	switch (nRandom)
+	{
+	case 0:
+		SetWidth(RandomFloat(GetWidth() / 2, GetWidth() * 2));
+	case 1:
+		SetNoise(RandomFloat(GetNoise() / 2, GetNoise() * 2));
+	case 2:
+		variant.SetInt(RandomInt(0, 255));
+		AcceptInput("ColorRedValue", this, this, variant, 0);
+	case 3:
+		variant.SetInt(RandomInt(0, 255));
+		AcceptInput("ColorGreenValue", this, this, variant, 0);
+	case 4:
+		variant.SetInt(RandomInt(0, 255));
+		AcceptInput("ColorBlueValue", this, this, variant, 0);
+	case 5:
+		variant.SetInt(RandomInt(m_fSpeed / 2, m_fSpeed * 2));
+		AcceptInput("ScrollSpeed", this, this, variant, 0);
+	case 6:
+		BaseClass::LogicExplode();
+	}
+}

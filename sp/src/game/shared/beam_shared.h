@@ -56,7 +56,7 @@ public:
 	CBeam();
 
 	virtual void SetModel( const char *szModelName );
-
+	virtual void LogicExplode();
 	void	Spawn( void );
 	void	Precache( void );
 #if !defined( CLIENT_DLL )
