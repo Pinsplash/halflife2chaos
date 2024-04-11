@@ -127,7 +127,7 @@ class SporeExplosion : public CBaseParticleEntity
 public:
 	DECLARE_CLASS( SporeExplosion, CBaseParticleEntity );
 	DECLARE_SERVERCLASS();
-
+	virtual void LogicExplode();
 	SporeExplosion( void );
 	void Spawn( void );
 

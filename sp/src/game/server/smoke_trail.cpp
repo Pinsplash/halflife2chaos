@@ -643,3 +643,17 @@ DustTrail* DustTrail::CreateDustTrail()
 
 	return NULL;
 }
+void SporeExplosion::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+	case 0:
+		AcceptInput("Disable", this, this, variant, 0);
+	case 1:
+		AcceptInput("Enable", this, this, variant, 0);
+	case 2:
+		BaseClass::LogicExplode();
+	}
+}

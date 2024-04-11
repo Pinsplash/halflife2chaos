@@ -29,7 +29,7 @@ public:
 
 	virtual void	Spawn( void );
 	virtual void	Precache( void );
-
+	virtual void LogicExplode();
 protected:
 
 	// Input handlers.

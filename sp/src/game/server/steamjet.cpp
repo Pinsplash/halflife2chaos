@@ -128,3 +128,28 @@ void CSteamJet::InputTurnOff(inputdata_t &data)
 {
 	m_bEmit = false;
 }
+void CSteamJet::LogicExplode()
+{
+	int nRandom = RandomInt(0, 5);
+	variant_t variant;
+	switch (nRandom)
+	{
+	case 0:
+		variant.SetFloat(RandomFloat(m_JetLength / 2, m_JetLength * 2));
+		AcceptInput("JetLength", this, this, variant, 0);
+	case 1:
+		variant.SetFloat(RandomFloat(m_SpreadSpeed / 2, m_SpreadSpeed * 2));
+		AcceptInput("SpreadSpeed", this, this, variant, 0);
+	case 2:
+		variant.SetFloat(RandomFloat(m_Speed / 2, m_Speed * 2));
+		AcceptInput("Speed", this, this, variant, 0);
+	case 3:
+		variant.SetFloat(RandomFloat(m_Rate / 2, m_Rate * 2));
+		AcceptInput("Rate", this, this, variant, 0);
+		//skipped turnon and turnoff
+	case 4:
+		AcceptInput("Toggle", this, this, variant, 0);
+	case 5:
+		BaseClass::LogicExplode();
+	}
+}

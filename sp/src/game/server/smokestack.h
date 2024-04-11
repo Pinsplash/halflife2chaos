@@ -41,7 +41,7 @@ public:
 	virtual void	Activate();
 	virtual bool	KeyValue( const char *szKeyName, const char *szValue );
 	virtual void	Precache();
-
+	virtual void LogicExplode();
 
 protected:
 

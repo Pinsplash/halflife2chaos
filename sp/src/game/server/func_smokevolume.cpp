@@ -22,7 +22,7 @@ public:
 	CFuncSmokeVolume();
 	void Spawn();
 	void Activate( void );
-
+	virtual void LogicExplode();
 	// Set the times it fades out at.
 	void SetDensity( float density );
 
@@ -102,4 +102,22 @@ void CFuncSmokeVolume::Activate( void )
 	BaseClass::Activate();
 	Q_strncpy( m_MaterialName.GetForModify(), STRING( m_String_tMaterialName ), 255 );
 }
-
+void CFuncSmokeVolume::LogicExplode()
+{
+	int nRandom = RandomInt(0, 3);
+	variant_t variant;
+	switch (nRandom)
+	{
+	case 0:
+		variant.SetFloat(RandomFloat(m_RotationSpeed / 2, m_RotationSpeed * 2));
+		AcceptInput("SetRotationSpeed", this, this, variant, 0);
+	case 1:
+		variant.SetFloat(RandomFloat(m_MovementSpeed / 2, m_MovementSpeed * 2));
+		AcceptInput("SetMovementSpeed", this, this, variant, 0);
+	case 2:
+		variant.SetFloat(RandomFloat(m_Density / 2, m_Density * 2));
+		AcceptInput("SetDensity", this, this, variant, 0);
+	case 3:
+		BaseClass::LogicExplode();
+	}
+}
