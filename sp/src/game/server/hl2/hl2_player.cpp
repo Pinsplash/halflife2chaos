@@ -7498,7 +7498,6 @@ void CEColors::MaintainEffect()
 			int g = random->RandomInt(0, 255);
 			int b = random->RandomInt(0, 255);
 			Q_snprintf(szcolor, sizeof(szcolor), "%i %i %i", r, g, b);
-			Msg("%s\n", szcolor);
 			colorVariant.SetString(MAKE_STRING(szcolor));
 			pEnt->AcceptInput("Color", UTIL_GetLocalPlayer(), UTIL_GetLocalPlayer(), colorVariant, 0);
 		}

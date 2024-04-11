@@ -3733,7 +3733,7 @@ public:
 	void	EndTouch( CBaseEntity *pOther );
 	void	WindThink( void );
 	int		DrawDebugTextOverlays( void );
-
+	virtual void LogicExplode();
 	// Input handlers
 	void	InputEnable( inputdata_t &inputdata );
 	void	InputSetSpeed( inputdata_t &inputdata );
@@ -4909,6 +4909,81 @@ void CTriggerImpact::LogicExplode()
 		variant.SetFloat(RandomFloat(m_flMagnitude / 2, m_flMagnitude * 2));
 		AcceptInput("SetMagnitude", this, this, variant, 0);
 	case 2:
+		BaseClass::LogicExplode();
+	}
+}
+void CBaseVPhysicsTrigger::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped enable and disable
+	case 0:
+		AcceptInput("Toggle", this, this, variant, 0);
+	case 1:
+		BaseClass::LogicExplode();
+	}
+}
+void CTriggerVPhysicsMotion::LogicExplode()
+{
+	int nRandom = RandomInt(0, 10);
+	variant_t variant;
+	char szangle[2048];
+	int x, y, z;
+	switch (nRandom)
+	{
+	case 0:
+		variant.SetFloat(RandomFloat(m_gravityScale / 2, m_gravityScale * 2));
+		AcceptInput("SetGravityScale", this, this, variant, 0);
+	case 1:
+		variant.SetFloat(RandomFloat(m_addAirDensity / 2, m_addAirDensity * 2));
+		AcceptInput("SetAdditionalAirDensity", this, this, variant, 0);
+	case 2:
+		variant.SetFloat(RandomFloat(m_linearLimit / 2, m_linearLimit * 2));
+		AcceptInput("SetVelocityLimit", this, this, variant, 0);
+	case 3:
+		variant.SetFloat(RandomFloat(m_linearLimitDelta / 2, m_linearLimitDelta * 2));
+		AcceptInput("SetVelocityLimitDelta", this, this, variant, 0);
+	case 4:
+		variant.SetFloat(RandomFloat(m_linearScale / 2, m_linearScale * 2));
+		AcceptInput("SetVelocityScale", this, this, variant, 0);
+	case 5:
+		variant.SetFloat(RandomFloat(m_angularLimit / 2, m_angularLimit * 2));
+		AcceptInput("SetAngVelocityLimit", this, this, variant, 0);
+	case 6:
+		variant.SetFloat(RandomFloat(m_angularScale / 2, m_angularScale * 2));
+		AcceptInput("SetAngVelocityScale", this, this, variant, 0);
+	case 7:
+		variant.SetFloat(RandomFloat(m_linearForce / 2, m_linearForce * 2));
+		AcceptInput("SetLinearForce", this, this, variant, 0);
+	case 8:
+		x = RandomFloat(-90, 90);
+		y = RandomFloat(-180, 180);
+		z = RandomFloat(-180, 180);
+		Q_snprintf(szangle, sizeof(szangle), "%i %i %i", x, y, z);
+		variant.SetString(MAKE_STRING(szangle));
+		AcceptInput("SetLinearForceAngles", this, this, variant, 0);
+	case 9:
+		x = RandomFloat(m_linearLimit / 2, m_linearLimit * 2);
+		y = RandomFloat(0, 30);
+		Q_snprintf(szangle, sizeof(szangle), "%i %i", x, y);
+		variant.SetString(MAKE_STRING(szangle));
+		AcceptInput("SetVelocityLimitTime", this, this, variant, 0);
+	case 10:
+		BaseClass::LogicExplode();
+	}
+}
+void CTriggerWind::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+	case 0:
+		variant.SetInt(RandomInt(m_nSpeedBase / 2, m_nSpeedBase * 2));
+		AcceptInput("SetSpeed", this, this, variant, 0);
+	case 1:
 		BaseClass::LogicExplode();
 	}
 }

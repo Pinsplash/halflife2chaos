@@ -140,7 +140,7 @@ class CBaseVPhysicsTrigger : public CBaseEntity
 
 public:
 	DECLARE_DATADESC();
-
+	virtual void LogicExplode();
 	virtual void Spawn();
 	virtual void UpdateOnRemove();
 	virtual bool CreateVPhysics();
@@ -177,7 +177,7 @@ public:
 	virtual void UpdateOnRemove();
 	bool CreateVPhysics();
 	void OnRestore();
-
+	virtual void LogicExplode();
 	// UNDONE: Pass trigger event in or change Start/EndTouch.  Add ITriggerVPhysics perhaps?
 	// BUGBUG: If a player touches two of these, his movement will screw up.
 	// BUGBUG: If a player uses crouch/uncrouch it will generate touch events and clear the motioncontroller flag
