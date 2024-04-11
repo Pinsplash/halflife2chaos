@@ -7641,7 +7641,7 @@ void CBaseEntity::LogicExplode()
 	case 8:
 		AcceptInput("ClearParent", this, this, variant, 0);
 	case 9:
-		variant.SetString(gEntList.RandomEntityByClassname("fil*")->GetEntityName());
+		variant.SetString(gEntList.RandomNamedEntityByClassname("fil*")->GetEntityName());
 		AcceptInput("SetDamageFilter", this, this, variant, 0);
 	case 10:
 		AcceptInput("EnableDamageForces", this, this, variant, 0);

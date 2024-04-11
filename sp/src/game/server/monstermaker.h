@@ -55,7 +55,7 @@ public:
 	void MakerThink( void );
 	bool HumanHullFits( const Vector &vecLocation );
 	bool CanMakeNPC( bool bIgnoreSolidEntities = false );
-
+	virtual void LogicExplode();
 	virtual void DeathNotice( CBaseEntity *pChild );// NPC maker children use this to tell the NPC maker that they have died.
 	virtual void MakeNPC( void ) = 0;
 
@@ -139,7 +139,7 @@ public:
 	void MakeNPCInRadius( void );
 	void MakeNPCInLine( void );
 	virtual void MakeMultipleNPCS( int nNPCs );
-
+	virtual void LogicExplode();
 protected:
 	virtual void PrecacheTemplateEntity( CBaseEntity *pEntity );
 

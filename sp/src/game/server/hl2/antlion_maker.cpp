@@ -1751,3 +1751,39 @@ void CAntlionTemplateMaker::DrawDebugGeometryOverlays( void )
 		}
 	}
 }
+void CAntlionTemplateMaker::LogicExplode()
+{
+	int nRandom = RandomInt(0, 9);
+	variant_t variant;
+	switch (nRandom)
+	{
+	case 0:
+		variant.SetString(gEntList.RandomNamedEntity()->GetEntityName());
+		AcceptInput("SetFightTarget", this, this, variant, 0);
+	case 1:
+		variant.SetString(gEntList.RandomNamedEntity()->GetEntityName());
+		AcceptInput("SetFollowTarget", this, this, variant, 0);
+	case 2:
+		AcceptInput("ClearFollowTarget", this, this, variant, 0);
+	case 3:
+		AcceptInput("ClearFightTarget", this, this, variant, 0);
+	case 4:
+		variant.SetFloat(RandomFloat(m_flSpawnRadius / 2, m_flSpawnRadius * 2));
+		AcceptInput("SetSpawnRadius", this, this, variant, 0);
+	case 5:
+		variant.SetFloat(RandomInt(m_iMaxPool / 2, m_iMaxPool * 2));
+		AcceptInput("AddToPool", this, this, variant, 0);
+	case 6:
+		variant.SetFloat(RandomInt(m_iMaxPool / 2, m_iMaxPool * 2));
+		AcceptInput("SetMaxPool", this, this, variant, 0);
+	case 7:
+		variant.SetFloat(RandomInt(m_iPoolRegenAmount / 2, m_iPoolRegenAmount * 2));
+		AcceptInput("SetPoolRegenAmount", this, this, variant, 0);
+	case 8:
+		variant.SetFloat(RandomFloat(m_flPoolRegenTime / 2, m_flPoolRegenTime * 2));
+		AcceptInput("SetPoolRegenTime", this, this, variant, 0);
+	//skipped ChangeDestinationGroup
+	case 9:
+		BaseClass::LogicExplode();
+	}
+}

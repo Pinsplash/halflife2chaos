@@ -3162,7 +3162,7 @@ void CAI_ActBusyGoal::LogicExplode()
 	//skipped ForceNPCToActBusy
 	case 1:
 	case 2:
-		pEnt = gEntList.RandomEntityByClassname("npc*");
+		pEnt = gEntList.RandomNamedEntityByClassname("npc*");
 		while (pEnt)
 		{
 			if (pEnt->IsNPC() && pEnt->GetEntityName() != NULL_STRING)
@@ -3172,11 +3172,12 @@ void CAI_ActBusyGoal::LogicExplode()
 					AcceptInput("ForceThisNPCToActBusy", this, this, variant, 0);
 				else
 					AcceptInput("ForceThisNPCToLeave", this, this, variant, 0);
+				return;
 			}
 			else
 			{
 				iTries++;
-				pEnt = gEntList.RandomEntityByClassname("npc*");
+				pEnt = gEntList.RandomNamedEntityByClassname("npc*");
 			}
 			if (iTries > 10)
 				break;

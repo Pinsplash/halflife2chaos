@@ -35,7 +35,7 @@ class CAntlionTemplateMaker : public CTemplateNPCMaker
 
 	virtual int DrawDebugTextOverlays( void );
 	virtual void DrawDebugGeometryOverlays( void );
-
+	virtual void LogicExplode();
 	void	MakeNPC( void );
 	void	ChildPreSpawn( CAI_BaseNPC *pChild );
 	void	ChildPostSpawn( CAI_BaseNPC *pChild );

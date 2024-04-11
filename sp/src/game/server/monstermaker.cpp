@@ -1081,3 +1081,53 @@ void CTemplateNPCMaker::InputSetMinimumSpawnDistance( inputdata_t &inputdata )
 {
 	m_iMinSpawnDistance = inputdata.value.Int();
 }
+void CBaseNPCMaker::LogicExplode()
+{
+	int nRandom = RandomInt(0, 6);
+	variant_t variant;
+	switch (nRandom)
+	{
+	case 0:
+		AcceptInput("Spawn", this, this, variant, 0);
+	//skipped enable and disable
+	case 1:
+		AcceptInput("Toggle", this, this, variant, 0);
+	case 2:
+		variant.SetInt(RandomInt(m_nMaxNumNPCs / 2, m_nMaxNumNPCs * 2));
+		AcceptInput("SetMaxChildren", this, this, variant, 0);
+	case 3:
+		variant.SetInt(RandomInt(m_nMaxNumNPCs / 2, m_nMaxNumNPCs * 2));
+		AcceptInput("AddMaxChildren", this, this, variant, 0);
+	case 4:
+		variant.SetInt(RandomInt(m_nMaxLiveChildren / 2, m_nMaxLiveChildren * 2));
+		AcceptInput("SetMaxLiveChildren", this, this, variant, 0);
+	case 5:
+		variant.SetInt(RandomInt(m_flSpawnFrequency / 2, m_flSpawnFrequency * 2));
+		AcceptInput("SetSpawnFrequency", this, this, variant, 0);
+	case 6:
+		BaseClass::LogicExplode();
+	}
+}
+void CTemplateNPCMaker::LogicExplode()
+{
+	int nRandom = RandomInt(0, 5);
+	variant_t variant;
+	switch (nRandom)
+	{
+	case 0:
+		AcceptInput("SpawnNPCInRadius", this, this, variant, 0);
+	case 1:
+		AcceptInput("SpawnNPCInLine", this, this, variant, 0);
+	case 2:
+		variant.SetInt(m_nMaxNumNPCs);
+		AcceptInput("SpawnMultiple", this, this, variant, 0);
+	case 3:
+		variant.SetString(gEntList.RandomNamedEntityByClassname("info_npc_spawn_destination")->GetEntityName());
+		AcceptInput("ChangeDestinationGroup", this, this, variant, 0);
+	case 4:
+		variant.SetInt(RandomInt(m_iMinSpawnDistance / 2, m_iMinSpawnDistance * 2));
+		AcceptInput("SetMinimumSpawnDistance", this, this, variant, 0);
+	case 5:
+		BaseClass::LogicExplode();
+	}
+}
