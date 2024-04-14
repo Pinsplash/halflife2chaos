@@ -218,11 +218,11 @@ void CPropJeep::Spawn( void )
 		m_bHasGun = true;
 		m_bUnableToFire = false;
 	}
-	if (FStrEq(STRING(GetModelName()), "models/vehicle.mdl") || FStrEq(STRING(GetModelName()), "models/vehicle_2.mdl") || FStrEq(STRING(GetModelName()), "models/vehicle_0_5.mdl"))
+	else if (FStrEq(STRING(GetModelName()), "models/vehicle.mdl") || FStrEq(STRING(GetModelName()), "models/vehicle_2.mdl") || FStrEq(STRING(GetModelName()), "models/vehicle_0_5.mdl"))
 	{
 		m_bJalopy = true;
 	}
-	if (FStrEq(STRING(GetModelName()), "models/combine_apc.mdl") || FStrEq(STRING(GetModelName()), "models/combine_apc_2.mdl") || FStrEq(STRING(GetModelName()), "models/combine_apc_0_5.mdl"))
+	else if (FStrEq(STRING(GetModelName()), "models/combine_apc.mdl") || FStrEq(STRING(GetModelName()), "models/combine_apc_2.mdl") || FStrEq(STRING(GetModelName()), "models/combine_apc_0_5.mdl"))
 	{
 		m_bAPC = true;
 	}
