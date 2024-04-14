@@ -7121,7 +7121,15 @@ void CERandomVehicle::StartEffect()
 		else
 			ChaosSpawnVehicle("prop_vehicle_prisoner_pod", MAKE_STRING("Spawn Pod"), SPAWNTYPE_EYELEVEL_SPECIAL, "models/vehicles/prisoner_pod_inner.mdl", "pod", "scripts/vehicles/prisoner_pod.txt");
 	}
-	if (nRandom == 3) ChaosSpawnVehicle("prop_vehicle_apc", MAKE_STRING("Spawn APC"), SPAWNTYPE_VEHICLE, "models/combine_apc.mdl", "apc", "scripts/vehicles/apc_npc.txt");
+	if (nRandom == 3)
+	{
+		if (UTIL_GetLocalPlayer()->GetModelScale() == 2)
+			ChaosSpawnVehicle("prop_vehicle_apc", MAKE_STRING("Spawn APC"), SPAWNTYPE_VEHICLE, "models/combine_apc_2.mdl", "apc", "scripts/vehicles/apc_npc_2.txt");
+		else if (UTIL_GetLocalPlayer()->GetModelScale() == 0.5)
+			ChaosSpawnVehicle("prop_vehicle_apc", MAKE_STRING("Spawn APC"), SPAWNTYPE_VEHICLE, "models/combine_apc_0_5.mdl", "apc", "scripts/vehicles/apc_npc_0_5.txt");
+		else
+			ChaosSpawnVehicle("prop_vehicle_apc", MAKE_STRING("Spawn APC"), SPAWNTYPE_VEHICLE, "models/combine_apc.mdl", "apc", "scripts/vehicles/apc_npc.txt");
+	}
 }
 void CERandomNPC::StartEffect()
 {
