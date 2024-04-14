@@ -9,6 +9,7 @@
 		SteamAppId					243730
 		SearchPaths
 		{
+			game+mod				|gameinfo_path|custom/*
 			game+mod+mod_write+default_write_path	|gameinfo_path|.
 			gamebin					|gameinfo_path|bin
 			game_lv					|all_source_engine_paths|hl2/hl2_lv.vpk
