@@ -7717,7 +7717,7 @@ void CEZombieSpam::MaintainEffect()
 			//find a random hidden node
 			CAI_Node *pNode = g_pBigAINet->GetNode(RandomInt(0, g_pBigAINet->NumNodes() - 1));
 			trace_t	tr;
-			UTIL_TraceLine(UTIL_GetLocalPlayer()->GetAbsOrigin() + Vector(0, 0, 64), pNode->GetOrigin() + Vector(0, 0, 64), MASK_VISIBLE, UTIL_GetLocalPlayer(), COLLISION_GROUP_NONE, &tr);
+			UTIL_TraceLine(UTIL_GetLocalPlayer()->EyePosition(), pNode->GetPosition(HULL_HUMAN), MASK_VISIBLE, UTIL_GetLocalPlayer(), COLLISION_GROUP_NONE, &tr);
 			if (tr.DidHit())//can't see
 			{
 				if (chaos_rng1.GetInt() == -1) 
