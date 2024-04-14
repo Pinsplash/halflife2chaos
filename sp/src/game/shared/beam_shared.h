@@ -56,7 +56,6 @@ public:
 	CBeam();
 
 	virtual void SetModel( const char *szModelName );
-	virtual void LogicExplode();
 	void	Spawn( void );
 	void	Precache( void );
 #if !defined( CLIENT_DLL )
@@ -64,6 +63,7 @@ public:
 	void	SetTransmit( CCheckTransmitInfo *pInfo, bool bAlways );
 	int		UpdateTransmitState( void );
 	int		ShouldTransmit( const CCheckTransmitInfo *pInfo );
+	virtual void LogicExplode();
 #endif
 
 	virtual int DrawDebugTextOverlays(void);

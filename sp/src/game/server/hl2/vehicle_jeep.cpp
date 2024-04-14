@@ -212,17 +212,17 @@ void CPropJeep::Spawn( void )
 	m_bAPC = false;
 	// Setup vehicle as a real-wheels car.
 	SetVehicleType(VEHICLE_TYPE_CAR_WHEELS);
-	if (FStrEq(STRING(GetModelName()), "models/buggy.mdl"))
+	if (FStrEq(STRING(GetModelName()), "models/buggy.mdl") || FStrEq(STRING(GetModelName()), "models/buggy_2.mdl") || FStrEq(STRING(GetModelName()), "models/buggy_0_5.mdl"))
 	{
 		m_bJeep = true;
 		m_bHasGun = true;
 		m_bUnableToFire = false;
 	}
-	if (FStrEq(STRING(GetModelName()), "models/vehicle.mdl"))
+	if (FStrEq(STRING(GetModelName()), "models/vehicle.mdl") || FStrEq(STRING(GetModelName()), "models/vehicle_2.mdl") || FStrEq(STRING(GetModelName()), "models/vehicle_0_5.mdl"))
 	{
 		m_bJalopy = true;
 	}
-	if (FStrEq(STRING(GetModelName()), "models/combine_apc.mdl"))
+	if (FStrEq(STRING(GetModelName()), "models/combine_apc.mdl") || FStrEq(STRING(GetModelName()), "models/combine_apc_2.mdl") || FStrEq(STRING(GetModelName()), "models/combine_apc_0_5.mdl"))
 	{
 		m_bAPC = true;
 	}

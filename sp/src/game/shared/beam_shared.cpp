@@ -1200,6 +1200,7 @@ void CBeam::ComputeBounds( Vector& mins, Vector& maxs )
 }
 #endif
 
+#if !defined( CLIENT_DLL )
 void CBeam::LogicExplode()
 {
 	int nRandom = RandomInt(0, 6);
@@ -1226,3 +1227,4 @@ void CBeam::LogicExplode()
 		BaseClass::LogicExplode();
 	}
 }
+#endif
