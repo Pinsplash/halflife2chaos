@@ -7024,7 +7024,13 @@ void CERandomVehicle::StartEffect()
 		}
 		else
 		{
-			CBaseEntity *pJalopy = ChaosSpawnVehicle("prop_vehicle_jeep", MAKE_STRING("Spawn Jalopy"), SPAWNTYPE_VEHICLE, "models/vehicle.mdl", "jalopy", "scripts/vehicles/jalopy.txt");
+			CBaseEntity *pJalopy;
+			if (UTIL_GetLocalPlayer()->GetModelScale() == 2)
+				pJalopy = ChaosSpawnVehicle("prop_vehicle_jeep", MAKE_STRING("Spawn Jalopy"), SPAWNTYPE_VEHICLE, "models/vehicle_2.mdl", "jalopy", "scripts/vehicles/jalopy_2.txt");
+			else if (UTIL_GetLocalPlayer()->GetModelScale() == 0.5)
+				pJalopy = ChaosSpawnVehicle("prop_vehicle_jeep", MAKE_STRING("Spawn Jalopy"), SPAWNTYPE_VEHICLE, "models/vehicle_0_5.mdl", "jalopy", "scripts/vehicles/jalopy_0_5.txt");
+			else
+				pJalopy = ChaosSpawnVehicle("prop_vehicle_jeep", MAKE_STRING("Spawn Jalopy"), SPAWNTYPE_VEHICLE, "models/vehicle.mdl", "jalopy", "scripts/vehicles/jalopy.txt");
 			//give all the bells and whistles except compass thingy. don't know how that would react to multiple cars
 			pJalopy->AcceptInput("EnableRadar", pJalopy, pJalopy, sVariant, 0);
 			pJalopy->AcceptInput("EnableRadarDetectEnemies", pJalopy, pJalopy, sVariant, 0);
