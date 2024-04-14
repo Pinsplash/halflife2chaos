@@ -179,7 +179,7 @@ CON_COMMAND(logex, "logic explosion")
 void RandomizeReadiness(CBaseEntity *pNPC)
 {
 	variant_t emptyVariant;
-	float nRandom = random->RandomInt(0, 3);
+	float nRandom = RandomInt(0, 3);
 	if (nRandom == 0)
 		pNPC->AcceptInput("SetReadinessLow", pNPC, pNPC, emptyVariant, 0);
 	if (nRandom == 1)
@@ -3639,7 +3639,7 @@ bool CHL2_Player::ShouldShootMissTarget( CBaseCombatCharacter *pAttacker )
 	if( gpGlobals->curtime > m_flTargetFindTime )
 	{
 		//Put this off into the future again.
-		m_flTargetFindTime = gpGlobals->curtime + random->RandomFloat( 3, 5 );
+		m_flTargetFindTime = gpGlobals->curtime + RandomFloat( 3, 5 );
 		return true;
 	}
 
@@ -4972,12 +4972,12 @@ void CHL2_Player::Splash( void )
 	float flSpeed = GetAbsVelocity().Length();
 	if ( flSpeed < 300 )
 	{
-		data.m_flScale = random->RandomFloat( 10, 12 );
+		data.m_flScale = RandomFloat( 10, 12 );
 		DispatchEffect( "waterripple", data );
 	}
 	else
 	{
-		data.m_flScale = random->RandomFloat( 6, 8 );
+		data.m_flScale = RandomFloat( 6, 8 );
 		DispatchEffect( "watersplash", data );
 	}
 }
@@ -5498,7 +5498,7 @@ int CHL2_Player::PickEffect(int iWeightSum, bool bTest, int iControl)
 		}
 
 		//pick effect
-		nRandom = bTest ? iControl : random->RandomInt(0, iWeightSum);
+		nRandom = bTest ? iControl : RandomInt(0, iWeightSum);
 		int nRememberRandom = nRandom;
 		if (chaos_print_rng.GetBool()) Warning("nRandom is %i (%i - %i)\n", nRandom, 0, iWeightSum);
 		//weights
@@ -6270,7 +6270,7 @@ void CChaosEffect::RandomTeleport(bool bPlayerOnly)
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
 	//We could use a more advanced method in the future to allow teleporting to even more places than this allows, but for now, this is good enough
 	//teleport to a random node
-	int nRandom = chaos_rng1.GetInt() == -1 ? random->RandomInt(0, g_pBigAINet->NumNodes() - 1) : chaos_rng1.GetInt();
+	int nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, g_pBigAINet->NumNodes() - 1) : chaos_rng1.GetInt();
 	CAI_Node *pNode = g_pBigAINet->GetNode(nRandom);
 	if ( !pNode )
 		return; // Some maps may be lacking node graphs
@@ -6670,7 +6670,7 @@ CAI_BaseNPC *CChaosEffect::ChaosSpawnNPC(const char *className, string_t strActu
 		{
 			if (!Q_strcmp(modDir, "ep2chaos"))
 			{
-				if (random->RandomInt(0, 1) == 1)//cave variant
+				if (RandomInt(0, 1) == 1)//cave variant
 					pNPC->AddSpawnFlags(262144);
 			}
 			pNPC->KeyValue("startburrowed", "0");
@@ -6679,7 +6679,7 @@ CAI_BaseNPC *CChaosEffect::ChaosSpawnNPC(const char *className, string_t strActu
 		{
 			if (!Q_strcmp(modDir, "ep2chaos"))
 			{
-				if (random->RandomInt(0, 1) == 1)//cave variant
+				if (RandomInt(0, 1) == 1)//cave variant
 				{
 					pNPC->KeyValue("cavernbreed", "1");
 					pNPC->KeyValue("incavern", "1");
@@ -6693,11 +6693,11 @@ CAI_BaseNPC *CChaosEffect::ChaosSpawnNPC(const char *className, string_t strActu
 		{
 			pNPC->AddSpawnFlags(65536);//follow player
 			pNPC->AddSpawnFlags(262144);//random head
-			if (random->RandomInt(0, 1) == 1)//medic
+			if (RandomInt(0, 1) == 1)//medic
 				pNPC->AddSpawnFlags(131072);
-			if (random->RandomInt(0, 1) == 1)//ammo resupplier
+			if (RandomInt(0, 1) == 1)//ammo resupplier
 			{
-				float nRandom = random->RandomInt(0, 10);
+				float nRandom = RandomInt(0, 10);
 				if (nRandom == 0) pNPC->KeyValue("ammosupply", "AR2");
 				if (nRandom == 1) pNPC->KeyValue("ammosupply", "Pistol");
 				if (nRandom == 2) pNPC->KeyValue("ammosupply", "SMG1");
@@ -6712,7 +6712,7 @@ CAI_BaseNPC *CChaosEffect::ChaosSpawnNPC(const char *className, string_t strActu
 				pNPC->AddSpawnFlags(524288);
 				pNPC->KeyValue("ammoamount", "100");
 			}
-			int nRandom = random->RandomInt(0, 6);//weapon
+			int nRandom = RandomInt(0, 6);//weapon
 			if (nRandom == 0) pNPC->KeyValue("additionalequipment", "weapon_ar2");
 			if (nRandom == 1) pNPC->KeyValue("additionalequipment", "weapon_citizenpackage");
 			if (nRandom == 2) pNPC->KeyValue("additionalequipment", "weapon_citizensuitcase");
@@ -6721,7 +6721,7 @@ CAI_BaseNPC *CChaosEffect::ChaosSpawnNPC(const char *className, string_t strActu
 			if (nRandom == 5) pNPC->KeyValue("additionalequipment", "weapon_shotgun");
 			if (nRandom == 6) pNPC->KeyValue("additionalequipment", "weapon_smg1");
 
-			nRandom = random->RandomInt(0, 3);//clothing
+			nRandom = RandomInt(0, 3);//clothing
 			if (nRandom == 0) pNPC->KeyValue("citizentype", "0");
 			if (nRandom == 1) pNPC->KeyValue("citizentype", "1");
 			if (nRandom == 2) pNPC->KeyValue("citizentype", "2");
@@ -6732,19 +6732,19 @@ CAI_BaseNPC *CChaosEffect::ChaosSpawnNPC(const char *className, string_t strActu
 		if (FStrEq(className, "npc_combine_s"))
 		{
 			pNPC->KeyValue("NumGrenades", "100");
-			int nRandom = random->RandomInt(0, 2);//model/elite status
+			int nRandom = RandomInt(0, 2);//model/elite status
 			if (nRandom == 0) pNPC->KeyValue("model", "models/combine_soldier.mdl");
 			if (nRandom == 1) pNPC->KeyValue("model", "models/combine_super_soldier.mdl");
 			if (nRandom == 2) pNPC->KeyValue("model", "models/combine_soldier_prisonguard.mdl");
 
-			nRandom = random->RandomInt(0, 2);//weapon
+			nRandom = RandomInt(0, 2);//weapon
 			if (nRandom == 0) pNPC->KeyValue("additionalequipment", "weapon_ar2");
 			if (nRandom == 1) pNPC->KeyValue("additionalequipment", "weapon_shotgun");
 			if (nRandom == 2) pNPC->KeyValue("additionalequipment", "weapon_smg1");
 		}
 		if (FStrEq(className, "npc_combinedropship"))
 		{
-			int nRandom = 1;// random->RandomInt(-3, 1);//cargo type. avoid 0 cause that does nothing
+			int nRandom = 1;// RandomInt(-3, 1);//cargo type. avoid 0 cause that does nothing
 			Msg("crate type %i\n", nRandom);
 			if (nRandom == -3) pNPC->KeyValue("CrateType", "-3");//jeep
 			if (nRandom == -2)//apc
@@ -6775,7 +6775,7 @@ CAI_BaseNPC *CChaosEffect::ChaosSpawnNPC(const char *className, string_t strActu
 				pNPC->KeyValue("LandTarget", "dropship_target");
 				variant_t variant;
 				variant.SetInt(6);
-				if (random->RandomInt(0, 1))
+				if (RandomInt(0, 1))
 					g_EventQueue.AddEvent("combinedropship", "LandLeaveCrate", variant, 1, pNPC, pNPC);
 				else
 					g_EventQueue.AddEvent("combinedropship", "LandTakeCrate", variant, 1, pNPC, pNPC);
@@ -6785,14 +6785,14 @@ CAI_BaseNPC *CChaosEffect::ChaosSpawnNPC(const char *className, string_t strActu
 		{
 			pNPC->KeyValue("manhacks", "100");
 
-			int nRandom = random->RandomInt(0, 2);//weapon
+			int nRandom = RandomInt(0, 2);//weapon
 			if (nRandom == 0) pNPC->KeyValue("additionalequipment", "weapon_smg1");
 			if (nRandom == 1) pNPC->KeyValue("additionalequipment", "weapon_pistol");
 			if (nRandom == 2) pNPC->KeyValue("additionalequipment", "weapon_stunstick");
 		}
 		if (FStrEq(className, "npc_stalker"))
 		{
-			int nRandom = random->RandomInt(0, 2);
+			int nRandom = RandomInt(0, 2);
 			if (nRandom == 0) pNPC->KeyValue("BeamPower", "0");
 			if (nRandom == 1) pNPC->KeyValue("BeamPower", "1");
 			if (nRandom == 2) pNPC->KeyValue("BeamPower", "2");
@@ -6982,7 +6982,7 @@ void CERandomWeaponGive::StartEffect()
 	//TODO: harpoon, stunstick, alyxgun, annabelle, citizenpackage, citizensuitcase, cubemap
 	for (int iWeaponAttempts = 0; iWeaponAttempts <= 30; iWeaponAttempts++)
 	{
-		nRandom = chaos_rng1.GetInt() == -1 ? random->RandomInt(0, 11) : chaos_rng1.GetInt();
+		nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 11) : chaos_rng1.GetInt();
 		if (nRandom == 0) if (ChaosSpawnWeapon("weapon_crowbar", MAKE_STRING("Give Crowbar"))) return;
 		if (nRandom == 1) if (ChaosSpawnWeapon("weapon_physcannon", MAKE_STRING("Give Gravity Gun"))) return;
 		if (nRandom == 2) if (ChaosSpawnWeapon("weapon_pistol", MAKE_STRING("Give Pistol"), 255, "Pistol")) return;
@@ -7012,15 +7012,15 @@ void CERandomVehicle::StartEffect()
 	if (UTIL_GetModDir(modDir, sizeof(modDir)) == false)
 		return;
 	if (!Q_strcmp(modDir, "ep2chaos"))
-		nRandom = chaos_rng1.GetInt() == -1 ? random->RandomInt(0, 5) : chaos_rng1.GetInt();
+		nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 5) : chaos_rng1.GetInt();
 	else
-		nRandom = chaos_rng1.GetInt() == -1 ? random->RandomInt(0, 4) : chaos_rng1.GetInt();
+		nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 4) : chaos_rng1.GetInt();
 	//TODO: If there are two jalopies on the map, the radar stops working for them both? speculative fix
 	if (nRandom == 5)
 	{
 		if (gEntList.FindEntityByClassname(NULL, "prop_vehicle_jeep"))//avoid radar issues that come up when there is more than one jalopy in the map at a time
 		{
-			nRandom = chaos_rng1.GetInt() == -1 ? random->RandomInt(0, 4) : chaos_rng1.GetInt();
+			nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 4) : chaos_rng1.GetInt();
 		}
 		else
 		{
@@ -7042,7 +7042,7 @@ void CERandomVehicle::StartEffect()
 		CBaseEntity *pRemover = gEntList.FindEntityByClassname(NULL, "trigger_physics_trap");//avoid dissolver triggers, easy crash
 		if (pRemover)
 		{
-			nRandom = chaos_rng1.GetInt() == -1 ? random->RandomInt(0, 3) : chaos_rng1.GetInt();
+			nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 3) : chaos_rng1.GetInt();
 		}
 		else
 		{
@@ -7158,11 +7158,11 @@ void CERandomNPC::StartEffect()
 	if (UTIL_GetModDir(modDir, sizeof(modDir)) == false)
 		return;
 	if (!Q_strcmp(modDir, "ep2chaos"))
-		nRandom = chaos_rng1.GetInt() == -1 ? random->RandomInt(0, 46) : chaos_rng1.GetInt();
+		nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 46) : chaos_rng1.GetInt();
 	else if (!Q_strcmp(modDir, "ep1chaos"))
-		nRandom = chaos_rng1.GetInt() == -1 ? random->RandomInt(0, 41) : chaos_rng1.GetInt();
+		nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 41) : chaos_rng1.GetInt();
 	else
-		nRandom = chaos_rng1.GetInt() == -1 ? random->RandomInt(0, 40) : chaos_rng1.GetInt();
+		nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 40) : chaos_rng1.GetInt();
 	if (nRandom == 0)
 	{
 		m_iSavedChaosID = ChaosSpawnNPC("npc_alyx", MAKE_STRING("Spawn Alyx"), SPAWNTYPE_EYELEVEL_REGULAR, "models/alyx.mdl", "alyx", "weapon_alyxgun", CSF_SQUAD)->m_iChaosID;
@@ -7513,17 +7513,17 @@ void CEColors::StartEffect()
 		{
 			//change fog!
 			variant_t colorVariant;
-			colorVariant.SetColor32(random->RandomInt(0, 255), random->RandomInt(0, 255), random->RandomInt(0, 255), pEnt->GetRenderColor().a);
+			colorVariant.SetColor32(RandomInt(0, 255), RandomInt(0, 255), RandomInt(0, 255), pEnt->GetRenderColor().a);
 			pEnt->AcceptInput("SetColor", pEnt, pEnt, colorVariant, 0);
-			colorVariant.SetColor32(random->RandomInt(0, 255), random->RandomInt(0, 255), random->RandomInt(0, 255), pEnt->GetRenderColor().a);
+			colorVariant.SetColor32(RandomInt(0, 255), RandomInt(0, 255), RandomInt(0, 255), pEnt->GetRenderColor().a);
 			pEnt->AcceptInput("SetColorSecondary", pEnt, pEnt, colorVariant, 0);
 		}
 		//doing it the input way allows us to hit beams and other things that have their own coloring process
 		char szcolor[2048];
 		variant_t colorVariant;
-		int r = random->RandomInt(0, 255);
-		int g = random->RandomInt(0, 255);
-		int b = random->RandomInt(0, 255);
+		int r = RandomInt(0, 255);
+		int g = RandomInt(0, 255);
+		int b = RandomInt(0, 255);
 		Q_snprintf(szcolor, sizeof(szcolor), "%i %i %i", r, g, b);
 		Msg("%s\n", szcolor);
 		colorVariant.SetString(MAKE_STRING(szcolor));
@@ -7542,9 +7542,9 @@ void CEColors::MaintainEffect()
 			//doing it the input way allows us to hit beams and other things that have their own coloring process
 			char szcolor[2048];
 			variant_t colorVariant;
-			int r = random->RandomInt(0, 255);
-			int g = random->RandomInt(0, 255);
-			int b = random->RandomInt(0, 255);
+			int r = RandomInt(0, 255);
+			int g = RandomInt(0, 255);
+			int b = RandomInt(0, 255);
 			Q_snprintf(szcolor, sizeof(szcolor), "%i %i %i", r, g, b);
 			colorVariant.SetString(MAKE_STRING(szcolor));
 			pEnt->AcceptInput("Color", UTIL_GetLocalPlayer(), UTIL_GetLocalPlayer(), colorVariant, 0);
@@ -7715,13 +7715,13 @@ void CEZombieSpam::MaintainEffect()
 		while (true)
 		{
 			//find a random hidden node
-			CAI_Node *pNode = g_pBigAINet->GetNode(random->RandomInt(0, g_pBigAINet->NumNodes() - 1));
+			CAI_Node *pNode = g_pBigAINet->GetNode(RandomInt(0, g_pBigAINet->NumNodes() - 1));
 			trace_t	tr;
 			UTIL_TraceLine(UTIL_GetLocalPlayer()->GetAbsOrigin() + Vector(0, 0, 64), pNode->GetOrigin() + Vector(0, 0, 64), MASK_VISIBLE, UTIL_GetLocalPlayer(), COLLISION_GROUP_NONE, &tr);
 			if (tr.DidHit())//can't see
 			{
 				if (chaos_rng1.GetInt() == -1) 
-					iZombieType = random->RandomInt(0, nRandMax);
+					iZombieType = RandomInt(0, nRandMax);
 				else
 					iZombieType = chaos_rng1.GetInt() % nRandMax;
 
@@ -7744,7 +7744,7 @@ void CEZombieSpam::MaintainEffect()
 }
 void CEZombieSpam::StartEffect()
 {
-	bNewWay = (chaos_rng1.GetInt() == -1 ? random->RandomInt(0, 1) : chaos_rng1.GetInt()) == 1;
+	bNewWay = (chaos_rng1.GetInt() == -1 ? RandomInt(0, 1) : chaos_rng1.GetInt()) == 1;
 	if (bNewWay)
 		return;
 
@@ -7775,7 +7775,7 @@ void CEZombieSpam::StartEffect()
 		if (chaos_rng1.GetInt() == -1)
 			rng = chaos_rng1.GetInt();
 		else
-			rng = random->RandomInt(0, nRandMax);
+			rng = RandomInt(0, nRandMax);
 
 		iZombieType = (rng + result->ElementAtHead().nodeIndex) % (nRandMax + 1);
 		if (iZombieType < 0 || iZombieType > nRandMax)//just incase?
@@ -7956,11 +7956,11 @@ void CERandomSong::StartEffect()
 	if (UTIL_GetModDir(modDir, sizeof(modDir)) == false)
 		return;
 	if (!Q_strcmp(modDir, "ep2chaos"))
-		nRandom = random->RandomInt(0, 71);
+		nRandom = RandomInt(0, 71);
 	else if (!Q_strcmp(modDir, "ep1chaos"))
-		nRandom = random->RandomInt(0, 58);
+		nRandom = RandomInt(0, 58);
 	else
-		nRandom = random->RandomInt(0, 47);
+		nRandom = RandomInt(0, 47);
 	Msg("Song number %i\n", nRandom);
 	if (nRandom == 0)
 		sSongName = "*#music/hl1_song10.mp3";
@@ -8213,9 +8213,9 @@ void CEMountedGun::StartEffect()
 	if (UTIL_GetModDir(modDir, sizeof(modDir)) == false)
 		return;
 	if (!Q_strcmp(modDir, "ep2chaos"))
-		nRandom = chaos_rng1.GetInt() == -1 ? random->RandomInt(0, 4) : chaos_rng1.GetInt();
+		nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 4) : chaos_rng1.GetInt();
 	else
-		nRandom = chaos_rng1.GetInt() == -1 ? random->RandomInt(0, 3) : chaos_rng1.GetInt();
+		nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 3) : chaos_rng1.GetInt();
 	if (nRandom == 0)
 	{
 		pTank = CreateEntityByName("func_tank");
@@ -8830,7 +8830,7 @@ void CEWeaponsDrop::FastThink()
 		Vector vecThrow;
 		pPlayer->ThrowDirForWeaponStrip(pActiveWeapon, vecForward, &vecThrow);
 		// Throw a little more vigorously; it starts closer to the player
-		vecThrow *= random->RandomFloat(800.0f, 1000.0f);
+		vecThrow *= RandomFloat(800.0f, 1000.0f);
 		pPlayer->Weapon_Drop(pActiveWeapon, NULL, &vecThrow);
 		pActiveWeapon->SetRemoveable(false);
 	}
