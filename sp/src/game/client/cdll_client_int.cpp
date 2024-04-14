@@ -1173,9 +1173,10 @@ void CHLClient::PostInit()
 		Msg("szPath %s\n", szPath);
 		if (ccFolder > 0)
 		{
-			Q_snprintf(szPath, sizeof(szPath), "%s\\%s", szPath, "hl2");
-			Msg("%s\n", szPath);
-			g_pFullFileSystem->AddSearchPath(szPath, "GAME");
+			char szFullPath[MAX_PATH * 2];
+			Q_snprintf(szFullPath, sizeof(szFullPath), "%s\\%s", szPath, "hl2");
+			Msg("szFullPath %s\n", szFullPath);
+			g_pFullFileSystem->AddSearchPath(szFullPath, "GAME");
 		}
 	}
 #ifdef HL1MP_CLIENT_DLL
