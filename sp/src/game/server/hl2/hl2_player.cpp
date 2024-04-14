@@ -7112,7 +7112,15 @@ void CERandomVehicle::StartEffect()
 		else
 			ChaosSpawnVehicle("prop_vehicle_airboat", MAKE_STRING("Spawn Airboat"), SPAWNTYPE_VEHICLE, "models/airboat.mdl", "airboat", "scripts/vehicles/airboat.txt");
 	}
-	if (nRandom == 2) ChaosSpawnVehicle("prop_vehicle_prisoner_pod", MAKE_STRING("Spawn Pod"), SPAWNTYPE_EYELEVEL_SPECIAL, "models/vehicles/prisoner_pod_inner.mdl", "pod", "scripts/vehicles/prisoner_pod.txt");
+	if (nRandom == 2)
+	{
+		if (UTIL_GetLocalPlayer()->GetModelScale() == 2)
+			ChaosSpawnVehicle("prop_vehicle_prisoner_pod", MAKE_STRING("Spawn Pod"), SPAWNTYPE_EYELEVEL_SPECIAL, "models/vehicles/prisoner_pod_inner_2.mdl", "pod", "scripts/vehicles/prisoner_pod_2.txt");
+		else if (UTIL_GetLocalPlayer()->GetModelScale() == 0.5)
+			ChaosSpawnVehicle("prop_vehicle_prisoner_pod", MAKE_STRING("Spawn Pod"), SPAWNTYPE_EYELEVEL_SPECIAL, "models/vehicles/prisoner_pod_inner_0_5.mdl", "pod", "scripts/vehicles/prisoner_pod_0_5.txt");
+		else
+			ChaosSpawnVehicle("prop_vehicle_prisoner_pod", MAKE_STRING("Spawn Pod"), SPAWNTYPE_EYELEVEL_SPECIAL, "models/vehicles/prisoner_pod_inner.mdl", "pod", "scripts/vehicles/prisoner_pod.txt");
+	}
 	if (nRandom == 3) ChaosSpawnVehicle("prop_vehicle_apc", MAKE_STRING("Spawn APC"), SPAWNTYPE_VEHICLE, "models/combine_apc.mdl", "apc", "scripts/vehicles/apc_npc.txt");
 }
 void CERandomNPC::StartEffect()
