@@ -7053,10 +7053,15 @@ void CERandomVehicle::StartEffect()
 			char szName[2048];
 
 			//crane magnet
-			Vector vecOrigin = pHL2Player->RotatedOffset(Vector(1034, 164, 750), true);
+			Vector vecOrigin = pHL2Player->RotatedOffset(Vector(1034, 164, 750) * pHL2Player->GetModelScale(), true);
 			QAngle vecAngles = QAngle(0, pPlayer->GetAbsAngles().y - 90, 0);
 			CBaseEntity *pMagnet = CreateEntityByName("phys_magnet");
-			pMagnet->KeyValue("model", "models/props_wasteland/cranemagnet01a.mdl");
+			if (pHL2Player->GetModelScale() == 2)
+				pMagnet->KeyValue("model", "models/props_wasteland/cranemagnet01a_2.mdl");
+			else if (pHL2Player->GetModelScale() == 0.5)
+				pMagnet->KeyValue("model", "models/props_wasteland/cranemagnet01a_0_5.mdl");
+			else
+				pMagnet->KeyValue("model", "models/props_wasteland/cranemagnet01a.mdl");
 			pMagnet->KeyValue("massScale", "1000");
 			Q_snprintf(szName, sizeof(szName), "crane_magnet_%i", g_iChaosSpawnCount);
 			pMagnet->KeyValue("targetname", szName);
@@ -7064,13 +7069,18 @@ void CERandomVehicle::StartEffect()
 			DispatchSpawn(pMagnet);
 			pMagnet->Activate();
 			pMagnet->Teleport(&vecOrigin, &vecAngles, NULL);
-			pMagnet->GetUnstuck(500, UF_NO_NODE_TELEPORT);
+			pMagnet->GetUnstuck(500 * pHL2Player->GetModelScale(), UF_NO_NODE_TELEPORT);
 
 			//crane
-			vecOrigin = pHL2Player->RotatedOffset(Vector(400, 0, 64), true);
+			vecOrigin = pHL2Player->RotatedOffset(Vector(400, 0, 64) * pHL2Player->GetModelScale(), true);
 			vecAngles = QAngle(0, pPlayer->GetAbsAngles().y - 90, 0);
 			CBaseEntity *pVehicle = CreateEntityByName("prop_vehicle_crane");
-			pVehicle->KeyValue("model", "models/Cranes/crane_docks.mdl");
+			if (pHL2Player->GetModelScale() == 2)
+				pVehicle->KeyValue("model", "models/Cranes/crane_docks_2.mdl");
+			else if (pHL2Player->GetModelScale() == 0.5)
+				pVehicle->KeyValue("model", "models/Cranes/crane_docks_0_5.mdl");
+			else
+				pVehicle->KeyValue("model", "models/Cranes/crane_docks.mdl");
 			pVehicle->KeyValue("solid", "6");
 			pVehicle->KeyValue("magnetname", szName);
 			Q_snprintf(szName, sizeof(szName), "crane%i", g_iChaosSpawnCount);
@@ -7081,11 +7091,11 @@ void CERandomVehicle::StartEffect()
 			pVehicle->Teleport(&vecOrigin, &vecAngles, NULL);
 
 			//crane ladder
-			vecOrigin = pHL2Player->RotatedOffset(Vector(524, 84, 90), true);
+			vecOrigin = pHL2Player->RotatedOffset(Vector(524, 84, 90) * pHL2Player->GetModelScale(), true);
 			vecAngles = QAngle(0, pPlayer->GetAbsAngles().y - 90, 0);
 			CFuncLadder *pLadder = (CFuncLadder *)CreateEntityByName("func_useableladder");
 			pLadder->KeyValue("parentname", szName);
-			pLadder->SetEndPoints(pHL2Player->RotatedOffset(Vector(524, 84, 90), true), pHL2Player->RotatedOffset(Vector(524, 84, 4), true));
+			pLadder->SetEndPoints(pHL2Player->RotatedOffset(Vector(524, 84, 90) * pHL2Player->GetModelScale(), true), pHL2Player->RotatedOffset(Vector(524, 84, 4) * pHL2Player->GetModelScale(), true));
 			pLadder->KeyValue("targetname", "chaos_ladder");
 			pLadder->KeyValue("spawnflags", "1");
 			Q_snprintf(szName, sizeof(szName), "crane%i,ForcePlayerIn,,0,-1", g_iChaosSpawnCount);
