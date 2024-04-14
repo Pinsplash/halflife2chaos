@@ -403,7 +403,7 @@ void SavePersistEnts()
 	CBaseEntity *pEnt = gEntList.FirstEnt();
 	while (pEnt)
 	{
-		if (pEnt->m_bChaosPersist)
+		if (pEnt->m_bChaosPersist && (!pEnt->IsNPC() || pEnt->IsAlive()))
 		{
 			iEnts++;
 			g_PersistEnts.AddToTail(StoreEnt(pEnt));
