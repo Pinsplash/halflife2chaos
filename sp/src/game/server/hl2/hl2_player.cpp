@@ -6674,13 +6674,10 @@ CAI_BaseNPC *CChaosEffect::ChaosSpawnNPC(const char *className, string_t strActu
 		}
 		if (FStrEq(className, "npc_antlionguard"))
 		{
-			if (!Q_strcmp(modDir, "ep2chaos"))
+			//if (RandomInt(0, 1) == 1)//cave variant
 			{
-				if (RandomInt(0, 1) == 1)//cave variant
-				{
-					pNPC->KeyValue("cavernbreed", "1");
-					pNPC->KeyValue("incavern", "1");
-				}
+				pNPC->KeyValue("cavernbreed", "1");
+				pNPC->KeyValue("incavern", "1");
 			}
 			pNPC->KeyValue("startburrowed", "0");
 			pNPC->KeyValue("allowbark", "1");

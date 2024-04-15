@@ -1,0 +1,15 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" 	"Models/antlion_guard/antlionGuard2"
+	"$bumpmap" "Models/antlion_guard/antlionGuard_normal"
+	"$surfaceprop" "alienflesh"
+	"$selfillum" 1
+	"$selfIllumFresnel" "1"
+	"$selfIllumFresnelMinMaxExp" "[.1 1.2 5]" // 0.0 1.0 1.0 is the default
+	"$selfillumtint"	"[1.0 1.0 1.0]"
+	"$model" 1
+	"$phong" 1
+	"$phongboost" "10"
+	"$phongexponenttexture" "models/antlion_guard/antlionGuard_phong"			
+	"$phongfresnelranges"	"[.1 .6 1.0]"
+}

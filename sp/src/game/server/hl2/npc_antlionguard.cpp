@@ -46,11 +46,9 @@ ConVar	g_debug_antlionguard( "g_debug_antlionguard", "0" );
 ConVar	sk_antlionguard_dmg_charge( "sk_antlionguard_dmg_charge", "0" );
 ConVar	sk_antlionguard_dmg_shove( "sk_antlionguard_dmg_shove", "0" );
 
-#if HL2_EPISODIC
 // When enabled, add code to have the antlion bleed profusely as it is badly injured.
 #define ANTLIONGUARD_BLOOD_EFFECTS 2
 ConVar	g_antlionguard_hemorrhage( "g_antlionguard_hemorrhage", "1", FCVAR_NONE, "If 1, guard will emit a bleeding particle effect when wounded." );
-#endif
 
 // Spawnflags 
 #define	SF_ANTLIONGUARD_SERVERSIDE_RAGDOLL	( 1 << 16 )
@@ -84,9 +82,7 @@ ConVar	g_antlionguard_hemorrhage( "g_antlionguard_hemorrhage", "1", FCVAR_NONE, 
 #define	ANTLIONGUARD_FOV_NORMAL			-0.4f
 
 // cavern guard's poisoning behavior
-#if HL2_EPISODIC
 #define ANTLIONGUARD_POISON_TO			12 // we only poison Gordon down to twelve to give him a chance to regen up to 20 by the next charge
-#endif
 
 #define	ANTLIONGUARD_CHARGE_MIN			256
 #define	ANTLIONGUARD_CHARGE_MAX			2048
@@ -287,7 +283,6 @@ public:
 
 	virtual Activity	NPC_TranslateActivity( Activity baseAct );
 
-#if HL2_EPISODIC
 	//---------------------------------
 	// Navigation & Movement -- prevent stopping paths for the guard
 	//---------------------------------
@@ -303,7 +298,6 @@ public:
 		bool GetStoppingPath( CAI_WaypointList *pClippedWaypoints );
 	};
 	CAI_Navigator *	CreateNavigator()	{ return new CNavigator( this );	}
-#endif
 
 	DEFINE_CUSTOM_AI;
 
@@ -683,7 +677,6 @@ void CNPC_AntlionGuard::Precache( void )
 		PrecacheScriptSound( "NPC_AntlionGuard.StepHeavy" );
 	}
 
-#if HL2_EPISODIC
 	PrecacheScriptSound( "NPC_AntlionGuard.NearStepLight" );
 	PrecacheScriptSound( "NPC_AntlionGuard.NearStepHeavy" );
 	PrecacheScriptSound( "NPC_AntlionGuard.FarStepLight" );
@@ -692,7 +685,6 @@ void CNPC_AntlionGuard::Precache( void )
 	PrecacheScriptSound( "NPC_AntlionGuard.ShellCrack" );
 	PrecacheScriptSound( "NPC_AntlionGuard.Pain_Roar" );
 	PrecacheModel( "sprites/grubflare1.vmt" );
-#endif // HL2_EPISODIC
 
 	PrecacheScriptSound( "NPC_AntlionGuard.Anger" );
 	PrecacheScriptSound( "NPC_AntlionGuard.Roar" );
@@ -1063,7 +1055,7 @@ int CNPC_AntlionGuard::SelectCombatSchedule( void )
 bool CNPC_AntlionGuard::ShouldCharge( const Vector &startPos, const Vector &endPos, bool useTime, bool bCheckForCancel )
 {
 	// Don't charge in tight spaces unless forced to
-	if ( hl2_episodic.GetBool() && m_bInCavern && !(m_hChargeTarget.Get() && m_hChargeTarget->IsAlive()) )
+	if ( m_bInCavern && !(m_hChargeTarget.Get() && m_hChargeTarget->IsAlive()) )
 		return false;
 
 	// Must have a target
@@ -1265,7 +1257,7 @@ int CNPC_AntlionGuard::MeleeAttack1Conditions( float flDot, float flDist )
 	if ( IsCurSchedule( SCHED_ANTLIONGUARD_CHARGE ) )
 		return 0;
 
-	if ( hl2_episodic.GetBool() && m_bInCavern )
+	if ( m_bInCavern )
 	{
 		// Predict where they'll be and see if THAT is within range
 		Vector vecPredPos;
@@ -1324,7 +1316,7 @@ float CNPC_AntlionGuard::MaxYawSpeed( void )
 	if ( eActivity == ACT_ANTLIONGUARD_CHARGE_START )
 		return 4.0f;
 
-	if ( hl2_episodic.GetBool() && m_bInCavern )
+	if ( m_bInCavern )
 	{
 		// Allow a better turning rate when moving quickly but not charging the player
 		if ( ( eActivity == ACT_ANTLIONGUARD_CHARGE_RUN ) && IsCurSchedule( SCHED_ANTLIONGUARD_CHARGE ) == false )
@@ -1482,14 +1474,12 @@ void CNPC_AntlionGuard::Shove( void )
 			pHurt->ApplyAbsVelocityImpulse( forward * 400 + up * 150 );
 
 			// in the episodes, the cavern guard poisons the player
-#if HL2_EPISODIC
 			// If I am a cavern guard attacking the player, and he still lives, then poison him too.
 			if ( m_bInCavern && pHurt->IsPlayer() && pHurt->IsAlive() && pHurt->m_iHealth > ANTLIONGUARD_POISON_TO)
 			{
 				// That didn't finish them. Take them down to one point with poison damage. It'll heal.
 				pHurt->TakeDamage( CTakeDamageInfo( this, this, pHurt->m_iHealth - ANTLIONGUARD_POISON_TO, DMG_POISON ) );
 			}
-#endif
 
 		}	
 		else
@@ -2483,10 +2473,16 @@ void CNPC_AntlionGuard::StartTask( const Task_t *pTask )
 
 			// Find the nearest node to the enemy
 			int node = GetNavigator()->GetNetwork()->NearestNodeToPoint( this, GetEnemy()->GetAbsOrigin(), false );
-			CAI_Node *pNode = GetNavigator()->GetNetwork()->GetNode( node );
-			if( pNode == NULL )
+			if (node == NO_NODE)
 			{
 				TaskFail( FAIL_NO_ROUTE );
+				break;
+			}
+
+			CAI_Node *pNode = GetNavigator()->GetNetwork()->GetNode(node);
+			if (pNode == NULL)
+			{
+				TaskFail(FAIL_NO_ROUTE);
 				break;
 			}
 
@@ -2564,7 +2560,6 @@ void ApplyChargeDamage( CBaseEntity *pAntlionGuard, CBaseEntity *pTarget, float 
 	CTakeDamageInfo	info( pAntlionGuard, pAntlionGuard, vecForce, offset, flDamage, DMG_CLUB );
 	pTarget->TakeDamage( info );
 
-#if HL2_EPISODIC
 	// If I am a cavern guard attacking the player, and he still lives, then poison him too.
 	Assert( dynamic_cast<CNPC_AntlionGuard *>(pAntlionGuard) );
 
@@ -2573,7 +2568,6 @@ void ApplyChargeDamage( CBaseEntity *pAntlionGuard, CBaseEntity *pTarget, float 
 		// That didn't finish them. Take them down to one point with poison damage. It'll heal.
 		pTarget->TakeDamage( CTakeDamageInfo( pAntlionGuard, pAntlionGuard, pTarget->m_iHealth - ANTLIONGUARD_POISON_TO, DMG_POISON ) );
 	}
-#endif
 
 }
 
@@ -3377,7 +3371,7 @@ Activity CNPC_AntlionGuard::NPC_TranslateActivity( Activity baseAct )
 		return (Activity) ACT_ANTLIONGUARD_CHARGE_RUN;
 
 	// Do extra code if we're trying to close on an enemy in a confined space (unless scripted)
-	if ( hl2_episodic.GetBool() && m_bInCavern && baseAct == ACT_RUN && IsInAScript() == false )
+	if ( m_bInCavern && baseAct == ACT_RUN && IsInAScript() == false )
 		return (Activity) ACT_ANTLIONGUARD_CHARGE_RUN;
 
 	if ( ( baseAct == ACT_RUN ) && ( m_iHealth <= (m_iMaxHealth/4) ) )
@@ -4362,7 +4356,7 @@ bool CNPC_AntlionGuard::CanBecomeRagdoll( void )
 	if ( IsCurSchedule( SCHED_DIE ) )
 		return true;
 
-	return hl2_episodic.GetBool();
+	return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -4419,7 +4413,6 @@ bool CNPC_AntlionGuard::OverrideMoveFacing( const AILocalMoveGoal_t &move, float
 		pFaceTarget = m_hChargeTarget;
 		bFaceTarget = true;
 	}
-#ifdef HL2_EPISODIC
 	else if ( GetEnemy() && IsCurSchedule( SCHED_ANTLIONGUARD_CANT_ATTACK ) )
 	{
 		// Always face our enemy when randomly patrolling around
@@ -4427,7 +4420,6 @@ bool CNPC_AntlionGuard::OverrideMoveFacing( const AILocalMoveGoal_t &move, float
 		pFaceTarget = GetEnemy();
 		bFaceTarget = true;
 	}
-#endif	// HL2_EPISODIC
 	else if ( GetEnemy() && GetNavigator()->GetMovementActivity() == ACT_RUN )
   	{
 		Vector vecEnemyLKP = GetEnemyLKP();
@@ -4532,7 +4524,6 @@ bool CNPC_AntlionGuard::QueryHearSound( CSound *pSound )
 }
 
 
-#if HL2_EPISODIC
 //---------------------------------------------------------
 // Prevent the cavern guard from using stopping paths, as it occasionally forces him off the navmesh.
 //---------------------------------------------------------
@@ -4547,7 +4538,6 @@ bool CNPC_AntlionGuard::CNavigator::GetStoppingPath( CAI_WaypointList *pClippedW
 		return BaseClass::GetStoppingPath( pClippedWaypoints );
 	}
 }
-#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -4833,8 +4823,6 @@ AI_BEGIN_CUSTOM_NPC( npc_antlionguard, CNPC_AntlionGuard )
 	//		If we're here, the guard can't chase enemy, can't find a physobject to attack with, and can't summon
 	//==================================================
 
-#ifdef HL2_EPISODIC
-
 	DEFINE_SCHEDULE
 	( 
 		SCHED_ANTLIONGUARD_CANT_ATTACK,
@@ -4852,20 +4840,6 @@ AI_BEGIN_CUSTOM_NPC( npc_antlionguard, CNPC_AntlionGuard )
 		"		COND_ANTLIONGUARD_PHYSICS_TARGET"
 		"		COND_HEAVY_DAMAGE"
 	)
-
-#else
-
-	DEFINE_SCHEDULE
-	( 
-	SCHED_ANTLIONGUARD_CANT_ATTACK,
-
-	"	Tasks"
-	"		TASK_WAIT								5"
-	""
-	"	Interrupts"
-	)
-
-#endif
 
 	//==================================================
 	// SCHED_ANTLIONGUARD_PHYSICS_DAMAGE_HEAVY
