@@ -30,10 +30,7 @@
 #include "props.h"
 #include "particle_parse.h"
 #include "ai_tacticalservices.h"
-
-#ifdef HL2_EPISODIC
 #include "grenade_spit.h"
-#endif
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -48,9 +45,6 @@ ConVar	sk_antlion_swipe_damage( "sk_antlion_swipe_damage", "0" );
 ConVar	sk_antlion_jump_damage( "sk_antlion_jump_damage", "0" );
 ConVar  sk_antlion_air_attack_dmg( "sk_antlion_air_attack_dmg", "0" );
 
-
-#ifdef HL2_EPISODIC
-
 // workers
 #define ANTLION_WORKERS_BURST() (true)
 #define ANTLION_WORKER_BURST_IS_POISONOUS() (true)
@@ -61,8 +55,6 @@ ConVar  sk_antlion_worker_spit_speed( "sk_antlion_worker_spit_speed", "0", FCVAR
 
 // This must agree with the AntlionWorkerBurstRadius() function!
 ConVar  sk_antlion_worker_burst_radius( "sk_antlion_worker_burst_radius", "160", FCVAR_NONE, "Effect radius of an antlion worker's death explosion."  );
-
-#endif
 
 ConVar  g_test_new_antlion_jump( "g_test_new_antlion_jump", "1", FCVAR_ARCHIVE );
 ConVar	antlion_easycrush( "antlion_easycrush", "1" );
@@ -231,9 +223,7 @@ BEGIN_DATADESC( CNPC_Antlion )
 	DEFINE_FIELD( m_flNextJumpPushTime,		FIELD_TIME ),
 	DEFINE_FIELD( m_bForcedStuckJump,		FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_flZapDuration,			FIELD_TIME ),
-#if HL2_EPISODIC
 	DEFINE_FIELD( m_bHasDoneAirAttack,		FIELD_BOOLEAN ),
-#endif	
 	// DEFINE_FIELD( m_bLoopingStarted, FIELD_BOOLEAN ),
 	//			  m_FollowBehavior
 	//			  m_AssaultBehavior
@@ -272,22 +262,25 @@ void CNPC_Antlion::Spawn( void )
 	AddSpawnFlags( SF_NPC_FADE_CORPSE );
 #endif // _XBOX
 
-#ifdef HL2_EPISODIC
 	if ( IsWorker() )
 	{
 		SetModel( ANTLION_WORKER_MODEL );
 		AddSpawnFlags( SF_NPC_LONG_RANGE );
-		SetBloodColor( BLOOD_COLOR_ANTLION_WORKER );
+#ifdef HL2_EPISODIC
+		SetBloodColor(BLOOD_COLOR_ANTLION_WORKER);
+#else
+		SetBloodColor(BLOOD_COLOR_YELLOW);
+#endif
 	}
 	else
 	{
-		SetModel( ANTLION_MODEL );
-		SetBloodColor( BLOOD_COLOR_ANTLION );
-	}
+		SetModel(ANTLION_MODEL);
+#ifdef HL2_EPISODIC
+		SetBloodColor(BLOOD_COLOR_ANTLION);
 #else
-	SetModel( ANTLION_MODEL );
-	SetBloodColor( BLOOD_COLOR_YELLOW );
-#endif // HL2_EPISODIC
+		SetBloodColor(BLOOD_COLOR_YELLOW);
+#endif
+	}
 
 	SetHullType(HULL_MEDIUM);
 	SetHullSizeNormal();
@@ -297,11 +290,7 @@ void CNPC_Antlion::Spawn( void )
 
 	m_NPCState	= NPC_STATE_NONE;
 
-#if HL2_EPISODIC
 	m_iHealth = ( IsWorker() ) ? sk_antlion_worker_health.GetFloat() : sk_antlion_health.GetFloat();
-#else
-	m_iHealth	= sk_antlion_health.GetFloat();
-#endif // _DEBUG
 
 	SetSolid( SOLID_BBOX );
 	AddSolidFlags( FSOLID_NOT_STANDABLE );
@@ -425,7 +414,6 @@ const char *pszAntlionGibs_Small[NUM_ANTLION_GIBS_SMALL] = {
 //-----------------------------------------------------------------------------
 void CNPC_Antlion::Precache( void )
 {
-#ifdef HL2_EPISODIC
 	if ( IsWorker() )
 	{
 		PrecacheModel( ANTLION_WORKER_MODEL );
@@ -436,7 +424,6 @@ void CNPC_Antlion::Precache( void )
 		PrecacheParticleSystem( "blood_impact_yellow_01" );
 	}
 	else
-#endif // HL2_EPISODIC
 	{
 		PrecacheModel( ANTLION_MODEL );
 		PropBreakablePrecacheAll( MAKE_STRING( ANTLION_MODEL ) );
@@ -474,7 +461,6 @@ void CNPC_Antlion::Precache( void )
 	PrecacheScriptSound( "NPC_Antlion.LoopingAgitated" );
 	PrecacheScriptSound( "NPC_Antlion.Distracted" );
 
-#ifdef HL2_EPISODIC
 	PrecacheScriptSound( "NPC_Antlion.PoisonBurstScream" );
 	PrecacheScriptSound( "NPC_Antlion.PoisonBurstScreamSubmerged" );
 	PrecacheScriptSound( "NPC_Antlion.PoisonBurstExplode" );
@@ -483,7 +469,6 @@ void CNPC_Antlion::Precache( void )
 	PrecacheScriptSound( "NPC_Antlion.ZappedFlip" );
 	PrecacheScriptSound( "NPC_Antlion.PoisonShoot" );
 	PrecacheScriptSound( "NPC_Antlion.PoisonBall" );
-#endif
 
 	BaseClass::Precache();
 }
@@ -583,14 +568,12 @@ bool CNPC_Antlion::CanBecomeRagdoll()
 {
 	// This prevents us from dying in the regular way. It forces a schedule selection
 	// that will select SCHED_DIE, where we can do our poison burst thing.
-#ifdef HL2_EPISODIC
 	if ( IsWorker() && ANTLION_WORKERS_BURST() )
 	{
 		// If we're in a script, we're allowed to ragdoll. This lets the vort's dynamic
 		// interaction ragdoll us.
 		return ( m_NPCState == NPC_STATE_SCRIPT || m_bDontExplode );
 	}
-#endif	
 	return BaseClass::CanBecomeRagdoll();
 }
 
@@ -1009,8 +992,6 @@ Vector VecCheckThrowTolerance( CBaseEntity *pEdict, const Vector &vecSpot1, Vect
 //-----------------------------------------------------------------------------
 bool CNPC_Antlion::GetSpitVector( const Vector &vecStartPos, const Vector &vecTarget, Vector *vecOut )
 {
-	// antlion workers exist only in episodic.
-#if HL2_EPISODIC
 	// Try the most direct route
 	Vector vecToss = VecCheckThrowTolerance( this, vecStartPos, vecTarget, sk_antlion_worker_spit_speed.GetFloat(), (10.0f*12.0f) );
 
@@ -1029,9 +1010,6 @@ bool CNPC_Antlion::GetSpitVector( const Vector &vecStartPos, const Vector &vecTa
 	}
 
 	return true;
-#else
-	return false;
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -1054,104 +1032,101 @@ void CNPC_Antlion::DelaySquadAttack( float flDuration )
 //-----------------------------------------------------------------------------
 void CNPC_Antlion::HandleAnimEvent( animevent_t *pEvent )
 {
-#ifdef HL2_EPISODIC
-		// Handle the spit event
-		if ( pEvent->event == AE_ANTLION_WORKER_SPIT )
+	// Handle the spit event
+	if (pEvent->event == AE_ANTLION_WORKER_SPIT)
+	{
+		if (GetEnemy())
 		{
-			if ( GetEnemy() )
-			{
-				Vector vSpitPos;
-				GetAttachment( "mouth", vSpitPos );
+			Vector vSpitPos;
+			GetAttachment("mouth", vSpitPos);
 
-				Vector	vTarget;
-				
-				// If our enemy is looking at us and far enough away, lead him
-				if ( HasCondition( COND_ENEMY_FACING_ME ) && UTIL_DistApprox( GetAbsOrigin(), GetEnemy()->GetAbsOrigin() ) > (40*12) )
+			Vector	vTarget;
+
+			// If our enemy is looking at us and far enough away, lead him
+			if (HasCondition(COND_ENEMY_FACING_ME) && UTIL_DistApprox(GetAbsOrigin(), GetEnemy()->GetAbsOrigin()) > (40 * 12))
+			{
+				UTIL_PredictedPosition(GetEnemy(), 0.5f, &vTarget);
+				vTarget.z = GetEnemy()->GetAbsOrigin().z;
+			}
+			else
+			{
+				// Otherwise he can't see us and he won't be able to dodge
+				vTarget = GetEnemy()->BodyTarget(vSpitPos, true);
+			}
+
+			vTarget[2] += random->RandomFloat(0.0f, 32.0f);
+
+			// Try and spit at our target
+			Vector	vecToss;
+			if (GetSpitVector(vSpitPos, vTarget, &vecToss) == false)
+			{
+				// Now try where they were
+				if (GetSpitVector(vSpitPos, m_vSavePosition, &vecToss) == false)
 				{
-					UTIL_PredictedPosition( GetEnemy(), 0.5f, &vTarget ); 
-					vTarget.z = GetEnemy()->GetAbsOrigin().z;
+					// Failing that, just shoot with the old velocity we calculated initially!
+					vecToss = m_vecSaveSpitVelocity;
+				}
+			}
+
+			// Find what our vertical theta is to estimate the time we'll impact the ground
+			Vector vecToTarget = (vTarget - vSpitPos);
+			VectorNormalize(vecToTarget);
+			float flVelocity = VectorNormalize(vecToss);
+			float flCosTheta = DotProduct(vecToTarget, vecToss);
+			float flTime = (vSpitPos - vTarget).Length2D() / (flVelocity * flCosTheta);
+
+			// Emit a sound where this is going to hit so that targets get a chance to act correctly
+			CSoundEnt::InsertSound(SOUND_DANGER, vTarget, (15 * 12), flTime, this);
+
+			// Don't fire again until this volley would have hit the ground (with some lag behind it)
+			SetNextAttack(gpGlobals->curtime + flTime + random->RandomFloat(0.5f, 2.0f));
+
+			// Tell any squadmates not to fire for some portion of the time this volley will be in the air (except on hard)
+			if (g_pGameRules->IsSkillLevel(SKILL_HARD) == false)
+				DelaySquadAttack(flTime);
+
+			for (int i = 0; i < 6; i++)
+			{
+				CGrenadeSpit *pGrenade = (CGrenadeSpit*)CreateEntityByName("grenade_spit");
+				pGrenade->SetAbsOrigin(vSpitPos);
+				pGrenade->SetAbsAngles(vec3_angle);
+				DispatchSpawn(pGrenade);
+				pGrenade->SetThrower(this);
+				pGrenade->SetOwnerEntity(this);
+
+				if (i == 0)
+				{
+					pGrenade->SetSpitSize(SPIT_LARGE);
+					pGrenade->SetAbsVelocity(vecToss * flVelocity);
 				}
 				else
 				{
-					// Otherwise he can't see us and he won't be able to dodge
-					vTarget = GetEnemy()->BodyTarget( vSpitPos, true );
-				}
-				
-				vTarget[2] += random->RandomFloat( 0.0f, 32.0f );
-				
-				// Try and spit at our target
-				Vector	vecToss;				
-				if ( GetSpitVector( vSpitPos, vTarget, &vecToss ) == false )
-				{
-					// Now try where they were
-					if ( GetSpitVector( vSpitPos, m_vSavePosition, &vecToss ) == false )
-					{
-						// Failing that, just shoot with the old velocity we calculated initially!
-						vecToss = m_vecSaveSpitVelocity;
-					}
+					pGrenade->SetAbsVelocity((vecToss + RandomVector(-0.035f, 0.035f)) * flVelocity);
+					pGrenade->SetSpitSize(random->RandomInt(SPIT_SMALL, SPIT_MEDIUM));
 				}
 
-				// Find what our vertical theta is to estimate the time we'll impact the ground
-				Vector vecToTarget = ( vTarget - vSpitPos );
-				VectorNormalize( vecToTarget );
-				float flVelocity = VectorNormalize( vecToss );
-				float flCosTheta = DotProduct( vecToTarget, vecToss );
-				float flTime = (vSpitPos-vTarget).Length2D() / ( flVelocity * flCosTheta );
-
-				// Emit a sound where this is going to hit so that targets get a chance to act correctly
-				CSoundEnt::InsertSound( SOUND_DANGER, vTarget, (15*12), flTime, this );
-
-				// Don't fire again until this volley would have hit the ground (with some lag behind it)
-				SetNextAttack( gpGlobals->curtime + flTime + random->RandomFloat( 0.5f, 2.0f ) );
-
-				// Tell any squadmates not to fire for some portion of the time this volley will be in the air (except on hard)
-				if ( g_pGameRules->IsSkillLevel( SKILL_HARD ) == false )
-					DelaySquadAttack( flTime );
-
-				for ( int i = 0; i < 6; i++ )
-				{
-					CGrenadeSpit *pGrenade = (CGrenadeSpit*) CreateEntityByName( "grenade_spit" );
-					pGrenade->SetAbsOrigin( vSpitPos );
-					pGrenade->SetAbsAngles( vec3_angle );
-					DispatchSpawn( pGrenade );
-					pGrenade->SetThrower( this );
-					pGrenade->SetOwnerEntity( this );
-										
-					if ( i == 0 )
-					{
-						pGrenade->SetSpitSize( SPIT_LARGE );
-						pGrenade->SetAbsVelocity( vecToss * flVelocity );
-					}
-					else
-					{
-						pGrenade->SetAbsVelocity( ( vecToss + RandomVector( -0.035f, 0.035f ) ) * flVelocity );
-						pGrenade->SetSpitSize( random->RandomInt( SPIT_SMALL, SPIT_MEDIUM ) );
-					}
-
-					// Tumble through the air
-					pGrenade->SetLocalAngularVelocity(
-						QAngle( random->RandomFloat( -250, -500 ),
-								random->RandomFloat( -250, -500 ),
-								random->RandomFloat( -250, -500 ) ) );
-				}
-
-				for ( int i = 0; i < 8; i++ )
-				{
-					DispatchParticleEffect( "blood_impact_yellow_01", vSpitPos + RandomVector( -12.0f, 12.0f ), RandomAngle( 0, 360 ) );
-				}
-
-				EmitSound( "NPC_Antlion.PoisonShoot" );
+				// Tumble through the air
+				pGrenade->SetLocalAngularVelocity(
+					QAngle(random->RandomFloat(-250, -500),
+					random->RandomFloat(-250, -500),
+					random->RandomFloat(-250, -500)));
 			}
-			return;
-		}
 
-		if ( pEvent->event == AE_ANTLION_WORKER_DONT_EXPLODE )
-		{
-			m_bDontExplode = true;
-			return;
-		}
+			for (int i = 0; i < 8; i++)
+			{
+				DispatchParticleEffect("blood_impact_yellow_01", vSpitPos + RandomVector(-12.0f, 12.0f), RandomAngle(0, 360));
+			}
 
-#endif // HL2_EPISODIC
+			EmitSound("NPC_Antlion.PoisonShoot");
+		}
+		return;
+	}
+
+	if (pEvent->event == AE_ANTLION_WORKER_DONT_EXPLODE)
+	{
+		m_bDontExplode = true;
+		return;
+	}
 
 	if ( pEvent->event == AE_ANTLION_WALK_FOOTSTEP )
 	{
@@ -1273,7 +1248,6 @@ void CNPC_Antlion::HandleAnimEvent( animevent_t *pEvent )
 	}
 
 	// antlion worker events
-#if HL2_EPISODIC
 	if ( pEvent->event == AE_ANTLION_WORKER_EXPLODE_SCREAM )
 	{
 		if ( GetWaterLevel() < 2 )
@@ -1299,7 +1273,6 @@ void CNPC_Antlion::HandleAnimEvent( animevent_t *pEvent )
 		Event_Gibbed( info );
 		return;
 	}
-#endif
 	
 	BaseClass::HandleAnimEvent( pEvent );
 }
@@ -2419,7 +2392,7 @@ int CNPC_Antlion::SelectSchedule( void )
 	case NPC_STATE_COMBAT:
 		{
 			// Worker-only AI
-			if ( hl2_episodic.GetBool() && IsWorker() )
+			if ( IsWorker() )
 			{
 				// Melee attack if we can
 				if ( HasCondition( COND_CAN_MELEE_ATTACK1 ) )
@@ -3972,10 +3945,8 @@ bool CNPC_Antlion::ShouldGib( const CTakeDamageInfo &info )
 	if ( info.GetDamageType() & (DMG_NEVERGIB|DMG_DISSOLVE) )
 		return false;
 
-#ifdef HL2_EPISODIC
 	if ( IsWorker() && ANTLION_WORKERS_BURST() )
 		return !m_bDontExplode;
-#endif
 
 	if ( info.GetDamageType() & (DMG_ALWAYSGIB|DMG_BLAST) )
 		return true;
@@ -3992,14 +3963,11 @@ bool CNPC_Antlion::ShouldGib( const CTakeDamageInfo &info )
 //-----------------------------------------------------------------------------
 bool CNPC_Antlion::CorpseGib( const CTakeDamageInfo &info )
 {
-#ifdef HL2_EPISODIC
-
 	if ( IsWorker() )
 	{
 		DoPoisonBurst();
 	}
 	else
-#endif // HL2_EPISODIC
 	{
 		// Use the bone position to handle being moved by an animation (like a dynamic scripted sequence)
 		static int s_nBodyBone = -1;
@@ -4154,13 +4122,10 @@ void CNPC_Antlion::Touch( CBaseEntity *pOther )
 //-----------------------------------------------------------------------------
 bool CNPC_Antlion::OverrideMoveFacing( const AILocalMoveGoal_t &move, float flInterval )
 {
-	if ( hl2_episodic.GetBool() )
+	if (IsWorker() && GetEnemy())
 	{
-		if ( IsWorker() && GetEnemy() )
-		{
-			AddFacingTarget( GetEnemy(), GetEnemy()->WorldSpaceCenter(), 1.0f, 0.2f );
-			return BaseClass::OverrideMoveFacing( move, flInterval );
-		}
+		AddFacingTarget(GetEnemy(), GetEnemy()->WorldSpaceCenter(), 1.0f, 0.2f);
+		return BaseClass::OverrideMoveFacing(move, flInterval);
 	}
 
 	//Adrian: Make antlions face the thumper while they flee away.
@@ -4387,7 +4352,6 @@ void CNPC_Antlion::InputJumpAtTarget( inputdata_t &inputdata )
 	SetCondition( COND_ANTLION_CAN_JUMP_AT_TARGET );
 }
 
-#if HL2_EPISODIC
 //-----------------------------------------------------------------------------
 // workers can explode.
 //-----------------------------------------------------------------------------
@@ -4415,14 +4379,13 @@ void CNPC_Antlion::DoPoisonBurst()
 
 	EmitSound( "NPC_Antlion.PoisonBurstExplode" );
 }
-#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
 bool CNPC_Antlion::IsHeavyDamage( const CTakeDamageInfo &info )
 {
-	if ( hl2_episodic.GetBool() && IsWorker() )
+	if ( IsWorker() )
 	{
 		if ( m_nSustainedDamage + info.GetDamage() > 6 )
 			return true;
@@ -5093,7 +5056,6 @@ bool IsAntlion( CBaseEntity *pEntity )
 			 dynamic_cast<CNPC_Antlion *>(pEntity) != NULL );	// Save this as the last step
 }
 
-#ifdef HL2_EPISODIC
 //-----------------------------------------------------------------------------
 // Purpose: Used by other entities to judge the antlion worker's radius of damage
 //-----------------------------------------------------------------------------
@@ -5101,4 +5063,3 @@ float AntlionWorkerBurstRadius( void )
 {
 	return sk_antlion_worker_burst_radius.GetFloat();
 }
-#endif // HL2_EPISODIC

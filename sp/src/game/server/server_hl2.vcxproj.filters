@@ -1595,6 +1595,9 @@
     <ClInclude Include="hl2\grenade_frag.h">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClInclude>
+    <ClInclude Include="hl2\grenade_spit.h">
+      <Filter>Source Files\HL2 DLL</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\game\shared\hl2\hl2_gamerules.h">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClInclude>
@@ -2966,6 +2969,9 @@
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
     <ClCompile Include="hl2\grenade_frag.cpp">
+      <Filter>Source Files\HL2 DLL</Filter>
+    </ClCompile>
+    <ClCompile Include="hl2\grenade_spit.cpp">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
     <ClCompile Include="hl2\hl2_ai_network.cpp">

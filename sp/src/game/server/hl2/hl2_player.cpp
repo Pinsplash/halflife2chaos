@@ -6668,11 +6668,8 @@ CAI_BaseNPC *CChaosEffect::ChaosSpawnNPC(const char *className, string_t strActu
 		}
 		if (FStrEq(className, "npc_antlion"))
 		{
-			if (!Q_strcmp(modDir, "ep2chaos"))
-			{
-				if (RandomInt(0, 1) == 1)//cave variant
-					pNPC->AddSpawnFlags(262144);
-			}
+			if (RandomInt(0, 1) == 1)//cave variant
+				pNPC->AddSpawnFlags(262144);
 			pNPC->KeyValue("startburrowed", "0");
 		}
 		if (FStrEq(className, "npc_antlionguard"))

@@ -768,6 +768,7 @@ exit 1
     <ClInclude Include="hl2\grenade_ar2.h" />
     <ClInclude Include="hl2\grenade_bugbait.h" />
     <ClInclude Include="hl2\grenade_frag.h" />
+    <ClInclude Include="hl2\grenade_spit.h" />
     <ClInclude Include="..\..\game\shared\hl2\hl2_gamerules.h" />
     <ClInclude Include="hl2\hl2_gamestats.h" />
     <ClInclude Include="hl2\hl2_player.h" />
@@ -1311,6 +1312,7 @@ exit 1
     <ClCompile Include="hl2\grenade_ar2.cpp" />
     <ClCompile Include="hl2\grenade_bugbait.cpp" />
     <ClCompile Include="hl2\grenade_frag.cpp" />
+    <ClCompile Include="hl2\grenade_spit.cpp" />
     <ClCompile Include="hl2\hl2_ai_network.cpp" />
     <ClCompile Include="hl2\hl2_client.cpp" />
     <ClCompile Include="hl2\hl2_eventlog.cpp" />

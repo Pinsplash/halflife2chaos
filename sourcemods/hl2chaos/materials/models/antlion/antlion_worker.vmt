@@ -1,0 +1,29 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"models/Antlion/antlion_worker"
+	"$bumpmap" 	"Models/antlion/antlion_worker_normal"
+	"$surfaceprop"	"alienflesh"
+
+	"$selfillum" "1"
+	"$selfIllumFresnel" "1"
+	"$selfIllumFresnelMinMaxExp" "[0.2 2.2 3]" // 0.0 1.0 1.0 is the default
+	"$selfillumtint"	"[1.15 1.15 0.55]"
+
+	"$model" "1"
+	"$phong"     "1"
+	"$phongexponent"   "20"
+	"$phongboost"   "4"
+	"$phongfresnelranges"   "[.0 0.8 2]"
+	
+
+	//rimlight parameters
+	"$rimlight" "1"
+	"$rimlightexponent" "15"
+	"$rimlightboost" "1"
+	
+	// Environment map
+	//"$normalmapalphaenvmapmask" 1 // Not supported when self illum fresnel is enabled!
+	"$envmap" "env_cubemap"
+	"$envmaptint" "[.2 .2 .2]"
+	"$lightwarptexture" "Models/antlion/antlion_worker_warp"
+}

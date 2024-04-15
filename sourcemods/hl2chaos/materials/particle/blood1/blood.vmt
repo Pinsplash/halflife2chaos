@@ -1,0 +1,8 @@
+"SpriteCard"
+{
+	$basetexture "particle/blood1/blood"
+	$vertexcolor 1
+	$vertexalpha 1
+	$translucent 1
+	$MAXSIZE .25
+}
