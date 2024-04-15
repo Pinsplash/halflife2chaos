@@ -129,7 +129,7 @@ void CNPC_VehicleDriver::Spawn( void )
 	m_flDistanceAlongSpline = 0.2;
 	m_pCurrentWaypoint = m_pNextWaypoint = NULL;
 
-	GetNavigator()->SetPathcornerPathfinding( false );
+	//GetNavigator()->SetPathcornerPathfinding( false );
 
 	NPCInit();
 
@@ -637,7 +637,6 @@ bool CNPC_VehicleDriver::WaypointReached( void )
 	{
 		// Necessary for InPass outputs to be fired, is a no-op otherwise
 		GetNavigator()->AdvancePath();
-	
 		// Stop pathing
 		ClearWaypoints();
 		TaskComplete();
@@ -718,7 +717,6 @@ bool CNPC_VehicleDriver::OverridePathMove( float flInterval )
 
 		m_flDistanceAlongSpline = 0.2;
 	}
-
 	// Have we reached our target? See if we've passed the current waypoint's plane.
 	Vector vecAbsMins, vecAbsMaxs;
 	CollisionProp()->WorldSpaceAABB( &vecAbsMins, &vecAbsMaxs );
@@ -805,12 +803,12 @@ bool CNPC_VehicleDriver::OverridePathMove( float flInterval )
 	// Bunch o'debug
 	if ( g_debug_vehicledriver.GetInt() & DRIVER_DEBUG_PATH )
 	{
-		NDebugOverlay::Box( m_vecPrevPrevPoint, -Vector(15,15,15), Vector(15,15,15), 192,0,0, true, 0.1);
-		NDebugOverlay::Box( m_vecPrevPoint, -Vector(20,20,20), Vector(20,20,20), 255,0,0, true, 0.1);
-		NDebugOverlay::Box( m_vecPostPoint, -Vector(20,20,20), Vector(20,20,20), 0,192,0, true, 0.1);
-		NDebugOverlay::Box( m_vecPostPostPoint, -Vector(20,20,20), Vector(20,20,20), 0,128,0, true, 0.1);
-		NDebugOverlay::Box( vSplinePoint, -Vector(10,10,10), Vector(10,10,10), 0,0,255, true, 0.1);
-		NDebugOverlay::Line( vSplinePoint, vSplinePoint + (vSplineTangent * 40), 0,0,255, true, 0.1);
+		NDebugOverlay::Box(m_vecPrevPrevPoint,	-Vector(20, 20, 20), Vector(20, 20, 20),	255,	0,		0, true, 0.1);
+		NDebugOverlay::Box(m_vecPrevPoint,		-Vector(19, 19, 19), Vector(19, 19, 19),	255,	255,	0, true, 0.1);
+		NDebugOverlay::Box(m_vecPostPoint,		-Vector(18, 18, 18), Vector(18, 18, 18),	0,		255,	0, true, 0.1);
+		NDebugOverlay::Box(m_vecPostPostPoint,	-Vector(17, 17, 17), Vector(17, 17, 17),	0,		255,	255, true, 0.1);
+		NDebugOverlay::Box(vSplinePoint,		-Vector(16, 16, 16), Vector(16, 16, 16),	0,		0,		255, true, 0.1);
+		NDebugOverlay::Line( vSplinePoint, vSplinePoint + (vSplineTangent * 40),			255,	0,		255, true, 0.1);
 
 		//NDebugOverlay::HorzArrow( pCurrentSplineBeingTraversed->splinePoints[0], pCurrentSplineBeingTraversed->splinePoints[1], 30, 255,255,255,0, false, 0.1f );
 		//NDebugOverlay::HorzArrow( pCurrentSplineBeingTraversed->splinePoints[1], pCurrentSplineBeingTraversed->splinePoints[2], 20, 255,255,255,0, false, 0.1f );
@@ -820,12 +818,12 @@ bool CNPC_VehicleDriver::OverridePathMove( float flInterval )
 		Vector vecPlaneRight;
 		CrossProduct( m_pCurrentWaypoint->planeWaypoint.normal, Vector(0,0,1), vecPlaneRight );
 		Vector vecPlane = m_pCurrentWaypoint->splinePoints[2];
-		NDebugOverlay::Line( vecPlane + (vecPlaneRight * -100), vecPlane + (vecPlaneRight * 100), 255,0,0, true, 0.1);
+		NDebugOverlay::Line( vecPlane + (vecPlaneRight * -100), vecPlane + (vecPlaneRight * 100), 128, 0, 0, true, 0.1);
 
 		// Draw the next plane too
 		CrossProduct( m_pNextWaypoint->planeWaypoint.normal, Vector(0,0,1), vecPlaneRight );
 		vecPlane = m_pNextWaypoint->splinePoints[2];
-		NDebugOverlay::Line( vecPlane + (vecPlaneRight * -100), vecPlane + (vecPlaneRight * 100), 192,0,0, true, 0.1);
+		NDebugOverlay::Line( vecPlane + (vecPlaneRight * -100), vecPlane + (vecPlaneRight * 100), 128, 128, 0, true, 0.1);
 	}
 
 	if ( g_debug_vehicledriver.GetInt() & DRIVER_DEBUG_PATH_SPLINE )
@@ -835,8 +833,8 @@ bool CNPC_VehicleDriver::OverridePathMove( float flInterval )
 			Vector vecTarget = m_pCurrentWaypoint->GetPointAt( 0.1 * i );
 			Vector vecTangent = m_pCurrentWaypoint->GetTangentAt( 0.1 * i );
 			VectorNormalize(vecTangent);
-			NDebugOverlay::Box( vecTarget, -Vector(10,10,10), Vector(10,10,10), 255,0,0, true, 0.1 );
-			NDebugOverlay::Line( vecTarget, vecTarget + (vecTangent * 10), 255,255,0, true, 0.1);
+			NDebugOverlay::Box( vecTarget, -Vector(10,10,10), Vector(10,10,10), 0, 128, 0, true, 0.1 );
+			NDebugOverlay::Line( vecTarget, vecTarget + (vecTangent * 10), 0, 128, 128, true, 0.1);
 		}
 	}
 
@@ -861,7 +859,7 @@ void CNPC_VehicleDriver::DriveVehicle( void )
 	// If we have no target position to drive to, brake to a halt
 	if ( !m_flMaxSpeed || m_vecDesiredPosition == vec3_origin )
 	{
-		if ( flSpeed > 1 )
+		if ( flSpeed > 1/* && !m_bChaosSpawned*/)
 		{
 			m_pVehicleInterface->NPC_Brake();
 		}
@@ -870,8 +868,8 @@ void CNPC_VehicleDriver::DriveVehicle( void )
 
 	if ( g_debug_vehicledriver.GetInt() & DRIVER_DEBUG_PATH )
 	{
-		NDebugOverlay::Box(m_vecDesiredPosition, -Vector(20,20,20), Vector(20,20,20), 0,255,0, true, 0.1);
-		NDebugOverlay::Line(GetAbsOrigin(), GetAbsOrigin() + m_vecDesiredVelocity, 0,255,0, true, 0.1);
+		NDebugOverlay::Box(m_vecDesiredPosition, -Vector(20, 20, 20), Vector(20, 20, 20), 0, 128, 0, true, 0.1);
+		NDebugOverlay::Line(GetAbsOrigin(), GetAbsOrigin() + m_vecDesiredVelocity, 0, 128, 128, true, 0.1);
 	}
 
 	m_flGoalSpeed = VectorNormalize(m_vecDesiredVelocity);

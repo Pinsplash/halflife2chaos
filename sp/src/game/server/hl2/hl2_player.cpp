@@ -7233,16 +7233,14 @@ void CERandomNPC::StartEffect()
 		ChaosSpawnVehicle("prop_vehicle_apc", MAKE_STRING("Spawn APC (!)"), SPAWNTYPE_VEHICLE, "models/combine_apc.mdl", "apc", "scripts/vehicles/apc_npc.txt");
 		m_iSavedChaosID = ChaosSpawnNPC("npc_apcdriver", MAKE_STRING("Spawn APC (!)"), SPAWNTYPE_EYELEVEL_SPECIAL, "_", "apcdriver", "_")->m_iChaosID;
 		//make apc follow player
-		/*
-		sVariant.SetString(MAKE_STRING("!player"));
-		g_EventQueue.AddEvent("apcdriver", "GotoPathCorner", sVariant, 0, pPlayer, pPlayer, 0);
-		g_EventQueue.AddEvent("apcdriver", "GotoPathCorner", sVariant, 10, pPlayer, pPlayer, 0);
-		g_EventQueue.AddEvent("apcdriver", "GotoPathCorner", sVariant, 20, pPlayer, pPlayer, 0);
-		g_EventQueue.AddEvent("apcdriver", "GotoPathCorner", sVariant, 30, pPlayer, pPlayer, 0);
-		g_EventQueue.AddEvent("apcdriver", "GotoPathCorner", sVariant, 40, pPlayer, pPlayer, 0);
-		g_EventQueue.AddEvent("apcdriver", "GotoPathCorner", sVariant, 50, pPlayer, pPlayer, 0);
-		g_EventQueue.AddEvent("apcdriver", "GotoPathCorner", sVariant, 60, pPlayer, pPlayer, 0);
-		*/
+
+		sVariant.SetFloat(500);
+		g_EventQueue.AddEvent("apcdriver", "SetDriversMaxSpeed", sVariant, 0, NULL, NULL, 0);
+		sVariant.SetString(MAKE_STRING("OnUser1 !self:FireUser1::10:-1"));
+		g_EventQueue.AddEvent("apcdriver", "AddOutput", sVariant, 0, NULL, NULL, 0);
+		sVariant.SetString(MAKE_STRING("OnUser1 !self:GoToPathCorner:!player:0:-1"));
+		g_EventQueue.AddEvent("apcdriver", "AddOutput", sVariant, 0, NULL, NULL, 0);
+		g_EventQueue.AddEvent("apcdriver", "FireUser1", sVariant, 0, NULL, NULL, 0);
 	}
 	//ep1
 	if (nRandom == 41) m_iSavedChaosID = ChaosSpawnNPC("npc_zombine", MAKE_STRING("Spawn Zombine"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "zombine", "_")->m_iChaosID;
@@ -7963,152 +7961,80 @@ void CERandomSong::StartEffect()
 	else
 		nRandom = RandomInt(0, 47);
 	Msg("Song number %i\n", nRandom);
-	if (nRandom == 0)
-		sSongName = "*#music/hl1_song10.mp3";
-	if (nRandom == 1)
-		sSongName = "*#music/hl1_song11.mp3";
-	if (nRandom == 2)
-		sSongName = "*#music/hl1_song14.mp3";
-	if (nRandom == 3)
-		sSongName = "*#music/hl1_song15.mp3";
-	if (nRandom == 4)
-		sSongName = "*#music/hl1_song17.mp3";
-	if (nRandom == 5)
-		sSongName = "*#music/hl1_song19.mp3";
-	if (nRandom == 6)
-		sSongName = "*#music/hl1_song20.mp3";
-	if (nRandom == 7)
-		sSongName = "*#music/hl1_song21.mp3";
-	if (nRandom == 8)
-		sSongName = "*#music/hl1_song24.mp3";
-	if (nRandom == 9)
-		sSongName = "*#music/hl1_song25_remix3.mp3";
-	if (nRandom == 10)
-		sSongName = "*#music/hl1_song26.mp3";
-	if (nRandom == 11)
-		sSongName = "*#music/hl1_song3.mp3";
-	if (nRandom == 12)
-		sSongName = "*#music/hl1_song5.mp3";
-	if (nRandom == 13)
-		sSongName = "*#music/hl1_song6.mp3";
-	if (nRandom == 14)
-		sSongName = "*#music/hl1_song9.mp3";
-	if (nRandom == 15)
-		sSongName = "*#music/hl2_ambient_1.wav";
-	if (nRandom == 16)
-		sSongName = "*#music/hl2_intro.mp3";
-	if (nRandom == 17)
-		sSongName = "*#music/hl2_song0.mp3";
-	if (nRandom == 18)
-		sSongName = "*#music/hl2_song1.mp3";
-	if (nRandom == 19)
-		sSongName = "*#music/hl2_song2.mp3";
-	if (nRandom == 20)
-		sSongName = "*#music/hl2_song3.mp3";
-	if (nRandom == 21)
-		sSongName = "*#music/hl2_song4.mp3";
-	if (nRandom == 22)
-		sSongName = "*#music/hl2_song6.mp3";
-	if (nRandom == 23)
-		sSongName = "*#music/hl2_song7.mp3";
-	if (nRandom == 24)
-		sSongName = "*#music/hl2_song8.mp3";
-	if (nRandom == 25)
-		sSongName = "*#music/hl2_song10.mp3";
-	if (nRandom == 26)
-		sSongName = "*#music/hl2_song11.mp3";
-	if (nRandom == 27)
-		sSongName = "*#music/hl2_song12_long.mp3";
-	if (nRandom == 28)
-		sSongName = "*#music/hl2_song13.mp3";
-	if (nRandom == 29)
-		sSongName = "*#music/hl2_song14.mp3";
-	if (nRandom == 30)
-		sSongName = "*#music/hl2_song15.mp3";
-	if (nRandom == 31)
-		sSongName = "*#music/hl2_song16.mp3";
-	if (nRandom == 32)
-		sSongName = "*#music/hl2_song17.mp3";
-	if (nRandom == 33)
-		sSongName = "*#music/hl2_song19.mp3";
-	if (nRandom == 34)
-		sSongName = "*#music/hl2_song20_submix0.mp3";
-	if (nRandom == 35)
-		sSongName = "*#music/hl2_song20_submix4.mp3";
-	if (nRandom == 36)
-		sSongName = "*#music/hl2_song23_suitsong3.mp3";
-	if (nRandom == 37)
-		sSongName = "*#music/hl2_song26.mp3";
-	if (nRandom == 38)
-		sSongName = "*#music/hl2_song26_trainstation1.mp3";
-	if (nRandom == 39)
-		sSongName = "*#music/hl2_song27_trainstation2.mp3";
-	if (nRandom == 40)
-		sSongName = "*#music/hl2_song28.mp3";
-	if (nRandom == 41)
-		sSongName = "*#music/hl2_song29.mp3";
-	if (nRandom == 42)
-		sSongName = "*#music/hl2_song30.mp3";
-	if (nRandom == 43)
-		sSongName = "*#music/hl2_song31.mp3";
-	if (nRandom == 44)
-		sSongName = "*#music/hl2_song32.mp3";
-	if (nRandom == 45)
-		sSongName = "*#music/hl2_song33.mp3";
-	if (nRandom == 46)
-		sSongName = "*#music/radio1.mp3";
-	if (nRandom == 47)
-		sSongName = "*#music/ravenholm_1.mp3";
+	if (nRandom == 0) sSongName = "*#music/hl1_song10.mp3";
+	else if (nRandom == 1) sSongName = "*#music/hl1_song11.mp3";
+	else if (nRandom == 2) sSongName = "*#music/hl1_song14.mp3";
+	else if (nRandom == 3) sSongName = "*#music/hl1_song15.mp3";
+	else if (nRandom == 4) sSongName = "*#music/hl1_song17.mp3";
+	else if (nRandom == 5) sSongName = "*#music/hl1_song19.mp3";
+	else if (nRandom == 6) sSongName = "*#music/hl1_song20.mp3";
+	else if (nRandom == 7) sSongName = "*#music/hl1_song21.mp3";
+	else if (nRandom == 8) sSongName = "*#music/hl1_song24.mp3";
+	else if (nRandom == 9) sSongName = "*#music/hl1_song25_remix3.mp3";
+	else if (nRandom == 10) sSongName = "*#music/hl1_song26.mp3";
+	else if (nRandom == 11) sSongName = "*#music/hl1_song3.mp3";
+	else if (nRandom == 12) sSongName = "*#music/hl1_song5.mp3";
+	else if (nRandom == 13) sSongName = "*#music/hl1_song6.mp3";
+	else if (nRandom == 14) sSongName = "*#music/hl1_song9.mp3";
+	else if (nRandom == 15) sSongName = "*#music/hl2_ambient_1.wav";
+	else if (nRandom == 16) sSongName = "*#music/hl2_intro.mp3";
+	else if (nRandom == 17) sSongName = "*#music/hl2_song0.mp3";
+	else if (nRandom == 18) sSongName = "*#music/hl2_song1.mp3";
+	else if (nRandom == 19) sSongName = "*#music/hl2_song2.mp3";
+	else if (nRandom == 20) sSongName = "*#music/hl2_song3.mp3";
+	else if (nRandom == 21) sSongName = "*#music/hl2_song4.mp3";
+	else if (nRandom == 22) sSongName = "*#music/hl2_song6.mp3";
+	else if (nRandom == 23) sSongName = "*#music/hl2_song7.mp3";
+	else if (nRandom == 24) sSongName = "*#music/hl2_song8.mp3";
+	else if (nRandom == 25) sSongName = "*#music/hl2_song10.mp3";
+	else if (nRandom == 26) sSongName = "*#music/hl2_song11.mp3";
+	else if (nRandom == 27) sSongName = "*#music/hl2_song12_long.mp3";
+	else if (nRandom == 28) sSongName = "*#music/hl2_song13.mp3";
+	else if (nRandom == 29) sSongName = "*#music/hl2_song14.mp3";
+	else if (nRandom == 30) sSongName = "*#music/hl2_song15.mp3";
+	else if (nRandom == 31) sSongName = "*#music/hl2_song16.mp3";
+	else if (nRandom == 32) sSongName = "*#music/hl2_song17.mp3";
+	else if (nRandom == 33) sSongName = "*#music/hl2_song19.mp3";
+	else if (nRandom == 34) sSongName = "*#music/hl2_song20_submix0.mp3";
+	else if (nRandom == 35) sSongName = "*#music/hl2_song20_submix4.mp3";
+	else if (nRandom == 36) sSongName = "*#music/hl2_song23_suitsong3.mp3";
+	else if (nRandom == 37) sSongName = "*#music/hl2_song26.mp3";
+	else if (nRandom == 38) sSongName = "*#music/hl2_song26_trainstation1.mp3";
+	else if (nRandom == 39) sSongName = "*#music/hl2_song27_trainstation2.mp3";
+	else if (nRandom == 40) sSongName = "*#music/hl2_song28.mp3";
+	else if (nRandom == 41) sSongName = "*#music/hl2_song29.mp3";
+	else if (nRandom == 42) sSongName = "*#music/hl2_song30.mp3";
+	else if (nRandom == 43) sSongName = "*#music/hl2_song31.mp3";
+	else if (nRandom == 44) sSongName = "*#music/hl2_song32.mp3";
+	else if (nRandom == 45) sSongName = "*#music/hl2_song33.mp3";
+	else if (nRandom == 46) sSongName = "*#music/radio1.mp3";
+	else if (nRandom == 47) sSongName = "*#music/ravenholm_1.mp3";
 	//ep1
-	if (nRandom == 48)
-		sSongName = "*#music/vlvx_song1.mp3";
-	if (nRandom == 49)
-		sSongName = "*#music/vlvx_song2.mp3";
-	if (nRandom == 50)
-		sSongName = "*#music/vlvx_song4.mp3";
-	if (nRandom == 51)
-		sSongName = "*#music/vlvx_song8.mp3";
-	if (nRandom == 52)
-		sSongName = "*#music/vlvx_song11.mp3";
-	if (nRandom == 53)
-		sSongName = "*#music/vlvx_song12.mp3";
-	if (nRandom == 54)
-		sSongName = "*#music/vlvx_song18.mp3";
-	if (nRandom == 55)
-		sSongName = "*#music/vlvx_song19a.mp3";
-	if (nRandom == 56)
-		sSongName = "*#music/vlvx_song19b.mp3";
-	if (nRandom == 57)
-		sSongName = "*#music/vlvx_song20.mp3";
-	if (nRandom == 58)
-		sSongName = "*#music/vlvx_song21.mp3";
+	else if (nRandom == 48) sSongName = "*#music/vlvx_song1.mp3";
+	else if (nRandom == 49) sSongName = "*#music/vlvx_song2.mp3";
+	else if (nRandom == 50) sSongName = "*#music/vlvx_song4.mp3";
+	else if (nRandom == 51) sSongName = "*#music/vlvx_song8.mp3";
+	else if (nRandom == 52) sSongName = "*#music/vlvx_song11.mp3";
+	else if (nRandom == 53) sSongName = "*#music/vlvx_song12.mp3";
+	else if (nRandom == 54) sSongName = "*#music/vlvx_song18.mp3";
+	else if (nRandom == 55) sSongName = "*#music/vlvx_song19a.mp3";
+	else if (nRandom == 56) sSongName = "*#music/vlvx_song19b.mp3";
+	else if (nRandom == 57) sSongName = "*#music/vlvx_song20.mp3";
+	else if (nRandom == 58) sSongName = "*#music/vlvx_song21.mp3";
 	//ep2
-	if (nRandom == 59)
-		sSongName = "*#music/vlvx_song0.mp3";
-	if (nRandom == 60)
-		sSongName = "*#music/vlvx_song3.mp3";
-	if (nRandom == 61)
-		sSongName = "*#music/vlvx_song9.mp3";
-	if (nRandom == 62)
-		sSongName = "*#music/vlvx_song15.mp3";
-	if (nRandom == 63)
-		sSongName = "*#music/vlvx_song20.mp3";
-	if (nRandom == 64)
-		sSongName = "*#music/vlvx_song22.mp3";
-	if (nRandom == 65)
-		sSongName = "*#music/vlvx_song23.mp3";
-	if (nRandom == 66)
-		sSongName = "*#music/vlvx_song23ambient.mp3";
-	if (nRandom == 67)
-		sSongName = "*#music/vlvx_song24.mp3";
-	if (nRandom == 68)
-		sSongName = "*#music/vlvx_song25.mp3";
-	if (nRandom == 69)
-		sSongName = "*#music/vlvx_song26.mp3";
-	if (nRandom == 70)
-		sSongName = "*#music/vlvx_song27.mp3";
-	if (nRandom == 71)
-		sSongName = "*#music/vlvx_song28.mp3";
+	else if (nRandom == 59) sSongName = "*#music/vlvx_song0.mp3";
+	else if (nRandom == 60) sSongName = "*#music/vlvx_song3.mp3";
+	else if (nRandom == 61) sSongName = "*#music/vlvx_song9.mp3";
+	else if (nRandom == 62) sSongName = "*#music/vlvx_song15.mp3";
+	else if (nRandom == 63) sSongName = "*#music/vlvx_song20.mp3";
+	else if (nRandom == 64) sSongName = "*#music/vlvx_song22.mp3";
+	else if (nRandom == 65) sSongName = "*#music/vlvx_song23.mp3";
+	else if (nRandom == 66) sSongName = "*#music/vlvx_song23ambient.mp3";
+	else if (nRandom == 67) sSongName = "*#music/vlvx_song24.mp3";
+	else if (nRandom == 68) sSongName = "*#music/vlvx_song25.mp3";
+	else if (nRandom == 69) sSongName = "*#music/vlvx_song26.mp3";
+	else if (nRandom == 70) sSongName = "*#music/vlvx_song27.mp3";
+	else if (nRandom == 71) sSongName = "*#music/vlvx_song28.mp3";
 	ep.m_pSoundName = sSongName;
 	pPlayer->PrecacheSound(sSongName);//because precaching every single song on spawn is not the winning move
 	pPlayer->EmitSound(filter, pPlayer->entindex(), ep);

@@ -451,7 +451,7 @@ AI_Waypoint_t* CAI_Pathfinder::FindShortRandomPath(int startID, float minPathLen
 
 			if (lastID == NO_NODE)
 			{
-				vLastPos = GetLocalOrigin();
+				vLastPos = GetAbsOrigin();
 			}
 			else
 			{
@@ -699,7 +699,7 @@ bool CAI_Pathfinder::IsLinkUsable(CAI_Link *pLink, int startID)
 static int NPCBuildFlags( CAI_BaseNPC *pNPC, const Vector &vecOrigin )
 {
 	// If vecOrigin the the npc's position and npc is climbing only climb nodes allowed
-	if (pNPC->GetLocalOrigin() == vecOrigin && pNPC->GetNavType() == NAV_CLIMB) 
+	if (pNPC->GetAbsOrigin() == vecOrigin && pNPC->GetNavType() == NAV_CLIMB) 
 	{
 		return bits_BUILD_CLIMB;
 	}

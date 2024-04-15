@@ -530,7 +530,7 @@ bool CAI_MoveProbe::TestGroundMove( const Vector &vecActualStart, const Vector &
 	checkStepResult.pBlocker = NULL;
 	
 	float distStartToIgnoreGround = (pctToCheckStandPositions == 100) ? pMoveTrace->flTotalDist : pMoveTrace->flTotalDist * ( pctToCheckStandPositions * 0.01);
-	bool bTryNavIgnore = ( ( vecActualStart - GetLocalOrigin() ).Length2DSqr() < 0.1 && fabsf(vecActualStart.z - GetLocalOrigin().z) < checkStepArgs.stepHeight * 0.5 );
+	bool bTryNavIgnore = ((vecActualStart - GetAbsOrigin()).Length2DSqr() < 0.1 && fabsf(vecActualStart.z - GetAbsOrigin().z) < checkStepArgs.stepHeight * 0.5);
 
 	CUtlVector<CBaseEntity *> ignoredEntities;
 
@@ -1038,7 +1038,7 @@ bool CAI_MoveProbe::MoveLimit( Navigation_t navType, const Vector &vecStart,
 		bool bDoIt = true;
 		if ( flags & AIMLF_QUICK_REJECT )
 		{
-			Assert( vecStart == GetLocalOrigin() );
+			Assert(vecStart == GetAbsOrigin());
 			trace_t tr;
 			TraceLine(const_cast<CAI_MoveProbe *>(this)->GetOuter()->EyePosition(), vecEnd, collisionMask, true, &tr);
 			bDoIt = ( tr.fraction > 0.99 );
@@ -1327,7 +1327,7 @@ bool CAI_MoveProbe::FloorPoint( const Vector &vecStart, unsigned int collisionMa
 	{
 		if ( trace.m_pEnt && 
 			 ( trace.m_pEnt->GetMoveType() == MOVETYPE_VPHYSICS || trace.m_pEnt->IsNPC() ) &&
-			 ( vecStart - GetLocalOrigin() ).Length() < 0.1 )
+			 (vecStart - GetAbsOrigin()).Length() < 0.1)
 		{
 			fStartedInObject = true;
 		}
