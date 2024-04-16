@@ -6773,6 +6773,16 @@ CAI_BaseNPC *CChaosEffect::ChaosSpawnNPC(const char *className, string_t strActu
 					g_EventQueue.AddEvent("combinedropship", "LandTakeCrate", variant, 1, pNPC, pNPC);
 			}
 		}
+		if (FStrEq(className, "npc_dog"))
+		{
+			CBaseEntity *pTarget = CreateEntityByName("info_radar_target");
+			pTarget->KeyValue("radius", "3000");
+			pTarget->KeyValue("type", "2");
+			pTarget->SetParent(pNPC);
+			pTarget->SetAbsOrigin(vecOrigin);
+			pTarget->SetAbsAngles(aAngles);
+			DispatchSpawn(pTarget);
+		}
 		if (FStrEq(className, "npc_metropolice"))
 		{
 			pNPC->KeyValue("manhacks", "100");

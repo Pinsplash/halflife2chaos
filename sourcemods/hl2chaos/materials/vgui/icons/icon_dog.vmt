@@ -1,0 +1,10 @@
+"UnlitGeneric"
+{
+	"$basetexture"	"vgui/icons/icon_dog"
+	"$translucent" 1
+	"$alpha" 1
+	"$vertexalpha" "1"
+	"$ignorez"     "1"
+	"$no_fullbright" "1"	
+	"$vertextcolor" "1"
+}
