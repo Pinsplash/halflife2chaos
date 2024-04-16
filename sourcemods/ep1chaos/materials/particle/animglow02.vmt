@@ -1,0 +1,7 @@
+"SpriteCard"
+{
+	"$basetexture" "sprites/animglow02"
+	"$additive" "1"
+	"$vertexcolor" "1"
+	"$vertexalpha" "1"
+}

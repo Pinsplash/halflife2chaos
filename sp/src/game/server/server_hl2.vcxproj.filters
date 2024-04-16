@@ -1718,6 +1718,9 @@
     <ClInclude Include="hl2\vehicle_crane.h">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClInclude>
+    <ClInclude Include="episodic\vehicle_jeep_episodic.h">
+      <Filter>Source Files\HL2 DLL</Filter>
+    </ClInclude>
     <ClInclude Include="hl2\weapon_alyxgun.h">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClInclude>
@@ -3118,6 +3121,9 @@
     <ClCompile Include="hl2\npc_headcrab.cpp">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
+    <ClCompile Include="episodic\npc_hunter.cpp">
+      <Filter>Source Files\HL2 DLL</Filter>
+    </ClCompile>
     <ClCompile Include="hl2\npc_ichthyosaur.cpp">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
@@ -3208,6 +3214,9 @@
     <ClCompile Include="hl2\vehicle_jeep.cpp">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
+    <ClCompile Include="episodic\vehicle_jeep_episodic.cpp">
+      <Filter>Source Files\HL2 DLL</Filter>
+    </ClCompile>
     <ClCompile Include="hl2\vehicle_prisoner_pod.cpp">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
@@ -3263,6 +3272,9 @@
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
     <ClCompile Include="hl2\weapon_smg1.cpp">
+      <Filter>Source Files\HL2 DLL</Filter>
+    </ClCompile>
+    <ClCompile Include="episodic\weapon_striderbuster.cpp">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
     <ClCompile Include="hl2\weapon_stunstick.cpp">

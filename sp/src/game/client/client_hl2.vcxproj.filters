@@ -3049,6 +3049,9 @@
     <ClCompile Include="hl2\c_vehicle_crane.cpp">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
+    <ClCompile Include="episodic\c_vehicle_jeep_episodic.cpp">
+      <Filter>Source Files\HL2 DLL</Filter>
+    </ClCompile>
     <ClCompile Include="hl2\c_vehicle_prisoner_pod.cpp">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
@@ -3127,6 +3130,9 @@
     <ClCompile Include="hl2\hud_health.cpp">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
+    <ClCompile Include="hl2\hud_locator.cpp">
+      <Filter>Source Files\HL2 DLL</Filter>
+    </ClCompile>
     <ClCompile Include="hl2\hud_poisondamageindicator.cpp">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
@@ -3134,6 +3140,9 @@
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
     <ClCompile Include="hl2\hud_quickinfo.cpp">
+      <Filter>Source Files\HL2 DLL</Filter>
+    </ClCompile>
+    <ClCompile Include="hl2\hud_radar.cpp">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
     <ClCompile Include="hud_squadstatus.cpp">

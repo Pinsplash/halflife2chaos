@@ -809,6 +809,7 @@ exit 1
     <ClInclude Include="hl2\script_intro.h" />
     <ClInclude Include="hl2\vehicle_apc.h" />
     <ClInclude Include="hl2\vehicle_crane.h" />
+    <ClInclude Include="episodic\vehicle_jeep_episodic.h" />
     <ClInclude Include="hl2\weapon_alyxgun.h" />
     <ClInclude Include="hl2\weapon_ar2.h" />
     <ClInclude Include="hl2\weapon_citizenpackage.h" />
@@ -1361,6 +1362,7 @@ exit 1
     <ClCompile Include="hl2\npc_fisherman.cpp" />
     <ClCompile Include="hl2\npc_gman.cpp" />
     <ClCompile Include="hl2\npc_headcrab.cpp" />
+    <ClCompile Include="episodic\npc_hunter.cpp" />
     <ClCompile Include="hl2\npc_ichthyosaur.cpp" />
     <ClCompile Include="hl2\npc_kleiner.cpp" />
     <ClCompile Include="hl2\npc_launcher.cpp" />
@@ -1391,6 +1393,7 @@ exit 1
     <ClCompile Include="hl2\vehicle_cannon.cpp" />
     <ClCompile Include="hl2\vehicle_crane.cpp" />
     <ClCompile Include="hl2\vehicle_jeep.cpp" />
+    <ClCompile Include="episodic\vehicle_jeep_episodic.cpp" />
     <ClCompile Include="hl2\vehicle_prisoner_pod.cpp" />
     <ClCompile Include="hl2\vehicle_viewcontroller.cpp" />
     <ClCompile Include="hl2\weapon_357.cpp" />
@@ -1410,6 +1413,7 @@ exit 1
     <ClCompile Include="hl2\weapon_shotgun.cpp" />
     <ClCompile Include="hl2\weapon_slam.cpp" />
     <ClCompile Include="hl2\weapon_smg1.cpp" />
+    <ClCompile Include="episodic\weapon_striderbuster.cpp" />
     <ClCompile Include="hl2\weapon_stunstick.cpp" />
     <ClCompile Include="hl2\grenade_beam.cpp" />
     <ClCompile Include="hl2\grenade_homer.cpp" />

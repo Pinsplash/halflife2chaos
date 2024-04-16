@@ -1,0 +1,13 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"Models/Magnusson_Device/magnusson_device_basecolor"
+	"$surfaceprop"	"Metal"
+	"$bumpmap"	"Models/Magnusson_Device/magnusson_device_normal"
+	"$model" "1"
+	"$phong" "1"
+	"$phongboost" "2"
+	"$phongexponenttexture" "Models/Magnusson_Device/magnusson_device_phong"
+	"$phongalbedotint" "1"								
+	"$phongfresnelranges"	"[.5 1 2]"
+}
+

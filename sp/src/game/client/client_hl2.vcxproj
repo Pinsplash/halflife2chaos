@@ -19,7 +19,7 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
     <TargetName>client</TargetName>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v120_xp</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -59,9 +59,6 @@
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</GenerateManifest>
     <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</PostBuildEventUseInBuild>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <PreBuildEvent>
@@ -103,7 +100,6 @@ if ERRORLEVEL 1 exit /b 1
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <BrowseInformationFile>$(IntDir)/</BrowseInformationFile>
       <ErrorReporting>Prompt</ErrorReporting>
-      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>;_DEBUG;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -122,8 +118,7 @@ if ERRORLEVEL 1 exit /b 1
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(IntDir)/$(TargetName).pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
-      <BaseAddress>
-      </BaseAddress>
+      <BaseAddress> </BaseAddress>
       <TargetMachine>MachineX86</TargetMachine>
       <LinkErrorReporting>PromptImmediately</LinkErrorReporting>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -220,8 +215,7 @@ if ERRORLEVEL 1 exit /b 1
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>false</EnableCOMDATFolding>
-      <BaseAddress>
-      </BaseAddress>
+      <BaseAddress> </BaseAddress>
       <TargetMachine>MachineX86</TargetMachine>
       <LinkErrorReporting>PromptImmediately</LinkErrorReporting>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -1355,6 +1349,7 @@ exit 1
     <ClCompile Include="hl2\c_vehicle_airboat.cpp" />
     <ClCompile Include="hl2\c_vehicle_cannon.cpp" />
     <ClCompile Include="hl2\c_vehicle_crane.cpp" />
+    <ClCompile Include="episodic\c_vehicle_jeep_episodic.cpp" />
     <ClCompile Include="hl2\c_vehicle_prisoner_pod.cpp" />
     <ClCompile Include="episodic\c_vort_charge_token.cpp" />
     <ClCompile Include="hl2\c_weapon__stubs_hl2.cpp" />
@@ -1381,9 +1376,11 @@ exit 1
     <ClCompile Include="hl2\hud_damageindicator.cpp" />
     <ClCompile Include="hl2\hud_flashlight.cpp" />
     <ClCompile Include="hl2\hud_health.cpp" />
+    <ClCompile Include="hl2\hud_locator.cpp" />
     <ClCompile Include="hl2\hud_poisondamageindicator.cpp" />
     <ClCompile Include="hud_posture.cpp" />
     <ClCompile Include="hl2\hud_quickinfo.cpp" />
+    <ClCompile Include="hl2\hud_radar.cpp" />
     <ClCompile Include="hud_squadstatus.cpp" />
     <ClCompile Include="hl2\hud_suitpower.cpp" />
     <ClCompile Include="hl2\hud_weaponselection.cpp" />

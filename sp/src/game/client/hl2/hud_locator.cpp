@@ -59,9 +59,7 @@ private:
 
 using namespace vgui;
 
-#ifdef HL2_EPISODIC
 DECLARE_HUDELEMENT( CHudLocator );
-#endif 
 
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
@@ -233,8 +231,6 @@ void CHudLocator::DrawGraduations( float flYawPlayerFacing )
 //-----------------------------------------------------------------------------
 void CHudLocator::Paint()
 {
-#ifdef HL2_EPISODIC
-
 	if( m_textureID_IconJalopy == -1 )
 	{
 		m_textureID_IconJalopy = vgui::surface()->CreateNewTextureID();
@@ -312,8 +308,6 @@ void CHudLocator::Paint()
 		//Msg("Drawing at %f %f\n", x, y );
 		vgui::surface()->DrawTexturedRect(xPos, yPos, xPos+icon_wide, yPos+icon_tall);
 	}
-
-#endif // HL2_EPISODIC
 }
 
 

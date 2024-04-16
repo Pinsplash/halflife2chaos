@@ -1413,7 +1413,6 @@ void CHL2_Player::PreThink(void)
 		NDebugOverlay::Line( GetAbsOrigin(), predPos, 0, 255, 0, 0, 0.01f );
 	}
 
-#ifdef HL2_EPISODIC
 	if( m_hLocatorTargetEntity != NULL )
 	{
 		//Keep track of the entity here, the client will pick up the rest of the work
@@ -1423,7 +1422,6 @@ void CHL2_Player::PreThink(void)
 	{
 		m_HL2Local.m_vecLocatorOrigin = vec3_invalid; //This tells the client we have no locator target.
 	}
-#endif//HL2_EPISODIC
 
 	//Riding a vehicle?
 	if ( IsInAVehicle() )	
@@ -7006,11 +7004,7 @@ void CERandomVehicle::StartEffect()
 	char modDir[MAX_PATH];
 	if (UTIL_GetModDir(modDir, sizeof(modDir)) == false)
 		return;
-	if (!Q_strcmp(modDir, "ep2chaos"))
-		nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 5) : chaos_rng1.GetInt();
-	else
-		nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 4) : chaos_rng1.GetInt();
-	//TODO: If there are two jalopies on the map, the radar stops working for them both? speculative fix
+	nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 5) : chaos_rng1.GetInt();
 	if (nRandom == 5)
 	{
 		if (gEntList.FindEntityByClassname(NULL, "prop_vehicle_jeep"))//avoid radar issues that come up when there is more than one jalopy in the map at a time
@@ -7026,16 +7020,22 @@ void CERandomVehicle::StartEffect()
 				pJalopy = ChaosSpawnVehicle("prop_vehicle_jeep", MAKE_STRING("Spawn Jalopy"), SPAWNTYPE_VEHICLE, "models/vehicle_0_5.mdl", "jalopy", "scripts/vehicles/jalopy_0_5.txt");
 			else
 				pJalopy = ChaosSpawnVehicle("prop_vehicle_jeep", MAKE_STRING("Spawn Jalopy"), SPAWNTYPE_VEHICLE, "models/vehicle.mdl", "jalopy", "scripts/vehicles/jalopy.txt");
-			//give all the bells and whistles except compass thingy. don't know how that would react to multiple cars
+			if (pJalopy == NULL)
+			{
+				Msg("Did not spawn jalopy\n");
+				return;
+			}
 			pJalopy->AcceptInput("EnableRadar", pJalopy, pJalopy, sVariant, 0);
 			pJalopy->AcceptInput("EnableRadarDetectEnemies", pJalopy, pJalopy, sVariant, 0);
 			pJalopy->AcceptInput("AddBusterToCargo", pJalopy, pJalopy, sVariant, 0);
+			CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+			CHL2_Player *pHL2Player = static_cast<CHL2_Player*>(pPlayer);
+			pHL2Player->SetLocatorTargetEntity(pJalopy);
 		}
 	}
 	if (nRandom == 4)
 	{
-		CBaseEntity *pRemover = gEntList.FindEntityByClassname(NULL, "trigger_physics_trap");//avoid dissolver triggers, easy crash
-		if (pRemover)
+		if (gEntList.FindEntityByClassname(NULL, "trigger_physics_trap"))//avoid dissolver triggers, easy crash
 		{
 			nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 3) : chaos_rng1.GetInt();
 		}

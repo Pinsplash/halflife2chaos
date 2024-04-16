@@ -1,0 +1,16 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"Models/Magnusson_Device/magnusson_device_glow"
+	"$surfaceprop"	"no_decal"
+	"$selfillum" 1
+	"Proxies"
+	{
+		"TextureScroll"
+		{
+			"texturescrollvar" "$basetexturetransform"
+			"texturescrollrate" 10
+			"texturescrollangle" 0
+		}
+	}
+
+}

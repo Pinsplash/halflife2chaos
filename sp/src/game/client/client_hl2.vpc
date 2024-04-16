@@ -112,6 +112,9 @@ $Project "Client (HL2)"
 			$File	"hl2\shieldproxy.cpp"
 			$File	"hl2\vgui_rootpanel_hl2.cpp"
 			$File 	"episodic\c_vort_charge_token.cpp"
+			$File	"episodic\c_vehicle_jeep_episodic.cpp"
+			$File	"hl2\hud_radar.cpp"
+			$File	"hl2\hud_locator.cpp"
 		}
 	}
 }

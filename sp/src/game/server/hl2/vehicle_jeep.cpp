@@ -148,7 +148,7 @@ END_SEND_TABLE();
 
 // This is overriden for the episodic jeep
 #ifndef HL2_EPISODIC
-LINK_ENTITY_TO_CLASS( prop_vehicle_jeep, CPropJeep );
+//LINK_ENTITY_TO_CLASS( prop_vehicle_jeep, CPropJeep );
 #endif
 
 //-----------------------------------------------------------------------------
@@ -811,7 +811,7 @@ void CPropJeep::Think( void )
 			}
 		}
 		
-		if ( hl2_episodic.GetBool() )
+		if ( m_bJalopy )
 		{
 			// Set its running animation idle
 			if ( m_bEnterAnimOn )
@@ -829,7 +829,7 @@ void CPropJeep::Think( void )
 		}
 
 		// If we're exiting and have had the tau cannon removed, we don't want to reset the animation
-		if ( hl2_episodic.GetBool() )
+		if (m_bJalopy)
 		{
 			// Reset on exit anim
 			GetServerVehicle()->HandleEntryExitFinish( m_bExitAnimOn, m_bExitAnimOn );

@@ -11,4 +11,6 @@ particles_manifest
 	"file"		"particles/rocket_fx.pcf"
 	"file"		"particles/antlion_worker.pcf"
 	"file"		"particles/antlion_gib_02.pcf"
+	"file"		"particles/vehicle.pcf"
+	"file"		"particles/striderbuster.pcf"
 }

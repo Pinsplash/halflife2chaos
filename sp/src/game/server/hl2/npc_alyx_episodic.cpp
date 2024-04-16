@@ -3123,7 +3123,7 @@ void CNPC_Alyx::BarnacleDeathSound( void )
 // Purpose: 
 // Output : PassengerState_e
 //-----------------------------------------------------------------------------
-PassengerState_e CNPC_Alyx::GetPassengerState( void )
+int CNPC_Alyx::GetPassengerState( void )
 {
 	return m_PassengerBehavior.GetPassengerState();
 }

@@ -639,14 +639,15 @@ bool CPropJeepEpisodic::PassengerInTransition( void )
 {
 	// FIXME: Big hack - we need a way to bridge this data better
 	// TODO: Get a list of passengers we can traverse instead
-	CNPC_Alyx *pAlyx = CNPC_Alyx::GetAlyx();
+#ifdef HL2_EPISODIC
+	CNPC_Alyx *pAlyx = (CNPC_Alyx *)gEntList.FindEntityByClassname(NULL, "npc_alyx");
 	if ( pAlyx )
 	{
 		if ( pAlyx->GetPassengerState() == PASSENGER_STATE_ENTERING ||
 			 pAlyx->GetPassengerState() == PASSENGER_STATE_EXITING )
 			return true;
 	}
-
+#endif
 	return false;
 }
 
@@ -950,7 +951,7 @@ void CPropJeepEpisodic::UpdateRadar( bool forceUpdate )
 		}
 
 		//Notify Alyx so she can talk about the radar contact
-		CNPC_Alyx *pAlyx = CNPC_Alyx::GetAlyx();
+		CNPC_Alyx *pAlyx = (CNPC_Alyx *)gEntList.FindEntityByClassname(NULL, "npc_alyx");
 
 		if( !bDetectedDog && pAlyx != NULL && pAlyx->GetVehicle() )
 		{
@@ -1073,12 +1074,13 @@ void CPropJeepEpisodic::Think( void )
 	if (!m_bJalopy)
 		return;
 	// If our passenger is transitioning, then don't let the player drive off
-	CNPC_Alyx *pAlyx = CNPC_Alyx::GetAlyx();
-	if ( pAlyx && pAlyx->GetPassengerState() == PASSENGER_STATE_EXITING )
+#ifdef HL2_EPISODIC
+	CNPC_Alyx *pAlyx = (CNPC_Alyx *)gEntList.FindEntityByClassname(NULL, "npc_alyx");
+	if ( pAlyx && pAlyx->GetPassengerState() == PASSENGER_STATE_ENTERING )
 	{
 		m_throttleDisableTime = gpGlobals->curtime + 0.25f;		
 	}
-
+#endif
 	// Update our cargo entering our hold
 	UpdateCargoEntry();
 
