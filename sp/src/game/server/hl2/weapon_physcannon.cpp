@@ -42,6 +42,7 @@
 #include "gamestats.h"
 // NVNT haptic utils
 #include "haptics/haptic_utils.h"
+#include "episodic/vehicle_jeep_episodic.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -1963,24 +1964,23 @@ void CWeaponPhysCannon::ApplyVelocityBasedForce( CBaseEntity *pEntity, const Vec
 	CRagdollProp *pRagdoll = dynamic_cast<CRagdollProp*>( pEntity );
 	if ( pRagdoll == NULL )
 	{
-#ifdef HL2_EPISODIC
 		// The jeep being punted needs special force overrides
-		if ( reason == PHYSGUN_FORCE_PUNTED && pEntity->GetServerVehicle() )
+		if (pEntity->GetServerVehicle())
 		{
-			// We want the point to emanate low on the vehicle to move it along the ground, not to twist it
-			Vector vecFinalPos = vecHitPos;
-			vecFinalPos.z = pEntity->GetAbsOrigin().z;
-			pPhysicsObject->ApplyForceOffset( vVel, vecFinalPos );
+			CPropJeepEpisodic *pVehicle = dynamic_cast<CPropJeepEpisodic *>(pEntity);
+			//HACK: this should be inside CPropJeepEpisodic::PhysGunLaunchVelocity
+			if (reason == PHYSGUN_FORCE_PUNTED && pVehicle->m_bJalopy)
+			{
+				// We want the point to emanate low on the vehicle to move it along the ground, not to twist it
+				Vector vecFinalPos = vecHitPos;
+				vecFinalPos.z = pEntity->GetAbsOrigin().z;
+				pPhysicsObject->ApplyForceOffset(vVel, vecFinalPos);
+				return;
+			}
+			pPhysicsObject->AddVelocity(&vVel, &aVel);
 		}
-		else
-		{
-			pPhysicsObject->AddVelocity( &vVel, &aVel );
-		}
-#else
-
 		pPhysicsObject->AddVelocity( &vVel, &aVel );
-
-#endif // HL2_EPISODIC
+		
 	}
 	else
 	{
