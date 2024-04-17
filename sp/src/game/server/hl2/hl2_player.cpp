@@ -7708,10 +7708,8 @@ void CEZombieSpam::MaintainEffect()
 		//this is to stop us from spawning entities we don't have in our game
 		if (!Q_strcmp(modDir, "ep2chaos"))
 			nRandMax = 5;//ep2
-		else if (!Q_strcmp(modDir, "ep1chaos"))
-			nRandMax = 4;//ep1
 		else
-			nRandMax = 3;//hl2
+			nRandMax = 4;//hl2
 
 		while (true)
 		{
