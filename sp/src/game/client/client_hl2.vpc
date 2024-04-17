@@ -115,6 +115,8 @@ $Project "Client (HL2)"
 			$File	"episodic\c_vehicle_jeep_episodic.cpp"
 			$File	"hl2\hud_radar.cpp"
 			$File	"hl2\hud_locator.cpp"
+			$File	"$SRCDIR\game\shared\episodic\npc_advisor_shared.h"
+			$File	"episodic\c_npc_advisor.cpp"
 		}
 	}
 }

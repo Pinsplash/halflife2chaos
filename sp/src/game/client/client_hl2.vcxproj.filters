@@ -1865,6 +1865,9 @@
     <ClInclude Include="hl2\hud_suitpower.h">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\game\shared\episodic\npc_advisor_shared.h">
+      <Filter>Source Files\HL2 DLL</Filter>
+    </ClInclude>
     <ClInclude Include="sixense\in_sixense.h">
       <Filter>Source Files\Sixense</Filter>
     </ClInclude>
@@ -3002,6 +3005,9 @@
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
     <ClCompile Include="hl2\c_info_teleporter_countdown.cpp">
+      <Filter>Source Files\HL2 DLL</Filter>
+    </ClCompile>
+    <ClCompile Include="episodic\c_npc_advisor.cpp">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
     <ClCompile Include="hl2\c_npc_antlionguard.cpp">

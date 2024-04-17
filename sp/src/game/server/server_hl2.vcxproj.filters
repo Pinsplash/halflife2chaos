@@ -1628,6 +1628,9 @@
     <ClInclude Include="hl2\item_dynamic_resupply.h">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\game\shared\episodic\npc_advisor_shared.h">
+      <Filter>Source Files\HL2 DLL</Filter>
+    </ClInclude>
     <ClInclude Include="hl2\npc_alyx.h">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClInclude>
@@ -3038,6 +3041,9 @@
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
     <ClCompile Include="hl2\monster_dummy.cpp">
+      <Filter>Source Files\HL2 DLL</Filter>
+    </ClCompile>
+    <ClCompile Include="episodic\npc_advisor.cpp">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
     <ClCompile Include="hl2\npc_alyx.cpp">

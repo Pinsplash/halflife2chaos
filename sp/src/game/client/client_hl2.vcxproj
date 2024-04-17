@@ -825,6 +825,7 @@
     <ClInclude Include="..\..\game\shared\hl2\hl2_shareddefs.h" />
     <ClInclude Include="..\..\game\shared\hl2\hl_gamemovement.h" />
     <ClInclude Include="hl2\hud_suitpower.h" />
+    <ClInclude Include="..\..\game\shared\episodic\npc_advisor_shared.h" />
     <ClInclude Include="sixense\in_sixense.h" />
     <ClInclude Include="sixense\in_sixense_gesture_bindings.h" />
     <ClInclude Include="..\..\game\shared\sixense\sixense_convars_extern.h" />
@@ -1302,6 +1303,7 @@
     <ClCompile Include="hl2\c_func_tankmortar.cpp" />
     <ClCompile Include="hl2\c_hl2_playerlocaldata.cpp" />
     <ClCompile Include="hl2\c_info_teleporter_countdown.cpp" />
+    <ClCompile Include="episodic\c_npc_advisor.cpp" />
     <ClCompile Include="hl2\c_npc_antlionguard.cpp" />
     <ClCompile Include="hl2\c_npc_combinegunship.cpp" />
     <ClCompile Include="hl2\c_npc_manhack.cpp" />

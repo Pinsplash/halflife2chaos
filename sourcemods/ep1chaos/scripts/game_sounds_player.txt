@@ -280,3 +280,12 @@
 		"wave"	"player/geiger3.wav"
 	}
 }
+"NPC_Advisor.Pain"
+{
+	"channel"		"CHAN_VOICE"
+	"soundlevel"		"SNDLVL_100db"
+	"volume"		"0.900000"
+	"pitch"			"PITCH_NORM"
+
+	"wave"			"*npc/combine_gunship/gunship_pain.wav"
+}

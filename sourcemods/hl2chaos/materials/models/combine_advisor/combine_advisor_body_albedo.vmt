@@ -1,0 +1,13 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"Models/Combine_Advisor/Combine_Advisor_body_albedo"
+	"$bumpmap" "Models/Combine_Advisor/Combine_Advisor_body_Normal"
+	"$surfaceprop"	"alienflesh"
+	//phong properties
+	"$phong"	"1"
+	"$phongboost"	"1"
+//	"$phongexponent"	"15"
+	"$phongexponenttexture" "Models/Combine_Advisor/Combine_Advisor_body_exponent"
+	"$phongalbedotint" "1"
+	"$phongfresnelranges"	"[.0 .5 1]"
+}

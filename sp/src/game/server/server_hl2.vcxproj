@@ -747,6 +747,7 @@
     <ClInclude Include="..\..\game\shared\hl2\hl_movedata.h" />
     <ClInclude Include="hl2\info_darknessmode_lightsource.h" />
     <ClInclude Include="hl2\item_dynamic_resupply.h" />
+    <ClInclude Include="..\..\game\shared\episodic\npc_advisor_shared.h" />
     <ClInclude Include="hl2\npc_alyx.h" />
     <ClInclude Include="hl2\npc_alyx_episodic.h" />
     <ClInclude Include="hl2\npc_antlion.h" />
@@ -1303,6 +1304,7 @@
     <ClCompile Include="hl2\item_suit.cpp" />
     <ClCompile Include="hl2\look_door.cpp" />
     <ClCompile Include="hl2\monster_dummy.cpp" />
+    <ClCompile Include="episodic\npc_advisor.cpp" />
     <ClCompile Include="hl2\npc_alyx.cpp" />
     <ClCompile Include="hl2\npc_antlion.cpp" />
     <ClCompile Include="hl2\npc_antlionguard.cpp" />
