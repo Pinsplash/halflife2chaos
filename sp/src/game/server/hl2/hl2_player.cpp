@@ -7164,10 +7164,8 @@ void CERandomNPC::StartEffect()
 		return;
 	if (!Q_strcmp(modDir, "ep2chaos"))
 		nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 46) : chaos_rng1.GetInt();
-	else if (!Q_strcmp(modDir, "ep1chaos"))
-		nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 41) : chaos_rng1.GetInt();
 	else
-		nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 40) : chaos_rng1.GetInt();
+		nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 41) : chaos_rng1.GetInt();
 	if (nRandom == 0)
 	{
 		m_iSavedChaosID = ChaosSpawnNPC("npc_alyx", MAKE_STRING("Spawn Alyx"), SPAWNTYPE_EYELEVEL_REGULAR, "models/alyx.mdl", "alyx", "weapon_alyxgun", CSF_SQUAD)->m_iChaosID;
