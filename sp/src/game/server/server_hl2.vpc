@@ -5,8 +5,8 @@
 //-----------------------------------------------------------------------------
 
 $Macro SRCDIR		"..\.."
-$Macro GAMENAME 	"hl2" [!$SOURCESDK]
-$Macro GAMENAME 	"mod_hl2" [$SOURCESDK]
+$Macro GAMENAME1 	"hl2chaos"
+$Macro GAMENAME2 	"hl2chaos"
 
 $Include "$SRCDIR\game\server\server_base.vpc"
 
@@ -261,6 +261,7 @@ $Project "Server (HL2)"
 			$File	"episodic\weapon_oldmanharpoon.cpp"
 			$File	"episodic\weapon_striderbuster.cpp"
 			$File	"episodic\npc_hunter.cpp"
+			$File	"hl2\npc_zombine.cpp"
 
 			$Folder	"Unused"
 			{
