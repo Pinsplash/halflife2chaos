@@ -3181,6 +3181,9 @@
     <ClCompile Include="hl2\npc_zombie.cpp">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
+    <ClCompile Include="hl2\npc_zombine.cpp">
+      <Filter>Source Files\HL2 DLL</Filter>
+    </ClCompile>
     <ClCompile Include="hl2\point_apc_controller.cpp">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>

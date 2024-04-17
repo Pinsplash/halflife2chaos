@@ -85,3 +85,4 @@ ep1_gamestats.dat
 chaos_random_cc.raw
 *.cache
 sp/src/games.sln
+*.sln
