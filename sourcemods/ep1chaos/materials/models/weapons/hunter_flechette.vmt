@@ -1,0 +1,14 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"Models/weapons/hunter_flechette"
+	"$surfaceprop"	"Metal"
+	"$bumpmap"	"Models/weapons/hunter_flechette_normal"
+	"$model" "1"
+	"$selfillum" 1
+	"$phong" "1"
+	"$phongboost" "5"
+	"$phongexponent" 5
+	"$phongalbedotint" "1"								
+	"$phongfresnelranges"	"[.5 1 2]"
+}
+

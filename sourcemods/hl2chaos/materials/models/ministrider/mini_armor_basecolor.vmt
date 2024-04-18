@@ -1,0 +1,26 @@
+"vertexlitgeneric"
+{
+	"$baseTexture" "models/ministrider/mini_armor_basecolor"
+	"$bumpmap" "models/ministrider/mini_armor_normal"
+	"$envmap" "env_cubemap"
+	"$normalmapalphaenvmapmask" 1
+	"$envmaptint" "[ .1 .1 .1 ]"
+	"$envmapconstrast" "1"
+	"$nodecal" "1"
+	"$model" "1"
+	// -- From here down is new stuff which will only be applied if $phong is set to 1 --
+
+	"$phong"     "1"
+	"$phongexponent"  "10"
+	"$phongboost"   "4"
+	"$phongfresnelranges"   "[1 .7 .3]"
+	"$phongwarptexture"  "models/ministrider/mini_iridescence"
+	"Proxies"
+	{
+		"IsNPC"
+		{
+			"scale" "4.0"
+			"resultvar" "$selfillumtint"
+		}
+	}
+}

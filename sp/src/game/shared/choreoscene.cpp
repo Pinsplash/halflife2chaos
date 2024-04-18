@@ -8,9 +8,9 @@
 
 
 #if defined(_WIN32) && !defined(_X360)
-#include <windows.h>
+//#include <windows.h>
 #endif
-
+#include "cbase.h"
 #include "basetypes.h"
 #include <stdio.h>
 #include "choreoscene.h"
@@ -1432,7 +1432,10 @@ bool CChoreoScene::ParseFromBuffer( const char *pFilename, ISceneTokenProcessor 
 		}
 		else
 		{
-			m_pTokenizer->Error( "%s: unexpected token %s\n", m_szFileName, m_pTokenizer->CurrentToken() );
+			//HACK!!!!!!: i'm having weird problems where garbage tokens get read in at the point where we should be hitting the end of the file
+			//this is happening only with loose files, after applying the loose file patch from VDC: https://developer.valvesoftware.com/w/index.php?title=Scenes.image&oldid=390752
+			//i have NO IDEA how to fix this and GetToken is engine code, so we're just going to not throw this error anymore until hopefully a real solution is found
+			//m_pTokenizer->Error( "%s: unexpected token %s\n", m_szFileName, m_pTokenizer->CurrentToken() );
 			break;
 		}
 	}
@@ -2650,7 +2653,8 @@ void CChoreoScene::Think( float curtime )
 		// We hit a loop, we need to adjust the times.
 		//curtime = m_flCurrentTime + ( oldt - flLoopPoint ); // if we overshot, skip by how much we overshot
 		curtime = m_flCurrentTime;
-		Assert( curtime > 0.0f );
+		//some scenes (facial expressions) use a time of 0
+		//Assert( curtime > 0.0f );
 	}
 
 	dt = curtime - oldt;

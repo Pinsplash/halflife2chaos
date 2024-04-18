@@ -70,9 +70,7 @@ C_SceneEntity::~C_SceneEntity( void )
 void C_SceneEntity::OnResetClientTime()
 {
 	// In TF2 we ignore this as the scene is played entirely client-side.
-#ifndef TF_CLIENT_DLL
 	m_flCurrentTime = m_flForceClientTime;
-#endif
 }
 
 char const *C_SceneEntity::GetSceneFileName()
@@ -802,46 +800,58 @@ bool CChoreoStringPool::GetString( short stringId, char *buff, int buffSize )
 
 CChoreoStringPool g_ChoreoStringPool;
 
-CChoreoScene *C_SceneEntity::LoadScene( const char *filename )
+CChoreoScene *C_SceneEntity::LoadScene(const char *filename)
 {
-	char loadfile[ 512 ];
-	Q_strncpy( loadfile, filename, sizeof( loadfile ) );
-	Q_SetExtension( loadfile, ".vcd", sizeof( loadfile ) );
-	Q_FixSlashes( loadfile );
+	char loadfile[MAX_PATH];
+	Q_strncpy(loadfile, filename, sizeof(loadfile));
+	Q_SetExtension(loadfile, ".vcd", sizeof(loadfile));
+	Q_FixSlashes(loadfile);
 
-	char *pBuffer = NULL;
-	size_t bufsize = scenefilecache->GetSceneBufferSize( loadfile );
-	if ( bufsize <= 0 )
-		return NULL;
-
-	pBuffer = new char[ bufsize ];
-	if ( !scenefilecache->GetSceneData( filename, (byte *)pBuffer, bufsize ) )
-	{
-		delete[] pBuffer;
-		return NULL;
-	}
-
+	void *pBuffer = 0;
 	CChoreoScene *pScene;
-	if ( IsBufferBinaryVCD( pBuffer, bufsize ) )
+
+	int fileSize = filesystem->ReadFileEx(loadfile, "GAME", &pBuffer, true);
+	if (fileSize)
 	{
-		pScene = new CChoreoScene( this );
-		CUtlBuffer buf( pBuffer, bufsize, CUtlBuffer::READ_ONLY );
-		if ( !pScene->RestoreFromBinaryBuffer( buf, loadfile, &g_ChoreoStringPool ) )
-		{
-			Warning( "Unable to restore binary scene '%s'\n", loadfile );
-			delete pScene;
-			pScene = NULL;
-		}
-		else
-		{
-			pScene->SetPrintFunc( Scene_Printf );
-			pScene->SetEventCallbackInterface( this );
-		}
+		g_TokenProcessor.SetBuffer((char*)pBuffer);
+		pScene = ChoreoLoadScene(loadfile, this, &g_TokenProcessor, Scene_Printf);
 	}
 	else
 	{
-		g_TokenProcessor.SetBuffer( pBuffer );
-		pScene = ChoreoLoadScene( loadfile, this, &g_TokenProcessor, Scene_Printf );
+		fileSize = scenefilecache->GetSceneBufferSize(loadfile);
+		if (fileSize <= 0)
+			return NULL;
+
+		pBuffer = new char[fileSize];
+		if (!scenefilecache->GetSceneData(filename, (byte *)pBuffer, fileSize))
+		{
+			delete[] pBuffer;
+			return NULL;
+		}
+
+
+		if (IsBufferBinaryVCD((char*)pBuffer, fileSize))
+		{
+			pScene = new CChoreoScene(this);
+			CUtlBuffer buf(pBuffer, fileSize, CUtlBuffer::READ_ONLY);
+			if (!pScene->RestoreFromBinaryBuffer(buf, loadfile, &g_ChoreoStringPool))
+			{
+				Warning("Unable to restore scene '%s'\n", loadfile);
+				delete pScene;
+				pScene = NULL;
+			}
+		}
+		else
+		{
+			delete[] pBuffer;
+			return NULL;
+		}
+	}
+
+	if (pScene)
+	{
+		pScene->SetPrintFunc(Scene_Printf);
+		pScene->SetEventCallbackInterface(this);
 	}
 
 	delete[] pBuffer;

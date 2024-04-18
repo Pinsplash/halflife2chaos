@@ -1,0 +1,28 @@
+"vertexlitgeneric"
+{
+	"$basetexture" "models/ministrider/mini_skin_basecolor"
+	"$bumpmap" "models/ministrider/mini_skin_normal"
+	// "$halflambert" 1
+	"$nodecal" "1"
+	"$model" "1"
+	"$selfillum" "1"
+	"$selfillumtint" "[4 4 4]"
+	// -- From here down is new stuff which will only be applied if $phong is set to 1 --
+
+	"$phong"     "1"
+	// "$phongexponent" "35"
+	"$phongexponenttexture" "models/ministrider/mini_skin_exponent"
+	"$phongboost"   "5"
+	"$phongfresnelranges" "[.4 0.8 1]"
+	// "$lightwarptexture" "models/ministrider/mini_warp"
+	"Proxies"
+	{
+		"IsNPC"
+		{
+			"scale" "4.0"
+			"resultvar" "$selfillumtint"
+		}
+	}
+}
+
+

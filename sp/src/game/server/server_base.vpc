@@ -261,6 +261,7 @@ $Project
 		$File	"$SRCDIR\game\shared\choreoactor.h"
 		$File	"$SRCDIR\game\shared\choreochannel.h"
 		$File	"$SRCDIR\game\shared\choreoevent.h"
+		$File	"$SRCDIR\game\shared\choreoscene.cpp"
 		$File	"$SRCDIR\game\shared\choreoscene.h"
 		$File	"client.cpp"
 		$File	"client.h"

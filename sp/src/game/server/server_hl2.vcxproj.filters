@@ -2083,6 +2083,9 @@
     <ClCompile Include="cbase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\game\shared\choreoscene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="client.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
