@@ -1,0 +1,18 @@
+"Modulate"
+{
+
+	"$basetexture" "sprites/core_beam1"
+	"$mod2x" "1"
+	"$additive" "1"
+
+	"Proxies"
+	{
+		"TextureScroll"
+		{
+			"texturescrollvar" "$basetexturetransform"
+			"texturescrollrate" -2.2
+			"texturescrollangle" 90
+		}	
+	}
+
+}

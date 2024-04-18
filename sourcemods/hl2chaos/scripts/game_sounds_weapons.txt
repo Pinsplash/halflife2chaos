@@ -1617,3 +1617,19 @@
 
 	"wave"			"ambient/levels/outland/StriderBusterArm02.wav"
 }
+"NPC_Combine_Cannon.FireBullet"
+{
+	"channel"	"CHAN_STATIC"
+	"volume"	"1.0"
+	"pitch"		"98,102"
+
+	"soundlevel"	"SNDLVL_120dB"
+
+	"rndwave"
+	{
+		"wave"	"^ambient/energy/ion_cannon_shot1.wav"
+		"wave"	"^ambient/energy/ion_cannon_shot2.wav"
+		"wave"	"^ambient/energy/ion_cannon_shot3.wav"
+
+	}
+}

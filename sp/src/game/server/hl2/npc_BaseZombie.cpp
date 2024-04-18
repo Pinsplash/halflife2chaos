@@ -735,12 +735,9 @@ bool CNPC_BaseZombie::ShouldBecomeTorso( const CTakeDamageInfo &info, float flDa
 		return true;
 	}
 
-	if ( hl2_episodic.GetBool() )
-	{
-		// Always split after a cannon hit
-		if ( info.GetAmmoType() == GetAmmoDef()->Index("CombineHeavyCannon") )
-			return true;
-	}
+	// Always split after a cannon hit
+	if (info.GetAmmoType() == GetAmmoDef()->Index("CombineHeavyCannon"))
+		return true;
 
 #if 0
 	if( info.GetDamageType() & DMG_BUCKSHOT )
@@ -909,14 +906,10 @@ int CNPC_BaseZombie::OnTakeDamage_Alive( const CTakeDamageInfo &inputInfo )
 					Ignite( 5.0 + random->RandomFloat( 0.0, 5.0 ) );
 				}
 
-				// For Combine cannon impacts
-				if ( hl2_episodic.GetBool() )
+				if (bHitByCombineCannon)
 				{
-					if ( bHitByCombineCannon )
-					{
-						// Catch on fire.
-						Ignite( 5.0f + random->RandomFloat( 0.0f, 5.0f ) );
-					}
+					// Catch on fire.
+					Ignite(5.0f + random->RandomFloat(0.0f, 5.0f));
 				}
 
 				if (flDamageThreshold >= 1.0)

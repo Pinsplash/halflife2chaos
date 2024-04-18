@@ -16,4 +16,5 @@ particles_manifest
 	"file"		"particles/vehicle.pcf"
 	"file"		"particles/striderbuster.pcf"
 	"file"		"particles/grub_blood.pcf"
+	"file"		"particles/weapon_fx.pcf"
 }

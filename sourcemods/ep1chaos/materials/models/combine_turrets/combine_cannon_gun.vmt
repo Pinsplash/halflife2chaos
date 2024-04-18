@@ -1,0 +1,12 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"Models/combine_turrets/combine_cannon_gun"	
+	"$bumpmap"	      "Models/combine_turrets/combine_cannon_gun_normal"
+
+	"$phong" "1" //this turns on the phong effect
+	"$phongexponenttexture"  "Models/combine_turrets/combine_cannon_gun_exponent"
+	"$phongboost" "4" //use this to increase/decrease the highlight intensity 
+	"$phongfresnelranges" "[.3 .5 1]" //this are the highlight intensities at different incidence angles from the camera (first value is perpendicular to the camera and the 3rd value is away from the camera)
+
+	"$selfillum" "1"
+}

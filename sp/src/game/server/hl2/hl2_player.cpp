@@ -8135,10 +8135,7 @@ void CEMountedGun::StartEffect()
 	char modDir[MAX_PATH];
 	if (UTIL_GetModDir(modDir, sizeof(modDir)) == false)
 		return;
-	if (!Q_strcmp(modDir, "ep2chaos"))
-		nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 4) : chaos_rng1.GetInt();
-	else
-		nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 3) : chaos_rng1.GetInt();
+	nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 4) : chaos_rng1.GetInt();
 	if (nRandom == 0)
 	{
 		pTank = CreateEntityByName("func_tank");
@@ -8301,7 +8298,7 @@ void CEMountedGun::StartEffect()
 		{
 			pTank->AddSpawnFlags(32 + 1024 + 32768);
 			pTank->KeyValue("firerate", 15);
-			pTank->KeyValue("bullet_damage", 10);
+			pTank->KeyValue("bullet_damage", 50);
 			pTank->KeyValue("bullet_damage_vs_player", 25);
 			pTank->KeyValue("pitchrange", 90);
 			pTank->KeyValue("pitchrate", 300);
