@@ -1,0 +1,13 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "Models/grub_nugget/grub_nugget"
+	"$bumpmap" 	"Models/grub_nugget/grub_nugget_normal"
+	//"$envmap" "env_cubemap"
+ 	//"$basealphaenvmapmask" 1
+	//"$envmaptint" "[ 1.0 1.0 1.0]"
+	"$surfaceprop"	"alienflesh"
+	"$selfillum"	1
+	"$selfIllumFresnel" "1"
+	"$selfIllumFresnelMinMaxExp" "[.1 .9 5]" // 0.0 1.0 1.0 is the default
+	"$model" "1"
+}

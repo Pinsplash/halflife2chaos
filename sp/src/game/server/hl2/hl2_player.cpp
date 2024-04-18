@@ -6585,7 +6585,7 @@ CAI_BaseNPC *CChaosEffect::ChaosSpawnNPC(const char *className, string_t strActu
 		break;
 	case SPAWNTYPE_EYELEVEL_SPECIAL:
 	case SPAWNTYPE_CEILING:
-	case SPAWNTYPE_UNDERGROUND:
+	case SPAWNTYPE_ONGROUND:
 		flDistAway = 128;
 		flExtraHeight = 64;
 		break;
@@ -6625,7 +6625,7 @@ CAI_BaseNPC *CChaosEffect::ChaosSpawnNPC(const char *className, string_t strActu
 		}
 		float flPitch = 0;
 		QAngle aAngles;
-		if (iSpawnType == SPAWNTYPE_UNDERGROUND)//put the NPC in the ground
+		if (iSpawnType == SPAWNTYPE_ONGROUND)//put the NPC on/in the ground
 		{
 			trace_t tr;
 			UTIL_TraceLine(vecOrigin, vecOrigin - Vector(0, 0, 100000), MASK_SOLID, NULL, COLLISION_GROUP_NONE, &tr);
@@ -6655,22 +6655,22 @@ CAI_BaseNPC *CChaosEffect::ChaosSpawnNPC(const char *className, string_t strActu
 		pNPC->SetAbsAngles(aAngles);
 		pNPC->m_bEvil = bEvil;
 		if (FStrEq(className, "npc_alyx")) pNPC->KeyValue("ShouldHaveEMP", "1");
-		if (FStrEq(className, "npc_cscanner")) pNPC->KeyValue("ShouldInspect", "1");
-		if (FStrEq(className, "npc_sniper")) pNPC->AddSpawnFlags(65536);
-		if (FStrEq(className, "npc_strider")) pNPC->AddSpawnFlags(65536);
-		if (FStrEq(className, "npc_vortigaunt")) pNPC->KeyValue("ArmorRechargeEnabled", bEvil ? "0" : "1");
-		if (FStrEq(className, "npc_apcdriver"))
+		else if (FStrEq(className, "npc_cscanner")) pNPC->KeyValue("ShouldInspect", "1");
+		else if (FStrEq(className, "npc_sniper")) pNPC->AddSpawnFlags(65536);
+		else if (FStrEq(className, "npc_strider")) pNPC->AddSpawnFlags(65536);
+		else if (FStrEq(className, "npc_vortigaunt")) pNPC->KeyValue("ArmorRechargeEnabled", bEvil ? "0" : "1");
+		else if (FStrEq(className, "npc_apcdriver"))
 		{
 			pNPC->KeyValue("vehicle", "apc");
 			pNPC->KeyValue("parentname", "apc");//once i saw an APC do nothing when it should have. maybe the driver was stuck in the wall and couldn't see, while the APC was teleported with GetUnstuck?
 		}
-		if (FStrEq(className, "npc_antlion"))
+		else if (FStrEq(className, "npc_antlion"))
 		{
 			if (RandomInt(0, 1) == 1)//cave variant
 				pNPC->AddSpawnFlags(262144);
 			pNPC->KeyValue("startburrowed", "0");
 		}
-		if (FStrEq(className, "npc_antlionguard"))
+		else if (FStrEq(className, "npc_antlionguard"))
 		{
 			if (RandomInt(0, 1) == 1)//cave variant
 			{
@@ -6681,7 +6681,7 @@ CAI_BaseNPC *CChaosEffect::ChaosSpawnNPC(const char *className, string_t strActu
 			pNPC->KeyValue("allowbark", "1");
 			pNPC->KeyValue("shovetargets", "*");
 		}
-		if (FStrEq(className, "npc_citizen"))
+		else if (FStrEq(className, "npc_citizen"))
 		{
 			pNPC->AddSpawnFlags(65536);//follow player
 			pNPC->AddSpawnFlags(262144);//random head
@@ -6721,7 +6721,7 @@ CAI_BaseNPC *CChaosEffect::ChaosSpawnNPC(const char *className, string_t strActu
 
 			pNPC->KeyValue("expressiontype", "0");
 		}
-		if (FStrEq(className, "npc_combine_s"))
+		else if (FStrEq(className, "npc_combine_s"))
 		{
 			pNPC->KeyValue("NumGrenades", "100");
 			int nRandom = RandomInt(0, 2);//model/elite status
@@ -6734,7 +6734,7 @@ CAI_BaseNPC *CChaosEffect::ChaosSpawnNPC(const char *className, string_t strActu
 			if (nRandom == 1) pNPC->KeyValue("additionalequipment", "weapon_shotgun");
 			if (nRandom == 2) pNPC->KeyValue("additionalequipment", "weapon_smg1");
 		}
-		if (FStrEq(className, "npc_combinedropship"))
+		else if (FStrEq(className, "npc_combinedropship"))
 		{
 			int nRandom = 1;// RandomInt(-3, 1);//cargo type. avoid 0 cause that does nothing
 			Msg("crate type %i\n", nRandom);
@@ -6773,7 +6773,7 @@ CAI_BaseNPC *CChaosEffect::ChaosSpawnNPC(const char *className, string_t strActu
 					g_EventQueue.AddEvent("combinedropship", "LandTakeCrate", variant, 1, pNPC, pNPC);
 			}
 		}
-		if (FStrEq(className, "npc_dog"))
+		else if (FStrEq(className, "npc_dog"))
 		{
 			CBaseEntity *pTarget = CreateEntityByName("info_radar_target");
 			pTarget->KeyValue("radius", "3000");
@@ -6783,7 +6783,7 @@ CAI_BaseNPC *CChaosEffect::ChaosSpawnNPC(const char *className, string_t strActu
 			pTarget->SetAbsAngles(aAngles);
 			DispatchSpawn(pTarget);
 		}
-		if (FStrEq(className, "npc_metropolice"))
+		else if (FStrEq(className, "npc_metropolice"))
 		{
 			pNPC->KeyValue("manhacks", "100");
 
@@ -6792,20 +6792,20 @@ CAI_BaseNPC *CChaosEffect::ChaosSpawnNPC(const char *className, string_t strActu
 			if (nRandom == 1) pNPC->KeyValue("additionalequipment", "weapon_pistol");
 			if (nRandom == 2) pNPC->KeyValue("additionalequipment", "weapon_stunstick");
 		}
-		if (FStrEq(className, "npc_stalker"))
+		else if (FStrEq(className, "npc_stalker"))
 		{
 			int nRandom = RandomInt(0, 2);
 			if (nRandom == 0) pNPC->KeyValue("BeamPower", "0");
 			if (nRandom == 1) pNPC->KeyValue("BeamPower", "1");
 			if (nRandom == 2) pNPC->KeyValue("BeamPower", "2");
 		}
-		if (FStrEq(className, "npc_turret_ceiling"))
+		else if (FStrEq(className, "npc_turret_ceiling"))
 		{
 			pNPC->SetMaxHealth(700);
 			pNPC->SetHealth(700);
 			pNPC->AddSpawnFlags(32);
 		}
-		if (FStrEq(className, "npc_turret_ground"))
+		else if (FStrEq(className, "npc_turret_ground"))
 		{
 			CBaseEntity *pMover = CreateEntityByName("func_movelinear");
 			pMover->SetAbsOrigin(vecOrigin);
@@ -6874,11 +6874,11 @@ CAI_BaseNPC *CChaosEffect::ChaosSpawnNPC(const char *className, string_t strActu
 		g_iChaosSpawnCount++; pNPC->CBaseEntity::KeyValue("chaosid", g_iChaosSpawnCount);
 		DispatchSpawn(pNPC);
 		pNPC->Activate();
-		if (iSpawnType != SPAWNTYPE_UNDERGROUND)//taken care of
+		if (iSpawnType != SPAWNTYPE_ONGROUND)//taken care of
 			pNPC->Teleport(&vecOrigin, &aAngles, NULL);
 		m_strHudName = strActualName;
 
-		if (iSpawnType != SPAWNTYPE_UNDERGROUND)//put the NPC in the ground
+		if (iSpawnType != SPAWNTYPE_ONGROUND)//put the NPC in the ground
 			pNPC->GetUnstuck(500);
 
 		if ((flags & CSF_SQUAD) != 0)
@@ -7165,7 +7165,7 @@ void CERandomNPC::StartEffect()
 	if (!Q_strcmp(modDir, "ep2chaos"))
 		nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 46) : chaos_rng1.GetInt();
 	else
-		nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 42) : chaos_rng1.GetInt();
+		nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 43) : chaos_rng1.GetInt();
 	if (nRandom == 0)
 	{
 		m_iSavedChaosID = ChaosSpawnNPC("npc_alyx", MAKE_STRING("Spawn Alyx"), SPAWNTYPE_EYELEVEL_REGULAR, "models/alyx.mdl", "alyx", "weapon_alyxgun", CSF_SQUAD)->m_iChaosID;
@@ -7217,7 +7217,7 @@ void CERandomNPC::StartEffect()
 	if (nRandom == 32) m_iSavedChaosID = ChaosSpawnNPC("npc_strider", MAKE_STRING("Spawn Strider"), SPAWNTYPE_STRIDER, "models/combine_strider.mdl", "strider", "_")->m_iChaosID;
 	if (nRandom == 33) m_iSavedChaosID = ChaosSpawnNPC("npc_turret_ceiling", MAKE_STRING("Spawn Ceiling Turret"), SPAWNTYPE_CEILING, "_", "turret_ceiling", "_")->m_iChaosID;
 	if (nRandom == 34) m_iSavedChaosID = ChaosSpawnNPC("npc_turret_floor", MAKE_STRING("Spawn Turret"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "turret_floor", "_")->m_iChaosID;
-	if (nRandom == 35) m_iSavedChaosID = ChaosSpawnNPC("npc_turret_ground", MAKE_STRING("Spawn Ground Turret"), SPAWNTYPE_UNDERGROUND, "_", "turret_ground", "_")->m_iChaosID;
+	if (nRandom == 35) m_iSavedChaosID = ChaosSpawnNPC("npc_turret_ground", MAKE_STRING("Spawn Ground Turret"), SPAWNTYPE_ONGROUND, "_", "turret_ground", "_")->m_iChaosID;
 	if (nRandom == 36)
 	{
 		m_iSavedChaosID = ChaosSpawnNPC("npc_vortigaunt", MAKE_STRING("Spawn Vortigaunt"), SPAWNTYPE_EYELEVEL_REGULAR, "models/vortigaunt.mdl", "vortigaunt", "_", CSF_SQUAD)->m_iChaosID;
@@ -7248,7 +7248,7 @@ void CERandomNPC::StartEffect()
 	if (nRandom == 41) m_iSavedChaosID = ChaosSpawnNPC("npc_zombine", MAKE_STRING("Spawn Zombine"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "zombine", "_")->m_iChaosID;
 	//ep2
 	if (nRandom == 42) m_iSavedChaosID = ChaosSpawnNPC("npc_advisor", MAKE_STRING("Spawn Advisor"), SPAWNTYPE_EYELEVEL_SPECIAL, "models/advisor.mdl", "advisor", "_")->m_iChaosID;
-	if (nRandom == 43) m_iSavedChaosID = ChaosSpawnNPC("npc_antlion_grub", MAKE_STRING("Spawn Antlion Grub"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "antlion_grub", "_")->m_iChaosID;
+	if (nRandom == 43) m_iSavedChaosID = ChaosSpawnNPC("npc_antlion_grub", MAKE_STRING("Spawn Antlion Grub"), SPAWNTYPE_ONGROUND, "_", "antlion_grub", "_")->m_iChaosID;
 	if (nRandom == 44) m_iSavedChaosID = ChaosSpawnNPC("npc_fastzombie_torso", MAKE_STRING("Spawn Fast Zombie Torso"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "fastzombie_torso", "_")->m_iChaosID;
 	if (nRandom == 45) m_iSavedChaosID = ChaosSpawnNPC("npc_hunter", MAKE_STRING("Spawn Hunter"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "hunter", "_")->m_iChaosID;
 	if (nRandom == 46) m_iSavedChaosID = ChaosSpawnNPC("npc_magnusson", MAKE_STRING("Spawn Dr. Magnusson"), SPAWNTYPE_EYELEVEL_REGULAR, "models/magnusson.mdl", "magnusson", "_", CSF_SQUAD)->m_iChaosID;

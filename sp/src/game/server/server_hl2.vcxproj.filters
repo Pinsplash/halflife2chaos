@@ -3052,6 +3052,9 @@
     <ClCompile Include="hl2\npc_antlion.cpp">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
+    <ClCompile Include="hl2\npc_antliongrub.cpp">
+      <Filter>Source Files\HL2 DLL</Filter>
+    </ClCompile>
     <ClCompile Include="hl2\npc_antlionguard.cpp">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>

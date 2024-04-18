@@ -1,0 +1,22 @@
+"VertexLitGeneric"
+{
+	"$basetexture"		"Models/antlion_grub/Antlion_grub"
+	"$bumpmap" 	"Models/antlion_grub/Antlion_grub_normal"
+	"$surfaceprop"	"alienflesh"
+	"$selfillum"	1
+	"$selfIllumFresnel" "1"
+	"$selfIllumFresnelMinMaxExp" "[.1 .8 5]" // 0.0 1.0 1.0 is the default
+	"$selfillumtint"	"[1.0 1.0 1.0]"
+
+	//phong parameters
+	"$phong"     "1"
+	"$phongexponenttexture" 	"Models/antlion_grub/Antlion_grub_exponent"
+//	"$phongexponent"   "20"
+	"$phongboost"   "2"
+	"$phongfresnelranges"   "[.1 .5 1]"
+	
+	//rimlight parameters
+	"$rimlight" "1"
+	"$rimlightexponent" "8"
+	"$rimlightboost" "6"
+}

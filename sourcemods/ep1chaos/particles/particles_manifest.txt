@@ -15,4 +15,5 @@ particles_manifest
 	"file"		"particles/antlion_gib_02.pcf"
 	"file"		"particles/vehicle.pcf"
 	"file"		"particles/striderbuster.pcf"
+	"file"		"particles/grub_blood.pcf"
 }
