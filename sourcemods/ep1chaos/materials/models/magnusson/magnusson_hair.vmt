@@ -1,0 +1,8 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"Models/Magnusson/magnusson_hair"
+	"$surfaceprop"	"default"
+	"$translucent"	1
+	"$halflambert"	1
+	"$model"	1
+}

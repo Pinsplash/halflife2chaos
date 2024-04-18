@@ -1,0 +1,7 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"Models/Magnusson/magnusson_body"
+	"$surfaceprop"	"default"
+	"$halflambert"	1
+	"$model" 1
+}

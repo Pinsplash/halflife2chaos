@@ -3145,6 +3145,9 @@
     <ClCompile Include="hl2\npc_launcher.cpp">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>
+    <ClCompile Include="episodic\npc_magnusson.cpp">
+      <Filter>Source Files\HL2 DLL</Filter>
+    </ClCompile>
     <ClCompile Include="hl2\npc_manhack.cpp">
       <Filter>Source Files\HL2 DLL</Filter>
     </ClCompile>

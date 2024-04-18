@@ -6600,9 +6600,6 @@ CAI_BaseNPC *CChaosEffect::ChaosSpawnNPC(const char *className, string_t strActu
 	default:
 		return NULL;
 	}
-	char modDir[MAX_PATH];
-	if (UTIL_GetModDir(modDir, sizeof(modDir)) == false)
-		return NULL;
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
 	//CHL2_Player *pHL2Player = static_cast<CHL2_Player*>(pPlayer);
 	Vector vecForward;
@@ -7011,9 +7008,6 @@ void CERandomVehicle::StartEffect()
 {
 	variant_t sVariant;
 	int nRandom;
-	char modDir[MAX_PATH];
-	if (UTIL_GetModDir(modDir, sizeof(modDir)) == false)
-		return;
 	nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 5) : chaos_rng1.GetInt();
 	if (nRandom == 5)
 	{
@@ -7159,13 +7153,7 @@ void CERandomNPC::StartEffect()
 	variant_t sVariant;
 	int nRandom;
 	//TODO: blob
-	char modDir[MAX_PATH];
-	if (UTIL_GetModDir(modDir, sizeof(modDir)) == false)
-		return;
-	if (!Q_strcmp(modDir, "ep2chaos"))
-		nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 46) : chaos_rng1.GetInt();
-	else
-		nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 45) : chaos_rng1.GetInt();
+	nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 46) : chaos_rng1.GetInt();
 	if (nRandom == 0)
 	{
 		m_iSavedChaosID = ChaosSpawnNPC("npc_alyx", MAKE_STRING("Spawn Alyx"), SPAWNTYPE_EYELEVEL_REGULAR, "models/alyx.mdl", "alyx", "weapon_alyxgun", CSF_SQUAD)->m_iChaosID;
@@ -7699,11 +7687,7 @@ void CEZombieSpam::MaintainEffect()
 		//new way
 		m_strHudName = MAKE_STRING("Left 4 Dead 2");
 
-		char modDir[MAX_PATH];
 		int iZombieType, nRandMax;
-
-		if (UTIL_GetModDir(modDir, sizeof(modDir)) == false)
-			return;
 
 		nRandMax = 5;
 
@@ -7746,19 +7730,9 @@ void CEZombieSpam::StartEffect()
 	//old way
 	m_strHudName = MAKE_STRING("Left 4 Dead");
 
-	char modDir[MAX_PATH];
 	int iZombieType, nRandMax;
 
-	if (UTIL_GetModDir(modDir, sizeof(modDir)) == false)
-		return;
-
-	//this is to stop us from spawning entities we don't have in our game
-	if (!Q_strcmp(modDir, "ep2chaos"))
-		nRandMax = 5;//ep2
-	else if (!Q_strcmp(modDir, "ep1chaos"))
-		nRandMax = 4;//ep1
-	else
-		nRandMax = 3;//hl2
+	nRandMax = 5;//ep2
 
 	CAI_Node *pNode;
 	CNodeList *result = GetNearbyNodes(20);
@@ -8132,9 +8106,6 @@ void CEMountedGun::StartEffect()
 		pTarget->Teleport(&vecTargetOrigin, &vecAngles, NULL);
 	}
 	int nRandom;
-	char modDir[MAX_PATH];
-	if (UTIL_GetModDir(modDir, sizeof(modDir)) == false)
-		return;
 	nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 4) : chaos_rng1.GetInt();
 	if (nRandom == 0)
 	{

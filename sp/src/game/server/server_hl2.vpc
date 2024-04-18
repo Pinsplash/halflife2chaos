@@ -265,6 +265,7 @@ $Project "Server (HL2)"
 			$File	"$SRCDIR\game\shared\episodic\npc_advisor_shared.h"
 			$File	"episodic\npc_advisor.cpp"
 			$File	"hl2\npc_antliongrub.cpp"
+			$File	"episodic\npc_magnusson.cpp"
 
 			$Folder	"Unused"
 			{
