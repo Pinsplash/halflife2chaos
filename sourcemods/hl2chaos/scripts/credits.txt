@@ -123,7 +123,7 @@
 {
 	"HALF-LIFE'"	"CreditsOutroLogos"
 	" "	"CreditsOutroText"
-	"V"	"CreditsOutroValve"
+	"V"	"CreditsOutroLogos"
 	" "	"CreditsOutroText"
 	"Viktor Antonov"   "CreditsOutroText"
 	"Ted Backman"    "CreditsOutroText"
@@ -306,7 +306,7 @@
 	" "	"CreditsOutroText"
 	" "	"CreditsOutroText"
 	" "	"CreditsOutroText"
-	"v"	"CreditsOutroText"
+	"V"	"CreditsOutroLogos"
 }
 
 

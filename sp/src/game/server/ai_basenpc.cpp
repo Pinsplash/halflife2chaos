@@ -7359,7 +7359,7 @@ void CAI_BaseNPC::StartNPC( void )
 	{
 		Vector origin = GetLocalOrigin();
 
-		if (!GetMoveProbe()->FloorPoint( origin + Vector(0, 0, 0.1), MASK_NPCSOLID, 0, -2048, &origin ))
+		if (!GetMoveProbe()->FloorPoint( origin + Vector(0, 0, 0.1), MASK_NPCSOLID, 32, -2048, &origin ))
 		{
 			Warning( "NPC %s stuck in wall--level design error at (%.2f %.2f %.2f)\n", GetClassname(), GetAbsOrigin().x, GetAbsOrigin().y, GetAbsOrigin().z );
 			if ( g_pDeveloper->GetInt() > 1 )

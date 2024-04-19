@@ -69,11 +69,6 @@ Scheme
 
 		// Blank space to leave beneath the menu on the main screen
 		"Main.BottomBorder"	"32"
-
-		// Deck colors
-		"SteamDeckLoadingBar"			"250 128 20 255"
-		"SteamDeckSpinner"				"201 100 0 255"
-		"SteamDeckLoadingText"			"181 179 175 255"
 	}
 
 	//////////////////////// BITMAP FONT FILES /////////////////////////////
@@ -314,18 +309,6 @@ Scheme
 			{
 				"name"		"HalfLife2"
 				"tall"		"32"
-				"weight"	"0"
-				"antialias" "1"
-				"additive"	"1"
-				"custom"	"1"
-			}
-		}
-		FlashlightDeck
-		{
-			"1"
-			{
-				"name"		"HalfLife2"
-				"tall"		"46"
 				"weight"	"0"
 				"antialias" "1"
 				"additive"	"1"
@@ -690,30 +673,9 @@ Scheme
 				"weight"	"900"
 				"antialias" "1"
 				"additive"	"1"
-				"yres"	"480 899"
-			}
-			"2"
-			{
-				"name"		"Trebuchet MS"
-				"tall"		"12"
-				"weight"	"900"
-				"antialias" "1"
-				"additive"	"1"
 			}
 		}
 		CreditsOutroLogos
-		{
-			"1"
-			{
-				"name"		"HalfLife2"
-				"tall"		"34"
-				"weight"	"0"
-				"antialias" "1"
-				"additive"	"1"
-				"custom"	"1"
-			}
-		}
-		CreditsOutroValve
 		{
 			"1"
 			{
@@ -832,15 +794,6 @@ Scheme
 				"weight"		"800"
 			}
 			
-		}
-		"SteamDeckLoadingText"
-		{
-			"7"
-			{
-				"name"		"Alte DIN 1451 Mittelschrift"
-				"tall"		"24"
-				"weight"	"800"
-			}
 		}
 	}
 

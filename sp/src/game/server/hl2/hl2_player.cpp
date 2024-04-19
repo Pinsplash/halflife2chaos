@@ -1365,7 +1365,8 @@ void CHL2_Player::PreThink(void)
 			//and you must consider dying, miscellaneous fails, manual reloads, and level transitions, including transitions to prior levels.
 			g_flEffectThinkRem -= gpGlobals->interval_per_tick / flTimeScale;
 			g_flNextEffectRem -= gpGlobals->interval_per_tick / flTimeScale;
-			DoChaosHUDBar();
+			if (chaos.GetBool())
+				DoChaosHUDBar();
 		}
 		bool bResetMaintainTimer = false;
 		for (int i = 0; g_ChaosEffects.Size() >= i + 1; i++)
@@ -2169,7 +2170,7 @@ void CHL2_Player::StartGame()
 		return;
 	}
 	//remove the fucky-wucky triggers so that invert gravity doesn't softlock you
-	if (!Q_strcmp(pMapName, "d2_coast_04"))
+	else if (!Q_strcmp(pMapName, "d2_coast_04"))
 	{
 		variant_t emptyVariant;
 		CBaseEntity *pFallTrigger = gEntList.FindEntityByName(NULL, "fall_trigger");
@@ -2181,7 +2182,7 @@ void CHL2_Player::StartGame()
 		return;
 	}
 	//this map doesn't spawn you with items, and the spawn is in the wrong place!
-	if (!Q_strcmp(pMapName, "d2_coast_08") && gpGlobals->eLoadType == MapLoad_NewGame)
+	else if (!Q_strcmp(pMapName, "d2_coast_08") && gpGlobals->eLoadType == MapLoad_NewGame)
 	{
 		//move spawn to better place
 		CBaseEntity *pSpawn = gEntList.FindEntityByClassname(NULL, "info_player_start");//there's only one spawn on this map, so this will always work
@@ -2228,7 +2229,7 @@ void CHL2_Player::StartGame()
 		return;
 	}
 	//this map doesn't spawn you with items!
-	if (!Q_strcmp(pMapName, "d2_prison_05") && gpGlobals->eLoadType == MapLoad_NewGame)
+	else if (!Q_strcmp(pMapName, "d2_prison_05") && gpGlobals->eLoadType == MapLoad_NewGame)
 	{
 		//spawning a weapon on top of the player is a weirdly difficult task at this point in code because the player hasn't been moved to their spawn point yet
 		Vector vecOrigin = EntSelectSpawnPoint()->GetAbsOrigin() + Vector(0, 0, 32);
@@ -2270,8 +2271,17 @@ void CHL2_Player::StartGame()
 		}
 		return;
 	}
+	//this map has a filter that's meant to only allow the suppression device to pass, but it does this by allowing the projectile, not the tank entity.
+	//the entity that's called in the relevant code is the attacker, not the inflictor, so this should always fail.
+	//why am i just now observing this? i don't know.
+	//so we're just going to set this filter to the new correct class.
+	else if (!Q_strcmp(pMapName, "d3_c17_10a"))
+	{
+		CBaseEntity *pEnt = gEntList.FindEntityByName(NULL, "mortar_targets_damagefilter");
+		pEnt->KeyValue("filterclass", "func_tankmortar");
+	}
 	//weapon destruction part requires a gravity gun in order to finish, but what if we lost it?
-	if (!Q_strcmp(pMapName, "d3_citadel_03"))
+	else if (!Q_strcmp(pMapName, "d3_citadel_03"))
 	{
 		CBaseEntity *pGravGun = gEntList.FindEntityByClassname(NULL, "weapon_physcannon");
 		if (!pGravGun && gpGlobals->eLoadType != MapLoad_NewGame)
@@ -2279,6 +2289,28 @@ void CHL2_Player::StartGame()
 			g_ChaosEffects[EFFECT_GIVE_WEAPON]->ChaosSpawnWeapon("weapon_physcannon", MAKE_STRING("Give Gravity Gun"));
 		}
 		return;
+	}
+	//move camera to better suit ep2 advisor model
+	//and replace advisor model because apparently the cable movement doesn't appear on monitors!
+	else if (!Q_strcmp(pMapName, "d3_breen_01"))
+	{
+		CBaseEntity *pEnt = gEntList.FindEntityByName(NULL, "cam_advisor_1");
+		pEnt->SetAbsOrigin(Vector(-1338, -1107, 1114));
+		pEnt->SetAbsAngles(QAngle(-10.74, 90, 0));
+		CBaseEntity *pCycle = gEntList.FindEntityByClassname(NULL, "cycler");
+		if (pCycle)
+		{
+			CBaseEntity *pAdv = (CBaseEntity *)CreateEntityByName("npc_advisor");
+			if (pAdv)
+			{
+				pAdv->SetAbsOrigin(pCycle->GetAbsOrigin());
+				pAdv->SetAbsAngles(pCycle->GetAbsAngles());
+				pAdv->KeyValue("model", "models/advisor_nocables.mdl");
+				pAdv->Spawn();
+				pAdv->Activate();
+				UTIL_Remove(pCycle);
+			}
+		}
 	}
 }
 //-----------------------------------------------------------------------------
