@@ -66,8 +66,8 @@ bool IsStaticPointEntity( CBaseEntity *pEnt )
 {
 	if ( pEnt->GetMoveParent() )
 		return false;
-
-	if ( !pEnt->GetModelIndex() )
+	//found some ambient_generics being used as targets with a model index of -1 in ep1_c17_02
+	if (pEnt->GetModelIndex() == 0 || pEnt->GetModelIndex() == -1)
 		return 1;
 
 	if ( FClassnameIs( pEnt, "info_target" ) || FClassnameIs( pEnt, "info_landmark" ) || 

@@ -129,7 +129,8 @@ void CNPC_VehicleDriver::Spawn( void )
 	m_flDistanceAlongSpline = 0.2;
 	m_pCurrentWaypoint = m_pNextWaypoint = NULL;
 
-	//GetNavigator()->SetPathcornerPathfinding( false );
+	if (!m_bChaosSpawned)
+		GetNavigator()->SetPathcornerPathfinding( false );
 
 	NPCInit();
 

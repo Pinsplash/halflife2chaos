@@ -24,7 +24,6 @@ Scheme
 	BaseSettings
 	{
 		"FgColor"			"255 220 0 100"
-		"FgColor_vrmode"	"255 220 0 200"
 		"BgColor"			"0 0 0 76"
 
 		"Panel.FgColor"			"255 220 0 100"
@@ -69,11 +68,6 @@ Scheme
 
 		// Blank space to leave beneath the menu on the main screen
 		"Main.BottomBorder"	"32"
-
-		// Deck colors
-		"SteamDeckLoadingBar"			"250 128 20 255"
-		"SteamDeckSpinner"				"201 100 0 255"
-		"SteamDeckLoadingText"			"181 179 175 255"
 	}
 
 	//////////////////////// BITMAP FONT FILES /////////////////////////////
@@ -314,18 +308,6 @@ Scheme
 			{
 				"name"		"HalfLife2"
 				"tall"		"32"
-				"weight"	"0"
-				"antialias" "1"
-				"additive"	"1"
-				"custom"	"1"
-			}
-		}
-		FlashlightDeck
-		{
-			"1"
-			{
-				"name"		"HalfLife2"
-				"tall"		"46"
 				"weight"	"0"
 				"antialias" "1"
 				"additive"	"1"
@@ -666,7 +648,20 @@ Scheme
 				"weight" "0"
 				"additive" "0"
 				"antialias" "1"
-				"custom"	"1" [$OSX]
+				"custom"	"1"
+			}
+		}
+		ClientTitleFont_og
+		{
+			"1"
+			{
+				"name"  "HL2EP1"
+				"tall"			"34"
+				"tall_hidef"	"48"
+				"weight" "0"
+				"additive" "0"
+				"antialias" "1"
+				"custom"	"1"
 			}
 		}
 		CreditsLogo
@@ -690,30 +685,9 @@ Scheme
 				"weight"	"900"
 				"antialias" "1"
 				"additive"	"1"
-				"yres"	"480 899"
-			}
-			"2"
-			{
-				"name"		"Trebuchet MS"
-				"tall"		"12"
-				"weight"	"900"
-				"antialias" "1"
-				"additive"	"1"
 			}
 		}
 		CreditsOutroLogos
-		{
-			"1"
-			{
-				"name"		"HalfLife2"
-				"tall"		"34"
-				"weight"	"0"
-				"antialias" "1"
-				"additive"	"1"
-				"custom"	"1"
-			}
-		}
-		CreditsOutroValve
 		{
 			"1"
 			{
@@ -833,15 +807,6 @@ Scheme
 			}
 			
 		}
-		"SteamDeckLoadingText"
-		{
-			"7"
-			{
-				"name"		"Alte DIN 1451 Mittelschrift"
-				"tall"		"24"
-				"weight"	"800"
-			}
-		}
 	}
 
 	
@@ -852,6 +817,7 @@ Scheme
 	{
 		"1"		"resource/HALFLIFE2.ttf"
 		"2"		"resource/HL2crosshairs.ttf"
+		"3"	"resource/HL2EP1.ttf"		
 		"4"		"resource/linux_fonts/DejaVuSans.ttf"
 		"5"		"resource/linux_fonts/DejaVuSans-Bold.ttf"
 		"6"		"resource/linux_fonts/DejaVuSans-BoldOblique.ttf"

@@ -2312,6 +2312,69 @@ void CHL2_Player::StartGame()
 			}
 		}
 	}
+	//advisor model, same as breen 01
+	else if (!Q_strcmp(pMapName, "ep1_citadel_01"))
+	{
+		CBaseEntity *pEnt = gEntList.FindEntityByName(NULL, "camera_advisor");
+		pEnt->SetAbsOrigin(Vector(-96, -103, 96));
+		pEnt->SetAbsAngles(QAngle(-10.74, 90, 0));
+		CBaseEntity *pCycle = gEntList.FindEntityByClassname(NULL, "cycler");
+		if (pCycle)
+		{
+			CBaseEntity *pAdv = (CBaseEntity *)CreateEntityByName("npc_advisor");
+			if (pAdv)
+			{
+				pAdv->SetAbsOrigin(pCycle->GetAbsOrigin());
+				pAdv->SetAbsAngles(pCycle->GetAbsAngles());
+				pAdv->KeyValue("model", "models/advisor_nocables.mdl");
+				pAdv->Spawn();
+				pAdv->Activate();
+				UTIL_Remove(pCycle);
+			}
+		}
+	}
+	//advisor model, same as breen 01
+	else if (!Q_strcmp(pMapName, "ep1_c17_02"))
+	{
+		CBaseEntity *pEnt = gEntList.FindEntityByName(NULL, "cam_advisor_1");
+		pEnt->SetAbsOrigin(Vector(2304, 693, -396));
+		pEnt->SetAbsAngles(QAngle(-10.74, 90, 0));
+		CBaseEntity *pCycle = gEntList.FindEntityByClassname(NULL, "cycler");
+		if (pCycle)
+		{
+			CBaseEntity *pAdv = (CBaseEntity *)CreateEntityByName("npc_advisor");
+			if (pAdv)
+			{
+				pAdv->SetAbsOrigin(pCycle->GetAbsOrigin());
+				pAdv->SetAbsAngles(pCycle->GetAbsAngles());
+				pAdv->KeyValue("model", "models/advisor_nocables.mdl");
+				pAdv->Spawn();
+				pAdv->Activate();
+				UTIL_Remove(pCycle);
+			}
+		}
+	}
+	//advisor model, same as breen 01
+	else if (!Q_strcmp(pMapName, "ep1_c17_05"))
+	{
+		CBaseEntity *pEnt = gEntList.FindEntityByName(NULL, "cam_advisor");
+		pEnt->SetAbsOrigin(Vector(10212, 10489, -1368));
+		pEnt->SetAbsAngles(QAngle(-10.74, 90, 0));
+		CBaseEntity *pCycle = gEntList.FindEntityByClassname(NULL, "cycler");
+		if (pCycle)
+		{
+			CBaseEntity *pAdv = (CBaseEntity *)CreateEntityByName("npc_advisor");
+			if (pAdv)
+			{
+				pAdv->SetAbsOrigin(pCycle->GetAbsOrigin());
+				pAdv->SetAbsAngles(pCycle->GetAbsAngles());
+				pAdv->KeyValue("model", "models/advisor_nocables.mdl");
+				pAdv->Spawn();
+				pAdv->Activate();
+				UTIL_Remove(pCycle);
+			}
+		}
+	}
 }
 //-----------------------------------------------------------------------------
 //Purpose: Sets HL2 specific defaults.

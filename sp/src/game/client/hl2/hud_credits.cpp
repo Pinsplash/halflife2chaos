@@ -424,7 +424,7 @@ void CHudCredits::DrawLogo( void )
 	}
 	else if ( hl2_episodic.GetBool() )
 	{
-		Q_snprintf( szLogoFont, sizeof( szLogoFont ), "ClientTitleFont" );
+		Q_snprintf( szLogoFont, sizeof( szLogoFont ), "ClientTitleFont_og" );
 	}
 	else
 	{
