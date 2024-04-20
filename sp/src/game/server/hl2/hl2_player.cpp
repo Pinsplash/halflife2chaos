@@ -1367,6 +1367,7 @@ void CHL2_Player::PreThink(void)
 			g_flNextEffectRem -= gpGlobals->interval_per_tick / flTimeScale;
 			if (chaos.GetBool())
 				DoChaosHUDBar();
+			DoChaosHUDText();
 		}
 		bool bResetMaintainTimer = false;
 		for (int i = 0; g_ChaosEffects.Size() >= i + 1; i++)
@@ -1387,7 +1388,6 @@ void CHL2_Player::PreThink(void)
 				StopGivenEffect(g_ChaosEffects[i]->m_nID);
 			}
 		}
-		DoChaosHUDText();
 		if (bResetMaintainTimer)
 		{
 			MaintainEvils();
