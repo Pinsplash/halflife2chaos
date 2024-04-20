@@ -12,6 +12,8 @@
 			game+mod				|gameinfo_path|custom/*
 			game+mod+mod_write+default_write_path	|gameinfo_path|.
 			gamebin					|gameinfo_path|bin
+			game+mod				|gameinfo_path|../ep1chaos
+			game+mod				|gameinfo_path|../hl2chaos
 			game_lv					|all_source_engine_paths|hl2/hl2_lv.vpk
 			game+mod				|all_source_engine_paths|ep2/ep2_sound_vo_english.vpk
 			game+mod				|all_source_engine_paths|ep2/maps/ep2_outland_02.bsp

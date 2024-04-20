@@ -10,6 +10,8 @@
 
 For Half-Life 2 Chaos, but not the Episodes, you must have Half-Life 2 installed for the mod to find the levels.
 
+To play Episode One Chaos, you must also install Half-Life 2 Chaos, and if you wish to play Episode Two Chaos, you must also install Half-Life 2 Chaos and Episode One Chaos.
+
 As of version 0.2.2, you no longer need to copy map files into the `maps` folders.
 
 If you want to play Chaos in other mods or Half-Life: Source, you can try, but there can be several issues that we wouldn't be able to fix.
