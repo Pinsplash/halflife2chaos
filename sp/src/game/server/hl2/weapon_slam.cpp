@@ -97,7 +97,9 @@ void CTripmineGrenade::Spawn(void)
 	angles.x -= 90;
 
 	AngleVectors(angles, &m_vecDir);
-	m_vecEnd = GetLocalOrigin() + m_vecDir * 2048;
+	trace_t tr;
+	UTIL_TraceLine(GetAbsOrigin(), GetAbsOrigin() + m_vecDir * MAX_TRACE_LENGTH, MASK_SHOT, this, COLLISION_GROUP_NONE, &tr);
+	m_vecEnd = tr.endpos;
 }
 
 
@@ -163,7 +165,7 @@ void CTripmineGrenade::MakeBeam(void)
 	CBaseCombatCharacter *pBCC = ToBaseCombatCharacter(pEntity);
 
 	// Draw length is not the beam length if entity is in the way
-	float drawLength = tr.fraction;
+	//float drawLength = tr.fraction;
 	if (pBCC)
 	{
 		SetOwnerEntity(pBCC);
@@ -180,10 +182,10 @@ void CTripmineGrenade::MakeBeam(void)
 	// to appear if person right in front of it
 	SetNextThink(gpGlobals->curtime + 1.0f);
 
-	Vector vecTmpEnd = GetLocalOrigin() + m_vecDir * 2048 * drawLength;
+	//Vector vecTmpEnd = GetLocalOrigin() + m_vecDir * 2048 * drawLength;
 
 	m_pBeam = CBeam::BeamCreate(g_pModelNameLaser, 1.0);
-	m_pBeam->PointEntInit(vecTmpEnd, this);
+	m_pBeam->PointEntInit(m_vecEnd, this);
 	m_pBeam->SetColor(0, 214, 198);
 	m_pBeam->SetScrollRate(25.6);
 	m_pBeam->SetBrightness(64);
@@ -209,7 +211,7 @@ void CTripmineGrenade::BeamBreakThink(void)
 	trace_t tr;
 
 	// NOT MASK_SHOT because we want only simple hit boxes
-	UTIL_TraceLine(GetAbsOrigin(), m_vecEnd, MASK_SOLID, this, COLLISION_GROUP_NONE, &tr);
+	UTIL_TraceLine(GetAbsOrigin(), m_vecEnd, MASK_SHOT, this, COLLISION_GROUP_NONE, &tr);
 
 	// ALERT( at_console, "%f : %f\n", tr.flFraction, m_flBeamLength );
 

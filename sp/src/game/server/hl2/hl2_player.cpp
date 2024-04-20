@@ -1377,7 +1377,6 @@ void CHL2_Player::PreThink(void)
 			if (!pl.deadflag)
 				g_ChaosEffects[i]->m_flTimeRem -= gpGlobals->interval_per_tick / flTimeScale;//don't progress timer when dead to avoid confusion
 			g_ChaosEffects[i]->FastThink();
-			DoChaosHUDText();
 			if (g_flEffectThinkRem <= 0)
 			{
 				g_ChaosEffects[i]->MaintainEffect();
@@ -1388,6 +1387,7 @@ void CHL2_Player::PreThink(void)
 				StopGivenEffect(g_ChaosEffects[i]->m_nID);
 			}
 		}
+		DoChaosHUDText();
 		if (bResetMaintainTimer)
 		{
 			MaintainEvils();
@@ -6045,7 +6045,7 @@ void PrintEffectName(int i, int iHidden, bool bDead, CChaosEffect *pEffect, bool
 	textParams.effect = 0;
 	textParams.fadeinTime = 0;
 	textParams.fadeoutTime = 0;
-	textParams.holdTime = bDead ? 100 : gpGlobals->interval_per_tick + 0.1;//don't progress timer when dead to avoid confusion
+	textParams.holdTime = bDead ? 100 : gpGlobals->interval_per_tick;//don't progress timer when dead to avoid confusion
 	textParams.fxTime = 0;
 	textParams.drawtype = 1;
 	if (pEffect->m_bTransient && !chaos_alwaysShowEffectTime.GetBool())
@@ -6073,20 +6073,20 @@ void CHL2_Player::DoChaosHUDText()
 			continue;
 		}
 		CChaosEffect *pEffect = g_ChaosEffects[m_iActiveEffects[i]];
-		//Msg("i %i Effect %s ID %i iHidden %i\n", i, STRING(pEffect->m_strHudName), pEffect->m_nID, iHidden);
 		if (pEffect->m_nID < 0 || pEffect->m_nID > NUM_EFFECTS)
 		{
 			Warning("Invalid effect ID.\n");
 			Assert(0);
 			continue;
 		}
+		bool bHide = false;
 		if ((pEffect->m_bActive && pEffect->m_flTimeRem <= 0) || !pEffect->m_bActive)
 		{
 			iHidden++;
-			PrintEffectName(i, iHidden, pl.deadflag, pEffect, true);
-			continue;
+			bHide = true;
 		}
-		PrintEffectName(i, iHidden, pl.deadflag, pEffect, false);
+		//Msg("i %i Effect %s ID %i iHidden %i\n", i, STRING(pEffect->m_strHudName), pEffect->m_nID, iHidden);
+		PrintEffectName(i, iHidden, pl.deadflag, pEffect, bHide);
 	}
 }
 void CHL2_Player::StartGivenEffect(int nID)
