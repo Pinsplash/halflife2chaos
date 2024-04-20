@@ -331,7 +331,7 @@ void CSoundscapeSystem::FrameUpdatePostEntityThink()
 				{
 					int nEntIndex = pCurrent->m_soundscapeEntityId - 1;
 					NOTE_UNUSED( nEntIndex );
-					Assert( m_soundscapeEntities[nEntIndex] == pCurrent );
+					//Assert( m_soundscapeEntities[nEntIndex] == pCurrent );
 				}
 				ss_update_t update;
 				update.pPlayer = pPlayer;

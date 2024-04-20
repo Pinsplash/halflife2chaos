@@ -50,15 +50,15 @@ Scheme
 		"Caution"			"255 48 0 255"
 
 		// Top-left corner of the "Half-Life 2" on the main screen
-		"Main.Title1.X"				"76"
-		"Main.Title1.Y"				"145"
-		"Main.Title1.Y_hidef"		"130"
+		"Main.Title1.X"			"53"
+		"Main.Title1.Y"			"190"
+		"Main.Title1.Y_hidef"	"184"
 		"Main.Title1.Color"	"255 255 255 255"
 
 		// Top-left corner of secondary title e.g. "DEMO" on the main screen
-		"Main.Title2.X"				"76"
-		"Main.Title2.Y"				"190"
-		"Main.Title2.Y_hidef"		"174"
+		"Main.Title2.X"				"291"
+		"Main.Title2.Y"				"207"
+		"Main.Title2.Y_hidef"		"242"
 		"Main.Title2.Color"	"255 255 255 200"
 
 		// Top-left corner of the menu on the main screen
@@ -314,18 +314,6 @@ Scheme
 				"custom"	"1"
 			}
 		}
-		FlashlightDeck
-		{
-			"1"
-			{
-				"name"		"HalfLife2"
-				"tall"		"46"
-				"weight"	"0"
-				"antialias" "1"
-				"additive"	"1"
-				"custom"	"1"
-			}
-		}
 		Crosshairs
 		{
 			"1"
@@ -337,36 +325,7 @@ Scheme
 				"antialias" "0"
 				"additive"	"1"
 				"custom"	"1"
-				"yres"		"1 1599"
-			}
-			"2"
-			{
-				"name"		"HalfLife2"
-				"tall"		"80"
-				"weight"	"0"
-				"antialias" "1"
-				"additive"	"1"
-				"custom"	"1"
-				"yres"		"1600 3199"
-			}
-			"3"
-			{
-				"name"		"HalfLife2"
-				"tall"		"120"
-				"weight"	"0"
-				"antialias" "1"
-				"additive"	"1"
-				"custom"	"1"
-				"yres"		"3200 4799"
-			}
-			"4"
-			{
-				"name"		"HalfLife2"
-				"tall"		"17"
-				"weight"	"0"
-				"antialias" "1"
-				"additive"	"1"
-				"custom"	"1"
+				"yres"		"1 10000"
 			}
 		}
 		QuickInfo
@@ -396,7 +355,8 @@ Scheme
 			"1"
 			{
 				"name"		"HalfLife2"
-				"tall"		"32"
+				"tall"		"32"	[$WIN32]
+				"tall"		"38"	[$X360]
 				"weight"	"0"
 				"antialias" "1"
 				"additive"	"1"
@@ -420,7 +380,8 @@ Scheme
 			"1"
 			{
 				"name"		"HalfLife2"
-				"tall"		"32"
+				"tall"		"32"	[$WIN32]
+				"tall"		"38"	[$X360]
 				"weight"	"0"
 				"blur"		"4"
 				"scanlines" "2"
@@ -435,7 +396,8 @@ Scheme
 			{
 				"name"		"HalfLife2" [!$OSX]
 				"name"		"Helvetica Bold" [$OSX]
-				"tall"		"16"
+				"tall"		"16"	[$WIN32]
+				"tall"		"22"	[$X360]
 				"weight"	"1000"
 				"additive"	"1"
 				"antialias" "1"
@@ -686,18 +648,19 @@ Scheme
 				"weight" "0"
 				"additive" "0"
 				"antialias" "1"
-				"custom"	"1" [$OSX]
+				"custom"	"1"
 			}
 		}
-		CreditsLogo
+		ClientTitleFont_og
 		{
 			"1"
 			{
-				"name"		"HalfLife2"
-				"tall"		"128"
-				"weight"	"0"
+				"name"  "HL2EP2"
+				"tall"			"34"
+				"tall_hidef"	"48"
+				"weight" "0"
+				"additive" "0"
 				"antialias" "1"
-				"additive"	"1"
 				"custom"	"1"
 			}
 		}
@@ -734,30 +697,9 @@ Scheme
 				"weight"	"900"
 				"antialias" "1"
 				"additive"	"1"
-				"yres"	"480 899"
-			}
-			"2"
-			{
-				"name"		"Trebuchet MS"
-				"tall"		"12"
-				"weight"	"900"
-				"antialias" "1"
-				"additive"	"1"
 			}
 		}
 		CreditsOutroLogos
-		{
-			"1"
-			{
-				"name"		"HalfLife2"
-				"tall"		"34"
-				"weight"	"0"
-				"antialias" "1"
-				"additive"	"1"
-				"custom"	"1"
-			}
-		}
-		CreditsOutroValve
 		{
 			"1"
 			{

@@ -103,8 +103,8 @@ void CNPC_GMan::Spawn()
 	SetModel( "models/gman.mdl" );
 
 	SetHullType(HULL_HUMAN);
-	SetHullSizeNormal();
-
+	SetHullSizeNormal(true);//in ep2, his bounding box is really weird and was causing issues. he couldn't move at the inn and floated in the outland 3 cutscene
+	
 	SetSolid( SOLID_BBOX );
 	AddSolidFlags( FSOLID_NOT_STANDABLE );
 	SetMoveType( MOVETYPE_STEP );
