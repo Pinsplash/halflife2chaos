@@ -1,7 +1,0 @@
-"LightmappedGeneric"
-{
-	"$basetexture"		"nature/dirtfloor_mine001a"
-	"%tooltexture"		"nature/blendgrassgravel001a_tooltexture"
-	"%keywords"		"outland"
-	"$surfaceprop"		"antlionsand"
-}

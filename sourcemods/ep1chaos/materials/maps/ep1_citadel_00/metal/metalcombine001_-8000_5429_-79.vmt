@@ -1,8 +1,0 @@
-"patch"
-{
-	"include"		"materials/METAL/METALCOMBINE001.vmt"
-	"replace"
-	{
-		"$envmap"		"maps/ep1_citadel_00/c-8000_5429_-79"
-	}
-}

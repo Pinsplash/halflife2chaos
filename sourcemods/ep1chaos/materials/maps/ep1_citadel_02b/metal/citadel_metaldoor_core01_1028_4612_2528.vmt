@@ -1,8 +1,0 @@
-"patch"
-{
-	"include"		"materials/METAL/CITADEL_METALDOOR_CORE01.vmt"
-	"replace"
-	{
-		"$envmap"		"maps/ep1_citadel_02b/c1028_4612_2528"
-	}
-}

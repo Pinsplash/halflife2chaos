@@ -1,8 +1,0 @@
-"patch"
-{
-	"include"		"materials/DEV/DEV_WINDOWPORTAL.vmt"
-	"replace"
-	{
-		"$envmap"		"maps/ep1_c17_05/c9976_9405_-685"
-	}
-}

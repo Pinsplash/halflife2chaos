@@ -1,8 +1,0 @@
-"patch"
-{
-	"include"		"materials/GLASS/PIPES01.vmt"
-	"replace"
-	{
-		"$envmap"		"maps/ep1_citadel_02b/c3264_4648_-32"
-	}
-}

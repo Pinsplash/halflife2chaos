@@ -1,8 +1,0 @@
-"patch"
-{
-	"include"		"materials/GLASS/GLASSWINDOW017A.vmt"
-	"replace"
-	{
-		"$envmap"		"maps/ep2_outland_07/c-8816_-11265_240"
-	}
-}

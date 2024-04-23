@@ -1,8 +1,0 @@
-"patch"
-{
-	"include"		"materials/NATURE/GRAVELFLOOR002B.vmt"
-	"replace"
-	{
-		"$envmap"		"maps/ep1_c17_06/c-4518_6888_-799"
-	}
-}

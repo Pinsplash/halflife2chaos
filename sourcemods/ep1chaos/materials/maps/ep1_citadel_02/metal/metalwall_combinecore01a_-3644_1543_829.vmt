@@ -1,8 +1,0 @@
-"patch"
-{
-	"include"		"materials/METAL/METALWALL_COMBINECORE01A.vmt"
-	"replace"
-	{
-		"$envmap"		"maps/ep1_citadel_02/c-3644_1543_829"
-	}
-}

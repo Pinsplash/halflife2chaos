@@ -1,8 +1,0 @@
-"patch"
-{
-	"include"		"materials/BRICK/BRICKWALL014C.vmt"
-	"replace"
-	{
-		"$envmap"		"maps/ep1_c17_05/c9128_10293_-247"
-	}
-}

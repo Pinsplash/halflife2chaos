@@ -1,8 +1,0 @@
-"patch"
-{
-	"include"		"materials/PROPS/METALDUCT001A.vmt"
-	"replace"
-	{
-		"$envmap"		"maps/ep1_citadel_04/c4632_10764_3585"
-	}
-}

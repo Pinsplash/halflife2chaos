@@ -1,8 +1,0 @@
-"LightmappedGeneric"
-{
-	"$basetexture"		"nature/sandfloor010a"
-	"%tooltexture"		"nature/blendsandweed005a_tooltexture"
-	"$surfaceprop"		"sand"
-	"$bumpmap"		"Nature/sandfloor010a_normal"
-	"%keywords"		"coastline"
-}

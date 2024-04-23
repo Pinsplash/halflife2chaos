@@ -1,8 +1,0 @@
-"patch"
-{
-	"include"		"materials/METAL/FOREST_METAL_02A.vmt"
-	"replace"
-	{
-		"$envmap"		"maps/ep2_outland_03/c1515_-9538_-1463"
-	}
-}

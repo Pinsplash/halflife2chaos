@@ -1,8 +1,0 @@
-"patch"
-{
-	"include"		"materials/GLASS/COMBINEGLASS001A.vmt"
-	"replace"
-	{
-		"$envmap"		"maps/ep2_outland_07/c-9521_-9318_137"
-	}
-}

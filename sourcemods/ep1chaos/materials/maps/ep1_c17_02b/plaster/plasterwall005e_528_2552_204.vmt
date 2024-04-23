@@ -1,8 +1,0 @@
-"patch"
-{
-	"include"		"materials/PLASTER/PLASTERWALL005E.vmt"
-	"replace"
-	{
-		"$envmap"		"maps/ep1_c17_02b/c528_2552_204"
-	}
-}

@@ -1,8 +1,0 @@
-"patch"
-{
-	"include"		"materials/TILE/TILEFLOOR009A.vmt"
-	"replace"
-	{
-		"$envmap"		"maps/ep1_c17_05/c9965_11979_-563"
-	}
-}

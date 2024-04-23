@@ -1,8 +1,0 @@
-"LightmappedGeneric"
-{
-	"$basetexture"		"nature/rockfloor002a"
-	"%tooltexture"		"nature/blendrocksand08b_tooltexture"
-	"%keywords"		"wasteland"
-	"$surfaceprop"		"dirt"
-	"%detailtype"		"canal_reeds2"
-}

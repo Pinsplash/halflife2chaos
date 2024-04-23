@@ -1,8 +1,0 @@
-"patch"
-{
-	"include"		"materials/maps/ep2_background01/nature/water_riverbed03_501_-1875_56.vmt"
-	"insert"
-	{
-		"$waterdepth"		"48"
-	}
-}

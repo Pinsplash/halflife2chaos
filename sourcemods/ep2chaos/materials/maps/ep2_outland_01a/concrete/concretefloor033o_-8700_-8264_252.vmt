@@ -1,8 +1,0 @@
-"patch"
-{
-	"include"		"materials/CONCRETE/CONCRETEFLOOR033O.vmt"
-	"replace"
-	{
-		"$envmap"		"maps/ep2_outland_01a/c-8700_-8264_252"
-	}
-}

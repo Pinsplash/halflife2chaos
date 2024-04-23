@@ -1,8 +1,0 @@
-"patch"
-{
-	"include"		"materials/METAL/METALPIPE_VENT001B.vmt"
-	"replace"
-	{
-		"$envmap"		"maps/ep2_outland_04/c4920_-1597_1393"
-	}
-}

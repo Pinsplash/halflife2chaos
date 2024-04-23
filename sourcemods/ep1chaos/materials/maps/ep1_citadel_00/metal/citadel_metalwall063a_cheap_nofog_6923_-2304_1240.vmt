@@ -1,8 +1,0 @@
-"patch"
-{
-	"include"		"materials/METAL/CITADEL_METALWALL063A_CHEAP_NOFOG.vmt"
-	"replace"
-	{
-		"$envmap"		"maps/ep1_citadel_00/c6923_-2304_1240"
-	}
-}

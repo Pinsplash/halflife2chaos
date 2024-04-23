@@ -1,6 +1,0 @@
-"LightmappedGeneric"
-{
-	"$basetexture"		"concrete/concretefloor_bunker02a"
-	"$surfaceprop"		"dirt"
-	"$bumpmap"		"concrete/concretefloor_bunker02_normal"
-}

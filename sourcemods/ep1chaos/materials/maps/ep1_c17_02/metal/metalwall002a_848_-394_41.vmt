@@ -1,8 +1,0 @@
-"patch"
-{
-	"include"		"materials/METAL/METALWALL002A.vmt"
-	"replace"
-	{
-		"$envmap"		"maps/ep1_c17_02/c848_-394_41"
-	}
-}

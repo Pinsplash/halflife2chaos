@@ -1,8 +1,0 @@
-"patch"
-{
-	"include"		"materials/PROPS/MAILBOXWOOD01A.vmt"
-	"replace"
-	{
-		"$envmap"		"maps/ep1_c17_01/c-574_1081_57"
-	}
-}

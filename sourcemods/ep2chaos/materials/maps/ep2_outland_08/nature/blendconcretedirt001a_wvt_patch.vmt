@@ -1,9 +1,0 @@
-"LightmappedGeneric"
-{
-	"$basetexture"		"concrete/concretefloor020a"
-	"%tooltexture"		"nature/blendrubbledirt001a_tooltexture"
-	"$surfaceprop"		"concrete"
-	"$basetexturetransform"		"center .5 .5 scale 2 2 rotate 0  translate 0 0"
-	"$basetexturetransform2"		"center .5 .5 scale 4 4 rotate 0 translate 0 0"
-	"%keywords"		"wasteland"
-}

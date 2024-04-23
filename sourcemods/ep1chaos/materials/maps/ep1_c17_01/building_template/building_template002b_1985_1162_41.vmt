@@ -1,8 +1,0 @@
-"patch"
-{
-	"include"		"materials/BUILDING_TEMPLATE/BUILDING_TEMPLATE002B.vmt"
-	"replace"
-	{
-		"$envmap"		"maps/ep1_c17_01/c1985_1162_41"
-	}
-}

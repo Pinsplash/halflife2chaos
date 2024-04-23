@@ -1,8 +1,0 @@
-"patch"
-{
-	"include"		"materials/WOOD/WOODWALL023A.vmt"
-	"replace"
-	{
-		"$envmap"		"maps/ep2_outland_10/c2960_-992_61"
-	}
-}

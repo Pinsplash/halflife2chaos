@@ -1,9 +1,0 @@
-"LightmappedGeneric"
-{
-	"$basetexture"		"concrete/forest_road01"
-	"$surfaceprop"		"dirt"
-	"$detail"		"detail/noise_detail_01"
-	"$detailscale"		"10"
-	"$detailblendfactor"		"1"
-	"$detailblendmode"		"0"
-}
