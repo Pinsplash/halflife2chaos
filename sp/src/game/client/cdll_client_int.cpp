@@ -1166,7 +1166,7 @@ void CHLClient::PostInit()
 
 	const char *pGameDir = GetModDirectory();
 	Msg("pGameDir %s\n", pGameDir);
-	if (!Q_strcmp(pGameDir, "hl2chaos"))
+	/*if (!Q_strcmp(pGameDir, "hl2chaos"))
 	{
 		char szPath[MAX_PATH*2];
 		int ccFolder = steamapicontext->SteamApps()->GetAppInstallDir(220, szPath, sizeof(szPath));
@@ -1178,7 +1178,7 @@ void CHLClient::PostInit()
 			Msg("szFullPath %s\n", szFullPath);
 			g_pFullFileSystem->AddSearchPath(szFullPath, "GAME");
 		}
-	}
+	}*/
 #ifdef HL1MP_CLIENT_DLL
 	if ( s_cl_load_hl1_content.GetBool() && steamapicontext && steamapicontext->SteamApps() )
 	{

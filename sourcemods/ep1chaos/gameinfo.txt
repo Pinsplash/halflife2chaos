@@ -13,6 +13,7 @@
 			game+mod+mod_write+default_write_path	|gameinfo_path|.
 			gamebin					|gameinfo_path|bin
 			game+mod				|gameinfo_path|../hl2chaos
+			game					"|gameinfo_path|..\..\common\Half-Life 2\episodic"
 			game_lv					|all_source_engine_paths|hl2/hl2_lv.vpk
 			game					|all_source_engine_paths|episodic/ep1_sound_vo_english.vpk
 			game					|all_source_engine_paths|episodic/ep1_pak.vpk
