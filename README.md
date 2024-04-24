@@ -8,11 +8,9 @@
 
 ![image](https://github.com/Pinsplash/halflife2chaos/assets/39359267/854d1f1d-7c23-4b87-bd0d-ea840ea2e873)
 
-For Half-Life 2 Chaos, but not the Episodes, you must have Half-Life 2 installed for the mod to find the levels.
+You must install Half-Life 2 and have it under the same Steam library (steamapps) folder as the mod. The same must be done for the Episodes as well to play Episode One/Two Chaos.
 
 To play Episode One Chaos, you must also install Half-Life 2 Chaos, and if you wish to play Episode Two Chaos, you must also install Half-Life 2 Chaos and Episode One Chaos.
-
-As of version 0.2.2, you no longer need to copy map files into the `maps` folders.
 
 If you want to play Chaos in other mods or Half-Life: Source, you can try, but there can be several issues that we wouldn't be able to fix.
 
@@ -24,7 +22,7 @@ If you experience bugs with the mod, you can submit a bug report [here](https://
 
 ## Wiki
 
-Check our GitHub [wiki](https://github.com/Pinsplash/halflife2chaos/wiki) if you're looking for info about how Half-Life 2 Chaos works.
+Check the GitHub [wiki](https://github.com/Pinsplash/halflife2chaos/wiki) if you're looking for info about how Half-Life 2 Chaos works.
 
 ## Building from source for Linux
 No build enviroment setup required.
