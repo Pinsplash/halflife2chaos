@@ -5,8 +5,7 @@
 //-----------------------------------------------------------------------------
 
 $Macro SRCDIR		"..\.."
-$Macro GAMENAME1 	"ep1chaos"
-$Macro GAMENAME2 	"ep2chaos"
+$Macro GAMENAME 	"ep1chaos"
 
 $Include "$SRCDIR\game\server\server_base.vpc"
 

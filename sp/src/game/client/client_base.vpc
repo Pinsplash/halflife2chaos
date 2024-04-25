@@ -5,14 +5,12 @@
 //-----------------------------------------------------------------------------
 
 $Macro OUTBINNAME	"client"
-$Macro OUTBINDIR1	"$SRCDIR\..\..\sourcemods\$GAMENAME1\bin"
-$Macro OUTBINDIR2	"$SRCDIR\..\..\sourcemods\$GAMENAME2\bin"
+$Macro OUTBINDIR	"$SRCDIR\..\..\sourcemods\$GAMENAME\bin"
 // It's important to include $GAMENAME in the generated_proto directory
 // to avoid race conditions when multiple games are in one solution.
-$Macro GENERATED_PROTO_DIR	"$SRCDIR\game\client\generated_proto_$GAMENAME1"
+$Macro GENERATED_PROTO_DIR	"$SRCDIR\game\client\generated_proto_$GAMENAME"
 
-$MacroRequired "GAMENAME1"
-$MacroRequired "GAMENAME2"
+$MacroRequired "GAMENAME"
 
 $Include "$SRCDIR\vpc_scripts\source_dll_base.vpc"
 $include "$SRCDIR\vpc_scripts\protobuf_builder.vpc"
@@ -23,8 +21,8 @@ $Configuration	"Debug"
 {
 	$General
 	{
-		$OutputDirectory			".\Debug_$GAMENAME1"			[$WIN32]
-		$IntermediateDirectory		".\Debug_$GAMENAME1"			[$WIN32]
+		$OutputDirectory			".\Debug_$GAMENAME"			[$WIN32]
+		$IntermediateDirectory		".\Debug_$GAMENAME"			[$WIN32]
 	}
 }
 
@@ -32,8 +30,8 @@ $Configuration	"Release"
 {
 	$General
 	{
-		$OutputDirectory			".\Release_$GAMENAME1"		[$WIN32]
-		$IntermediateDirectory		".\Release_$GAMENAME1"		[$WIN32]
+		$OutputDirectory			".\Release_$GAMENAME"		[$WIN32]
+		$IntermediateDirectory		".\Release_$GAMENAME"		[$WIN32]
 	}
 }
 
@@ -41,7 +39,7 @@ $Configuration
 {
 	$General
 	{
-			$OutputDirectory			".\$GAMENAME1"		[$OSXALL]
+			$OutputDirectory			".\$GAMENAME"		[$OSXALL]
 	}
 
 	$Compiler

@@ -1,16 +1,16 @@
 [vpc crc file version 2]
 8209bbc3 C:\sourceproject\halflife2chaos\sp\src\devtools\bin\vpc.exe
 _Nc_VS2013/vpcgame:valve_
-8f4f00f4 server_episodic.vpc
-e9d9ca9a ..\..\game\server\server_base.vpc
+dd693ec4 server_episodic.vpc
+faeae84f ..\..\game\server\server_base.vpc
 4832e67a ..\..\vpc_scripts\source_dll_base.vpc
 d752cf80 ..\..\vpc_scripts\platform_dirs.vpc
 6c4a5ff1 ..\..\vpc_scripts\source_base.vpc
-9587f360 ..\..\vpc_scripts\source_dll_win32_base.vpc
+307760a1 ..\..\vpc_scripts\source_dll_win32_base.vpc
 486b766d ..\..\vpc_scripts\version.vpc
 846102f0 ..\..\vpc_scripts\loadaddress.vpc
-9b8aa3b7 ..\..\vpc_scripts\source_dll_win32_debug.vpc
-50782562 ..\..\vpc_scripts\source_dll_win32_release.vpc
+0df0da71 ..\..\vpc_scripts\source_dll_win32_debug.vpc
+7cf17fbc ..\..\vpc_scripts\source_dll_win32_release.vpc
 34c37fcf ..\..\vpc_scripts\source_win32_base.vpc
 346bda4a ..\..\vpc_scripts\source_video_base.vpc
 c209a88e ..\..\vpc_scripts\protobuf_builder.vpc
