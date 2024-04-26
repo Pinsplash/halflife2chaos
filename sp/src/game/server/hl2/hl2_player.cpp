@@ -2190,38 +2190,35 @@ void CHL2_Player::StartGame()
 		pSpawn->SetAbsAngles(QAngle(0, 270, 0));
 		//spawn weapons on the spawn point, not the player
 		Vector vecOrigin = pSpawn->GetAbsOrigin() + Vector(0, 0, 32);
-		static const char *strWeapons[] = { "weapon_crowbar", "weapon_physcannon", "weapon_pistol", "weapon_357", "weapon_smg1", "weapon_ar2", "weapon_shotgun", "weapon_crossbow", "weapon_frag", "weapon_rpg" };
-		EquipSuit();
-		for (int i = 0; i < 10; i++)
+		//coast 07 doesn't use item_dynamic_resupply in its spawn, so emulate that better i guess
+		static const char *strWeapons[] = {
+			"item_battery",
+			"item_battery",
+			"item_battery",
+			"item_box_buckshot",
+			"item_box_buckshot",
+			"item_suit",
+			"weapon_357",
+			"weapon_357",
+			"weapon_ar2",
+			"weapon_crossbow",
+			"weapon_crowbar",
+			"weapon_frag",
+			"weapon_frag",
+			"weapon_frag",
+			"weapon_frag",
+			"weapon_physcannon",
+			"weapon_pistol",
+			"weapon_rpg",
+			"weapon_shotgun",
+			"weapon_smg1",
+		};
+		for (int i = 0; i < 20; i++)
 		{
 			CBaseEntity *pItem = (CBaseEntity *)CreateEntityByName(strWeapons[i]);
 			if (pItem)
 			{
 				pItem->SetAbsOrigin(vecOrigin);
-				pItem->Spawn();
-				pItem->Activate();
-			}
-		}
-		//spawn 16 item_dynamic_resupply's on us.
-		for (int i = 0; i < 16; i++)
-		{
-			CBaseEntity *pItem = (CBaseEntity *)CreateEntityByName("item_dynamic_resupply");
-			if (pItem)
-			{
-				//settings taken from prison 04
-				pItem->SetAbsOrigin(vecOrigin);
-				pItem->KeyValue("DesiredHealth", "1.0");
-				pItem->KeyValue("DesiredArmor", "0.5");
-				pItem->KeyValue("DesiredAmmoPistol", "1.0");
-				pItem->KeyValue("DesiredAmmoSMG1", "1.0");
-				pItem->KeyValue("DesiredAmmoSMG1_Grenade", "1.0");
-				pItem->KeyValue("DesiredAmmoAR2", "1.0");
-				pItem->KeyValue("DesiredAmmoBuckshot", "0.5");
-				pItem->KeyValue("DesiredAmmoRPG_Round", "1.0");
-				pItem->KeyValue("DesiredAmmoGrenade", "0.5");
-				pItem->KeyValue("DesiredAmmo357", "0.5");
-				pItem->KeyValue("DesiredAmmoCrossbow", "0.5");
-				pItem->KeyValue("DesiredAmmoAR2_AltFire", "0");
 				pItem->Spawn();
 				pItem->Activate();
 			}
