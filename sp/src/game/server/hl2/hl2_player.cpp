@@ -5728,8 +5728,7 @@ bool CChaosEffect::CheckEffectContext()
 
 	//potential softlock if clone npcs happens on some maps
 	if (m_nID == EFFECT_CLONE_NPCS)
-		if (!Q_strcmp(pMapName, "d1_trainstation_01")	|| !Q_strcmp(pMapName, "d1_eli_01")			|| !Q_strcmp(pMapName, "d1_eli_02")			|| !Q_strcmp(pMapName, "d3_breen_01")
-			|| !Q_strcmp(pMapName, "ep1_citadel_00")	|| !Q_strcmp(pMapName, "ep1_citadel_01")	|| !Q_strcmp(pMapName, "ep1_citadel_03")	|| !Q_strcmp(pMapName, "ep1_citadel_04") || !Q_strcmp(pMapName, "ep1_c17_00"))
+		if (!SafeCloneNPCs(pMapName))
 			return false;
 
 	//You Teleport is bad specifically on these maps
@@ -5770,34 +5769,13 @@ bool CChaosEffect::CheckEffectContext()
 			return false;//no sir no shotguns here
 
 	//Don't remove pickups on these maps
-	//d1_trainstation_05 suit to progress cutscene
-	//d2_coast_10 rocket crate for gunship
-	//d2_prison_01 rocket crate for gunships
-	//d3_c17_09 grenades to save barney
-	//d3_c17_10b explosives for ground turrets
-	//d3_c17_11 rocket crate for gunship
-	//d3_c17_13 rocket crate for striders
-	//ep1_c17_00 pistol and shotgun to shoot lock
-	//ep1_c17_05 rocket crate for sniper
-	//ep1_c17_06 rocket crate for strider
-	//ep2_outland_02 too hard
-	//ep2_outland_09 grenades for autogun
-	//ep2_outland_12 removing seems to break the respawn system?
 	if (m_nID == EFFECT_REMOVE_PICKUPS)
-		if (!Q_strcmp(pMapName, "d1_trainstation_05")
-			|| !Q_strcmp(pMapName, "d2_coast_10")
-			|| !Q_strcmp(pMapName, "d2_prison_01")
-			|| !Q_strcmp(pMapName, "d3_c17_09")			|| !Q_strcmp(pMapName, "d3_c17_10b")		|| !Q_strcmp(pMapName, "d3_c17_11") || !Q_strcmp(pMapName, "d3_c17_13")
-			|| !Q_strcmp(pMapName, "ep1_c17_00")		|| !Q_strcmp(pMapName, "ep1_c17_05")		|| !Q_strcmp(pMapName, "ep1_c17_06")
-			|| !Q_strcmp(pMapName, "ep2_outland_02")	|| !Q_strcmp(pMapName, "ep2_outland_09")	|| !Q_strcmp(pMapName, "ep2_outland_12"))
+		if (MapHasImportantPickups(pMapName))
 			return false;
 
 	//this is essentially just a list of all maps with elevators. quickclip will cause you to phase through elevators.
 	if (m_nID == EFFECT_QUICKCLIP_ON)
-		if (!Q_strcmp(pMapName, "d2_prison_05")			|| !Q_strcmp(pMapName, "d2_prison_06")		|| !Q_strcmp(pMapName, "d2_prison_08")
-			|| !Q_strcmp(pMapName, "d3_citadel_03")		|| !Q_strcmp(pMapName, "d3_citadel_04")		|| !Q_strcmp(pMapName, "d3_breen_01")
-			|| !Q_strcmp(pMapName, "ep1_citadel_01")	|| !Q_strcmp(pMapName, "ep1_citadel_03")	|| !Q_strcmp(pMapName, "ep1_c17_00a")
-			|| !Q_strcmp(pMapName, "ep2_outland_12a")	|| !Q_strcmp(pMapName, "ep2_outland_03")	|| !Q_strcmp(pMapName, "ep2_outland_04"))
+		if (QuickclipProblems(pMapName))
 			return false;//bad map
 
 	//Pause Physics can cause serious issues on these maps
@@ -5808,22 +5786,12 @@ bool CChaosEffect::CheckEffectContext()
 
 	//Ran Out Of Glue can cause serious issues on these maps
 	if (m_nID == EFFECT_PHYS_CONVERT)
-		if (!Q_strcmp(pMapName, "d1_trainstation_01")	|| !Q_strcmp(pMapName, "d1_trainstation_05")
-			|| !Q_strcmp(pMapName, "d1_canals_11")		|| !Q_strcmp(pMapName, "d1_canals_13")
-			|| !Q_strcmp(pMapName, "d1_eli_01")			|| !Q_strcmp(pMapName, "d1_town_01")
-			|| !Q_strcmp(pMapName, "d3_c17_07")			|| !Q_strcmp(pMapName, "d3_c17_08")
-			|| !Q_strcmp(pMapName, "d3_citadel_01")		|| !Q_strcmp(pMapName, "d3_citadel_02")		|| !Q_strcmp(pMapName, "d3_citadel_05")		|| !Q_strcmp(pMapName, "d3_breen_01")
-			|| !Q_strcmp(pMapName, "ep1_citadel_03")	|| !Q_strcmp(pMapName, "ep1_c17_00a")
-			|| !Q_strcmp(pMapName, "ep2_outland_01")	|| !Q_strcmp(pMapName, "ep2_outland_03")	|| !Q_strcmp(pMapName, "ep2_outland_11")	|| !Q_strcmp(pMapName, "ep2_outland_11b"))
+		if (PhysConvertSoftlock(pMapName))
 			return false;//bad map
 
 	//could distrupt cutscenes
 	if (m_nID == EFFECT_NPC_HATE || m_nID == EFFECT_NPC_FEAR)
-		if (!Q_strcmp(pMapName, "d1_trainstation_01")	|| !Q_strcmp(pMapName, "d1_trainstation_04")	|| !Q_strcmp(pMapName, "d1_canals_03")		|| !Q_strcmp(pMapName, "d1_eli_01")
-			|| !Q_strcmp(pMapName, "d2_coast_10")
-			|| !Q_strcmp(pMapName, "d3_breen_01")
-			|| !Q_strcmp(pMapName, "ep1_citadel_03")	|| !Q_strcmp(pMapName, "ep1_c17_02b")
-			|| !Q_strcmp(pMapName, "ep2_outland_01")	|| !Q_strcmp(pMapName, "ep2_outland_07")		|| !Q_strcmp(pMapName, "ep2_outland_08")	|| !Q_strcmp(pMapName, "ep2_outland_10a"))
+		if (CombatBreaksScene(pMapName))
 			return false;//bad map
 
 	//if we miss the trigger_changelevel, the pod will get killed, killing us
@@ -5927,36 +5895,13 @@ bool CChaosEffect::CheckEffectContext()
 
 	//this effect could permanently separate us from the gravity gun at a time where we need it
 	if (m_nContext & EC_NEED_PHYSGUN)
-		if (GlobalEntity_GetState("super_phys_gun") == GLOBAL_ON
-			|| !Q_strcmp(pMapName, "d3_c17_07")			|| !Q_strcmp(pMapName, "d3_c17_08")			|| !Q_strcmp(pMapName, "d3_c17_10b")
-			|| !Q_strcmp(pMapName, "d3_citadel_03")		|| !Q_strcmp(pMapName, "d3_citadel_04")		|| !Q_strcmp(pMapName, "d3_breen_01")
-			|| !Q_strcmp(pMapName, "ep1_citadel_00")	|| !Q_strcmp(pMapName, "ep1_citadel_01")	|| !Q_strcmp(pMapName, "ep1_citadel_03")	|| !Q_strcmp(pMapName, "ep1_citadel_04")
-			|| !Q_strcmp(pMapName, "ep1_c17_00")		|| !Q_strcmp(pMapName, "ep1_c17_00a")		|| !Q_strcmp(pMapName, "ep1_c17_01")		|| !Q_strcmp(pMapName, "ep1_c17_02")
-			|| !Q_strcmp(pMapName, "ep2_outland_01"))
+		if (NeedPhysgun(pMapName))
 			return false;//bad time to lose the gravity gun
 
 	//NO TELEPORT LIST LEAKED
 	if (m_nContext & EC_PLAYER_TELEPORT)
-	{
-		//don't need to check map list if we would be forcing out of a car, cause we don't teleport (far) in that case, unless you did the ladder bug thing
-		if (!(m_nID == EFFECT_FORCE_INOUT_CAR && pPlayer->IsInAVehicle()))
-		{
-			if (!Q_strcmp(pMapName, "d1_trainstation_01")	|| !Q_strcmp(pMapName, "d1_trainstation_03")	|| !Q_strcmp(pMapName, "d1_trainstation_04")	|| !Q_strcmp(pMapName, "d1_trainstation_05")
-				|| !Q_strcmp(pMapName, "d1_canals_01")		|| !Q_strcmp(pMapName, "d1_canals_05")			|| !Q_strcmp(pMapName, "d1_canals_06")			|| !Q_strcmp(pMapName, "d1_canals_08")			|| !Q_strcmp(pMapName, "d1_canals_11")
-				|| !Q_strcmp(pMapName, "d1_eli_01")			|| !Q_strcmp(pMapName, "d1_eli_02")
-				|| !Q_strcmp(pMapName, "d1_town_02a")		|| !Q_strcmp(pMapName, "d1_town_05")
-				|| !Q_strcmp(pMapName, "d2_coast_11")
-				|| !Q_strcmp(pMapName, "d2_prison_06")		|| !Q_strcmp(pMapName, "d2_prison_08")
-				|| !Q_strcmp(pMapName, "d3_c17_06b")		|| !Q_strcmp(pMapName, "d3_c17_07")				|| !Q_strcmp(pMapName, "d3_c17_10b")			|| !Q_strcmp(pMapName, "d3_c17_13")
-				|| !Q_strcmp(pMapName, "d3_citadel_03")		|| !Q_strcmp(pMapName, "d3_citadel_04")
-				|| !Q_strcmp(pMapName, "d3_breen_01")
-				|| !Q_strcmp(pMapName, "ep1_citadel_01")	|| !Q_strcmp(pMapName, "ep1_citadel_03")		|| !Q_strcmp(pMapName, "ep1_citadel_04")
-				|| !Q_strcmp(pMapName, "ep1_c17_00")		|| !Q_strcmp(pMapName, "ep1_c17_00a")			|| !Q_strcmp(pMapName, "ep1_c17_01")
-				|| !Q_strcmp(pMapName, "ep2_outland_01")	|| !Q_strcmp(pMapName, "ep2_outland_03")		|| !Q_strcmp(pMapName, "ep2_outland_06a")		|| !Q_strcmp(pMapName, "ep2_outland_09")
-				|| !Q_strcmp(pMapName, "ep2_outland_10")	|| !Q_strcmp(pMapName, "ep2_outland_11")		|| !Q_strcmp(pMapName, "ep2_outland_11a")		|| !Q_strcmp(pMapName, "ep2_outland_11b")		|| !Q_strcmp(pMapName, "ep2_outland_12") || !Q_strcmp(pMapName, "ep2_outland_12a"))
-				return false;//no
-		}
-	}
+		if (DontTeleportPlayer(pMapName))
+			return false;
 
 	//you did it
 	return true;
@@ -6565,41 +6510,241 @@ CBaseEntity *CChaosEffect::GetEntityWithID(int iChaosID)
 
 bool CChaosEffect::MapIsLong(const char *pMapName)
 {
-	return !Q_strcmp(pMapName, "d1_trainstation_01")	|| !Q_strcmp(pMapName, "d1_trainstation_05")
-		|| !Q_strcmp(pMapName, "d1_eli_01")				|| !Q_strcmp(pMapName, "d1_eli_02")
-		|| !Q_strcmp(pMapName, "d1_town_02")
-		|| !Q_strcmp(pMapName, "d2_coast_07")			|| !Q_strcmp(pMapName, "d2_coast_08")
-		|| !Q_strcmp(pMapName, "d2_prison_05")			|| !Q_strcmp(pMapName, "d2_prison_06")				|| !Q_strcmp(pMapName, "d2_prison_07")			|| !Q_strcmp(pMapName, "d2_prison_08")
-		|| !Q_strcmp(pMapName, "d3_c17_13")				|| !Q_strcmp(pMapName, "d3_citadel_02")				|| !Q_strcmp(pMapName, "d3_citadel_05")			|| !Q_strcmp(pMapName, "d3_breen_01")
-
-		|| !Q_strcmp(pMapName, "ep1_citadel_00")		|| !Q_strcmp(pMapName, "ep1_citadel_01")			|| !Q_strcmp(pMapName, "ep1_citadel_03")
-
-		|| !Q_strcmp(pMapName, "ep2_outland_02")		|| !Q_strcmp(pMapName, "ep2_outland_11")			|| !Q_strcmp(pMapName, "ep2_outland_11b")		|| !Q_strcmp(pMapName, "ep2_outland_12")	|| !Q_strcmp(pMapName, "ep2_outland_12a");
+	if (!Q_strnicmp("d", pMapName, 1))//hl2
+	{
+		if (!Q_strnicmp("d1", pMapName, 2))
+		{
+			if (!Q_strcmp(pMapName, "d1_trainstation_01") || !Q_strcmp(pMapName, "d1_trainstation_05")
+				|| !Q_strcmp(pMapName, "d1_eli_01") || !Q_strcmp(pMapName, "d1_eli_02")
+				|| !Q_strcmp(pMapName, "d1_town_02"))
+				return true;
+		}
+		else
+		{
+			if (!Q_strcmp(pMapName, "d2_coast_07") || !Q_strcmp(pMapName, "d2_coast_08")
+				|| !Q_strcmp(pMapName, "d2_prison_05") || !Q_strcmp(pMapName, "d2_prison_06") || !Q_strcmp(pMapName, "d2_prison_07") || !Q_strcmp(pMapName, "d2_prison_08")
+				|| !Q_strcmp(pMapName, "d3_c17_13") || !Q_strcmp(pMapName, "d3_citadel_02") || !Q_strcmp(pMapName, "d3_citadel_05") || !Q_strcmp(pMapName, "d3_breen_01"))
+				return true;
+		}
+	}
+	else//ep2 or ep1 goes here
+	{
+		if (!Q_strcmp(pMapName, "ep1_citadel_00") || !Q_strcmp(pMapName, "ep1_citadel_01") || !Q_strcmp(pMapName, "ep1_citadel_03")
+			|| !Q_strcmp(pMapName, "ep2_outland_02") || !Q_strcmp(pMapName, "ep2_outland_11") || !Q_strcmp(pMapName, "ep2_outland_11b") || !Q_strcmp(pMapName, "ep2_outland_12") || !Q_strcmp(pMapName, "ep2_outland_12a"))
+			return true;
+	}
+	return false;
 }
 
-//Disallow maps that wouldn't let a crane do much. cranes need wide open land to graze on.
-//This is a blocklist because an allowlist would restrict all third party maps
-//plus it's less string comparisons this way
 bool CChaosEffect::MapGoodForCrane(const char *pMapName)
 {
+	//Disallow maps that wouldn't let a crane do much. cranes need wide open land to graze on.
+
 	//trigger_physics_trap can cause the magnet to become vaporized
 	CBaseEntity *pRemover = gEntList.FindEntityByClassname(NULL, "trigger_physics_trap");
 	if (pRemover)
 		return false;
-	return Q_strcmp(pMapName, "d1_trainstation_03")		&& Q_strcmp(pMapName, "d1_trainstation_04")			&& Q_strcmp(pMapName, "d1_trainstation_05")
-		&& Q_strcmp(pMapName, "d1_canals_02")			&& Q_strcmp(pMapName, "d1_canals_03")
-		&& Q_strcmp(pMapName, "d1_eli_01")
-		&& Q_strcmp(pMapName, "d1_town_04")
-		&& (Q_strnicmp("d2_p", pMapName, 4) || !Q_strcmp(pMapName, "d2_prison_01"))//don't allow any prison map except 01 since that's outdoors
-		&& Q_strcmp(pMapName, "d3_c17_01")				&& Q_strcmp(pMapName, "d3_c17_05")					&& Q_strcmp(pMapName, "d3_c17_06a")				&& Q_strcmp(pMapName, "d3_c17_06b")			&& Q_strcmp(pMapName, "d3_c17_10b")
-		&& Q_strcmp(pMapName, "d3_citadel_02")			&& Q_strcmp(pMapName, "d3_citadel_05")
-		&& Q_strcmp(pMapName, "d3_breen_01")
+	if (!Q_strnicmp("d", pMapName, 1))//hl2
+	{
+		if (!Q_strnicmp("d1", pMapName, 2))
+		{
+			if (!Q_strcmp(pMapName, "d1_trainstation_03") || !Q_strcmp(pMapName, "d1_trainstation_04") || !Q_strcmp(pMapName, "d1_trainstation_05")
+				|| !Q_strcmp(pMapName, "d1_canals_02") || !Q_strcmp(pMapName, "d1_canals_03")
+				|| !Q_strcmp(pMapName, "d1_eli_01")
+				|| !Q_strcmp(pMapName, "d1_town_04"))
+				return false;
+		}
+		else
+		{
+			if ((!Q_strnicmp("d2_p", pMapName, 4) && Q_strcmp(pMapName, "d2_prison_01"))//don't allow any prison map except 01 since that's outdoors
+				|| !Q_strcmp(pMapName, "d3_c17_01") || !Q_strcmp(pMapName, "d3_c17_05") || !Q_strcmp(pMapName, "d3_c17_06a") || !Q_strcmp(pMapName, "d3_c17_06b") || !Q_strcmp(pMapName, "d3_c17_10b")
+				|| !Q_strcmp(pMapName, "d3_citadel_02") || !Q_strcmp(pMapName, "d3_citadel_05")
+				|| !Q_strcmp(pMapName, "d3_breen_01"))
+				return false;
+		}
+	}
+	else
+	{
+		if (!Q_strnicmp("ep1", pMapName, 3))
+		{
+			if (!Q_strcmp(pMapName, "ep1_citadel_02b") || !Q_strcmp(pMapName, "ep1_citadel_03")
+				|| !Q_strcmp(pMapName, "ep1_c17_00") || !Q_strcmp(pMapName, "ep1_c17_00a") || !Q_strcmp(pMapName, "ep1_c17_02a"))
+				return false;
+		}
+		else
+		{
+			if (!Q_strcmp(pMapName, "ep2_outland_01a") || !Q_strcmp(pMapName, "ep2_outland_02") || !Q_strcmp(pMapName, "ep2_outland_03") || !Q_strcmp(pMapName, "ep2_outland_04")
+				|| !Q_strcmp(pMapName, "ep2_outland_11") || !Q_strcmp(pMapName, "ep2_outland_11a") || !Q_strcmp(pMapName, "ep2_outland_11b") || !Q_strcmp(pMapName, "ep2_outland_12a"))
+				return false;
+		}
+	}
+	return true;
+}
 
-		&& Q_strcmp(pMapName, "ep1_citadel_02b")		&& Q_strcmp(pMapName, "ep1_citadel_03")
-		&& Q_strcmp(pMapName, "ep1_c17_00")				&& Q_strcmp(pMapName, "ep1_c17_00a")				&& Q_strcmp(pMapName, "ep1_c17_02a")
+bool CChaosEffect::SafeCloneNPCs(const char *pMapName)
+{
+	if (!Q_strnicmp("d", pMapName, 1))//hl2
+	{
+		if (!Q_strcmp(pMapName, "d1_trainstation_01") || !Q_strnicmp("d1_e", pMapName, 4) || !Q_strcmp(pMapName, "d3_breen_01"))
+			return false;
+	}
+	else//ep2 or ep1 goes here
+	{
+		if (!Q_strcmp(pMapName, "ep1_citadel_00") || !Q_strcmp(pMapName, "ep1_citadel_01") || !Q_strcmp(pMapName, "ep1_citadel_03") || !Q_strcmp(pMapName, "ep1_citadel_04") || !Q_strcmp(pMapName, "ep1_c17_00"))
+			return false;
+	}
+	return true;
+}
 
-		&& Q_strcmp(pMapName, "ep2_outland_01a")		&& Q_strcmp(pMapName, "ep2_outland_02")				&& Q_strcmp(pMapName, "ep2_outland_03")			&& Q_strcmp(pMapName, "ep2_outland_04")
-		&& Q_strcmp(pMapName, "ep2_outland_11")			&& Q_strcmp(pMapName, "ep2_outland_11a")			&& Q_strcmp(pMapName, "ep2_outland_11b")		&& Q_strcmp(pMapName, "ep2_outland_12a");
+bool CChaosEffect::MapHasImportantPickups(const char *pMapName)
+{
+	//d1_trainstation_05 suit to progress cutscene
+	//d2_coast_10 rocket crate for gunship
+	//d2_prison_01 rocket crate for gunships
+	//d3_c17_09 grenades to save barney
+	//d3_c17_10b explosives for ground turrets
+	//d3_c17_11 rocket crate for gunship
+	//d3_c17_13 rocket crate for striders
+	if (!Q_strnicmp("d", pMapName, 1))//hl2
+	{
+		if (!Q_strcmp(pMapName, "d1_trainstation_05")	|| !Q_strcmp(pMapName, "d2_coast_10")	|| !Q_strcmp(pMapName, "d2_prison_01")
+			|| !Q_strcmp(pMapName, "d3_c17_09")			|| !Q_strcmp(pMapName, "d3_c17_10b")	|| !Q_strcmp(pMapName, "d3_c17_11") || !Q_strcmp(pMapName, "d3_c17_13"))
+			return true;
+	}
+	//ep1_c17_00 pistol and shotgun to shoot lock
+	//ep1_c17_05 rocket crate for sniper
+	//ep1_c17_06 rocket crate for strider
+	//ep2_outland_02 too hard
+	//ep2_outland_09 grenades for autogun
+	//ep2_outland_12 removing seems to break the respawn system?
+	else
+	{
+		if (!Q_strcmp(pMapName, "ep1_c17_00")			|| !Q_strcmp(pMapName, "ep1_c17_05")		|| !Q_strcmp(pMapName, "ep1_c17_06")
+			|| !Q_strcmp(pMapName, "ep2_outland_02")	|| !Q_strcmp(pMapName, "ep2_outland_09")	|| !Q_strcmp(pMapName, "ep2_outland_12"))
+			return true;
+	}
+	return false;
+}
+
+bool CChaosEffect::QuickclipProblems(const char *pMapName)
+{
+	if (!Q_strnicmp("d", pMapName, 1))//hl2
+	{
+		if (!Q_strcmp(pMapName, "d2_prison_05")		|| !Q_strcmp(pMapName, "d2_prison_06")	|| !Q_strcmp(pMapName, "d2_prison_08")
+			|| !Q_strcmp(pMapName, "d3_citadel_03") || !Q_strcmp(pMapName, "d3_citadel_04") || !Q_strcmp(pMapName, "d3_breen_01"))
+			return true;//bad map
+	}
+	else
+	{
+		if (!Q_strcmp(pMapName, "ep1_citadel_01")		|| !Q_strcmp(pMapName, "ep1_citadel_03") || !Q_strcmp(pMapName, "ep1_c17_00a")
+			|| !Q_strcmp(pMapName, "ep2_outland_04")	|| !Q_strcmp(pMapName, "ep2_outland_03") || !Q_strcmp(pMapName, "ep2_outland_12a"))
+			return true;//bad map
+	}
+	return false;
+}
+
+bool CChaosEffect::PhysConvertSoftlock(const char *pMapName)
+{
+	if (!Q_strnicmp("d", pMapName, 1))//hl2
+	{
+		if (!Q_strnicmp("d1", pMapName, 2))
+		{
+			if (!Q_strcmp(pMapName, "d1_trainstation_01") || !Q_strcmp(pMapName, "d1_trainstation_05")
+				|| !Q_strcmp(pMapName, "d1_canals_11") || !Q_strcmp(pMapName, "d1_canals_13")
+				|| !Q_strcmp(pMapName, "d1_eli_01") || !Q_strcmp(pMapName, "d1_town_01"))
+				return true;//bad map
+		}
+		else
+		{
+			if (!Q_strcmp(pMapName, "d3_c17_07") || !Q_strcmp(pMapName, "d3_c17_08")
+				|| !Q_strcmp(pMapName, "d3_citadel_01") || !Q_strcmp(pMapName, "d3_citadel_02") || !Q_strcmp(pMapName, "d3_citadel_05") || !Q_strcmp(pMapName, "d3_breen_01"))
+				return true;//bad map
+		}
+	}
+	else
+	{
+		if (!Q_strcmp(pMapName, "ep1_citadel_03") || !Q_strcmp(pMapName, "ep1_c17_00a")
+			|| !Q_strcmp(pMapName, "ep2_outland_01") || !Q_strcmp(pMapName, "ep2_outland_03") || !Q_strcmp(pMapName, "ep2_outland_11") || !Q_strcmp(pMapName, "ep2_outland_11b"))
+			return true;//bad map
+	}
+	return false;
+}
+
+bool CChaosEffect::CombatBreaksScene(const char *pMapName)
+{
+	if (!Q_strnicmp("d", pMapName, 1))//hl2
+	{
+		if (!Q_strcmp(pMapName, "d1_trainstation_01") || !Q_strcmp(pMapName, "d1_trainstation_04") || !Q_strcmp(pMapName, "d1_canals_03") || !Q_strcmp(pMapName, "d1_eli_01")
+			|| !Q_strcmp(pMapName, "d2_coast_10") || !Q_strcmp(pMapName, "d3_breen_01"))
+			return true;//bad map
+	}
+	else
+	{
+		if (!Q_strcmp(pMapName, "ep1_citadel_03") || !Q_strcmp(pMapName, "ep1_c17_02b")
+			|| !Q_strcmp(pMapName, "ep2_outland_01") || !Q_strcmp(pMapName, "ep2_outland_07") || !Q_strcmp(pMapName, "ep2_outland_08") || !Q_strcmp(pMapName, "ep2_outland_10a"))
+			return true;//bad map
+	}
+	return false;
+}
+
+bool CChaosEffect::NeedPhysgun(const char *pMapName)
+{
+	if (GlobalEntity_GetState("super_phys_gun") == GLOBAL_ON)
+		return true;
+	if (!Q_strnicmp("d", pMapName, 1))//hl2
+	{
+		if (!Q_strcmp(pMapName, "d3_c17_07") || !Q_strcmp(pMapName, "d3_c17_08") || !Q_strcmp(pMapName, "d3_c17_10b")
+			|| !Q_strcmp(pMapName, "d3_citadel_03") || !Q_strcmp(pMapName, "d3_citadel_04") || !Q_strcmp(pMapName, "d3_breen_01"))
+			return true;//bad time to lose the gravity gun
+	}
+	else
+	{
+		if (!Q_strcmp(pMapName, "ep1_citadel_00") || !Q_strcmp(pMapName, "ep1_citadel_01") || !Q_strcmp(pMapName, "ep1_citadel_03") || !Q_strcmp(pMapName, "ep1_citadel_04")
+			|| !Q_strcmp(pMapName, "ep1_c17_00") || !Q_strcmp(pMapName, "ep1_c17_00a") || !Q_strcmp(pMapName, "ep1_c17_01") || !Q_strcmp(pMapName, "ep1_c17_02")
+			|| !Q_strcmp(pMapName, "ep2_outland_01"))
+			return true;//bad time to lose the gravity gun
+	}
+	return false;
+}
+
+bool CChaosEffect::DontTeleportPlayer(const char *pMapName)
+{
+	//don't need to check map list if we would be forcing out of a car, cause we don't teleport (far) in that case, unless you did the ladder bug thing
+	if (m_nID == EFFECT_FORCE_INOUT_CAR && UTIL_GetLocalPlayer()->IsInAVehicle())
+		return false;
+	if (!Q_strnicmp("d", pMapName, 1))//hl2
+	{
+		if (!Q_strnicmp("d1", pMapName, 2))
+		{
+			if (!Q_strcmp(pMapName, "d1_trainstation_01") || !Q_strcmp(pMapName, "d1_trainstation_03") || !Q_strcmp(pMapName, "d1_trainstation_04") || !Q_strcmp(pMapName, "d1_trainstation_05")
+				|| !Q_strcmp(pMapName, "d1_canals_01") || !Q_strcmp(pMapName, "d1_canals_05") || !Q_strcmp(pMapName, "d1_canals_06") || !Q_strcmp(pMapName, "d1_canals_08") || !Q_strcmp(pMapName, "d1_canals_11")
+				|| !Q_strcmp(pMapName, "d1_eli_01") || !Q_strcmp(pMapName, "d1_eli_02") || !Q_strcmp(pMapName, "d1_town_02a") || !Q_strcmp(pMapName, "d1_town_05"))
+				return true;//no
+		}
+		else
+		{
+			if (!Q_strcmp(pMapName, "d2_coast_11") || !Q_strcmp(pMapName, "d2_prison_06") || !Q_strcmp(pMapName, "d2_prison_08")
+				|| !Q_strcmp(pMapName, "d3_c17_06b") || !Q_strcmp(pMapName, "d3_c17_07") || !Q_strcmp(pMapName, "d3_c17_10b") || !Q_strcmp(pMapName, "d3_c17_13")
+				|| !Q_strcmp(pMapName, "d3_citadel_03") || !Q_strcmp(pMapName, "d3_citadel_04") || !Q_strcmp(pMapName, "d3_breen_01"))
+				return true;//no
+		}
+	}
+	else
+	{
+		if (!Q_strnicmp("ep1", pMapName, 3))
+		{
+			if (!Q_strcmp(pMapName, "ep1_citadel_01") || !Q_strcmp(pMapName, "ep1_citadel_03") || !Q_strcmp(pMapName, "ep1_citadel_04")
+				|| !Q_strcmp(pMapName, "ep1_c17_00") || !Q_strcmp(pMapName, "ep1_c17_00a") || !Q_strcmp(pMapName, "ep1_c17_01"))
+				return true;//no
+		}
+		else
+		{
+			if (!Q_strcmp(pMapName, "ep2_outland_01") || !Q_strcmp(pMapName, "ep2_outland_03") || !Q_strcmp(pMapName, "ep2_outland_06a") || !Q_strcmp(pMapName, "ep2_outland_09")
+				|| !Q_strcmp(pMapName, "ep2_outland_10") || !Q_strcmp(pMapName, "ep2_outland_11") || !Q_strcmp(pMapName, "ep2_outland_11a") || !Q_strcmp(pMapName, "ep2_outland_11b") || !Q_strcmp(pMapName, "ep2_outland_12") || !Q_strcmp(pMapName, "ep2_outland_12a"))
+				return true;//no
+		}
+	}
+	return false;
 }
 
 //make evil NPCs stay evil

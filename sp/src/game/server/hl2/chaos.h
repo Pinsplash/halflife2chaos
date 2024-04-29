@@ -186,8 +186,13 @@ public:
 	CBaseEntity *GetEntityWithID(int iChaosID);
 	bool MapIsLong(const char *pMapName);
 	bool MapGoodForCrane(const char *pMapName);
-	bool MapHasElevator(const char *pMapName);
-	//DECLARE_SIMPLE_DATADESC();
+	bool SafeCloneNPCs(const char *pMapName);
+	bool MapHasImportantPickups(const char *pMapName);
+	bool QuickclipProblems(const char *pMapName);
+	bool PhysConvertSoftlock(const char *pMapName);
+	bool CombatBreaksScene(const char *pMapName);
+	bool NeedPhysgun(const char *pMapName);
+	bool DontTeleportPlayer(const char *pMapName);
 };
 //this is our macabre method of remembering persist entities. it's a holdover from when data was being stored in a txt file instead of global variables
 //preferably this will be replaced with whatever point_template does
