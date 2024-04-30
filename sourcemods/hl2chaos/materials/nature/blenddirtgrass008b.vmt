@@ -1,0 +1,19 @@
+"WorldVertexTransition"
+// This is a copy of blenddirtgrass008a, but with a no detailtype -JeffL
+{
+	"$basetexture" "nature/dirtfloor012a"
+	"$basetexture2" "nature/dirtfloor006a"
+	
+	"$detail" "overlays/macro01a"
+	"$detailscale" .1
+		
+	"%tooltexture" "nature/blenddirtgrass008a_tooltexture"
+	
+        "$basetexturetransform" "center .5 .5 scale 1 1 rotate 0 translate 0 0"
+        "$basetexturetransform2" "center .5 .5 scale 1 1 rotate 10 translate 0 0"
+
+
+	"$surfaceprop" "dirt"
+	"$surfaceprop2" "grass"
+	"%keywords" "coastline"
+}

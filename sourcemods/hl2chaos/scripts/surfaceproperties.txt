@@ -246,6 +246,13 @@
 	"base"		"dirt"
 	"stepleft"	"Grass.StepLeft"
 	"stepright"	"Grass.StepRight"
+	"gamematerial"	"J"
+}
+
+"sandygrass"
+{
+	"base"		"grass"
+	"gamematerial"	"K"
 }
 
 "tile"

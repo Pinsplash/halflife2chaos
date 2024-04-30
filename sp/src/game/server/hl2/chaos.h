@@ -98,6 +98,7 @@ enum Effect_T
 	EFFECT_YAWROLL,
 	EFFECT_NORMAL_VISION,
 	EFFECT_GIVE_ALL_RPG,
+	EFFECT_GRASS_HEAL,
 	//EFFECT_EVIL_ELI,
 	//EFFECT_EVIL_BREEN,
 
@@ -494,7 +495,7 @@ class CEQuickclip : public CChaosEffect
 public:
 	void StartEffect() override;
 };
-class CEFloorIsLava : public CChaosEffect
+class CEFloorEffect : public CChaosEffect
 {
 public:
 	void FastThink() override;

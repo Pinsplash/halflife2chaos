@@ -1,0 +1,11 @@
+"WorldVertexTransition"
+{
+	"$basetexture" "nature/cliffface002a"
+	"$basetexture2" "nature/dirtfloor002a"
+	"%tooltexture" "nature/blendcliffgrass001a_tooltexture"
+	"$basetexturetransform" "center .5 .5 scale 2 2 rotate 0  translate 0 0"
+	"$basetexturetransform2" "center .5 .5 scale 4 4 rotate 0 translate 0 0"
+	"%keywords" "wasteland"
+	"$surfaceprop" "dirt"
+	"$surfaceprop2" "grass"
+}

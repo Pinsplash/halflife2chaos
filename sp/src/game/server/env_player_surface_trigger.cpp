@@ -90,10 +90,11 @@ void CEnvPlayerSurfaceTrigger::PlayerSurfaceChanged( CBasePlayer *pPlayer, char 
 		return;
 
 	// Fire the output if we've changed, but only if it involves the target material
-	if ( gameMaterial != (char)m_iCurrentGameMaterial &&
-	     ( gameMaterial == m_iTargetGameMaterial || m_iCurrentGameMaterial == m_iTargetGameMaterial ) )
+	char cCurrentGameMaterial = m_iCurrentGameMaterial;
+	if (gameMaterial != cCurrentGameMaterial &&
+		(IsTargetMaterial(gameMaterial) || IsTargetMaterial(m_iCurrentGameMaterial)))
 	{
-		DevMsg( 2, "Player changed material to %d (was %d)\n", gameMaterial, m_iCurrentGameMaterial );
+		DevMsg("Player changed material to %c (was %c)\n", gameMaterial, cCurrentGameMaterial);
 
 		m_iCurrentGameMaterial = (int)gameMaterial;
 
@@ -108,7 +109,7 @@ void CEnvPlayerSurfaceTrigger::PlayerSurfaceChanged( CBasePlayer *pPlayer, char 
 //-----------------------------------------------------------------------------
 void CEnvPlayerSurfaceTrigger::UpdateMaterialThink( void )
 {
-	if ( m_iCurrentGameMaterial == m_iTargetGameMaterial )
+	if (IsTargetMaterial(m_iCurrentGameMaterial))
 	{
 		m_OnSurfaceChangedToTarget.FireOutput( NULL, this );
 	}
@@ -132,4 +133,17 @@ void CEnvPlayerSurfaceTrigger::InputDisable( inputdata_t &inputdata )
 void CEnvPlayerSurfaceTrigger::InputEnable( inputdata_t &inputdata )
 {
 	m_bDisabled = false;
+}
+
+//for a chaos effect, several textures had their surface props changed (correctly) to grass.
+//this affects the texture used in highway 17 for most sand, which is blended with grass.
+//that material should still trigger when the player is on grass, so correct that here.
+bool CEnvPlayerSurfaceTrigger::IsTargetMaterial(char gameMaterial)
+{
+	if (gameMaterial == m_iTargetGameMaterial)
+		return true;
+	//if targetting sand and player is on our new "sandygrass" surfaceprop, count it as sand
+	else if (m_iTargetGameMaterial == 'N' && gameMaterial == 'K')
+		return true;
+	return false;
 }

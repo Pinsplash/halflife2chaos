@@ -30,7 +30,7 @@ public:
 	static void	SetPlayerSurface( CBasePlayer *pPlayer, char gameMaterial );
 
 	void	UpdateMaterialThink( void );
-
+	bool	IsTargetMaterial(char gameMaterial);
 private:
 	void	PlayerSurfaceChanged( CBasePlayer *pPlayer, char gameMaterial );
 	void	InputDisable( inputdata_t &inputdata );

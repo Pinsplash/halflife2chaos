@@ -1,0 +1,10 @@
+"WorldVertexTransition"
+{
+	"$basetexture" "nature/forest_grass_01"
+	"$basetexture2""nature/forest_dirt_04"
+	"$surfaceprop" "grass"
+	"$surfaceprop2" "dirt"
+	//"$blendmodulatetexture" "nature/blendtexture01"
+	"%detailtype" "forest_floor_01"
+
+}

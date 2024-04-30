@@ -1,0 +1,13 @@
+"WorldVertexTransition"
+{
+	"$basetexture" "nature/rockfloor005a"
+	"$basetexture2" "nature/dirtfloor006a"
+	"%tooltexture" "nature/blendrockgrass004a_tooltexture"
+	"$basetexturetransform" "center .5 .5 scale 1 1 rotate 0 translate 0 0"
+        "$basetexturetransform2" "center .5 .5 scale 1 1 rotate 10 translate 0 0"
+	"%detailtype" "coastline_redgrass01"
+	"$surfaceprop" "dirt"
+	"$surfaceprop2" "grass"
+	"%keywords" "coastline"
+	"$bumpmap" "nature/rockfloor005a_normal"
+}

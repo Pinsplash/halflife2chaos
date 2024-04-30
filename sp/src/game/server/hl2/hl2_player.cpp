@@ -5342,6 +5342,7 @@ ConVar chaos_time_steal_health("chaos_time_steal_health", "1");
 ConVar chaos_time_yawroll("chaos_time_yawroll", "1");
 ConVar chaos_time_zombiespam("chaos_time_zombiespam", "1");
 ConVar chaos_time_normalvision("chaos_time_normalvision", "1");
+ConVar chaos_time_grass_heal("chaos_time_grass_heal", "1");
 
 ConVar chaos_prob_zerog("chaos_prob_zerog", "100");
 ConVar chaos_prob_superg("chaos_prob_superg", "100");
@@ -5426,6 +5427,7 @@ ConVar chaos_prob_suit_swap("chaos_prob_suit_swap", "100");
 ConVar chaos_prob_yawroll("chaos_prob_yawroll", "100");
 ConVar chaos_prob_normalvision("chaos_prob_normalvision", "100");
 ConVar chaos_prob_giveallrpg("chaos_prob_giveallrpg", "100");
+ConVar chaos_prob_grass_heal("chaos_prob_grass_heal", "100");
 //ConVar chaos_prob_evil_eli("chaos_prob_evil_eli", "100");
 //ConVar chaos_prob_evil_breen("chaos_prob_evil_breen", "100");
 #define ERROR_WEIGHT 1
@@ -5480,7 +5482,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CEEvilNPC>(EFFECT_EVIL_ALYX,				MAKE_STRING("Annoying Alyx"),				EC_HAS_WEAPON,								-1,											chaos_prob_evil_alyx.GetInt());
 	CreateEffect<CEEvilNPC>(EFFECT_EVIL_NORIKO,				MAKE_STRING("Noriko, No!"),					EC_NONE,									-1,											chaos_prob_evil_noriko.GetInt());
 	CreateEffect<>(EFFECT_CANT_LEAVE_MAP,					MAKE_STRING("Why So Rushed?"),				EC_NONE,									chaos_time_cant_leave_map.GetFloat(),		chaos_prob_cant_leave_map.GetInt());
-	CreateEffect<CEFloorIsLava>(EFFECT_FLOOR_IS_LAVA,		MAKE_STRING("Floor Is Lava"),				EC_NO_INVULN | EC_QC_OFF,					chaos_time_floor_is_lava.GetFloat(),		chaos_prob_floor_is_lava.GetInt());
+	CreateEffect<CEFloorEffect>(EFFECT_FLOOR_IS_LAVA,		MAKE_STRING("Floor Is Lava"),				EC_NO_INVULN | EC_QC_OFF,					chaos_time_floor_is_lava.GetFloat(),		chaos_prob_floor_is_lava.GetInt());
 	CreateEffect<CERandomSong>(EFFECT_PLAY_MUSIC,			MAKE_STRING("Play Random Song"),			EC_NONE,									-1,											chaos_prob_play_music.GetInt());
 	CreateEffect<CEUseSpam>(EFFECT_USE_SPAM,				MAKE_STRING("Grabby"),						EC_NO_VEHICLE,								chaos_time_use_spam.GetFloat(),				chaos_prob_use_spam.GetInt());
 	CreateEffect<>(EFFECT_ORTHO_CAM,						MAKE_STRING("Orthographic Camera"),			EC_NONE,									chaos_time_ortho_cam.GetFloat(),			chaos_prob_ortho_cam.GetInt());
@@ -5515,6 +5517,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<>(EFFECT_YAWROLL,							MAKE_STRING("Yaw Is Roll"),					EC_NONE,									chaos_time_yawroll.GetFloat(),				chaos_prob_yawroll.GetInt());
 	CreateEffect<>(EFFECT_NORMAL_VISION,					MAKE_STRING("Normal Vision"),				EC_NONE,									chaos_time_normalvision.GetFloat(),			chaos_prob_normalvision.GetInt());
 	CreateEffect<CEGiveAllRPG>(EFFECT_GIVE_ALL_RPG,			MAKE_STRING("Give Everyone RPGs"),			EC_NONE,									-1,											chaos_prob_giveallrpg.GetInt());
+	CreateEffect<CEFloorEffect>(EFFECT_GRASS_HEAL,			MAKE_STRING("Touch the Grass"),				EC_NONE,									chaos_time_grass_heal.GetFloat(),			chaos_prob_grass_heal.GetInt());
 	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_ELI,				MAKE_STRING("Evil Eli"),					EC_HAS_WEAPON,								-1,											chaos_prob_evil_eli.GetInt());
 	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_BREEN,			MAKE_STRING("Hands-on Dr. Breen"),			EC_HAS_WEAPON,								-1,											chaos_prob_evil_breen.GetInt());
 }
@@ -8988,9 +8991,10 @@ void CEQuickclip::StartEffect()
 		break;
 	}
 }
-void CEFloorIsLava::FastThink()
+void CEFloorEffect::FastThink()
 {
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+	int iTicks = 7;
 	bool bSkipThisTick = false;
 	//have to be on solid ground
 	if (pPlayer->IsInAVehicle())
@@ -9023,20 +9027,20 @@ void CEFloorIsLava::FastThink()
 				bSkipThisTick = true;
 		}
 
-		//test in center and 4 corners
+		//test in center
 		trace_t	trace2;
-		//Vector vecCorners[5] = { Vector(0, 0, 0), Vector(-16, -16, 0), Vector(16, -16, 0), Vector(-16, 16, 0), Vector(16, 16, 0) };
-		//for (int i = 0; i < 5; i++)
-		//{
-			UTIL_TraceLine(pPlayer->GetAbsOrigin(), pPlayer->GetAbsOrigin() - Vector(0, 0, 20), CONTENTS_SOLID, pPlayer, COLLISION_GROUP_NONE, &trace2);
+		UTIL_TraceLine(pPlayer->GetAbsOrigin(), pPlayer->GetAbsOrigin() - Vector(0, 0, 20), CONTENTS_SOLID, pPlayer, COLLISION_GROUP_NONE, &trace2);
 
-			//if you're on sky or nodraw, then whatever
-			if ((trace2.surface.flags & SURF_SKY) || (trace2.surface.flags & SURF_NODRAW))
-			{
-				bSkipThisTick = true;
-				//break;
-			}
-		//}
+		//if you're on sky or nodraw, then whatever
+		if ((trace2.surface.flags & SURF_SKY) || (trace2.surface.flags & SURF_NODRAW))
+		{
+			bSkipThisTick = true;
+			//break;
+		}
+
+		//want grass only
+		if (m_nID == EFFECT_GRASS_HEAL && pPlayer->m_chTextureType != 'J' && pPlayer->m_chTextureType != 'K')
+			bSkipThisTick = true;
 	}
 
 	if (bSkipThisTick)
@@ -9056,16 +9060,28 @@ void CEFloorIsLava::FastThink()
 		else
 		{
 			//time to burn again
-			m_iSkipTicks = 7;
+			m_iSkipTicks = iTicks;
+			CTakeDamageInfo infoBurn(pPlayer, pPlayer, 1, DMG_BURN);
 			//apply dmg
-			CTakeDamageInfo info(pPlayer, pPlayer, 1, DMG_BURN);
-			pPlayer->TakeDamage(info);
+			switch (m_nID)
+			{
+			case EFFECT_FLOOR_IS_LAVA:
+				pPlayer->TakeDamage(infoBurn);
+			case EFFECT_GRASS_HEAL:
+				pPlayer->TakeHealth(1, DMG_GENERIC);
+			}
 		}
 	}
 }
-bool CEFloorIsLava::CheckStrike(const CTakeDamageInfo &info)
+bool CEFloorEffect::CheckStrike(const CTakeDamageInfo &info)
 {
-	return (info.GetDamageType() & DMG_BURN) != 0;
+	switch (m_nID)
+	{
+	case EFFECT_FLOOR_IS_LAVA:
+		return (info.GetDamageType() & DMG_BURN) != 0;
+	default:
+		return false;
+	}
 }
 void CEUseSpam::FastThink()
 {
