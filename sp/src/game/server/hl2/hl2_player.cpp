@@ -5343,6 +5343,7 @@ ConVar chaos_time_yawroll("chaos_time_yawroll", "1");
 ConVar chaos_time_zombiespam("chaos_time_zombiespam", "1");
 ConVar chaos_time_normalvision("chaos_time_normalvision", "1");
 ConVar chaos_time_grass_heal("chaos_time_grass_heal", "1");
+ConVar chaos_time_change_pitch("chaos_time_change_pitch", "1");
 
 ConVar chaos_prob_zerog("chaos_prob_zerog", "100");
 ConVar chaos_prob_superg("chaos_prob_superg", "100");
@@ -5428,6 +5429,7 @@ ConVar chaos_prob_yawroll("chaos_prob_yawroll", "100");
 ConVar chaos_prob_normalvision("chaos_prob_normalvision", "100");
 ConVar chaos_prob_giveallrpg("chaos_prob_giveallrpg", "100");
 ConVar chaos_prob_grass_heal("chaos_prob_grass_heal", "100");
+ConVar chaos_prob_change_pitch("chaos_prob_change_pitch", "100");
 //ConVar chaos_prob_evil_eli("chaos_prob_evil_eli", "100");
 //ConVar chaos_prob_evil_breen("chaos_prob_evil_breen", "100");
 #define ERROR_WEIGHT 1
@@ -5518,6 +5520,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<>(EFFECT_NORMAL_VISION,					MAKE_STRING("Normal Vision"),				EC_NONE,									chaos_time_normalvision.GetFloat(),			chaos_prob_normalvision.GetInt());
 	CreateEffect<CEGiveAllRPG>(EFFECT_GIVE_ALL_RPG,			MAKE_STRING("Give Everyone RPGs"),			EC_NONE,									-1,											chaos_prob_giveallrpg.GetInt());
 	CreateEffect<CEFloorEffect>(EFFECT_GRASS_HEAL,			MAKE_STRING("Touch the Grass"),				EC_NONE,									chaos_time_grass_heal.GetFloat(),			chaos_prob_grass_heal.GetInt());
+	CreateEffect<CEChangePitch>(EFFECT_CHANGE_PITCH,		MAKE_STRING("Changing Pitch"),				EC_NONE,									chaos_time_change_pitch.GetFloat(),			chaos_prob_change_pitch.GetInt());
 	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_ELI,				MAKE_STRING("Evil Eli"),					EC_HAS_WEAPON,								-1,											chaos_prob_evil_eli.GetInt());
 	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_BREEN,			MAKE_STRING("Hands-on Dr. Breen"),			EC_HAS_WEAPON,								-1,											chaos_prob_evil_breen.GetInt());
 }
@@ -6239,10 +6242,14 @@ void CChaosEffect::RestoreEffect()
 	StartEffect();
 }
 
-//Do not restore:
+//Do not include:
 //Simple convar changes or any other thing that isn't affected by world state.
 //Transient things, unless they have an override RestoreEffect. If spawned entities wish to persist through saves they have their own thing.
 //Effects that can survive on MaintainEffect or FastThink.
+
+//do include:
+//changes variables of existing entities
+//makes entities that should persist (but dont use the 'chaos spawned' variable)
 bool CChaosEffect::DoRestorationAbort()
 {
 	switch (m_nID)
@@ -6277,6 +6284,9 @@ bool CChaosEffect::DoRestorationAbort()
 
 	//alters triggers
 	case EFFECT_SOLID_TRIGGERS:
+
+	//alters scene ents
+	case EFFECT_CHANGE_PITCH:
 
 	//gone forever if not restarted
 	case EFFECT_EARTHQUAKE:
@@ -9342,4 +9352,14 @@ void CEGiveAllRPG::StartEffect()
 			pNPC->GiveWeapon(MAKE_STRING("weapon_rpg"));
 		pEnt = gEntList.FindEntityByClassname(pEnt, "npc*");
 	}
+}
+void CEChangePitch::MaintainEffect()
+{
+	//the convar allows us to hit instanced scenes at their moment of creation.
+	float flPitch = RandomFloat(0.25, 2.5);
+	engine->ClientCommand(engine->PEntityOfEntIndex(1), "scene_pitch_default %f; ent_fire logic_choreographed_scene pitchshift %f\n", flPitch, flPitch);
+}
+void CEChangePitch::StopEffect()
+{
+	engine->ClientCommand(engine->PEntityOfEntIndex(1), "scene_pitch_default 1; ent_fire logic_choreographed_scene pitchshift 1\n");
 }

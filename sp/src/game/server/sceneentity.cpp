@@ -53,7 +53,7 @@ class CBaseFlex;
 
 static ConVar scene_forcecombined( "scene_forcecombined", "0", 0, "When playing back, force use of combined .wav files even in english." );
 static ConVar scene_maxcaptionradius( "scene_maxcaptionradius", "1200", 0, "Only show closed captions if recipient is within this many units of speaking actor (0==disabled)." );
-
+ConVar scene_pitch_default("scene_pitch_default", "1");
 // Assume sound system is 100 msec lagged (only used if we can't find snd_mixahead cvar!)
 #define SOUND_SYSTEM_LATENCY_DEFAULT ( 0.1f )
 
@@ -748,7 +748,7 @@ CSceneEntity::CSceneEntity( void )
 	m_bIsPlayingBack	= false;
 	m_bPaused			= false;
 	m_bMultiplayer = false;
-	m_fPitch = 1.0f;
+	m_fPitch = scene_pitch_default.GetFloat();
 	m_iszSceneFile		= NULL_STRING;
 	m_iszResumeSceneFile = NULL_STRING;
 	m_hWaitingForThisResumeScene = NULL;
@@ -1069,7 +1069,7 @@ void CSceneEntity::OnRestore()
 
 	// Fix saved games that have their pitch set to zero
 	if ( m_fPitch < SCENE_MIN_PITCH || m_fPitch > SCENE_MAX_PITCH )
-		m_fPitch = 1.0f;
+		m_fPitch = scene_pitch_default.GetFloat();
 
 	if ( !m_bIsPlayingBack )
 		return;
@@ -2738,7 +2738,10 @@ void CSceneEntity::PitchShiftPlayback( float fPitch )
 
 	if ( !m_pScene )
 		return;
-
+	//this code was leading to voice lines playing twice, once old pitch, once new pitch, and potentially from the wrong actor.
+	//removing this means the currently spoken line, if any, will not instantly change pitch, which is definitely less confusing.
+	//the underlying bug appears to be in engine code.
+	/*
 	for ( int iActor = 0 ; iActor < m_pScene->GetNumActors(); ++iActor )
 	{
 		CBaseFlex *pTestActor = FindNamedActor( iActor );
@@ -2758,6 +2761,7 @@ void CSceneEntity::PitchShiftPlayback( float fPitch )
 			pTestActor->EmitSound( filter, pTestActor->entindex(), params );
 		}
 	}
+	*/
 }
 
 //-----------------------------------------------------------------------------
