@@ -86,3 +86,6 @@ chaos_random_cc.raw
 *.cache
 sp/src/games.sln
 *.sln
+*.vcxproj
+*.filters
+*.vpc_crc

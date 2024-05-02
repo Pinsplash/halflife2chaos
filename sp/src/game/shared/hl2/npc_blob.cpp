@@ -4,6 +4,10 @@
 //
 //=============================================================================//
 #include "cbase.h"
+//pretty sure i have to make this a constant for networking...
+//default 20
+#define BLOB_NUM_ELEMENTS 20
+#ifndef CLIENT_DLL
 #include "ai_default.h"
 #include "ai_task.h"
 #include "ai_schedule.h"
@@ -29,10 +33,10 @@ ConVar blob_mindist( "blob_mindist", "120.0" );
 ConVar blob_element_speed( "blob_element_speed", "187" );
 ConVar npc_blob_idle_speed_factor( "npc_blob_idle_speed_factor", "0.5" );
 
-ConVar blob_numelements( "blob_numelements", "20" );
+//ConVar blob_numelements( "blob_numelements", "20" );
 ConVar blob_batchpercent( "blob_batchpercent", "100" );
 
-ConVar blob_radius( "blob_radius", "160" );
+ConVar blob_radius( "blob_radius", "80" );
 
 //ConVar blob_min_element_speed( "blob_min_element_speed", "50" );
 //ConVar blob_max_element_speed( "blob_max_element_speed", "250" );
@@ -46,7 +50,7 @@ ConVar npc_blob_show_centroid( "npc_blob_show_centroid", "0" );
 ConVar npc_blob_straggler_dist( "npc_blob_straggler_dist", "240" );
 
 ConVar npc_blob_use_orientation( "npc_blob_use_orientation", "1" );
-ConVar npc_blob_use_model( "npc_blob_use_model", "2" );
+ConVar npc_blob_use_model( "npc_blob_use_model", "1" );
 
 ConVar npc_blob_think_interval( "npc_blob_think_interval", "0.025" );
 
@@ -169,7 +173,8 @@ void CBlobElement::Spawn()
 	SetSolid( SOLID_NONE );
 	SetMoveType( MOVETYPE_FLY );
 	AddSolidFlags( FSOLID_NOT_STANDABLE | FSOLID_NOT_SOLID );
-
+	SetRenderMode(kRenderTransAdd);
+	SetRenderColorA(64);
 	SetModel( GetBlobModelName() );
 	UTIL_SetSize( this, vec3_origin, vec3_origin );
 
@@ -413,8 +418,6 @@ public:
 	void	InitializeElements();
 	void	RecomputeIdealElementDist();
 
-	void	RemoveAllElementsExcept( int iExempt );
-
 	void	RemoveExcessElements( int iNumElements );
 	void	AddNewElements( int iNumElements );
 
@@ -422,22 +425,22 @@ public:
 	void	SetRadius( float flRadius );
 
 	DECLARE_DATADESC();
+	DECLARE_SERVERCLASS();
 
-	int		m_iNumElements;
+	CNetworkVar(int, m_iNumElements);
 	bool	m_bInitialized;
 	int		m_iBatchStart;
 	Vector	m_vecCentroid;
 	float	m_flMinElementDist;
 
-	CUtlVector<CHandle< CBlobElement > >m_Elements;
-
+	//CUtlVector<CHandle< CBlobElement > >m_Elements;
+	CNetworkArray(EHANDLE, m_Elements, BLOB_NUM_ELEMENTS);
 	DEFINE_CUSTOM_AI;
 
 public:
 	void InputFormPathShape( inputdata_t &inputdata );
 	void InputSetRadius( inputdata_t &inputdata );
 	void InputChaseEntity( inputdata_t &inputdata );
-	void InputIsolateElement( inputdata_t &inputdata );
 	void InputFormHemisphere( inputdata_t &inputdata );
 	void InputFormTwoSpheres( inputdata_t &inputdata );
 
@@ -467,16 +470,20 @@ DEFINE_FIELD( m_iBatchStart, FIELD_INTEGER ),
 DEFINE_FIELD( m_vecCentroid, FIELD_POSITION_VECTOR ),
 DEFINE_FIELD( m_flMinElementDist, FIELD_FLOAT ),
 DEFINE_FIELD( m_iReconfigureElement, FIELD_INTEGER ),
-DEFINE_UTLVECTOR( m_Elements, FIELD_EHANDLE ),
+DEFINE_AUTO_ARRAY( m_Elements, FIELD_EHANDLE ),
 
 DEFINE_INPUTFUNC( FIELD_STRING, "FormPathShape", InputFormPathShape ),
 DEFINE_INPUTFUNC( FIELD_FLOAT, "SetRadius", InputSetRadius ),
 DEFINE_INPUTFUNC( FIELD_STRING, "ChaseEntity", InputChaseEntity ),
-DEFINE_INPUTFUNC( FIELD_INTEGER, "IsolateElement", InputIsolateElement ),
 DEFINE_INPUTFUNC( FIELD_VOID, "FormHemisphere", InputFormHemisphere ),
 DEFINE_INPUTFUNC( FIELD_VOID, "FormTwoSpheres", InputFormTwoSpheres ),
 
 END_DATADESC()
+
+IMPLEMENT_SERVERCLASS_ST(CNPC_Blob, DT_NPC_Blob)
+SendPropArray3(SENDINFO_ARRAY3(m_Elements), SendPropEHandle(SENDINFO_ARRAY(m_Elements))),
+SendPropInt(SENDINFO(m_iNumElements), 3, SPROP_UNSIGNED),
+END_SEND_TABLE()
 
 //---------------------------------------------------------
 //---------------------------------------------------------
@@ -542,11 +549,11 @@ void CNPC_Blob::Spawn( void )
 	CapabilitiesClear();
 	CapabilitiesAdd( bits_CAP_MOVE_GROUND );
 
-	m_Elements.RemoveAll();
+	//m_Elements.RemoveAll();
 
 	NPCInit();
 
-	AddEffects( EF_NODRAW );
+	AddEffects( EF_NOSHADOW );
 
 	m_flMinElementDist = blob_mindist.GetFloat();
 }
@@ -580,7 +587,7 @@ void CNPC_Blob::RunAI()
 		return;
 	}
 
-	int iIdealNumElements = blob_numelements.GetInt();
+	int iIdealNumElements = BLOB_NUM_ELEMENTS;
 	if( iIdealNumElements != m_iNumElements )
 	{
 		int delta = iIdealNumElements - m_iNumElements;
@@ -763,7 +770,7 @@ void CNPC_Blob::DoBlobBatchedAI( int iStart, int iEnd )
 	//--
 	for( int i = iStart ; i < iEnd ; i++ )
 	{
-		CBlobElement *pThisElement = m_Elements[ i ];
+		CBlobElement *pThisElement = (CBlobElement *)m_Elements[i].Get();
 
 		//--
 		// Initial movement
@@ -866,7 +873,7 @@ void CNPC_Blob::DoBlobBatchedAI( int iStart, int iEnd )
 				if( pThisElement->m_bOnWall )
 					continue;
 
-				CBlobElement *pThatElement = m_Elements[ j ];
+				CBlobElement *pThatElement = (CBlobElement *)m_Elements[j].Get();
 				if( i != j )
 				{
 					Vector vecThatElementOrigin = pThatElement->GetAbsOrigin();
@@ -953,31 +960,6 @@ void CNPC_Blob::DoBlobBatchedAI( int iStart, int iEnd )
 }
 
 //-----------------------------------------------------------------------------
-// Throw out all elements and their entities except for the the specified 
-// index into the UTILVector. This is useful for isolating elements that 
-// get into a bad state.
-//-----------------------------------------------------------------------------
-void CNPC_Blob::RemoveAllElementsExcept( int iExempt )
-{
-	if( m_Elements.Count() == 1 )
-		return;
-
-	m_Elements[ 0 ].Set( m_Elements[ iExempt ].Get() );
-
-	for( int i = 1 ; i < m_Elements.Count() ; i++ )
-	{
-		if( i != iExempt )
-		{
-			m_Elements[ i ]->SUB_Remove();
-		}
-	}
-
-	m_Elements.RemoveMultiple( 1, m_Elements.Count() - 1 );
-
-	m_iNumElements = 1;
-}
-
-//-----------------------------------------------------------------------------
 // Purpose: The blob has too many elements. Locate good candidates and remove
 // this many elements.
 //-----------------------------------------------------------------------------
@@ -992,7 +974,7 @@ void CNPC_Blob::RemoveExcessElements( int iNumElements )
 		// Nuke the associated entity
 		m_Elements[ iLastElement ]->SUB_Remove();
 
-		m_Elements.Remove( iLastElement );
+		m_Elements.Set(iLastElement, NULL);
 		m_iNumElements--;
 	}
 }
@@ -1101,8 +1083,9 @@ void CNPC_Blob::FormShapeFromPath( string_t iszPathName )
 		for( flStep = 0.0f ; flStep < flSegmentLength ; flStep += flDistribution )
 		{
 			//NDebugOverlay::Cross3D( vecStart + vecDiff * flStep, 16, 255, 255, 255, false, 10.0f );
-			m_Elements[ element ]->SetTargetLocation( vecStart + vecDiff * flStep );
-			m_Elements[ element ]->SetActiveMovementRule( BLOB_MOVE_TO_TARGET_LOCATION );
+			CBlobElement *pThisElement = (CBlobElement *)m_Elements[element].Get();
+			pThisElement->SetTargetLocation(vecStart + vecDiff * flStep);
+			pThisElement->SetActiveMovementRule(BLOB_MOVE_TO_TARGET_LOCATION);
 			element++;
 
 			if( element == m_iNumElements )
@@ -1152,21 +1135,12 @@ void CNPC_Blob::InputChaseEntity( inputdata_t &inputdata )
 	{
 		for( int i = 0 ; i < m_Elements.Count() ; i++ )
 		{
-			CBlobElement *pElement = m_Elements[ i ];
+			CBlobElement *pElement = (CBlobElement *)m_Elements[i].Get();
 
 			pElement->SetTargetEntity( pEntity );
 			pElement->SetActiveMovementRule( BLOB_MOVE_TO_TARGET_ENTITY );
 		}
 	}
-}
-
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-void CNPC_Blob::InputIsolateElement( inputdata_t &inputdata )
-{
-	int iElement = inputdata.value.Int();
-
-	RemoveAllElementsExcept( iElement );
 }
 
 //-----------------------------------------------------------------------------
@@ -1180,7 +1154,7 @@ void CNPC_Blob::InputFormHemisphere( inputdata_t &inputdata )
 
 	for( int i = 0 ; i < m_Elements.Count() ; i++ )
 	{
-		CBlobElement *pElement = m_Elements[ i ];
+		CBlobElement *pElement = (CBlobElement *)m_Elements[i].Get();
 
 		// Compute a point around my center
 		vecDir.x = random->RandomFloat( -1, 1 );
@@ -1209,7 +1183,7 @@ void CNPC_Blob::InputFormTwoSpheres( inputdata_t &inputdata )
 
 	for( int i = 0 ; i < batchSize ; i++ )
 	{
-		CBlobElement *pElement = m_Elements[ i ];
+		CBlobElement *pElement = (CBlobElement *)m_Elements[i].Get();
 
 		// Compute a point around my center
 		vecDir.x = random->RandomFloat( -1, 1 );
@@ -1224,7 +1198,7 @@ void CNPC_Blob::InputFormTwoSpheres( inputdata_t &inputdata )
 
 	for( int i = batchSize ; i < m_Elements.Count() ; i++ )
 	{
-		CBlobElement *pElement = m_Elements[ i ];
+		CBlobElement *pElement = (CBlobElement *)m_Elements[i].Get();
 
 		// Compute a point around my center
 		vecDir.x = random->RandomFloat( -1, 1 );
@@ -1294,7 +1268,7 @@ CBlobElement *CNPC_Blob::CreateNewElement()
 		pElement->m_iElementNumber = m_iNumElements;
 		m_iNumElements++;
 		pElement->Spawn();
-		m_Elements.AddToTail( pElement );
+		m_Elements.Set(m_iNumElements - 1, pElement);
 		return pElement;
 	}
 
@@ -1311,7 +1285,7 @@ void CNPC_Blob::InitializeElements()
 	int i;
 	QAngle angDistributor( 0, 0, 0 );
 
-	int iNumElements = blob_numelements.GetInt();
+	int iNumElements = BLOB_NUM_ELEMENTS;
 
 	float step = 360.0f / ((float)iNumElements);
 	for( i = 0 ; i < iNumElements ; i++ )
@@ -1377,3 +1351,763 @@ void CNPC_Blob::RecomputeIdealElementDist()
 	//Msg("New element dist: %f\n", m_flMinElementDist );
 }
 
+#else //#ifndef CLIENT_DLL
+#include "debugoverlay_shared.h"
+#include "c_ai_basenpc.h"
+
+// offsets from the minimal corner to other corners
+static Vector cornerOffsets[8]
+{
+	Vector(0, 0, 0),
+	Vector(1, 0, 0),
+	Vector(1, 1, 0),
+	Vector(0, 1, 0),
+	Vector(0, 0, 1),
+	Vector(1, 0, 1),
+	Vector(1, 1, 1),
+	Vector(0, 1, 1)
+};
+
+// offsets from the minimal corner to 2 ends of the edges
+static Vector edgeVertexOffsets[12][2]
+{
+	{ Vector(0, 0, 0), Vector(1, 0, 0) },//X 0
+	{ Vector(1, 0, 0), Vector(1, 1, 0) },//Y 1
+	{ Vector(0, 1, 0), Vector(1, 1, 0) },//X 2
+	{ Vector(0, 0, 0), Vector(0, 1, 0) },//Y 3
+	{ Vector(0, 0, 1), Vector(1, 0, 1) },//X 4
+	{ Vector(1, 0, 1), Vector(1, 1, 1) },//Y 5
+	{ Vector(0, 1, 1), Vector(1, 1, 1) },//X 6
+	{ Vector(0, 0, 1), Vector(0, 1, 1) },//Y 7
+	{ Vector(0, 0, 0), Vector(0, 0, 1) },//Z 8
+	{ Vector(1, 0, 0), Vector(1, 0, 1) },//Z 9
+	{ Vector(1, 1, 0), Vector(1, 1, 1) },//Z 10
+	{ Vector(0, 1, 0), Vector(0, 1, 1) } //Z 11
+};
+
+//edgeCase to interpCache
+//1st int: direction we're moving back in. -1 means this edge cannot be used
+//2nd int: edge to look at in cube we've moved back to, inside cache
+static int ecTOic[12][2]
+{
+	{ 2, 4 },//0
+	{ 2, 5 },//1
+	{ 2, 6 },//2
+	{ 2, 7 },//3
+	{ 1, 6 },//4
+	{ -1, -1 },//5
+	{ -1, -1 },//6
+	{ 0, 5 },//7
+	{ 1, 11 },//8
+	{ 1, 10 },//9
+	{ -1, -1 },//10
+	{ 0, 10 }//11
+};
+
+//alternate table because some edges could reference 1 extra cube (and 1 more after that but there's no need)
+static int ecTOicAlt[12][2]
+{
+	{ 1, 2 },//0
+	{ -1, -1 },//1
+	{ -1, -1 },//2
+	{ 0, 1 },//3
+	{ -1, -1 },//4
+	{ -1, -1 },//5
+	{ -1, -1 },//6
+	{ -1, -1 },//7
+	{ 0, 9 },//8
+	{ -1, -1 },//9
+	{ -1, -1 },//10
+	{ -1, -1 }//11
+};
+
+// list of triangles/vertices for every possible case
+// up to 15 vertices per case and -1 indicates end of sequence
+static int triangleTable[256][16]
+{
+	{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+	{ 0, 8, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 0, 1, 9, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 1, 8, 3, 9, 8, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 1, 2, 10, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 0, 8, 3, 1, 2, 10, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 9, 2, 10, 0, 2, 9, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 2, 8, 3, 2, 10, 8, 10, 9, 8, -1, -1, -1, -1, -1, -1, -1 },
+	{ 3, 11, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 0, 11, 2, 8, 11, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 1, 9, 0, 2, 3, 11, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 1, 11, 2, 1, 9, 11, 9, 8, 11, -1, -1, -1, -1, -1, -1, -1 },
+	{ 3, 10, 1, 11, 10, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 0, 10, 1, 0, 8, 10, 8, 11, 10, -1, -1, -1, -1, -1, -1, -1 },
+	{ 3, 9, 0, 3, 11, 9, 11, 10, 9, -1, -1, -1, -1, -1, -1, -1 },
+	{ 9, 8, 10, 10, 8, 11, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 4, 7, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 4, 3, 0, 7, 3, 4, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 0, 1, 9, 8, 4, 7, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 4, 1, 9, 4, 7, 1, 7, 3, 1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 1, 2, 10, 8, 4, 7, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 3, 4, 7, 3, 0, 4, 1, 2, 10, -1, -1, -1, -1, -1, -1, -1 },
+	{ 9, 2, 10, 9, 0, 2, 8, 4, 7, -1, -1, -1, -1, -1, -1, -1 },
+	{ 2, 10, 9, 2, 9, 7, 2, 7, 3, 7, 9, 4, -1, -1, -1, -1 },
+	{ 8, 4, 7, 3, 11, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 11, 4, 7, 11, 2, 4, 2, 0, 4, -1, -1, -1, -1, -1, -1, -1 },
+	{ 9, 0, 1, 8, 4, 7, 2, 3, 11, -1, -1, -1, -1, -1, -1, -1 },
+	{ 4, 7, 11, 9, 4, 11, 9, 11, 2, 9, 2, 1, -1, -1, -1, -1 },
+	{ 3, 10, 1, 3, 11, 10, 7, 8, 4, -1, -1, -1, -1, -1, -1, -1 },
+	{ 1, 11, 10, 1, 4, 11, 1, 0, 4, 7, 11, 4, -1, -1, -1, -1 },
+	{ 4, 7, 8, 9, 0, 11, 9, 11, 10, 11, 0, 3, -1, -1, -1, -1 },
+	{ 4, 7, 11, 4, 11, 9, 9, 11, 10, -1, -1, -1, -1, -1, -1, -1 },
+	{ 9, 5, 4, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 9, 5, 4, 0, 8, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 0, 5, 4, 1, 5, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 8, 5, 4, 8, 3, 5, 3, 1, 5, -1, -1, -1, -1, -1, -1, -1 },
+	{ 1, 2, 10, 9, 5, 4, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 3, 0, 8, 1, 2, 10, 4, 9, 5, -1, -1, -1, -1, -1, -1, -1 },
+	{ 5, 2, 10, 5, 4, 2, 4, 0, 2, -1, -1, -1, -1, -1, -1, -1 },
+	{ 2, 10, 5, 3, 2, 5, 3, 5, 4, 3, 4, 8, -1, -1, -1, -1 },
+	{ 9, 5, 4, 2, 3, 11, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 0, 11, 2, 0, 8, 11, 4, 9, 5, -1, -1, -1, -1, -1, -1, -1 },
+	{ 0, 5, 4, 0, 1, 5, 2, 3, 11, -1, -1, -1, -1, -1, -1, -1 },
+	{ 2, 1, 5, 2, 5, 8, 2, 8, 11, 4, 8, 5, -1, -1, -1, -1 },
+	{ 10, 3, 11, 10, 1, 3, 9, 5, 4, -1, -1, -1, -1, -1, -1, -1 },
+	{ 4, 9, 5, 0, 8, 1, 8, 10, 1, 8, 11, 10, -1, -1, -1, -1 },
+	{ 5, 4, 0, 5, 0, 11, 5, 11, 10, 11, 0, 3, -1, -1, -1, -1 },
+	{ 5, 4, 8, 5, 8, 10, 10, 8, 11, -1, -1, -1, -1, -1, -1, -1 },
+	{ 9, 7, 8, 5, 7, 9, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 9, 3, 0, 9, 5, 3, 5, 7, 3, -1, -1, -1, -1, -1, -1, -1 },
+	{ 0, 7, 8, 0, 1, 7, 1, 5, 7, -1, -1, -1, -1, -1, -1, -1 },
+	{ 1, 5, 3, 3, 5, 7, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 9, 7, 8, 9, 5, 7, 10, 1, 2, -1, -1, -1, -1, -1, -1, -1 },
+	{ 10, 1, 2, 9, 5, 0, 5, 3, 0, 5, 7, 3, -1, -1, -1, -1 },
+	{ 8, 0, 2, 8, 2, 5, 8, 5, 7, 10, 5, 2, -1, -1, -1, -1 },
+	{ 2, 10, 5, 2, 5, 3, 3, 5, 7, -1, -1, -1, -1, -1, -1, -1 },
+	{ 7, 9, 5, 7, 8, 9, 3, 11, 2, -1, -1, -1, -1, -1, -1, -1 },
+	{ 9, 5, 7, 9, 7, 2, 9, 2, 0, 2, 7, 11, -1, -1, -1, -1 },
+	{ 2, 3, 11, 0, 1, 8, 1, 7, 8, 1, 5, 7, -1, -1, -1, -1 },
+	{ 11, 2, 1, 11, 1, 7, 7, 1, 5, -1, -1, -1, -1, -1, -1, -1 },
+	{ 9, 5, 8, 8, 5, 7, 10, 1, 3, 10, 3, 11, -1, -1, -1, -1 },
+	{ 5, 7, 0, 5, 0, 9, 7, 11, 0, 1, 0, 10, 11, 10, 0, -1 },
+	{ 11, 10, 0, 11, 0, 3, 10, 5, 0, 8, 0, 7, 5, 7, 0, -1 },
+	{ 11, 10, 5, 7, 11, 5, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 10, 6, 5, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 0, 8, 3, 5, 10, 6, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 9, 0, 1, 5, 10, 6, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 1, 8, 3, 1, 9, 8, 5, 10, 6, -1, -1, -1, -1, -1, -1, -1 },
+	{ 1, 6, 5, 2, 6, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 1, 6, 5, 1, 2, 6, 3, 0, 8, -1, -1, -1, -1, -1, -1, -1 },
+	{ 9, 6, 5, 9, 0, 6, 0, 2, 6, -1, -1, -1, -1, -1, -1, -1 },
+	{ 5, 9, 8, 5, 8, 2, 5, 2, 6, 3, 2, 8, -1, -1, -1, -1 },
+	{ 2, 3, 11, 10, 6, 5, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 11, 0, 8, 11, 2, 0, 10, 6, 5, -1, -1, -1, -1, -1, -1, -1 },
+	{ 0, 1, 9, 2, 3, 11, 5, 10, 6, -1, -1, -1, -1, -1, -1, -1 },
+	{ 5, 10, 6, 1, 9, 2, 9, 11, 2, 9, 8, 11, -1, -1, -1, -1 },
+	{ 6, 3, 11, 6, 5, 3, 5, 1, 3, -1, -1, -1, -1, -1, -1, -1 },
+	{ 0, 8, 11, 0, 11, 5, 0, 5, 1, 5, 11, 6, -1, -1, -1, -1 },
+	{ 3, 11, 6, 0, 3, 6, 0, 6, 5, 0, 5, 9, -1, -1, -1, -1 },
+	{ 6, 5, 9, 6, 9, 11, 11, 9, 8, -1, -1, -1, -1, -1, -1, -1 },
+	{ 5, 10, 6, 4, 7, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 4, 3, 0, 4, 7, 3, 6, 5, 10, -1, -1, -1, -1, -1, -1, -1 },
+	{ 1, 9, 0, 5, 10, 6, 8, 4, 7, -1, -1, -1, -1, -1, -1, -1 },
+	{ 10, 6, 5, 1, 9, 7, 1, 7, 3, 7, 9, 4, -1, -1, -1, -1 },
+	{ 6, 1, 2, 6, 5, 1, 4, 7, 8, -1, -1, -1, -1, -1, -1, -1 },
+	{ 1, 2, 5, 5, 2, 6, 3, 0, 4, 3, 4, 7, -1, -1, -1, -1 },
+	{ 8, 4, 7, 9, 0, 5, 0, 6, 5, 0, 2, 6, -1, -1, -1, -1 },
+	{ 7, 3, 9, 7, 9, 4, 3, 2, 9, 5, 9, 6, 2, 6, 9, -1 },
+	{ 3, 11, 2, 7, 8, 4, 10, 6, 5, -1, -1, -1, -1, -1, -1, -1 },
+	{ 5, 10, 6, 4, 7, 2, 4, 2, 0, 2, 7, 11, -1, -1, -1, -1 },
+	{ 0, 1, 9, 4, 7, 8, 2, 3, 11, 5, 10, 6, -1, -1, -1, -1 },
+	{ 9, 2, 1, 9, 11, 2, 9, 4, 11, 7, 11, 4, 5, 10, 6, -1 },
+	{ 8, 4, 7, 3, 11, 5, 3, 5, 1, 5, 11, 6, -1, -1, -1, -1 },
+	{ 5, 1, 11, 5, 11, 6, 1, 0, 11, 7, 11, 4, 0, 4, 11, -1 },
+	{ 0, 5, 9, 0, 6, 5, 0, 3, 6, 11, 6, 3, 8, 4, 7, -1 },
+	{ 6, 5, 9, 6, 9, 11, 4, 7, 9, 7, 11, 9, -1, -1, -1, -1 },
+	{ 10, 4, 9, 6, 4, 10, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 4, 10, 6, 4, 9, 10, 0, 8, 3, -1, -1, -1, -1, -1, -1, -1 },
+	{ 10, 0, 1, 10, 6, 0, 6, 4, 0, -1, -1, -1, -1, -1, -1, -1 },
+	{ 8, 3, 1, 8, 1, 6, 8, 6, 4, 6, 1, 10, -1, -1, -1, -1 },
+	{ 1, 4, 9, 1, 2, 4, 2, 6, 4, -1, -1, -1, -1, -1, -1, -1 },
+	{ 3, 0, 8, 1, 2, 9, 2, 4, 9, 2, 6, 4, -1, -1, -1, -1 },
+	{ 0, 2, 4, 4, 2, 6, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 8, 3, 2, 8, 2, 4, 4, 2, 6, -1, -1, -1, -1, -1, -1, -1 },
+	{ 10, 4, 9, 10, 6, 4, 11, 2, 3, -1, -1, -1, -1, -1, -1, -1 },
+	{ 0, 8, 2, 2, 8, 11, 4, 9, 10, 4, 10, 6, -1, -1, -1, -1 },
+	{ 3, 11, 2, 0, 1, 6, 0, 6, 4, 6, 1, 10, -1, -1, -1, -1 },
+	{ 6, 4, 1, 6, 1, 10, 4, 8, 1, 2, 1, 11, 8, 11, 1, -1 },
+	{ 9, 6, 4, 9, 3, 6, 9, 1, 3, 11, 6, 3, -1, -1, -1, -1 },
+	{ 8, 11, 1, 8, 1, 0, 11, 6, 1, 9, 1, 4, 6, 4, 1, -1 },
+	{ 3, 11, 6, 3, 6, 0, 0, 6, 4, -1, -1, -1, -1, -1, -1, -1 },
+	{ 6, 4, 8, 11, 6, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 7, 10, 6, 7, 8, 10, 8, 9, 10, -1, -1, -1, -1, -1, -1, -1 },
+	{ 0, 7, 3, 0, 10, 7, 0, 9, 10, 6, 7, 10, -1, -1, -1, -1 },
+	{ 10, 6, 7, 1, 10, 7, 1, 7, 8, 1, 8, 0, -1, -1, -1, -1 },
+	{ 10, 6, 7, 10, 7, 1, 1, 7, 3, -1, -1, -1, -1, -1, -1, -1 },
+	{ 1, 2, 6, 1, 6, 8, 1, 8, 9, 8, 6, 7, -1, -1, -1, -1 },
+	{ 2, 6, 9, 2, 9, 1, 6, 7, 9, 0, 9, 3, 7, 3, 9, -1 },
+	{ 7, 8, 0, 7, 0, 6, 6, 0, 2, -1, -1, -1, -1, -1, -1, -1 },
+	{ 7, 3, 2, 6, 7, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 2, 3, 11, 10, 6, 8, 10, 8, 9, 8, 6, 7, -1, -1, -1, -1 },
+	{ 2, 0, 7, 2, 7, 11, 0, 9, 7, 6, 7, 10, 9, 10, 7, -1 },
+	{ 1, 8, 0, 1, 7, 8, 1, 10, 7, 6, 7, 10, 2, 3, 11, -1 },
+	{ 11, 2, 1, 11, 1, 7, 10, 6, 1, 6, 7, 1, -1, -1, -1, -1 },
+	{ 8, 9, 6, 8, 6, 7, 9, 1, 6, 11, 6, 3, 1, 3, 6, -1 },
+	{ 0, 9, 1, 11, 6, 7, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 7, 8, 0, 7, 0, 6, 3, 11, 0, 11, 6, 0, -1, -1, -1, -1 },
+	{ 7, 11, 6, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 7, 6, 11, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 3, 0, 8, 11, 7, 6, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 0, 1, 9, 11, 7, 6, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 8, 1, 9, 8, 3, 1, 11, 7, 6, -1, -1, -1, -1, -1, -1, -1 },
+	{ 10, 1, 2, 6, 11, 7, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 1, 2, 10, 3, 0, 8, 6, 11, 7, -1, -1, -1, -1, -1, -1, -1 },
+	{ 2, 9, 0, 2, 10, 9, 6, 11, 7, -1, -1, -1, -1, -1, -1, -1 },
+	{ 6, 11, 7, 2, 10, 3, 10, 8, 3, 10, 9, 8, -1, -1, -1, -1 },
+	{ 7, 2, 3, 6, 2, 7, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 7, 0, 8, 7, 6, 0, 6, 2, 0, -1, -1, -1, -1, -1, -1, -1 },
+	{ 2, 7, 6, 2, 3, 7, 0, 1, 9, -1, -1, -1, -1, -1, -1, -1 },
+	{ 1, 6, 2, 1, 8, 6, 1, 9, 8, 8, 7, 6, -1, -1, -1, -1 },
+	{ 10, 7, 6, 10, 1, 7, 1, 3, 7, -1, -1, -1, -1, -1, -1, -1 },
+	{ 10, 7, 6, 1, 7, 10, 1, 8, 7, 1, 0, 8, -1, -1, -1, -1 },
+	{ 0, 3, 7, 0, 7, 10, 0, 10, 9, 6, 10, 7, -1, -1, -1, -1 },
+	{ 7, 6, 10, 7, 10, 8, 8, 10, 9, -1, -1, -1, -1, -1, -1, -1 },
+	{ 6, 8, 4, 11, 8, 6, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 3, 6, 11, 3, 0, 6, 0, 4, 6, -1, -1, -1, -1, -1, -1, -1 },
+	{ 8, 6, 11, 8, 4, 6, 9, 0, 1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 9, 4, 6, 9, 6, 3, 9, 3, 1, 11, 3, 6, -1, -1, -1, -1 },
+	{ 6, 8, 4, 6, 11, 8, 2, 10, 1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 1, 2, 10, 3, 0, 11, 0, 6, 11, 0, 4, 6, -1, -1, -1, -1 },
+	{ 4, 11, 8, 4, 6, 11, 0, 2, 9, 2, 10, 9, -1, -1, -1, -1 },
+	{ 10, 9, 3, 10, 3, 2, 9, 4, 3, 11, 3, 6, 4, 6, 3, -1 },
+	{ 8, 2, 3, 8, 4, 2, 4, 6, 2, -1, -1, -1, -1, -1, -1, -1 },
+	{ 0, 4, 2, 4, 6, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 1, 9, 0, 2, 3, 4, 2, 4, 6, 4, 3, 8, -1, -1, -1, -1 },
+	{ 1, 9, 4, 1, 4, 2, 2, 4, 6, -1, -1, -1, -1, -1, -1, -1 },
+	{ 8, 1, 3, 8, 6, 1, 8, 4, 6, 6, 10, 1, -1, -1, -1, -1 },
+	{ 10, 1, 0, 10, 0, 6, 6, 0, 4, -1, -1, -1, -1, -1, -1, -1 },
+	{ 4, 6, 3, 4, 3, 8, 6, 10, 3, 0, 3, 9, 10, 9, 3, -1 },
+	{ 10, 9, 4, 6, 10, 4, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 4, 9, 5, 7, 6, 11, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 0, 8, 3, 4, 9, 5, 11, 7, 6, -1, -1, -1, -1, -1, -1, -1 },
+	{ 5, 0, 1, 5, 4, 0, 7, 6, 11, -1, -1, -1, -1, -1, -1, -1 },
+	{ 11, 7, 6, 8, 3, 4, 3, 5, 4, 3, 1, 5, -1, -1, -1, -1 },
+	{ 9, 5, 4, 10, 1, 2, 7, 6, 11, -1, -1, -1, -1, -1, -1, -1 },
+	{ 6, 11, 7, 1, 2, 10, 0, 8, 3, 4, 9, 5, -1, -1, -1, -1 },
+	{ 7, 6, 11, 5, 4, 10, 4, 2, 10, 4, 0, 2, -1, -1, -1, -1 },
+	{ 3, 4, 8, 3, 5, 4, 3, 2, 5, 10, 5, 2, 11, 7, 6, -1 },
+	{ 7, 2, 3, 7, 6, 2, 5, 4, 9, -1, -1, -1, -1, -1, -1, -1 },
+	{ 9, 5, 4, 0, 8, 6, 0, 6, 2, 6, 8, 7, -1, -1, -1, -1 },
+	{ 3, 6, 2, 3, 7, 6, 1, 5, 0, 5, 4, 0, -1, -1, -1, -1 },
+	{ 6, 2, 8, 6, 8, 7, 2, 1, 8, 4, 8, 5, 1, 5, 8, -1 },
+	{ 9, 5, 4, 10, 1, 6, 1, 7, 6, 1, 3, 7, -1, -1, -1, -1 },
+	{ 1, 6, 10, 1, 7, 6, 1, 0, 7, 8, 7, 0, 9, 5, 4, -1 },
+	{ 4, 0, 10, 4, 10, 5, 0, 3, 10, 6, 10, 7, 3, 7, 10, -1 },
+	{ 7, 6, 10, 7, 10, 8, 5, 4, 10, 4, 8, 10, -1, -1, -1, -1 },
+	{ 6, 9, 5, 6, 11, 9, 11, 8, 9, -1, -1, -1, -1, -1, -1, -1 },
+	{ 3, 6, 11, 0, 6, 3, 0, 5, 6, 0, 9, 5, -1, -1, -1, -1 },
+	{ 0, 11, 8, 0, 5, 11, 0, 1, 5, 5, 6, 11, -1, -1, -1, -1 },
+	{ 6, 11, 3, 6, 3, 5, 5, 3, 1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 1, 2, 10, 9, 5, 11, 9, 11, 8, 11, 5, 6, -1, -1, -1, -1 },
+	{ 0, 11, 3, 0, 6, 11, 0, 9, 6, 5, 6, 9, 1, 2, 10, -1 },
+	{ 11, 8, 5, 11, 5, 6, 8, 0, 5, 10, 5, 2, 0, 2, 5, -1 },
+	{ 6, 11, 3, 6, 3, 5, 2, 10, 3, 10, 5, 3, -1, -1, -1, -1 },
+	{ 5, 8, 9, 5, 2, 8, 5, 6, 2, 3, 8, 2, -1, -1, -1, -1 },
+	{ 9, 5, 6, 9, 6, 0, 0, 6, 2, -1, -1, -1, -1, -1, -1, -1 },
+	{ 1, 5, 8, 1, 8, 0, 5, 6, 8, 3, 8, 2, 6, 2, 8, -1 },
+	{ 1, 5, 6, 2, 1, 6, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 1, 3, 6, 1, 6, 10, 3, 8, 6, 5, 6, 9, 8, 9, 6, -1 },
+	{ 10, 1, 0, 10, 0, 6, 9, 5, 0, 5, 6, 0, -1, -1, -1, -1 },
+	{ 0, 3, 8, 5, 6, 10, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 10, 5, 6, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 11, 5, 10, 7, 5, 11, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 11, 5, 10, 11, 7, 5, 8, 3, 0, -1, -1, -1, -1, -1, -1, -1 },
+	{ 5, 11, 7, 5, 10, 11, 1, 9, 0, -1, -1, -1, -1, -1, -1, -1 },
+	{ 10, 7, 5, 10, 11, 7, 9, 8, 1, 8, 3, 1, -1, -1, -1, -1 },
+	{ 11, 1, 2, 11, 7, 1, 7, 5, 1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 0, 8, 3, 1, 2, 7, 1, 7, 5, 7, 2, 11, -1, -1, -1, -1 },
+	{ 9, 7, 5, 9, 2, 7, 9, 0, 2, 2, 11, 7, -1, -1, -1, -1 },
+	{ 7, 5, 2, 7, 2, 11, 5, 9, 2, 3, 2, 8, 9, 8, 2, -1 },
+	{ 2, 5, 10, 2, 3, 5, 3, 7, 5, -1, -1, -1, -1, -1, -1, -1 },
+	{ 8, 2, 0, 8, 5, 2, 8, 7, 5, 10, 2, 5, -1, -1, -1, -1 },
+	{ 9, 0, 1, 5, 10, 3, 5, 3, 7, 3, 10, 2, -1, -1, -1, -1 },
+	{ 9, 8, 2, 9, 2, 1, 8, 7, 2, 10, 2, 5, 7, 5, 2, -1 },
+	{ 1, 3, 5, 3, 7, 5, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 0, 8, 7, 0, 7, 1, 1, 7, 5, -1, -1, -1, -1, -1, -1, -1 },
+	{ 9, 0, 3, 9, 3, 5, 5, 3, 7, -1, -1, -1, -1, -1, -1, -1 },
+	{ 9, 8, 7, 5, 9, 7, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 5, 8, 4, 5, 10, 8, 10, 11, 8, -1, -1, -1, -1, -1, -1, -1 },
+	{ 5, 0, 4, 5, 11, 0, 5, 10, 11, 11, 3, 0, -1, -1, -1, -1 },
+	{ 0, 1, 9, 8, 4, 10, 8, 10, 11, 10, 4, 5, -1, -1, -1, -1 },
+	{ 10, 11, 4, 10, 4, 5, 11, 3, 4, 9, 4, 1, 3, 1, 4, -1 },
+	{ 2, 5, 1, 2, 8, 5, 2, 11, 8, 4, 5, 8, -1, -1, -1, -1 },
+	{ 0, 4, 11, 0, 11, 3, 4, 5, 11, 2, 11, 1, 5, 1, 11, -1 },
+	{ 0, 2, 5, 0, 5, 9, 2, 11, 5, 4, 5, 8, 11, 8, 5, -1 },
+	{ 9, 4, 5, 2, 11, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 2, 5, 10, 3, 5, 2, 3, 4, 5, 3, 8, 4, -1, -1, -1, -1 },
+	{ 5, 10, 2, 5, 2, 4, 4, 2, 0, -1, -1, -1, -1, -1, -1, -1 },
+	{ 3, 10, 2, 3, 5, 10, 3, 8, 5, 4, 5, 8, 0, 1, 9, -1 },
+	{ 5, 10, 2, 5, 2, 4, 1, 9, 2, 9, 4, 2, -1, -1, -1, -1 },
+	{ 8, 4, 5, 8, 5, 3, 3, 5, 1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 0, 4, 5, 1, 0, 5, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 8, 4, 5, 8, 5, 3, 9, 0, 5, 0, 3, 5, -1, -1, -1, -1 },
+	{ 9, 4, 5, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 4, 11, 7, 4, 9, 11, 9, 10, 11, -1, -1, -1, -1, -1, -1, -1 },
+	{ 0, 8, 3, 4, 9, 7, 9, 11, 7, 9, 10, 11, -1, -1, -1, -1 },
+	{ 1, 10, 11, 1, 11, 4, 1, 4, 0, 7, 4, 11, -1, -1, -1, -1 },
+	{ 3, 1, 4, 3, 4, 8, 1, 10, 4, 7, 4, 11, 10, 11, 4, -1 },
+	{ 4, 11, 7, 9, 11, 4, 9, 2, 11, 9, 1, 2, -1, -1, -1, -1 },
+	{ 9, 7, 4, 9, 11, 7, 9, 1, 11, 2, 11, 1, 0, 8, 3, -1 },
+	{ 11, 7, 4, 11, 4, 2, 2, 4, 0, -1, -1, -1, -1, -1, -1, -1 },
+	{ 11, 7, 4, 11, 4, 2, 8, 3, 4, 3, 2, 4, -1, -1, -1, -1 },
+	{ 2, 9, 10, 2, 7, 9, 2, 3, 7, 7, 4, 9, -1, -1, -1, -1 },
+	{ 9, 10, 7, 9, 7, 4, 10, 2, 7, 8, 7, 0, 2, 0, 7, -1 },
+	{ 3, 7, 10, 3, 10, 2, 7, 4, 10, 1, 10, 0, 4, 0, 10, -1 },
+	{ 1, 10, 2, 8, 7, 4, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 4, 9, 1, 4, 1, 7, 7, 1, 3, -1, -1, -1, -1, -1, -1, -1 },
+	{ 4, 9, 1, 4, 1, 7, 0, 8, 1, 8, 7, 1, -1, -1, -1, -1 },
+	{ 4, 0, 3, 7, 4, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 4, 8, 7, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 9, 10, 8, 10, 11, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 3, 0, 9, 3, 9, 11, 11, 9, 10, -1, -1, -1, -1, -1, -1, -1 },
+	{ 0, 1, 10, 0, 10, 8, 8, 10, 11, -1, -1, -1, -1, -1, -1, -1 },
+	{ 3, 1, 10, 11, 3, 10, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 1, 2, 11, 1, 11, 9, 9, 11, 8, -1, -1, -1, -1, -1, -1, -1 },
+	{ 3, 0, 9, 3, 9, 11, 1, 2, 9, 2, 11, 9, -1, -1, -1, -1 },
+	{ 0, 2, 11, 8, 0, 11, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 3, 2, 11, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 2, 3, 8, 2, 8, 10, 10, 8, 9, -1, -1, -1, -1, -1, -1, -1 },
+	{ 9, 10, 2, 0, 9, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 2, 3, 8, 2, 8, 10, 0, 1, 8, 1, 10, 8, -1, -1, -1, -1 },
+	{ 1, 10, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 1, 3, 8, 9, 1, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 0, 9, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ 0, 3, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
+	{ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 }
+};
+#define MAX_SAMPLES_PER_AXIS 64
+#define MIN_SAMPLE_INTERVAL 4
+class C_NPC_Blob : public C_AI_BaseNPC
+{
+	DECLARE_CLASS(C_NPC_Blob, C_AI_BaseNPC);
+	DECLARE_CLIENTCLASS();
+	int					m_iNumElements;
+	EHANDLE				m_Elements[BLOB_NUM_ELEMENTS];
+	virtual int			DrawModel(int flags);
+	virtual void		GetRenderBounds( Vector& mins, Vector& maxs );
+	float				SampleValue(Vector pos);
+	void				MarchCube(Vector minCornerPos, int iCubeWidth, int i, int j, int k);
+	CMeshBuilder		meshBuilder;
+	CUtlVector<Vector>	vertices;
+	CUtlVector<int>		indices;
+	//CUtlVector<CUtlVector<CUtlVector<float>>> sampleCache;
+	float				sampleCache[MAX_SAMPLES_PER_AXIS][MAX_SAMPLES_PER_AXIS][MAX_SAMPLES_PER_AXIS];
+	float				interpCache[MAX_SAMPLES_PER_AXIS][MAX_SAMPLES_PER_AXIS][MAX_SAMPLES_PER_AXIS][12];
+	Vector				vecRMins;
+	Vector				vecRMaxs;
+	Vector				ClosestElementPos();
+	float				EdgeInterp(Vector minCornerPos, int iCubeWidth, int edgeCase);
+};
+IMPLEMENT_CLIENTCLASS_DT(C_NPC_Blob, DT_NPC_Blob, CNPC_Blob)
+RecvPropArray3(RECVINFO_ARRAY(m_Elements), RecvPropEHandle(RECVINFO(m_Elements[0]))),
+RecvPropInt(RECVINFO(m_iNumElements)),
+END_RECV_TABLE()
+int C_NPC_Blob::DrawModel(int flags)
+{
+	if (m_iNumElements <= 0)
+		return 0;
+	//draw lines between all melons
+	/*
+	for (int i = 0; i < m_iNumElements - 1; i++)
+	{
+		NDebugOverlay::Line(m_Elements[i].Get()->GetAbsOrigin(), m_Elements[i + 1].Get()->GetAbsOrigin(), 255, 255, 0, true, 0.1);
+	}
+	*/
+	//draw funky bbox
+	/*
+	Vector mins, maxs;
+	GetRenderBounds(mins, maxs);
+	NDebugOverlay::Line(GetAbsOrigin(), GetAbsOrigin() + Vector(mins.x, mins.y, mins.z), 255, 255, 0, true, 0.1);
+	NDebugOverlay::Line(GetAbsOrigin(), GetAbsOrigin() + Vector(maxs.x, mins.y, mins.z), 255, 255, 0, true, 0.1);
+	NDebugOverlay::Line(GetAbsOrigin(), GetAbsOrigin() + Vector(mins.x, maxs.y, mins.z), 255, 255, 0, true, 0.1);
+	NDebugOverlay::Line(GetAbsOrigin(), GetAbsOrigin() + Vector(maxs.x, maxs.y, mins.z), 255, 255, 0, true, 0.1);
+	NDebugOverlay::Line(GetAbsOrigin(), GetAbsOrigin() + Vector(mins.x, mins.y, maxs.z), 255, 255, 0, true, 0.1);
+	NDebugOverlay::Line(GetAbsOrigin(), GetAbsOrigin() + Vector(maxs.x, mins.y, maxs.z), 255, 255, 0, true, 0.1);
+	NDebugOverlay::Line(GetAbsOrigin(), GetAbsOrigin() + Vector(mins.x, maxs.y, maxs.z), 255, 255, 0, true, 0.1);
+	NDebugOverlay::Line(GetAbsOrigin(), GetAbsOrigin() + Vector(maxs.x, maxs.y, maxs.z), 255, 255, 0, true, 0.1);
+	*/
+	//other improper bbox
+	/*
+	NDebugOverlay::Line(GetAbsOrigin() + Vector(vecRMins.x, 0, 0), GetAbsOrigin() + Vector(vecRMaxs.x, 0, 0), 255, 255, 0, true, 0.1);
+	NDebugOverlay::Line(GetAbsOrigin() + Vector(0, vecRMins.y, 0), GetAbsOrigin() + Vector(0, vecRMaxs.y, 0), 255, 255, 0, true, 0.1);
+	NDebugOverlay::Line(GetAbsOrigin() + Vector(0, 0, vecRMins.z), GetAbsOrigin() + Vector(0, 0, vecRMaxs.z), 255, 255, 0, true, 0.1);
+	*/
+	//IMaterial *pMaterial = materials->FindMaterial("blobs/blob_black_surf", TEXTURE_GROUP_MODEL);
+	IMaterial *pMaterial = materials->FindMaterial("shadertest/wireframe", TEXTURE_GROUP_OTHER);
+	CMatRenderContextPtr pRenderContext(materials);
+	pRenderContext->MatrixMode(MATERIAL_MODEL);
+	pRenderContext->Bind(pMaterial);
+	IMesh* pMesh = pRenderContext->GetDynamicMesh(true);
+	int iCubeWidth = MIN_SAMPLE_INTERVAL;
+	int iMarches = 0;
+	int iSamples = 0;
+	int iXBound = vecRMaxs.x - vecRMins.x;
+	int iYBound = vecRMaxs.y - vecRMins.y;
+	int iZBound = vecRMaxs.z - vecRMins.z;
+	int iXSamples = iXBound / iCubeWidth + 1;
+	int iYSamples = iYBound / iCubeWidth + 1;
+	int iZSamples = iZBound / iCubeWidth + 1;
+	//use coarser grid if getting too big
+	if (iXBound / MAX_SAMPLES_PER_AXIS > iCubeWidth)
+	{
+		iCubeWidth = iXBound / MAX_SAMPLES_PER_AXIS;
+		iXSamples = iYSamples = iZSamples = MAX_SAMPLES_PER_AXIS;
+	}
+	if (iYBound / MAX_SAMPLES_PER_AXIS > iCubeWidth)
+	{
+		iCubeWidth = iYBound / MAX_SAMPLES_PER_AXIS;
+		iXSamples = iYSamples = iZSamples = MAX_SAMPLES_PER_AXIS;
+	}
+	if (iZBound / MAX_SAMPLES_PER_AXIS > iCubeWidth)
+	{
+		iCubeWidth = iZBound / MAX_SAMPLES_PER_AXIS;
+		iXSamples = iYSamples = iZSamples = MAX_SAMPLES_PER_AXIS;
+	}
+	/*
+	sampleCache.SetCount(iXSamples);
+	for (int i = 0; i < sampleCache.Count(); i++)
+	{
+		sampleCache[i].SetCount(iYSamples);
+		for (int j = 0; j < sampleCache.Count(); j++)
+		{
+			sampleCache[i][j].SetCount(iZSamples);
+		}
+	}
+	*/
+	//precompute samples so we don't have so much redundancy
+	// + iCubeWidth is to ensure we get a fully enclosing box
+	float x = vecRMins.x;
+	//Vector iStart, iEnd;
+	for (int i = 0; i < iXSamples; i++)
+	{
+		x = vecRMins.x + (iCubeWidth * i);
+		float y = vecRMins.y;
+		//Vector jStart, jEnd;
+		for (int j = 0; j < iYSamples; j++)
+		{
+			y = vecRMins.y + (iCubeWidth * j);
+			float z = vecRMins.z;
+			//Vector kStart, kEnd;
+			for (int k = 0; k < iZSamples; k++)
+			{
+				/*
+				if (k == 0)
+					kStart = GetAbsOrigin() + Vector(x, y, z);
+				kEnd = GetAbsOrigin() + Vector(x, y, z);
+				if (j == 0)
+					jStart = GetAbsOrigin() + Vector(x, y, z);
+				jEnd = GetAbsOrigin() + Vector(x, y, z);
+				if (i == 0)
+					iStart = GetAbsOrigin() + Vector(x, y, z);
+				iEnd = GetAbsOrigin() + Vector(x, y, z);
+				*/
+				z = vecRMins.z + (iCubeWidth * k);
+				float sample = SampleValue(GetAbsOrigin() + Vector(x, y, z)/* + (cornerOffsets[l] * iCubeWidth)*/);
+				iSamples++;
+				//Msg("SampleValue to [%i][%i][%i]\n", i, j, k);
+				//Msg("sample = %f\n", sample);
+				//Assert(sample != 1);
+				sampleCache[i][j][k] = sample;
+				//NDebugOverlay::Line(kStart, kEnd, 255, 255, 0, true, -1);
+			}
+			//NDebugOverlay::Line(jStart, jEnd, 255, 255, 0, true, -1);
+		}
+		//NDebugOverlay::Line(iStart, iEnd, 255, 255, 0, true, -1);
+	}
+
+	//iterate on every voxel in our bbox/rbox
+	//must find number of verts and indices before building mesh
+	x = vecRMins.x;
+	for (int i = 0; i < iXSamples - 1; i++)
+	{
+		x = vecRMins.x + (iCubeWidth * i);
+		float y = vecRMins.y;
+		for (int j = 0; j < iYSamples - 1; j++)
+		{
+			y = vecRMins.y + (iCubeWidth * j);
+			float z = vecRMins.z;
+			for (int k = 0; k < iZSamples - 1; k++)
+			{
+				z = vecRMins.z + (iCubeWidth * k);
+				MarchCube(GetAbsOrigin() + Vector(x, y, z), iCubeWidth, i, j, k);
+				iMarches++;
+				//Msg("MarchCube at %f %f %f\n", x, y, z);
+			}
+		}
+	}
+
+	//Msg("iMarches: %i iSamples: %i Verts: %i\n", iMarches, iSamples, vertices.Count());
+	if (vertices.Count() <= 0)
+		return 0;
+
+	meshBuilder.Begin(pMesh, MATERIAL_TRIANGLES, vertices.Count(), indices.Count());
+	//NDebugOverlay::Line(GetAbsOrigin(), vertices[0], 255, 255, 0, true, 0.1);
+	//now build mesh
+	Vector vecNorm;
+	for (int iVert = 0; iVert < vertices.Count(); iVert++)
+	{
+		int iVertInTri = iVert % 3;
+		if (iVertInTri == 0)
+		{
+			Vector vecPoint2 = vertices[iVert + 1];
+			//if (!vecPoint2.IsValid())
+			//{
+			//	Msg("Vert %i, Vert %i was invalid, could not form a complete tri\n", iVert, iVert + 1);
+			//	continue;
+			//}
+			Vector vecA = vecPoint2 - vertices[iVert];
+
+			Vector vecPoint3 = vertices[iVert + 2];
+			//if (!vecPoint3.IsValid())
+			//{
+			//	Msg("Vert %i, Vert %i was invalid, could not form a complete tri\n", iVert, iVert + 2);
+			//	continue;
+			//}
+			Vector vecB = vecPoint3 - vertices[iVert];
+
+			CrossProduct(vecA, vecB, vecNorm);
+			vecNorm.NormalizeInPlace();
+		}
+		//DevMsg("Vert %i at %f %f %f\n", iVert, vertices[iVert].x, vertices[iVert].y, vertices[iVert].z);
+		meshBuilder.Position3fv(vertices[iVert].Base());
+		int iVertNumInTri = iVertInTri;
+		if (iVertNumInTri == 0)
+			meshBuilder.TexCoord2f(0, 0, 0);
+		else if (iVertNumInTri == 1)
+			meshBuilder.TexCoord2f(0, 0, 1);
+		else
+			meshBuilder.TexCoord2f(0, 1, 0);
+		meshBuilder.Color4ub(0, 255, 0, 0);
+		meshBuilder.Normal3fv(vecNorm.Base());
+		meshBuilder.AdvanceVertex();
+	}
+
+	for (int iInd = 0; iInd < indices.Count(); iInd += 3)
+	{
+		meshBuilder.FastIndex(indices[iInd + 0]);
+		meshBuilder.FastIndex(indices[iInd + 1]);
+		meshBuilder.FastIndex(indices[iInd + 2]);
+	}
+
+	meshBuilder.End();
+	pMesh->Draw();
+	vertices.RemoveAll();
+	indices.RemoveAll();
+	//sampleCache.RemoveAll();
+	for (int i = 0; i < MAX_SAMPLES_PER_AXIS; i++)
+		for (int j = 0; j < MAX_SAMPLES_PER_AXIS; j++)
+			for (int k = 0; k < MAX_SAMPLES_PER_AXIS; k++)
+				for (int l = 0; l < 12; l++)
+					interpCache[i][j][k][l] = 0.5;
+	return 1;
+}
+void C_NPC_Blob::GetRenderBounds(Vector& theMins, Vector& theMaxs)
+{
+	//render bounds should encompass all our elements
+	Vector mins = Vector(FLT_MAX, FLT_MAX, FLT_MAX);
+	Vector maxs = Vector(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+	for (int i = 0; i < m_iNumElements; i++)
+	{
+		if (m_Elements[i].Get())
+		{
+			Vector vecElemPos = m_Elements[i].Get()->GetAbsOrigin();
+			if (mins.x > vecElemPos.x) mins.x = vecElemPos.x;
+			if (mins.y > vecElemPos.y) mins.y = vecElemPos.y;
+			if (mins.z > vecElemPos.z) mins.z = vecElemPos.z;
+			if (maxs.x < vecElemPos.x) maxs.x = vecElemPos.x;
+			if (maxs.y < vecElemPos.y) maxs.y = vecElemPos.y;
+			if (maxs.z < vecElemPos.z) maxs.z = vecElemPos.z;
+		}
+	}
+	theMins = vecRMins = mins - Vector(16, 16, 16) - GetAbsOrigin();
+	theMaxs = vecRMaxs = maxs + Vector(16, 16, 16) - GetAbsOrigin();
+}
+float C_NPC_Blob::SampleValue(Vector pos)
+{
+	//metaball
+	///*
+	float flValue = 0;
+	for (int i = 0; i < m_iNumElements; i++)
+	{
+		if (m_Elements[i].Get())
+		{
+			float flDistance = (m_Elements[i].Get()->GetAbsOrigin() - pos).Length();
+			if (flDistance == 0)//sample point was right on an element
+				return 1;
+			flValue += 1 / flDistance;
+		}
+	}
+	return flValue;
+	//*/
+	/*
+	//simple ball, inside out
+	Vector vecClosest = vec3_origin;
+	for (int i = 0; i < m_iNumElements; i++)
+	{
+		if (i == 0)
+			vecClosest = m_Elements[i].Get()->GetAbsOrigin() - pos;
+		else if ((m_Elements[i].Get()->GetAbsOrigin() - pos).Length() < vecClosest.Length())
+			vecClosest = m_Elements[i].Get()->GetAbsOrigin() - pos;
+	}
+	return vecClosest.Length() - 10;
+	*/
+}
+float C_NPC_Blob::EdgeInterp(Vector minCornerPos, int iCubeWidth, int edgeCase)
+{
+	//TODO: check samplecache here
+	Vector vert1 = minCornerPos + (edgeVertexOffsets[edgeCase][0] * iCubeWidth); // beginning of the edge
+	Vector vert2 = minCornerPos + (edgeVertexOffsets[edgeCase][1] * iCubeWidth); // end of the edge
+	// interpolate along the edge
+	float s1 = SampleValue(vert1);
+	float s2 = SampleValue(vert2);
+	float dif = s1 - s2;
+	Assert(IsFinite(dif));
+	if (dif == 0.0f)
+		return 0.5f;
+	else
+		return s1 / dif;
+}
+ConVar blob_case_debug("blob_case_debug", "-1");
+void C_NPC_Blob::MarchCube(Vector minCornerPos, int iCubeWidth, int i, int j, int k)
+{
+	//https://gist.github.com/metalisai/a3cdc214023f8c92b1f0bf27e7cc08d1
+	// construct case index from 8 corner samples
+	int caseIndex = 0;
+	for (int l = 0; l < 8; l++)
+	{
+		//Msg("MarchCube to [%i][%i][%i] i %i j %i k %i offset %i %i %i\n", i + (int)cornerOffsets[l].x, j + (int)cornerOffsets[l].y, k + (int)cornerOffsets[l].z, i, j, k, (int)cornerOffsets[l].x, (int)cornerOffsets[l].y, (int)cornerOffsets[l].z);
+		float sample = sampleCache[i + (int)cornerOffsets[l].x][j + (int)cornerOffsets[l].y][k + (int)cornerOffsets[l].z];
+		if (sample >= 1)//use 0 if using simple ball algorithm
+			caseIndex |= 1 << l;
+	}
+
+	// early out if entirely inside or outside the volume
+	if (caseIndex == 0 || caseIndex == 0xFF)
+		return;
+	//DevMsg("case: %i\n", caseIndex);
+	bool bDebug = blob_case_debug.GetInt() == caseIndex;
+	int caseVert = 0;
+	for (int l = 0; l < 5; l++)
+	{
+		for (int tri = 0; tri < 3; tri++)
+		{
+			// get edge index
+			int edgeCase = triangleTable[caseIndex][caseVert];
+			if (edgeCase == -1)
+				return;
+			float dif = 0.5;
+			Vector vert1 = minCornerPos + (edgeVertexOffsets[edgeCase][0] * iCubeWidth); // beginning of the edge
+			Vector vert2 = minCornerPos + (edgeVertexOffsets[edgeCase][1] * iCubeWidth); // end of the edge
+			if (bDebug)
+				NDebugOverlay::Line(vert1, vert2, 255, 255, 0, true, 1);
+			//int oldI = i;
+			//int oldJ = j;
+			//int oldK = k;
+			int* vals[3] = {&i, &j, &k};
+			if (ecTOic[edgeCase][0] != -1)
+			{
+				*vals[ecTOic[edgeCase][0]] -= 1;
+				if (*vals[ecTOic[edgeCase][0]] > -1)
+					dif = interpCache[i][j][k][ecTOic[edgeCase][1]];
+				//Msg("Copying interp value %f from cube %i %i %i edge %i to cube %i %i %i edge %i\n", dif, i, j, k, ecTOic[edgeCase][1], oldI, oldJ, oldK, edgeCase);
+				*vals[ecTOic[edgeCase][0]] += 1;
+			}
+			
+			//try other direction
+			if (dif == 0.5 && (edgeCase == 0 || edgeCase == 3 || edgeCase == 8) && ecTOicAlt[edgeCase][0] != -1)
+			{
+				*vals[ecTOicAlt[edgeCase][0]] -= 1;
+				if (*vals[ecTOicAlt[edgeCase][0]] > -1)
+					dif = interpCache[i][j][k][ecTOicAlt[edgeCase][1]];
+				//Msg("Copying interp value %f from cube %i %i %i edge %i to cube %i %i %i edge %i\n", dif, i, j, k, ecTOicAlt[edgeCase][1], oldI, oldJ, oldK, edgeCase);
+				*vals[ecTOicAlt[edgeCase][0]] += 1;
+			}
+			
+			if (dif == 0.5)
+			{
+				dif = EdgeInterp(minCornerPos, iCubeWidth, edgeCase);
+				//Msg("New interp value %f at cube %i %i %i edge %i\n", dif, i, j, k, edgeCase);
+				interpCache[i][j][k][edgeCase] = dif;
+			}
+			//(probably) slower version of above
+			/*
+			if (edgeCase > 7)//Z's (8 9 10 11)
+			{
+				if (edgeCase == 8 && j > 0)//low X low Y - check previous high Y
+					dif = interpCache[i][j - 1][k][11];
+				if (edgeCase == 9 && j > 0)//high X low Y - check previous high Y
+					dif = interpCache[i][j - 1][k][10];
+				if (edgeCase == 11 && i > 0)//low X high Y - check previous high X
+					dif = interpCache[i - 1][j][k][10];
+				if (dif == 0.5)
+				{
+					if (edgeCase == 8 && i > 0)//low X low Y - check previous high X
+						dif = interpCache[i - 1][j][k][9];
+					if (dif == 0.5)//high X high Y
+					{
+						dif = EdgeInterp(minCornerPos, iCubeWidth, edgeCase);
+						interpCache[i][j][k][edgeCase] = dif;
+					}
+				}
+			}
+			else if (edgeCase % 2 == 1)//Y's (odds)
+			{
+				if (edgeCase == 1 && k > 0)//high X low Z - check previous high Z
+					dif = interpCache[i][j][k - 1][5];
+				if (edgeCase == 3 && k > 0)//low X low Z - check previous high Z
+					dif = interpCache[i][j][k - 1][7];
+				if (edgeCase == 7 && i > 0)//low X high Z - check previous high X
+					dif = interpCache[i - 1][j][k][5];
+				if (dif == 0.5)
+				{
+					if (edgeCase == 3 && i > 0)//low X low Z - check previous high X
+						dif = interpCache[i - 1][j][k][1];
+					if (dif == 0.5)//high X high Z
+					{
+						dif = EdgeInterp(minCornerPos, iCubeWidth, edgeCase);
+						interpCache[i][j][k][edgeCase] = dif;
+					}
+				}
+			}
+			else//X's (evens)
+			{
+				if (edgeCase == 0 && k > 0)//low Y low Z - check previous high Z
+					dif = interpCache[i][j][k - 1][4];
+				if (edgeCase == 2 && k > 0)//high Y low Z - check previous high Z
+					dif = interpCache[i][j][k - 1][6];
+				if (edgeCase == 4 && j > 0)//low Y high Z - check previous high Y
+					dif = interpCache[i][j - 1][k][6];
+				if (dif == 0.5)
+				{
+					if (edgeCase == 0 && j > 0)//low Y low Z - check previous high Y
+						dif = interpCache[i][j - 1][k][2];
+					if (dif == 0.5)//high Y high Z
+					{
+						dif = EdgeInterp(minCornerPos, iCubeWidth, edgeCase);
+						interpCache[i][j][k][edgeCase] = dif;
+					}
+				}
+			}
+			*/
+			// Lerp
+			Vector vertPosInterpolated = vert1 + ((vert2 - vert1) * dif);
+			//blocky
+			//Vector vertPosInterpolated = (vert1 + vert2) / 2;
+			Assert(vertPosInterpolated.IsValid());
+			if (!vertPosInterpolated.IsValid())
+				NDebugOverlay::Line(vert1, vert2, 255, 0, 0, true, -1);
+			vertices.AddToTail(vertPosInterpolated);
+			indices.AddToTail(vertices.Count() - 1);
+
+			caseVert++;
+		}
+	}
+}
+#endif //#ifndef CLIENT_DLL
