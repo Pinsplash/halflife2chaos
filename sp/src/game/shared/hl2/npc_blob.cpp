@@ -1917,8 +1917,8 @@ float C_NPC_Blob::SampleValue(Vector pos, bool bPrint)
 				if (flDistance == 0)
 					return 1;
 				if (bPrint) Msg("flValue (%f) += (%f - %f) / %f = %f\n", flValue, blob_distancefactor.GetFloat(), flDistance, blob_distancefactor.GetFloat(), (blob_distancefactor.GetFloat() - flDistance) / blob_distancefactor.GetFloat());
+				//https://github.com/Owlrazum/HeresyPackages/blob/66557172d8e08ccb36a47c2021c68eaf8884a8f3/Project/Assets/Heresy/MarchingCubes/Source/TestMarchingCubes.cs#L219
 				flValue += (blob_distancefactor.GetFloat() - flDistance) / blob_distancefactor.GetFloat();
-				//flValue += blob_distancefactor.GetFloat() / flDistance;
 			}
 		}
 		Assert(IsFinite(flValue));
@@ -1968,7 +1968,7 @@ float C_NPC_Blob::EdgeInterp(Vector vert1, Vector vert2, bool bDebug)
 	}
 	else
 	{
-		//metaballs
+		//metaballs https://github.com/Owlrazum/HeresyPackages/blob/66557172d8e08ccb36a47c2021c68eaf8884a8f3/Project/Assets/Heresy/MarchingCubes/Source/MarchingCubes.cs#L118
 		dif = (blob_isolevel.GetFloat() - s1) / (s2 - s1);
 		dif = clamp(dif * blob_interpfactor.GetFloat(), 0, 1);
 		//Msg("s1 %f s2 %f dif %f\n", s1, s2, dif);

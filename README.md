@@ -104,7 +104,7 @@ These settings have been put in their own CFG files so you can control what they
 * Collisions can be weird when **Slow Physics** is on.
 * **Teleporter Bullets** does not apply to vehicle guns while a fix is in the works for a serious issue.
 
-## Thanks for big and small bits of help
+## Acknowledgements for indirect contributions - Thank you!
 * Blixibon
 * tmp64
 * BoxFigs
@@ -117,3 +117,5 @@ These settings have been put in their own CFG files so you can control what they
 * UncraftedName
 * tmob03
 * ntrf
+* metalisai
+* Owlrazum
