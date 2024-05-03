@@ -1888,8 +1888,8 @@ void C_NPC_Blob::GetRenderBounds(Vector& theMins, Vector& theMaxs)
 	theMaxs = vecRMaxs = maxs + Vector(flPad, flPad, flPad) - GetAbsOrigin();
 }
 ConVar blob_distancefactor("blob_distancefactor", "8");
-ConVar blob_metaball("blob_metaball", "0");//0 = simple ball sampling
-ConVar blob_isomode("blob_isomode", "1");//1 = simple ball marching cubes
+ConVar blob_metaball("blob_metaball", "1");//0 = simple ball sampling
+ConVar blob_isomode("blob_isomode", "0");//1 = simple ball marching cubes
 float C_NPC_Blob::SampleValue(Vector pos, bool bPrint)
 {
 	if (blob_metaball.GetBool())
@@ -1911,8 +1911,8 @@ float C_NPC_Blob::SampleValue(Vector pos, bool bPrint)
 		/*
 		if (bPrint)
 		{
-		int color = 255 * flValue;
-		NDebugOverlay::Line(pos, pos - Vector(0, 0, 1), color, color, color, true, -1);
+			int color = 255 * flValue;
+			NDebugOverlay::Line(pos, pos - Vector(0, 0, 1), color, color, color, true, -1);
 		}
 		*/
 		return flValue;
@@ -1984,18 +1984,31 @@ void C_NPC_Blob::MarchCube(Vector minCornerPos, int i, int j, int k)
 	{
 		//Msg("MarchCube to [%i][%i][%i] i %i j %i k %i offset %i %i %i\n", i + (int)cornerOffsets[l].x, j + (int)cornerOffsets[l].y, k + (int)cornerOffsets[l].z, i, j, k, (int)cornerOffsets[l].x, (int)cornerOffsets[l].y, (int)cornerOffsets[l].z);
 		//float sample = sampleCache[i + (int)cornerOffsets[l].x][j + (int)cornerOffsets[l].y][k + (int)cornerOffsets[l].z];
-		float sample = SampleValue(minCornerPos + cornerOffsets[l], false);
+		float sample = SampleValue((minCornerPos + cornerOffsets[l] * m_iCubeWidth), false);
 		if (blob_metaball.GetBool())
 		{
 			//metaballs
 			if (sample >= blob_threshold.GetFloat())
+			{
 				caseIndex |= 1 << l;
+			}
+			if (max(sample, blob_threshold.GetFloat()) - min(sample, blob_threshold.GetFloat()) < 0.2)//range check to avoid drawing too many lines and crashing
+			{
+				//int color = 255 * (sample / blob_threshold.GetFloat());
+				int color = 255 * sample;
+				NDebugOverlay::Line((minCornerPos + cornerOffsets[l] * m_iCubeWidth), (minCornerPos + cornerOffsets[l] * m_iCubeWidth) - Vector(0, 0, 0.3), color, color, color, true, -1);
+			}
 		}
 		else
 		{
 			//simple balls
 			if (sample >= 0)
+			{
 				caseIndex |= 1 << l;
+			}
+			//int color =  255 * (sample / blob_threshold.GetFloat());
+			int color = 255 * sample;
+			NDebugOverlay::Line((minCornerPos + cornerOffsets[l] * m_iCubeWidth), (minCornerPos + cornerOffsets[l] * m_iCubeWidth) - Vector(0, 0, 0.3), color, color, color, true, -1);
 		}
 	}
 
