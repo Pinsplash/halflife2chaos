@@ -1821,13 +1821,24 @@ int C_NPC_Blob::DrawModel(int flags)
 		if (iVertInTri == 0)
 		{
 			Vector vecPoint2 = vertices[iVert + 1];
+			if (!vecPoint2.IsValid())
+			{
+				Msg("Vert %i, Vert %i was invalid, could not form a complete tri\n", iVert, iVert + 1);
+				continue;
+			}
 			Vector vecA = vecPoint2 - vertices[iVert];
 
 			Vector vecPoint3 = vertices[iVert + 2];
+			if (!vecPoint3.IsValid())
+			{
+				Msg("Vert %i, Vert %i was invalid, could not form a complete tri\n", iVert, iVert + 2);
+				continue;
+			}
 			Vector vecB = vecPoint3 - vertices[iVert];
 
 			CrossProduct(vecA, vecB, vecNorm);
 			vecNorm.NormalizeInPlace();
+			Assert(vecNorm.IsValid());
 		}
 		//DevMsg("Vert %i at %f %f %f\n", iVert, vertices[iVert].x, vertices[iVert].y, vertices[iVert].z);
 		meshBuilder.Position3fv(vertices[iVert].Base());
@@ -1903,10 +1914,14 @@ float C_NPC_Blob::SampleValue(Vector pos, bool bPrint)
 				float flDistance = (m_Elements[i].Get()->GetAbsOrigin() - pos).Length();
 				if (flDistance > blob_distancefactor.GetFloat())//sample point was right on an element
 					continue;
+				if (flDistance == 0)
+					return 1;
 				if (bPrint) Msg("flValue (%f) += (%f - %f) / %f = %f\n", flValue, blob_distancefactor.GetFloat(), flDistance, blob_distancefactor.GetFloat(), (blob_distancefactor.GetFloat() - flDistance) / blob_distancefactor.GetFloat());
 				flValue += (blob_distancefactor.GetFloat() - flDistance) / blob_distancefactor.GetFloat();
+				//flValue += blob_distancefactor.GetFloat() / flDistance;
 			}
 		}
+		Assert(IsFinite(flValue));
 		flValue = clamp(flValue, 0, 1);
 		/*
 		if (bPrint)
@@ -1941,8 +1956,9 @@ float C_NPC_Blob::EdgeInterp(Vector vert1, Vector vert2, bool bDebug)
 	float s1 = SampleValue(vert1, bDebug);
 	float s2 = SampleValue(vert2, bDebug);
 	float dif;
-	if (blob_isomode.GetBool())//interp for simple ball function
+	if (blob_isomode.GetBool())
 	{
+		//simple balls
 		dif = s1 - s2;
 		if (dif == 0.0f)
 			dif = 0.5f;
@@ -1952,10 +1968,10 @@ float C_NPC_Blob::EdgeInterp(Vector vert1, Vector vert2, bool bDebug)
 	}
 	else
 	{
-		//for metaballs
-		dif = (blob_isolevel.GetFloat() - s1) / s2 - s1;
+		//metaballs
+		dif = (blob_isolevel.GetFloat() - s1) / (s2 - s1);
 		dif = clamp(dif * blob_interpfactor.GetFloat(), 0, 1);
-		//Msg("s1 %f s2 %f dif %f\n", s1, s2, dif);
+		Msg("s1 %f s2 %f dif %f\n", s1, s2, dif);
 	}
 	if (bDebug && dif >= blob_interp_debug_min.GetFloat() && dif <= blob_interp_debug_max.GetFloat())
 	{
@@ -1968,6 +1984,7 @@ float C_NPC_Blob::EdgeInterp(Vector vert1, Vector vert2, bool bDebug)
 		else
 			Msg("s1 %f s2 %f dif %f vert1 %0.1f %0.1f %0.1f vert2 %0.1f %0.1f %0.1f delta %0.1f %0.1f %0.1f\n", s1, s2, dif, vert1.x, vert1.y, vert1.z, vert2.x, vert2.y, vert2.z, vDelta.x, vDelta.y, vDelta.z);
 	}
+	Assert(IsFinite(dif));
 	return dif;
 }
 ConVar blob_case_debug("blob_case_debug", "-1");//show edges of a cube that are being interp'd on
@@ -1992,12 +2009,14 @@ void C_NPC_Blob::MarchCube(Vector minCornerPos, int i, int j, int k)
 			{
 				caseIndex |= 1 << l;
 			}
+			/*
 			if (max(sample, blob_threshold.GetFloat()) - min(sample, blob_threshold.GetFloat()) < 0.2)//range check to avoid drawing too many lines and crashing
 			{
 				//int color = 255 * (sample / blob_threshold.GetFloat());
 				int color = 255 * sample;
 				NDebugOverlay::Line((minCornerPos + cornerOffsets[l] * m_iCubeWidth), (minCornerPos + cornerOffsets[l] * m_iCubeWidth) - Vector(0, 0, 0.3), color, color, color, true, -1);
 			}
+			*/
 		}
 		else
 		{
@@ -2006,9 +2025,11 @@ void C_NPC_Blob::MarchCube(Vector minCornerPos, int i, int j, int k)
 			{
 				caseIndex |= 1 << l;
 			}
+			/*
 			//int color =  255 * (sample / blob_threshold.GetFloat());
 			int color = 255 * sample;
 			NDebugOverlay::Line((minCornerPos + cornerOffsets[l] * m_iCubeWidth), (minCornerPos + cornerOffsets[l] * m_iCubeWidth) - Vector(0, 0, 0.3), color, color, color, true, -1);
+			*/
 		}
 	}
 
@@ -2043,19 +2064,20 @@ void C_NPC_Blob::MarchCube(Vector minCornerPos, int i, int j, int k)
 				// Lerp
 				//dif *= m_iCubeWidth;
 				vertPosInterpolated = vert1 + ((vert2 - vert1) * dif);
+				Assert(vertPosInterpolated.IsValid());
 			}
 			else
 			{
 				//blocky
 				vertPosInterpolated = (vert1 + vert2) / 2;
+				Assert(vertPosInterpolated.IsValid());
 				if (bDebug)
 				{
 					EdgeInterp(vert1, vert2, bDebug);//just to print debug info
 				}
 			}
-			//Assert(vertPosInterpolated.IsValid());
-			//if (!vertPosInterpolated.IsValid())
-			//	NDebugOverlay::Line(vert1, vert2, 255, 0, 0, true, -1);
+			if (!vertPosInterpolated.IsValid())
+				NDebugOverlay::Line(vert1, vert2, 255, 0, 0, true, -1);
 			vertices.AddToTail(vertPosInterpolated);
 			indices.AddToTail(vertices.Count() - 1);
 
