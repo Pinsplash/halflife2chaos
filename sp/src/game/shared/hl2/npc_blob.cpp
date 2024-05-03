@@ -1946,7 +1946,7 @@ float C_NPC_Blob::SampleValue(Vector pos, bool bPrint)
 		return vecClosest.Length() - blob_distancefactor.GetFloat();
 	}
 }
-ConVar blob_isolevel("blob_isolevel", "1");
+ConVar blob_isolevel("blob_isolevel", "0.5");
 ConVar blob_interpfactor("blob_interpfactor", "1");
 ConVar blob_interp_debug_min("blob_interp_debug_min", "0");//when blob_case_debug, filters lines to be above this dif
 ConVar blob_interp_debug_max("blob_interp_debug_max", "1");//when blob_case_debug, filters lines to be below this dif
@@ -1971,7 +1971,7 @@ float C_NPC_Blob::EdgeInterp(Vector vert1, Vector vert2, bool bDebug)
 		//metaballs
 		dif = (blob_isolevel.GetFloat() - s1) / (s2 - s1);
 		dif = clamp(dif * blob_interpfactor.GetFloat(), 0, 1);
-		Msg("s1 %f s2 %f dif %f\n", s1, s2, dif);
+		//Msg("s1 %f s2 %f dif %f\n", s1, s2, dif);
 	}
 	if (bDebug && dif >= blob_interp_debug_min.GetFloat() && dif <= blob_interp_debug_max.GetFloat())
 	{
