@@ -1703,19 +1703,28 @@ class C_NPC_Blob : public C_AI_BaseNPC
 	Vector				vecRMins;
 	Vector				vecRMaxs;
 	Vector				ClosestElementPos();
-	//float				EdgeInterp(Vector minCornerPos, int edgeCase);
+	float				EdgeInterp(Vector vert1, Vector vert2, bool bDebug);
 	int					m_iCubeWidth;
 };
 IMPLEMENT_CLIENTCLASS_DT(C_NPC_Blob, DT_NPC_Blob, CNPC_Blob)
 RecvPropArray3(RECVINFO_ARRAY(m_Elements), RecvPropEHandle(RECVINFO(m_Elements[0]))),
 RecvPropInt(RECVINFO(m_iNumElements)),
 END_RECV_TABLE()
+ConVar blob_wireframe("blob_wireframe", "1");
 int C_NPC_Blob::DrawModel(int flags)
 {
 	if (m_iNumElements <= 0)
 		return 0;
-	//IMaterial *pMaterial = materials->FindMaterial("blobs/blob_black_surf", TEXTURE_GROUP_MODEL);
-	IMaterial *pMaterial = materials->FindMaterial("shadertest/wireframe", TEXTURE_GROUP_OTHER);
+	IMaterial *pMaterial;
+	if (blob_wireframe.GetBool())
+	{
+		pMaterial = materials->FindMaterial("shadertest/wireframevertexcolor", TEXTURE_GROUP_OTHER);
+	}
+	else
+	{
+		pMaterial = materials->FindMaterial("blobs/blob_black_surf", TEXTURE_GROUP_MODEL);
+	}
+	
 	CMatRenderContextPtr pRenderContext(materials);
 	pRenderContext->MatrixMode(MATERIAL_MODEL);
 	pRenderContext->Bind(pMaterial);
@@ -1829,7 +1838,7 @@ int C_NPC_Blob::DrawModel(int flags)
 			meshBuilder.TexCoord2f(0, 0, 1);
 		else
 			meshBuilder.TexCoord2f(0, 1, 0);
-		meshBuilder.Color4ub(0, 255, 0, 0);
+		meshBuilder.Color4ub(vecNorm.x * 255, vecNorm.y * 255, vecNorm.z * 255, 100);
 		meshBuilder.Normal3fv(vecNorm.Base());
 		meshBuilder.AdvanceVertex();
 	}
@@ -1855,7 +1864,7 @@ int C_NPC_Blob::DrawModel(int flags)
 					*/
 	return 1;
 }
-ConVar blob_rbox_pad("blob_rbox_pad", "7");
+ConVar blob_rbox_pad("blob_rbox_pad", "8");
 void C_NPC_Blob::GetRenderBounds(Vector& theMins, Vector& theMaxs)
 {
 	//render bounds should encompass all our elements
@@ -1879,47 +1888,93 @@ void C_NPC_Blob::GetRenderBounds(Vector& theMins, Vector& theMaxs)
 	theMaxs = vecRMaxs = maxs + Vector(flPad, flPad, flPad) - GetAbsOrigin();
 }
 ConVar blob_distancefactor("blob_distancefactor", "8");
+ConVar blob_metaball("blob_metaball", "0");//0 = simple ball sampling
+ConVar blob_isomode("blob_isomode", "1");//1 = simple ball marching cubes
 float C_NPC_Blob::SampleValue(Vector pos, bool bPrint)
 {
-	//metaball
-	///*
-	float flValue = 0;
-	for (int i = 0; i < m_iNumElements; i++)
+	if (blob_metaball.GetBool())
 	{
-		if (m_Elements[i].Get())
+		//metaball
+		float flValue = 0;
+		for (int i = 0; i < m_iNumElements; i++)
 		{
-			float flDistance = (m_Elements[i].Get()->GetAbsOrigin() - pos).Length();
-			if (flDistance > blob_distancefactor.GetFloat())//sample point was right on an element
-				continue;
-			flValue += (blob_distancefactor.GetFloat() - flDistance) / blob_distancefactor.GetFloat();
-			//if (bPrint)
-			//	Msg("dist %f value %f\n", flDistance, flValue);
+			if (m_Elements[i].Get())
+			{
+				float flDistance = (m_Elements[i].Get()->GetAbsOrigin() - pos).Length();
+				if (flDistance > blob_distancefactor.GetFloat())//sample point was right on an element
+					continue;
+				if (bPrint) Msg("flValue (%f) += (%f - %f) / %f = %f\n", flValue, blob_distancefactor.GetFloat(), flDistance, blob_distancefactor.GetFloat(), (blob_distancefactor.GetFloat() - flDistance) / blob_distancefactor.GetFloat());
+				flValue += (blob_distancefactor.GetFloat() - flDistance) / blob_distancefactor.GetFloat();
+			}
 		}
+		flValue = clamp(flValue, 0, 1);
+		/*
+		if (bPrint)
+		{
+		int color = 255 * flValue;
+		NDebugOverlay::Line(pos, pos - Vector(0, 0, 1), color, color, color, true, -1);
+		}
+		*/
+		return flValue;
 	}
-	//if (bPrint && flValue >= 1)
-	//	NDebugOverlay::Line(GetAbsOrigin(), pos, 255, 0, 255, true, -1);
-	flValue = clamp(flValue, 0, 1);
-	return flValue;
-	//*/
-	/*
-	//simple ball, inside out
-	Vector vecClosest = vec3_origin;
-	for (int i = 0; i < m_iNumElements; i++)
+	else
 	{
-		if (i == 0)
-			vecClosest = m_Elements[i].Get()->GetAbsOrigin() - pos;
-		else if ((m_Elements[i].Get()->GetAbsOrigin() - pos).Length() < vecClosest.Length())
-			vecClosest = m_Elements[i].Get()->GetAbsOrigin() - pos;
+		//simple ball, inside out
+		Vector vecClosest = vec3_origin;
+		for (int i = 0; i < m_iNumElements; i++)
+		{
+			if (i == 0)
+				vecClosest = m_Elements[i].Get()->GetAbsOrigin() - pos;
+			else if ((m_Elements[i].Get()->GetAbsOrigin() - pos).Length() < vecClosest.Length())
+				vecClosest = m_Elements[i].Get()->GetAbsOrigin() - pos;
+		}
+		return vecClosest.Length() - blob_distancefactor.GetFloat();
 	}
-	return vecClosest.Length() - 10;
-	*/
 }
 ConVar blob_isolevel("blob_isolevel", "1");
-ConVar blob_isomode("blob_isomode", "0");
-ConVar blob_case_debug("blob_case_debug", "-1");
-ConVar blob_threshold("blob_threshold", "0.5");
-ConVar blob_interp("blob_interp", "1");
 ConVar blob_interpfactor("blob_interpfactor", "1");
+ConVar blob_interp_debug_min("blob_interp_debug_min", "0");//when blob_case_debug, filters lines to be above this dif
+ConVar blob_interp_debug_max("blob_interp_debug_max", "1");//when blob_case_debug, filters lines to be below this dif
+float C_NPC_Blob::EdgeInterp(Vector vert1, Vector vert2, bool bDebug)
+{
+	// interpolate along the edge
+	float s1 = SampleValue(vert1, bDebug);
+	float s2 = SampleValue(vert2, bDebug);
+	float dif;
+	if (blob_isomode.GetBool())//interp for simple ball function
+	{
+		dif = s1 - s2;
+		if (dif == 0.0f)
+			dif = 0.5f;
+		else
+			dif = s1 / dif;
+		//Msg("s1 %f s2 %f dif %f\n", s1, s2, dif);
+	}
+	else
+	{
+		//for metaballs
+		dif = (blob_isolevel.GetFloat() - s1) / s2 - s1;
+		dif = clamp(dif * blob_interpfactor.GetFloat(), 0, 1);
+		//Msg("s1 %f s2 %f dif %f\n", s1, s2, dif);
+	}
+	if (bDebug && dif >= blob_interp_debug_min.GetFloat() && dif <= blob_interp_debug_max.GetFloat())
+	{
+		Vector vDelta = vert1 - vert2;
+		bool bInvalid = dif == 0 || dif == 1;//1.0 is not invalid. this means that both samples are symmetric on the sphere. at the moment i'm not sure if the code handles 1.0 properly though so i'll leave this here until after i fix a bunch of other stuff
+		NDebugOverlay::Line(vert1, vert2, 255, bInvalid ? 0 : 255, 0, true, -1);
+		NDebugOverlay::Line(vert1, vert1 + Vector(.3, .3, .3), 255, bInvalid ? 0 : 255, 0, true, -1);
+		if (bInvalid)
+			Warning("s1 %f s2 %f dif %f vert1 %0.1f %0.1f %0.1f vert2 %0.1f %0.1f %0.1f delta %0.1f %0.1f %0.1f\n", s1, s2, dif, vert1.x, vert1.y, vert1.z, vert2.x, vert2.y, vert2.z, vDelta.x, vDelta.y, vDelta.z);
+		else
+			Msg("s1 %f s2 %f dif %f vert1 %0.1f %0.1f %0.1f vert2 %0.1f %0.1f %0.1f delta %0.1f %0.1f %0.1f\n", s1, s2, dif, vert1.x, vert1.y, vert1.z, vert2.x, vert2.y, vert2.z, vDelta.x, vDelta.y, vDelta.z);
+	}
+	return dif;
+}
+ConVar blob_case_debug("blob_case_debug", "-1");//show edges of a cube that are being interp'd on
+ConVar blob_case_override("blob_case_override", "-1");//make all cubes display one particular case. does not work right with blob_interp 1
+ConVar blob_threshold("blob_threshold", "0.5");
+ConVar blob_interp("blob_interp", "1");//do interpolation
+ConVar blob_spew_cases("blob_spew_cases", "0");
 void C_NPC_Blob::MarchCube(Vector minCornerPos, int i, int j, int k)
 {
 	//https://gist.github.com/metalisai/a3cdc214023f8c92b1f0bf27e7cc08d1
@@ -1929,16 +1984,30 @@ void C_NPC_Blob::MarchCube(Vector minCornerPos, int i, int j, int k)
 	{
 		//Msg("MarchCube to [%i][%i][%i] i %i j %i k %i offset %i %i %i\n", i + (int)cornerOffsets[l].x, j + (int)cornerOffsets[l].y, k + (int)cornerOffsets[l].z, i, j, k, (int)cornerOffsets[l].x, (int)cornerOffsets[l].y, (int)cornerOffsets[l].z);
 		//float sample = sampleCache[i + (int)cornerOffsets[l].x][j + (int)cornerOffsets[l].y][k + (int)cornerOffsets[l].z];
-		float sample = SampleValue(minCornerPos + cornerOffsets[l], true);
-		if (sample >= blob_threshold.GetFloat())//use 0 if using simple ball algorithm
-			caseIndex |= 1 << l;
+		float sample = SampleValue(minCornerPos + cornerOffsets[l], false);
+		if (blob_metaball.GetBool())
+		{
+			//metaballs
+			if (sample >= blob_threshold.GetFloat())
+				caseIndex |= 1 << l;
+		}
+		else
+		{
+			//simple balls
+			if (sample >= 0)
+				caseIndex |= 1 << l;
+		}
 	}
 
 	// early out if entirely inside or outside the volume
 	if (caseIndex == 0 || caseIndex == 0xFF)
 		return;
-	//DevMsg("case: %i\n", caseIndex);
+	if (blob_spew_cases.GetBool()) Msg("case: %i\n", caseIndex);
 	bool bDebug = blob_case_debug.GetInt() == caseIndex;
+	if (blob_case_override.GetInt() != -1)
+	{
+		caseIndex = blob_case_override.GetInt();
+	}
 	int caseVert = 0;
 	for (int l = 0; l < 5; l++)
 	{
@@ -1949,41 +2018,27 @@ void C_NPC_Blob::MarchCube(Vector minCornerPos, int i, int j, int k)
 			if (edgeCase == -1)
 				return;
 
+			if (bDebug) Msg("edgeCase: %i\n", edgeCase);
+
 			Vector vert1 = minCornerPos + (edgeVertexOffsets[edgeCase][0] * m_iCubeWidth); // beginning of the edge
 			Vector vert2 = minCornerPos + (edgeVertexOffsets[edgeCase][1] * m_iCubeWidth); // end of the edge
 
-			if (bDebug)
-				NDebugOverlay::Line(vert1, vert2, 255, 255, 0, true, 1);
 			Vector vertPosInterpolated;
-			if (blob_interp.GetBool())
+			if (blob_interp.GetBool() && blob_case_override.GetInt() == -1)
 			{
-				// interpolate along the edge
-				float s1 = SampleValue(minCornerPos + (edgeVertexOffsets[edgeCase][0] * m_iCubeWidth), false);
-				float s2 = SampleValue(minCornerPos + (edgeVertexOffsets[edgeCase][1] * m_iCubeWidth), false);
-				
-				float dif;
-				if (blob_isomode.GetBool())
-				{
-					dif = s1 - s2;
-					if (dif == 0.0f)
-						dif = 0.5f;
-					else
-						dif = s1 / dif;
-					//Msg("s1 %f s2 %f dif %f\n", s1, s2, dif);
-				}
-				else
-				{
-					dif = (blob_isolevel.GetFloat() - s1) / s2 - s1;
-					dif = clamp(dif * blob_interpfactor.GetFloat(), 0, 1);
-					//Msg("s1 %f s2 %f dif %f\n", s1, s2, dif);
-				}
+				float dif = EdgeInterp(vert1, vert2, bDebug);
 				// Lerp
+				//dif *= m_iCubeWidth;
 				vertPosInterpolated = vert1 + ((vert2 - vert1) * dif);
 			}
 			else
 			{
 				//blocky
 				vertPosInterpolated = (vert1 + vert2) / 2;
+				if (bDebug)
+				{
+					EdgeInterp(vert1, vert2, bDebug);//just to print debug info
+				}
 			}
 			//Assert(vertPosInterpolated.IsValid());
 			//if (!vertPosInterpolated.IsValid())
