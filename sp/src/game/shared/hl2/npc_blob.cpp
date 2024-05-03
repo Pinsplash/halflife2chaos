@@ -6,7 +6,7 @@
 #include "cbase.h"
 //pretty sure i have to make this a constant for networking...
 //default 20
-#define BLOB_NUM_ELEMENTS 20
+#define BLOB_NUM_ELEMENTS 1
 #ifndef CLIENT_DLL
 #include "ai_default.h"
 #include "ai_task.h"
@@ -1683,7 +1683,7 @@ static int triangleTable[256][16]
 	{ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 }
 };
 #define MAX_SAMPLES_PER_AXIS 64
-#define MIN_SAMPLE_INTERVAL 4
+#define MIN_SAMPLE_INTERVAL 1
 class C_NPC_Blob : public C_AI_BaseNPC
 {
 	DECLARE_CLASS(C_NPC_Blob, C_AI_BaseNPC);
@@ -1692,18 +1692,19 @@ class C_NPC_Blob : public C_AI_BaseNPC
 	EHANDLE				m_Elements[BLOB_NUM_ELEMENTS];
 	virtual int			DrawModel(int flags);
 	virtual void		GetRenderBounds( Vector& mins, Vector& maxs );
-	float				SampleValue(Vector pos);
-	void				MarchCube(Vector minCornerPos, int iCubeWidth, int i, int j, int k);
+	float				SampleValue(Vector pos, bool bPrint);
+	void				MarchCube(Vector minCornerPos, int i, int j, int k);
 	CMeshBuilder		meshBuilder;
 	CUtlVector<Vector>	vertices;
 	CUtlVector<int>		indices;
 	//CUtlVector<CUtlVector<CUtlVector<float>>> sampleCache;
-	float				sampleCache[MAX_SAMPLES_PER_AXIS][MAX_SAMPLES_PER_AXIS][MAX_SAMPLES_PER_AXIS];
-	float				interpCache[MAX_SAMPLES_PER_AXIS][MAX_SAMPLES_PER_AXIS][MAX_SAMPLES_PER_AXIS][12];
+	//float				sampleCache[MAX_SAMPLES_PER_AXIS][MAX_SAMPLES_PER_AXIS][MAX_SAMPLES_PER_AXIS];
+	//float				interpCache[MAX_SAMPLES_PER_AXIS][MAX_SAMPLES_PER_AXIS][MAX_SAMPLES_PER_AXIS][12];
 	Vector				vecRMins;
 	Vector				vecRMaxs;
 	Vector				ClosestElementPos();
-	float				EdgeInterp(Vector minCornerPos, int iCubeWidth, int edgeCase);
+	//float				EdgeInterp(Vector minCornerPos, int edgeCase);
+	int					m_iCubeWidth;
 };
 IMPLEMENT_CLIENTCLASS_DT(C_NPC_Blob, DT_NPC_Blob, CNPC_Blob)
 RecvPropArray3(RECVINFO_ARRAY(m_Elements), RecvPropEHandle(RECVINFO(m_Elements[0]))),
@@ -1713,131 +1714,85 @@ int C_NPC_Blob::DrawModel(int flags)
 {
 	if (m_iNumElements <= 0)
 		return 0;
-	//draw lines between all melons
-	/*
-	for (int i = 0; i < m_iNumElements - 1; i++)
-	{
-		NDebugOverlay::Line(m_Elements[i].Get()->GetAbsOrigin(), m_Elements[i + 1].Get()->GetAbsOrigin(), 255, 255, 0, true, 0.1);
-	}
-	*/
-	//draw funky bbox
-	/*
-	Vector mins, maxs;
-	GetRenderBounds(mins, maxs);
-	NDebugOverlay::Line(GetAbsOrigin(), GetAbsOrigin() + Vector(mins.x, mins.y, mins.z), 255, 255, 0, true, 0.1);
-	NDebugOverlay::Line(GetAbsOrigin(), GetAbsOrigin() + Vector(maxs.x, mins.y, mins.z), 255, 255, 0, true, 0.1);
-	NDebugOverlay::Line(GetAbsOrigin(), GetAbsOrigin() + Vector(mins.x, maxs.y, mins.z), 255, 255, 0, true, 0.1);
-	NDebugOverlay::Line(GetAbsOrigin(), GetAbsOrigin() + Vector(maxs.x, maxs.y, mins.z), 255, 255, 0, true, 0.1);
-	NDebugOverlay::Line(GetAbsOrigin(), GetAbsOrigin() + Vector(mins.x, mins.y, maxs.z), 255, 255, 0, true, 0.1);
-	NDebugOverlay::Line(GetAbsOrigin(), GetAbsOrigin() + Vector(maxs.x, mins.y, maxs.z), 255, 255, 0, true, 0.1);
-	NDebugOverlay::Line(GetAbsOrigin(), GetAbsOrigin() + Vector(mins.x, maxs.y, maxs.z), 255, 255, 0, true, 0.1);
-	NDebugOverlay::Line(GetAbsOrigin(), GetAbsOrigin() + Vector(maxs.x, maxs.y, maxs.z), 255, 255, 0, true, 0.1);
-	*/
-	//other improper bbox
-	/*
-	NDebugOverlay::Line(GetAbsOrigin() + Vector(vecRMins.x, 0, 0), GetAbsOrigin() + Vector(vecRMaxs.x, 0, 0), 255, 255, 0, true, 0.1);
-	NDebugOverlay::Line(GetAbsOrigin() + Vector(0, vecRMins.y, 0), GetAbsOrigin() + Vector(0, vecRMaxs.y, 0), 255, 255, 0, true, 0.1);
-	NDebugOverlay::Line(GetAbsOrigin() + Vector(0, 0, vecRMins.z), GetAbsOrigin() + Vector(0, 0, vecRMaxs.z), 255, 255, 0, true, 0.1);
-	*/
 	//IMaterial *pMaterial = materials->FindMaterial("blobs/blob_black_surf", TEXTURE_GROUP_MODEL);
 	IMaterial *pMaterial = materials->FindMaterial("shadertest/wireframe", TEXTURE_GROUP_OTHER);
 	CMatRenderContextPtr pRenderContext(materials);
 	pRenderContext->MatrixMode(MATERIAL_MODEL);
 	pRenderContext->Bind(pMaterial);
 	IMesh* pMesh = pRenderContext->GetDynamicMesh(true);
-	int iCubeWidth = MIN_SAMPLE_INTERVAL;
-	int iMarches = 0;
-	int iSamples = 0;
+	m_iCubeWidth = MIN_SAMPLE_INTERVAL;
+	//int iMarches = 0;
+	//int iSamples = 0;
 	int iXBound = vecRMaxs.x - vecRMins.x;
 	int iYBound = vecRMaxs.y - vecRMins.y;
 	int iZBound = vecRMaxs.z - vecRMins.z;
-	int iXSamples = iXBound / iCubeWidth + 1;
-	int iYSamples = iYBound / iCubeWidth + 1;
-	int iZSamples = iZBound / iCubeWidth + 1;
+	int iXSamples = iXBound / m_iCubeWidth + 1;
+	int iYSamples = iYBound / m_iCubeWidth + 1;
+	int iZSamples = iZBound / m_iCubeWidth + 1;
 	//use coarser grid if getting too big
-	if (iXBound / MAX_SAMPLES_PER_AXIS > iCubeWidth)
-	{
-		iCubeWidth = iXBound / MAX_SAMPLES_PER_AXIS;
-		iXSamples = iYSamples = iZSamples = MAX_SAMPLES_PER_AXIS;
-	}
-	if (iYBound / MAX_SAMPLES_PER_AXIS > iCubeWidth)
-	{
-		iCubeWidth = iYBound / MAX_SAMPLES_PER_AXIS;
-		iXSamples = iYSamples = iZSamples = MAX_SAMPLES_PER_AXIS;
-	}
-	if (iZBound / MAX_SAMPLES_PER_AXIS > iCubeWidth)
-	{
-		iCubeWidth = iZBound / MAX_SAMPLES_PER_AXIS;
-		iXSamples = iYSamples = iZSamples = MAX_SAMPLES_PER_AXIS;
-	}
 	/*
-	sampleCache.SetCount(iXSamples);
-	for (int i = 0; i < sampleCache.Count(); i++)
+	if (iXBound / MAX_SAMPLES_PER_AXIS > m_iCubeWidth)
 	{
-		sampleCache[i].SetCount(iYSamples);
-		for (int j = 0; j < sampleCache.Count(); j++)
-		{
-			sampleCache[i][j].SetCount(iZSamples);
-		}
+		m_iCubeWidth = iXBound / MAX_SAMPLES_PER_AXIS;
+		iXSamples = iYSamples = iZSamples = MAX_SAMPLES_PER_AXIS;
+	}
+	if (iYBound / MAX_SAMPLES_PER_AXIS > m_iCubeWidth)
+	{
+		m_iCubeWidth = iYBound / MAX_SAMPLES_PER_AXIS;
+		iXSamples = iYSamples = iZSamples = MAX_SAMPLES_PER_AXIS;
+	}
+	if (iZBound / MAX_SAMPLES_PER_AXIS > m_iCubeWidth)
+	{
+		m_iCubeWidth = iZBound / MAX_SAMPLES_PER_AXIS;
+		iXSamples = iYSamples = iZSamples = MAX_SAMPLES_PER_AXIS;
 	}
 	*/
+	/*
 	//precompute samples so we don't have so much redundancy
 	// + iCubeWidth is to ensure we get a fully enclosing box
 	float x = vecRMins.x;
 	//Vector iStart, iEnd;
 	for (int i = 0; i < iXSamples; i++)
 	{
-		x = vecRMins.x + (iCubeWidth * i);
+		x = vecRMins.x + (m_iCubeWidth * i);
 		float y = vecRMins.y;
 		//Vector jStart, jEnd;
 		for (int j = 0; j < iYSamples; j++)
 		{
-			y = vecRMins.y + (iCubeWidth * j);
+			y = vecRMins.y + (m_iCubeWidth * j);
 			float z = vecRMins.z;
 			//Vector kStart, kEnd;
 			for (int k = 0; k < iZSamples; k++)
 			{
-				/*
-				if (k == 0)
-					kStart = GetAbsOrigin() + Vector(x, y, z);
-				kEnd = GetAbsOrigin() + Vector(x, y, z);
-				if (j == 0)
-					jStart = GetAbsOrigin() + Vector(x, y, z);
-				jEnd = GetAbsOrigin() + Vector(x, y, z);
-				if (i == 0)
-					iStart = GetAbsOrigin() + Vector(x, y, z);
-				iEnd = GetAbsOrigin() + Vector(x, y, z);
-				*/
-				z = vecRMins.z + (iCubeWidth * k);
-				float sample = SampleValue(GetAbsOrigin() + Vector(x, y, z)/* + (cornerOffsets[l] * iCubeWidth)*/);
-				iSamples++;
-				//Msg("SampleValue to [%i][%i][%i]\n", i, j, k);
-				//Msg("sample = %f\n", sample);
+				z = vecRMins.z + (m_iCubeWidth * k);
+				float sample = SampleValue(GetAbsOrigin() + Vector(x, y, z));
+				//iSamples++;
+				//Msg("SampleValue to [%i][%i][%i], sample %f\n", i, j, k, sample);
 				//Assert(sample != 1);
-				sampleCache[i][j][k] = sample;
+				//sampleCache[i][j][k] = sample;
 				//NDebugOverlay::Line(kStart, kEnd, 255, 255, 0, true, -1);
 			}
 			//NDebugOverlay::Line(jStart, jEnd, 255, 255, 0, true, -1);
 		}
 		//NDebugOverlay::Line(iStart, iEnd, 255, 255, 0, true, -1);
 	}
-
+	*/
 	//iterate on every voxel in our bbox/rbox
 	//must find number of verts and indices before building mesh
-	x = vecRMins.x;
+	float x = vecRMins.x;
 	for (int i = 0; i < iXSamples - 1; i++)
 	{
-		x = vecRMins.x + (iCubeWidth * i);
+		x = vecRMins.x + (m_iCubeWidth * i);
 		float y = vecRMins.y;
 		for (int j = 0; j < iYSamples - 1; j++)
 		{
-			y = vecRMins.y + (iCubeWidth * j);
+			y = vecRMins.y + (m_iCubeWidth * j);
 			float z = vecRMins.z;
 			for (int k = 0; k < iZSamples - 1; k++)
 			{
-				z = vecRMins.z + (iCubeWidth * k);
-				MarchCube(GetAbsOrigin() + Vector(x, y, z), iCubeWidth, i, j, k);
-				iMarches++;
+				z = vecRMins.z + (m_iCubeWidth * k);
+				MarchCube(GetAbsOrigin() + Vector(x, y, z), i, j, k);
+				//iMarches++;
 				//Msg("MarchCube at %f %f %f\n", x, y, z);
 			}
 		}
@@ -1857,19 +1812,9 @@ int C_NPC_Blob::DrawModel(int flags)
 		if (iVertInTri == 0)
 		{
 			Vector vecPoint2 = vertices[iVert + 1];
-			//if (!vecPoint2.IsValid())
-			//{
-			//	Msg("Vert %i, Vert %i was invalid, could not form a complete tri\n", iVert, iVert + 1);
-			//	continue;
-			//}
 			Vector vecA = vecPoint2 - vertices[iVert];
 
 			Vector vecPoint3 = vertices[iVert + 2];
-			//if (!vecPoint3.IsValid())
-			//{
-			//	Msg("Vert %i, Vert %i was invalid, could not form a complete tri\n", iVert, iVert + 2);
-			//	continue;
-			//}
 			Vector vecB = vecPoint3 - vertices[iVert];
 
 			CrossProduct(vecA, vecB, vecNorm);
@@ -1901,13 +1846,16 @@ int C_NPC_Blob::DrawModel(int flags)
 	vertices.RemoveAll();
 	indices.RemoveAll();
 	//sampleCache.RemoveAll();
+	/*
 	for (int i = 0; i < MAX_SAMPLES_PER_AXIS; i++)
 		for (int j = 0; j < MAX_SAMPLES_PER_AXIS; j++)
 			for (int k = 0; k < MAX_SAMPLES_PER_AXIS; k++)
 				for (int l = 0; l < 12; l++)
 					interpCache[i][j][k][l] = 0.5;
+					*/
 	return 1;
 }
+ConVar blob_rbox_pad("blob_rbox_pad", "7");
 void C_NPC_Blob::GetRenderBounds(Vector& theMins, Vector& theMaxs)
 {
 	//render bounds should encompass all our elements
@@ -1926,10 +1874,12 @@ void C_NPC_Blob::GetRenderBounds(Vector& theMins, Vector& theMaxs)
 			if (maxs.z < vecElemPos.z) maxs.z = vecElemPos.z;
 		}
 	}
-	theMins = vecRMins = mins - Vector(16, 16, 16) - GetAbsOrigin();
-	theMaxs = vecRMaxs = maxs + Vector(16, 16, 16) - GetAbsOrigin();
+	float flPad = blob_rbox_pad.GetFloat();
+	theMins = vecRMins = mins - Vector(flPad, flPad, flPad) - GetAbsOrigin();
+	theMaxs = vecRMaxs = maxs + Vector(flPad, flPad, flPad) - GetAbsOrigin();
 }
-float C_NPC_Blob::SampleValue(Vector pos)
+ConVar blob_distancefactor("blob_distancefactor", "8");
+float C_NPC_Blob::SampleValue(Vector pos, bool bPrint)
 {
 	//metaball
 	///*
@@ -1939,11 +1889,16 @@ float C_NPC_Blob::SampleValue(Vector pos)
 		if (m_Elements[i].Get())
 		{
 			float flDistance = (m_Elements[i].Get()->GetAbsOrigin() - pos).Length();
-			if (flDistance == 0)//sample point was right on an element
-				return 1;
-			flValue += 1 / flDistance;
+			if (flDistance > blob_distancefactor.GetFloat())//sample point was right on an element
+				continue;
+			flValue += (blob_distancefactor.GetFloat() - flDistance) / blob_distancefactor.GetFloat();
+			//if (bPrint)
+			//	Msg("dist %f value %f\n", flDistance, flValue);
 		}
 	}
+	//if (bPrint && flValue >= 1)
+	//	NDebugOverlay::Line(GetAbsOrigin(), pos, 255, 0, 255, true, -1);
+	flValue = clamp(flValue, 0, 1);
 	return flValue;
 	//*/
 	/*
@@ -1959,23 +1914,13 @@ float C_NPC_Blob::SampleValue(Vector pos)
 	return vecClosest.Length() - 10;
 	*/
 }
-float C_NPC_Blob::EdgeInterp(Vector minCornerPos, int iCubeWidth, int edgeCase)
-{
-	//TODO: check samplecache here
-	Vector vert1 = minCornerPos + (edgeVertexOffsets[edgeCase][0] * iCubeWidth); // beginning of the edge
-	Vector vert2 = minCornerPos + (edgeVertexOffsets[edgeCase][1] * iCubeWidth); // end of the edge
-	// interpolate along the edge
-	float s1 = SampleValue(vert1);
-	float s2 = SampleValue(vert2);
-	float dif = s1 - s2;
-	Assert(IsFinite(dif));
-	if (dif == 0.0f)
-		return 0.5f;
-	else
-		return s1 / dif;
-}
+ConVar blob_isolevel("blob_isolevel", "1");
+ConVar blob_isomode("blob_isomode", "0");
 ConVar blob_case_debug("blob_case_debug", "-1");
-void C_NPC_Blob::MarchCube(Vector minCornerPos, int iCubeWidth, int i, int j, int k)
+ConVar blob_threshold("blob_threshold", "0.5");
+ConVar blob_interp("blob_interp", "1");
+ConVar blob_interpfactor("blob_interpfactor", "1");
+void C_NPC_Blob::MarchCube(Vector minCornerPos, int i, int j, int k)
 {
 	//https://gist.github.com/metalisai/a3cdc214023f8c92b1f0bf27e7cc08d1
 	// construct case index from 8 corner samples
@@ -1983,8 +1928,9 @@ void C_NPC_Blob::MarchCube(Vector minCornerPos, int iCubeWidth, int i, int j, in
 	for (int l = 0; l < 8; l++)
 	{
 		//Msg("MarchCube to [%i][%i][%i] i %i j %i k %i offset %i %i %i\n", i + (int)cornerOffsets[l].x, j + (int)cornerOffsets[l].y, k + (int)cornerOffsets[l].z, i, j, k, (int)cornerOffsets[l].x, (int)cornerOffsets[l].y, (int)cornerOffsets[l].z);
-		float sample = sampleCache[i + (int)cornerOffsets[l].x][j + (int)cornerOffsets[l].y][k + (int)cornerOffsets[l].z];
-		if (sample >= 1)//use 0 if using simple ball algorithm
+		//float sample = sampleCache[i + (int)cornerOffsets[l].x][j + (int)cornerOffsets[l].y][k + (int)cornerOffsets[l].z];
+		float sample = SampleValue(minCornerPos + cornerOffsets[l], true);
+		if (sample >= blob_threshold.GetFloat())//use 0 if using simple ball algorithm
 			caseIndex |= 1 << l;
 	}
 
@@ -2002,107 +1948,46 @@ void C_NPC_Blob::MarchCube(Vector minCornerPos, int iCubeWidth, int i, int j, in
 			int edgeCase = triangleTable[caseIndex][caseVert];
 			if (edgeCase == -1)
 				return;
-			float dif = 0.5;
-			Vector vert1 = minCornerPos + (edgeVertexOffsets[edgeCase][0] * iCubeWidth); // beginning of the edge
-			Vector vert2 = minCornerPos + (edgeVertexOffsets[edgeCase][1] * iCubeWidth); // end of the edge
+
+			Vector vert1 = minCornerPos + (edgeVertexOffsets[edgeCase][0] * m_iCubeWidth); // beginning of the edge
+			Vector vert2 = minCornerPos + (edgeVertexOffsets[edgeCase][1] * m_iCubeWidth); // end of the edge
+
 			if (bDebug)
 				NDebugOverlay::Line(vert1, vert2, 255, 255, 0, true, 1);
-			//int oldI = i;
-			//int oldJ = j;
-			//int oldK = k;
-			int* vals[3] = {&i, &j, &k};
-			if (ecTOic[edgeCase][0] != -1)
+			Vector vertPosInterpolated;
+			if (blob_interp.GetBool())
 			{
-				*vals[ecTOic[edgeCase][0]] -= 1;
-				if (*vals[ecTOic[edgeCase][0]] > -1)
-					dif = interpCache[i][j][k][ecTOic[edgeCase][1]];
-				//Msg("Copying interp value %f from cube %i %i %i edge %i to cube %i %i %i edge %i\n", dif, i, j, k, ecTOic[edgeCase][1], oldI, oldJ, oldK, edgeCase);
-				*vals[ecTOic[edgeCase][0]] += 1;
-			}
-			
-			//try other direction
-			if (dif == 0.5 && (edgeCase == 0 || edgeCase == 3 || edgeCase == 8) && ecTOicAlt[edgeCase][0] != -1)
-			{
-				*vals[ecTOicAlt[edgeCase][0]] -= 1;
-				if (*vals[ecTOicAlt[edgeCase][0]] > -1)
-					dif = interpCache[i][j][k][ecTOicAlt[edgeCase][1]];
-				//Msg("Copying interp value %f from cube %i %i %i edge %i to cube %i %i %i edge %i\n", dif, i, j, k, ecTOicAlt[edgeCase][1], oldI, oldJ, oldK, edgeCase);
-				*vals[ecTOicAlt[edgeCase][0]] += 1;
-			}
-			
-			if (dif == 0.5)
-			{
-				dif = EdgeInterp(minCornerPos, iCubeWidth, edgeCase);
-				//Msg("New interp value %f at cube %i %i %i edge %i\n", dif, i, j, k, edgeCase);
-				interpCache[i][j][k][edgeCase] = dif;
-			}
-			//(probably) slower version of above
-			/*
-			if (edgeCase > 7)//Z's (8 9 10 11)
-			{
-				if (edgeCase == 8 && j > 0)//low X low Y - check previous high Y
-					dif = interpCache[i][j - 1][k][11];
-				if (edgeCase == 9 && j > 0)//high X low Y - check previous high Y
-					dif = interpCache[i][j - 1][k][10];
-				if (edgeCase == 11 && i > 0)//low X high Y - check previous high X
-					dif = interpCache[i - 1][j][k][10];
-				if (dif == 0.5)
+				// interpolate along the edge
+				float s1 = SampleValue(minCornerPos + (edgeVertexOffsets[edgeCase][0] * m_iCubeWidth), false);
+				float s2 = SampleValue(minCornerPos + (edgeVertexOffsets[edgeCase][1] * m_iCubeWidth), false);
+				
+				float dif;
+				if (blob_isomode.GetBool())
 				{
-					if (edgeCase == 8 && i > 0)//low X low Y - check previous high X
-						dif = interpCache[i - 1][j][k][9];
-					if (dif == 0.5)//high X high Y
-					{
-						dif = EdgeInterp(minCornerPos, iCubeWidth, edgeCase);
-						interpCache[i][j][k][edgeCase] = dif;
-					}
+					dif = s1 - s2;
+					if (dif == 0.0f)
+						dif = 0.5f;
+					else
+						dif = s1 / dif;
+					//Msg("s1 %f s2 %f dif %f\n", s1, s2, dif);
 				}
-			}
-			else if (edgeCase % 2 == 1)//Y's (odds)
-			{
-				if (edgeCase == 1 && k > 0)//high X low Z - check previous high Z
-					dif = interpCache[i][j][k - 1][5];
-				if (edgeCase == 3 && k > 0)//low X low Z - check previous high Z
-					dif = interpCache[i][j][k - 1][7];
-				if (edgeCase == 7 && i > 0)//low X high Z - check previous high X
-					dif = interpCache[i - 1][j][k][5];
-				if (dif == 0.5)
+				else
 				{
-					if (edgeCase == 3 && i > 0)//low X low Z - check previous high X
-						dif = interpCache[i - 1][j][k][1];
-					if (dif == 0.5)//high X high Z
-					{
-						dif = EdgeInterp(minCornerPos, iCubeWidth, edgeCase);
-						interpCache[i][j][k][edgeCase] = dif;
-					}
+					dif = (blob_isolevel.GetFloat() - s1) / s2 - s1;
+					dif = clamp(dif * blob_interpfactor.GetFloat(), 0, 1);
+					//Msg("s1 %f s2 %f dif %f\n", s1, s2, dif);
 				}
+				// Lerp
+				vertPosInterpolated = vert1 + ((vert2 - vert1) * dif);
 			}
-			else//X's (evens)
+			else
 			{
-				if (edgeCase == 0 && k > 0)//low Y low Z - check previous high Z
-					dif = interpCache[i][j][k - 1][4];
-				if (edgeCase == 2 && k > 0)//high Y low Z - check previous high Z
-					dif = interpCache[i][j][k - 1][6];
-				if (edgeCase == 4 && j > 0)//low Y high Z - check previous high Y
-					dif = interpCache[i][j - 1][k][6];
-				if (dif == 0.5)
-				{
-					if (edgeCase == 0 && j > 0)//low Y low Z - check previous high Y
-						dif = interpCache[i][j - 1][k][2];
-					if (dif == 0.5)//high Y high Z
-					{
-						dif = EdgeInterp(minCornerPos, iCubeWidth, edgeCase);
-						interpCache[i][j][k][edgeCase] = dif;
-					}
-				}
+				//blocky
+				vertPosInterpolated = (vert1 + vert2) / 2;
 			}
-			*/
-			// Lerp
-			Vector vertPosInterpolated = vert1 + ((vert2 - vert1) * dif);
-			//blocky
-			//Vector vertPosInterpolated = (vert1 + vert2) / 2;
-			Assert(vertPosInterpolated.IsValid());
-			if (!vertPosInterpolated.IsValid())
-				NDebugOverlay::Line(vert1, vert2, 255, 0, 0, true, -1);
+			//Assert(vertPosInterpolated.IsValid());
+			//if (!vertPosInterpolated.IsValid())
+			//	NDebugOverlay::Line(vert1, vert2, 255, 0, 0, true, -1);
 			vertices.AddToTail(vertPosInterpolated);
 			indices.AddToTail(vertices.Count() - 1);
 
