@@ -1,35 +1,14 @@
 VertexLitGeneric
 {
-
 $baseTexture "blobs\blob_black_surf"
-
-$uvscale "0.006" 
-
-$normalmap "blobs\blob_surface_normal"
+$bumpmap "blobs\blob_surface_normal"
 $bumpstrength "0.4"
-
+$envmap "blobs\blob_envmap_hdr"
+$phong 1
 $phongexponent 40 
 $phongboost 2 
 $phongexponent2 400 
 $phongboost2 7 
-
-
-
-
-$envmap "blobs\blob_envmap_hdr"
-
 $fresnelBumpStrength 0
-
-
-
-$interior 0 
-$interiorFogStrength "0.00325" 
-$interiorFogLimit "0.56" 
-$interiorFogNormalBoost "8.5" 
-$interiorBackgroundBoost 2 
-$interiorAmbientScale 1 
-$interiorBacklightScale 1 
-$interiorColor "[0.1 0.6 0.9]" 
-$interiorRefractStrength "0.06" 
 $nocull 1
 }

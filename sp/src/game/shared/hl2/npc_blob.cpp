@@ -6,7 +6,7 @@
 #include "cbase.h"
 //pretty sure i have to make this a constant for networking...
 //default 20
-#define BLOB_NUM_ELEMENTS 1
+#define BLOB_NUM_ELEMENTS 20
 #ifndef CLIENT_DLL
 #include "ai_default.h"
 #include "ai_task.h"
@@ -30,20 +30,20 @@ extern float MOVE_HEIGHT_EPSILON;
 #define BLOB_MAX_AVOID_ORIGINS 3
 
 ConVar blob_mindist( "blob_mindist", "120.0" );
-ConVar blob_element_speed( "blob_element_speed", "187" );
+ConVar blob_element_speed( "blob_element_speed", "120" );
 ConVar npc_blob_idle_speed_factor( "npc_blob_idle_speed_factor", "0.5" );
 
 //ConVar blob_numelements( "blob_numelements", "20" );
 ConVar blob_batchpercent( "blob_batchpercent", "100" );
 
-ConVar blob_radius( "blob_radius", "80" );
+ConVar blob_spread_radius( "blob_spread_radius", "30" );//renamed from blob_radius to avoid confusion
 
 //ConVar blob_min_element_speed( "blob_min_element_speed", "50" );
 //ConVar blob_max_element_speed( "blob_max_element_speed", "250" );
 
 ConVar npc_blob_use_threading( "npc_blob_use_threading", "1" );
 
-ConVar npc_blob_sin_amplitude( "npc_blob_sin_amplitude", "60.0f" );
+ConVar npc_blob_sin_amplitude( "npc_blob_sin_amplitude", "90.0f" );
 
 ConVar npc_blob_show_centroid( "npc_blob_show_centroid", "0" );
 
@@ -174,7 +174,7 @@ void CBlobElement::Spawn()
 	SetMoveType( MOVETYPE_FLY );
 	AddSolidFlags( FSOLID_NOT_STANDABLE | FSOLID_NOT_SOLID );
 	SetRenderMode(kRenderTransAdd);
-	SetRenderColorA(64);
+	SetRenderColorA(0);
 	SetModel( GetBlobModelName() );
 	UTIL_SetSize( this, vec3_origin, vec3_origin );
 
@@ -182,7 +182,7 @@ void CBlobElement::Spawn()
 	angles.y = random->RandomFloat( 0, 180 );
 	SetAbsAngles( angles );
 
-	AddEffects( EF_NOSHADOW );
+	AddEffects( EF_NOSHADOW );//EF_NODRAW intentionally left off so that elements will be networked... probably a better way out there
 
 	ReconfigureRandomParams();
 }
@@ -646,7 +646,7 @@ void CNPC_Blob::RunAI()
 					g_EventQueue.AddEvent( GetEnemy(), "SetHealth", var, 3.0f, this, this );
 					m_bEatCombineHack = true;
 
-					blob_radius.SetValue( 48.0f );
+					blob_spread_radius.SetValue(48.0f);
 					RecomputeIdealElementDist();
 				}
 			}
@@ -678,7 +678,7 @@ void CNPC_Blob::GatherConditions( void )
 		if( !GetEnemy() || !GetEnemy()->IsAlive() )
 		{
 			m_bEatCombineHack = false;
-			blob_radius.SetValue( 160.0f );
+			blob_spread_radius.SetValue(160.0f);
 			RecomputeIdealElementDist();
 		}
 	}
@@ -742,7 +742,7 @@ void CNPC_Blob::DoBlobBatchedAI( int iStart, int iEnd )
 	float flIdleSpeedFactor = npc_blob_idle_speed_factor.GetFloat();
 
 	// Group cohesion
-	float flBlobRadiusSqr = Square( blob_radius.GetFloat() + 48.0f ); // Four feet of fudge
+	float flBlobRadiusSqr = Square( blob_spread_radius.GetFloat() + 48.0f ); // Four feet of fudge
 
 	// Build a right-hand vector along which we'll add some sine wave data to give each
 	// element a unique insect-like undulation along an axis perpendicular to their path,
@@ -1098,7 +1098,7 @@ void CNPC_Blob::FormShapeFromPath( string_t iszPathName )
 //-----------------------------------------------------------------------------
 void CNPC_Blob::SetRadius( float flRadius )
 {
-	blob_radius.SetValue( flRadius );
+	blob_spread_radius.SetValue(flRadius);
 	RecomputeIdealElementDist();
 }
 
@@ -1293,7 +1293,7 @@ void CNPC_Blob::InitializeElements()
 		Vector vecDir;
 		Vector vecDest;
 		AngleVectors( angDistributor, &vecDir, NULL, NULL );
-		vecDest = WorldSpaceCenter() + vecDir * 64.0f;
+		vecDest = WorldSpaceCenter() + vecDir * blob_spread_radius.GetFloat();
 
 		CBlobElement *pElement = CreateNewElement();
 
@@ -1340,7 +1340,7 @@ void CNPC_Blob::InitializeElements()
 //-----------------------------------------------------------------------------
 void CNPC_Blob::RecomputeIdealElementDist()
 {
-	float radius = blob_radius.GetFloat();
+	float radius = blob_spread_radius.GetFloat();
 	float area = M_PI * Square(radius);
 
 	//Msg("Area of blob is: %f\n", area );
@@ -1683,7 +1683,7 @@ static int triangleTable[256][16]
 	{ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 }
 };
 #define MAX_SAMPLES_PER_AXIS 64
-#define MIN_SAMPLE_INTERVAL 1
+#define MIN_SAMPLE_INTERVAL 4
 class C_NPC_Blob : public C_AI_BaseNPC
 {
 	DECLARE_CLASS(C_NPC_Blob, C_AI_BaseNPC);
@@ -1710,7 +1710,8 @@ IMPLEMENT_CLIENTCLASS_DT(C_NPC_Blob, DT_NPC_Blob, CNPC_Blob)
 RecvPropArray3(RECVINFO_ARRAY(m_Elements), RecvPropEHandle(RECVINFO(m_Elements[0]))),
 RecvPropInt(RECVINFO(m_iNumElements)),
 END_RECV_TABLE()
-ConVar blob_wireframe("blob_wireframe", "1");
+ConVar blob_wireframe("blob_wireframe", "0");
+ConVar blob_show_rbox("blob_show_rbox", "0");
 int C_NPC_Blob::DrawModel(int flags)
 {
 	if (m_iNumElements <= 0)
@@ -1756,6 +1757,7 @@ int C_NPC_Blob::DrawModel(int flags)
 		iXSamples = iYSamples = iZSamples = MAX_SAMPLES_PER_AXIS;
 	}
 	*/
+	if (blob_show_rbox.GetBool()) NDebugOverlay::Box(GetAbsOrigin(), vecRMins, vecRMaxs, 255, 255, 0, 0, -1);
 	/*
 	//precompute samples so we don't have so much redundancy
 	// + iCubeWidth is to ensure we get a fully enclosing box
@@ -1789,15 +1791,15 @@ int C_NPC_Blob::DrawModel(int flags)
 	//iterate on every voxel in our bbox/rbox
 	//must find number of verts and indices before building mesh
 	float x = vecRMins.x;
-	for (int i = 0; i < iXSamples - 1; i++)
+	for (int i = 0; i < iXSamples; i++)
 	{
 		x = vecRMins.x + (m_iCubeWidth * i);
 		float y = vecRMins.y;
-		for (int j = 0; j < iYSamples - 1; j++)
+		for (int j = 0; j < iYSamples; j++)
 		{
 			y = vecRMins.y + (m_iCubeWidth * j);
 			float z = vecRMins.z;
-			for (int k = 0; k < iZSamples - 1; k++)
+			for (int k = 0; k < iZSamples; k++)
 			{
 				z = vecRMins.z + (m_iCubeWidth * k);
 				MarchCube(GetAbsOrigin() + Vector(x, y, z), i, j, k);
@@ -1875,7 +1877,8 @@ int C_NPC_Blob::DrawModel(int flags)
 					*/
 	return 1;
 }
-ConVar blob_rbox_pad("blob_rbox_pad", "8");
+ConVar blob_element_radius("blob_element_radius", "16");//radius
+ConVar blob_rbox_padtoradius("blob_rbox_padtoradius", "24");//we should pretend this is the radius for the purpose of expanding the render box, because when balls overlap, they become larger
 void C_NPC_Blob::GetRenderBounds(Vector& theMins, Vector& theMaxs)
 {
 	//render bounds should encompass all our elements
@@ -1883,9 +1886,10 @@ void C_NPC_Blob::GetRenderBounds(Vector& theMins, Vector& theMaxs)
 	Vector maxs = Vector(-FLT_MAX, -FLT_MAX, -FLT_MAX);
 	for (int i = 0; i < m_iNumElements; i++)
 	{
-		if (m_Elements[i].Get())
+		C_BaseEntity* pEle = m_Elements[i].Get();
+		if (pEle)
 		{
-			Vector vecElemPos = m_Elements[i].Get()->GetAbsOrigin();
+			Vector vecElemPos = pEle->GetAbsOrigin();
 			if (mins.x > vecElemPos.x) mins.x = vecElemPos.x;
 			if (mins.y > vecElemPos.y) mins.y = vecElemPos.y;
 			if (mins.z > vecElemPos.z) mins.z = vecElemPos.z;
@@ -1894,11 +1898,10 @@ void C_NPC_Blob::GetRenderBounds(Vector& theMins, Vector& theMaxs)
 			if (maxs.z < vecElemPos.z) maxs.z = vecElemPos.z;
 		}
 	}
-	float flPad = blob_rbox_pad.GetFloat();
+	float flPad = blob_rbox_padtoradius.GetFloat() / 2;
 	theMins = vecRMins = mins - Vector(flPad, flPad, flPad) - GetAbsOrigin();
 	theMaxs = vecRMaxs = maxs + Vector(flPad, flPad, flPad) - GetAbsOrigin();
 }
-ConVar blob_distancefactor("blob_distancefactor", "8");
 ConVar blob_metaball("blob_metaball", "1");//0 = simple ball sampling
 ConVar blob_isomode("blob_isomode", "0");//1 = simple ball marching cubes
 float C_NPC_Blob::SampleValue(Vector pos, bool bPrint)
@@ -1912,13 +1915,13 @@ float C_NPC_Blob::SampleValue(Vector pos, bool bPrint)
 			if (m_Elements[i].Get())
 			{
 				float flDistance = (m_Elements[i].Get()->GetAbsOrigin() - pos).Length();
-				if (flDistance > blob_distancefactor.GetFloat())//sample point was right on an element
+				if (flDistance > blob_element_radius.GetFloat())//sample point was right on an element
 					continue;
 				if (flDistance == 0)
 					return 1;
-				if (bPrint) Msg("flValue (%f) += (%f - %f) / %f = %f\n", flValue, blob_distancefactor.GetFloat(), flDistance, blob_distancefactor.GetFloat(), (blob_distancefactor.GetFloat() - flDistance) / blob_distancefactor.GetFloat());
+				if (bPrint) Msg("flValue (%f) += (%f - %f) / %f = %f\n", flValue, blob_element_radius.GetFloat(), flDistance, blob_element_radius.GetFloat(), (blob_element_radius.GetFloat() - flDistance) / blob_element_radius.GetFloat());
 				//https://github.com/Owlrazum/HeresyPackages/blob/66557172d8e08ccb36a47c2021c68eaf8884a8f3/Project/Assets/Heresy/MarchingCubes/Source/TestMarchingCubes.cs#L219
-				flValue += (blob_distancefactor.GetFloat() - flDistance) / blob_distancefactor.GetFloat();
+				flValue += (blob_element_radius.GetFloat() - flDistance) / blob_element_radius.GetFloat();
 			}
 		}
 		Assert(IsFinite(flValue));
@@ -1943,7 +1946,7 @@ float C_NPC_Blob::SampleValue(Vector pos, bool bPrint)
 			else if ((m_Elements[i].Get()->GetAbsOrigin() - pos).Length() < vecClosest.Length())
 				vecClosest = m_Elements[i].Get()->GetAbsOrigin() - pos;
 		}
-		return vecClosest.Length() - blob_distancefactor.GetFloat();
+		return vecClosest.Length() - blob_element_radius.GetFloat();
 	}
 }
 ConVar blob_isolevel("blob_isolevel", "0.5");
