@@ -1700,7 +1700,7 @@ class C_NPC_Blob : public C_AI_BaseNPC
 	CUtlVector<Vector>	vertices;
 	CUtlVector<int>		indices;
 	float				sampleCache[MAX_SAMPLES_PER_AXIS_CUBED];
-	//float				interpCache[MAX_SAMPLES_PER_AXIS][MAX_SAMPLES_PER_AXIS][MAX_SAMPLES_PER_AXIS][12];
+	float				interpCache[MAX_SAMPLES_PER_AXIS_CUBED][12];
 	Vector				vecRMins;
 	Vector				vecRMaxs;
 	Vector				ClosestElementPos();
@@ -2077,7 +2077,43 @@ void C_NPC_Blob::MarchCube(Vector minCornerPos, int i, int j, int k)
 			Vector vertPosInterpolated;
 			if (blob_interp.GetBool() && blob_case_override.GetInt() == -1)
 			{
-				float dif = EdgeInterp(vert1, vert2, bDebug, i, j, k, edgeCase);
+				//float dif = EdgeInterp(vert1, vert2, bDebug, i, j, k, edgeCase);
+				///*
+				float dif = 0.5;
+				//int oldI = i;
+				//int oldJ = j;
+				//int oldK = k;
+				int* vals[3] = { &i, &j, &k };
+				if (ecTOic[edgeCase][0] != -1)
+				{
+					*vals[ecTOic[edgeCase][0]] -= 1;
+					if (*vals[ecTOic[edgeCase][0]] > -1)
+					{
+						dif = interpCache[i + j * MAX_SAMPLES_PER_AXIS + k * MAX_SAMPLES_PER_AXIS_SQUARED][ecTOic[edgeCase][1]];
+						//Msg("Copying interp value %f from cube %i %i %i edge %i to cube %i %i %i edge %i vert1 %0.1f %0.1f %0.1f vert2 %0.1f %0.1f %0.1f\n", dif, i, j, k, ecTOic[edgeCase][1], oldI, oldJ, oldK, edgeCase, vert1.x, vert1.y, vert1.z, vert2.x, vert2.y, vert2.z);
+					}
+					*vals[ecTOic[edgeCase][0]] += 1;
+				}
+
+				//try other direction
+				if (dif == 0.5 && (edgeCase == 0 || edgeCase == 3 || edgeCase == 8) && ecTOicAlt[edgeCase][0] != -1)
+				{
+					*vals[ecTOicAlt[edgeCase][0]] -= 1;
+					if (*vals[ecTOicAlt[edgeCase][0]] > -1)
+					{
+						dif = interpCache[i + j * MAX_SAMPLES_PER_AXIS + k * MAX_SAMPLES_PER_AXIS_SQUARED][ecTOicAlt[edgeCase][1]];
+						//Msg("Copying interp value %f from cube %i %i %i edge %i to cube %i %i %i edge %i vert1 %0.1f %0.1f %0.1f vert2 %0.1f %0.1f %0.1f\n", dif, i, j, k, ecTOicAlt[edgeCase][1], oldI, oldJ, oldK, edgeCase, vert1.x, vert1.y, vert1.z, vert2.x, vert2.y, vert2.z);
+					}
+					*vals[ecTOicAlt[edgeCase][0]] += 1;
+				}
+
+				if (dif == 0.5)
+				{
+					dif = EdgeInterp(vert1, vert2, bDebug, i, j, k, edgeCase);
+					//Msg("New interp value %f at cube %i %i %i edge %i vert1 %0.1f %0.1f %0.1f vert2 %0.1f %0.1f %0.1f\n", dif, i, j, k, edgeCase, vert1.x, vert1.y, vert1.z, vert2.x, vert2.y, vert2.z);
+				}
+				interpCache[i + j * MAX_SAMPLES_PER_AXIS + k * MAX_SAMPLES_PER_AXIS_SQUARED][edgeCase] = dif;
+				//*/
 				// Lerp
 				//dif *= m_iCubeWidth;
 				vertPosInterpolated = vert1 + ((vert2 - vert1) * dif);
