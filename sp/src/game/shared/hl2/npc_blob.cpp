@@ -1683,6 +1683,8 @@ static int triangleTable[256][16]
 	{ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 }
 };
 #define MAX_SAMPLES_PER_AXIS 64
+#define MAX_SAMPLES_PER_AXIS_SQUARED	MAX_SAMPLES_PER_AXIS * MAX_SAMPLES_PER_AXIS
+#define MAX_SAMPLES_PER_AXIS_CUBED		MAX_SAMPLES_PER_AXIS * MAX_SAMPLES_PER_AXIS * MAX_SAMPLES_PER_AXIS
 #define MIN_SAMPLE_INTERVAL 4
 class C_NPC_Blob : public C_AI_BaseNPC
 {
@@ -1697,13 +1699,12 @@ class C_NPC_Blob : public C_AI_BaseNPC
 	CMeshBuilder		meshBuilder;
 	CUtlVector<Vector>	vertices;
 	CUtlVector<int>		indices;
-	//CUtlVector<CUtlVector<CUtlVector<float>>> sampleCache;
-	//float				sampleCache[MAX_SAMPLES_PER_AXIS][MAX_SAMPLES_PER_AXIS][MAX_SAMPLES_PER_AXIS];
+	float				sampleCache[MAX_SAMPLES_PER_AXIS_CUBED];
 	//float				interpCache[MAX_SAMPLES_PER_AXIS][MAX_SAMPLES_PER_AXIS][MAX_SAMPLES_PER_AXIS][12];
 	Vector				vecRMins;
 	Vector				vecRMaxs;
 	Vector				ClosestElementPos();
-	float				EdgeInterp(Vector vert1, Vector vert2, bool bDebug);
+	float				EdgeInterp(Vector vert1, Vector vert2, bool bDebug, int i, int j, int k, int edgeCase);
 	int					m_iCubeWidth;
 };
 IMPLEMENT_CLIENTCLASS_DT(C_NPC_Blob, DT_NPC_Blob, CNPC_Blob)
@@ -1758,9 +1759,8 @@ int C_NPC_Blob::DrawModel(int flags)
 	}
 	*/
 	if (blob_show_rbox.GetBool()) NDebugOverlay::Box(GetAbsOrigin(), vecRMins, vecRMaxs, 255, 255, 0, 0, -1);
-	/*
+	///*
 	//precompute samples so we don't have so much redundancy
-	// + iCubeWidth is to ensure we get a fully enclosing box
 	float x = vecRMins.x;
 	//Vector iStart, iEnd;
 	for (int i = 0; i < iXSamples; i++)
@@ -1776,21 +1776,21 @@ int C_NPC_Blob::DrawModel(int flags)
 			for (int k = 0; k < iZSamples; k++)
 			{
 				z = vecRMins.z + (m_iCubeWidth * k);
-				float sample = SampleValue(GetAbsOrigin() + Vector(x, y, z));
+				float sample = SampleValue(GetAbsOrigin() + Vector(x, y, z), false);
 				//iSamples++;
 				//Msg("SampleValue to [%i][%i][%i], sample %f\n", i, j, k, sample);
 				//Assert(sample != 1);
-				//sampleCache[i][j][k] = sample;
+				sampleCache[i + j * MAX_SAMPLES_PER_AXIS + k * MAX_SAMPLES_PER_AXIS_SQUARED] = sample;
 				//NDebugOverlay::Line(kStart, kEnd, 255, 255, 0, true, -1);
 			}
 			//NDebugOverlay::Line(jStart, jEnd, 255, 255, 0, true, -1);
 		}
 		//NDebugOverlay::Line(iStart, iEnd, 255, 255, 0, true, -1);
 	}
-	*/
+	//*/
 	//iterate on every voxel in our bbox/rbox
 	//must find number of verts and indices before building mesh
-	float x = vecRMins.x;
+	x = vecRMins.x;
 	for (int i = 0; i < iXSamples; i++)
 	{
 		x = vecRMins.x + (m_iCubeWidth * i);
@@ -1868,13 +1868,12 @@ int C_NPC_Blob::DrawModel(int flags)
 	vertices.RemoveAll();
 	indices.RemoveAll();
 	//sampleCache.RemoveAll();
-	/*
+	///*
 	for (int i = 0; i < MAX_SAMPLES_PER_AXIS; i++)
 		for (int j = 0; j < MAX_SAMPLES_PER_AXIS; j++)
 			for (int k = 0; k < MAX_SAMPLES_PER_AXIS; k++)
-				for (int l = 0; l < 12; l++)
-					interpCache[i][j][k][l] = 0.5;
-					*/
+				sampleCache[i + j * MAX_SAMPLES_PER_AXIS + k * MAX_SAMPLES_PER_AXIS_SQUARED] = 0;
+	//*/
 	return 1;
 }
 ConVar blob_element_radius("blob_element_radius", "16");//radius
@@ -1953,11 +1952,22 @@ ConVar blob_isolevel("blob_isolevel", "0.5");
 ConVar blob_interpfactor("blob_interpfactor", "1");
 ConVar blob_interp_debug_min("blob_interp_debug_min", "0");//when blob_case_debug, filters lines to be above this dif
 ConVar blob_interp_debug_max("blob_interp_debug_max", "1");//when blob_case_debug, filters lines to be below this dif
-float C_NPC_Blob::EdgeInterp(Vector vert1, Vector vert2, bool bDebug)
+float C_NPC_Blob::EdgeInterp(Vector vert1, Vector vert2, bool bDebug, int i, int j, int k, int edgeCase)
 {
+	Vector vecOffset1 = edgeVertexOffsets[edgeCase][0];
+	int i1 = i + (int)vecOffset1.x;
+	int j1 = (j + (int)vecOffset1.y) * MAX_SAMPLES_PER_AXIS;
+	int k1 = (k + (int)vecOffset1.z) * MAX_SAMPLES_PER_AXIS_SQUARED;
+	float s1 = sampleCache[i1 + j1 + k1];
+	Vector vecOffset2 = edgeVertexOffsets[edgeCase][1];
+	int i2 = i + (int)vecOffset2.x;
+	int j2 = (j + (int)vecOffset2.y) * MAX_SAMPLES_PER_AXIS;
+	int k2 = (k + (int)vecOffset2.z) * MAX_SAMPLES_PER_AXIS_SQUARED;
+	float s2 = sampleCache[i2 + j2 + k2];
+
 	// interpolate along the edge
-	float s1 = SampleValue(vert1, bDebug);
-	float s2 = SampleValue(vert2, bDebug);
+	//s1 = SampleValue(vert1, bDebug);
+	//s2 = SampleValue(vert2, bDebug);
 	float dif;
 	if (blob_isomode.GetBool())
 	{
@@ -2000,17 +2010,20 @@ void C_NPC_Blob::MarchCube(Vector minCornerPos, int i, int j, int k)
 	//https://gist.github.com/metalisai/a3cdc214023f8c92b1f0bf27e7cc08d1
 	// construct case index from 8 corner samples
 	int caseIndex = 0;
+	int iNumCases = 0;
 	for (int l = 0; l < 8; l++)
 	{
 		//Msg("MarchCube to [%i][%i][%i] i %i j %i k %i offset %i %i %i\n", i + (int)cornerOffsets[l].x, j + (int)cornerOffsets[l].y, k + (int)cornerOffsets[l].z, i, j, k, (int)cornerOffsets[l].x, (int)cornerOffsets[l].y, (int)cornerOffsets[l].z);
-		//float sample = sampleCache[i + (int)cornerOffsets[l].x][j + (int)cornerOffsets[l].y][k + (int)cornerOffsets[l].z];
-		float sample = SampleValue((minCornerPos + cornerOffsets[l] * m_iCubeWidth), false);
+		Vector vecOffset = cornerOffsets[l];
+		float sample = sampleCache[i + (int)vecOffset.x + (j + (int)vecOffset.y) * MAX_SAMPLES_PER_AXIS + (k + (int)vecOffset.z) * MAX_SAMPLES_PER_AXIS_SQUARED];
+		//float sample = SampleValue((minCornerPos + cornerOffsets[l] * m_iCubeWidth), false);
 		if (blob_metaball.GetBool())
 		{
 			//metaballs
 			if (sample >= blob_threshold.GetFloat())
 			{
 				caseIndex |= 1 << l;
+				iNumCases++;
 			}
 			/*
 			if (max(sample, blob_threshold.GetFloat()) - min(sample, blob_threshold.GetFloat()) < 0.2)//range check to avoid drawing too many lines and crashing
@@ -2027,6 +2040,7 @@ void C_NPC_Blob::MarchCube(Vector minCornerPos, int i, int j, int k)
 			if (sample >= 0)
 			{
 				caseIndex |= 1 << l;
+				iNumCases++;
 			}
 			/*
 			//int color =  255 * (sample / blob_threshold.GetFloat());
@@ -2039,7 +2053,7 @@ void C_NPC_Blob::MarchCube(Vector minCornerPos, int i, int j, int k)
 	// early out if entirely inside or outside the volume
 	if (caseIndex == 0 || caseIndex == 0xFF)
 		return;
-	if (blob_spew_cases.GetBool()) Msg("case: %i\n", caseIndex);
+	if (blob_spew_cases.GetBool()) Msg("case: %i (num: %i)\n", caseIndex, iNumCases);
 	bool bDebug = blob_case_debug.GetInt() == caseIndex;
 	if (blob_case_override.GetInt() != -1)
 	{
@@ -2063,7 +2077,7 @@ void C_NPC_Blob::MarchCube(Vector minCornerPos, int i, int j, int k)
 			Vector vertPosInterpolated;
 			if (blob_interp.GetBool() && blob_case_override.GetInt() == -1)
 			{
-				float dif = EdgeInterp(vert1, vert2, bDebug);
+				float dif = EdgeInterp(vert1, vert2, bDebug, i, j, k, edgeCase);
 				// Lerp
 				//dif *= m_iCubeWidth;
 				vertPosInterpolated = vert1 + ((vert2 - vert1) * dif);
@@ -2076,7 +2090,7 @@ void C_NPC_Blob::MarchCube(Vector minCornerPos, int i, int j, int k)
 				Assert(vertPosInterpolated.IsValid());
 				if (bDebug)
 				{
-					EdgeInterp(vert1, vert2, bDebug);//just to print debug info
+					EdgeInterp(vert1, vert2, bDebug, i, j, k, edgeCase);//just to print debug info
 				}
 			}
 			if (!vertPosInterpolated.IsValid())
