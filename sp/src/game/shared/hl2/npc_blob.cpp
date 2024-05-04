@@ -1840,6 +1840,7 @@ int C_NPC_Blob::DrawModel(int flags)
 
 			CrossProduct(vecA, vecB, vecNorm);
 			vecNorm.NormalizeInPlace();
+			vecNorm = -vecNorm;
 			Assert(vecNorm.IsValid());
 		}
 		//DevMsg("Vert %i at %f %f %f\n", iVert, vertices[iVert].x, vertices[iVert].y, vertices[iVert].z);
