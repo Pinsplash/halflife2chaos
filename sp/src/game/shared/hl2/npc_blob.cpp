@@ -1354,6 +1354,9 @@ void CNPC_Blob::RecomputeIdealElementDist()
 #else //#ifndef CLIENT_DLL
 #include "debugoverlay_shared.h"
 #include "c_ai_basenpc.h"
+#include "fmtstr.h"
+#include "filesystem.h"
+#include "toolframework/ienginetool.h"
 
 // offsets from the minimal corner to other corners
 static Vector cornerOffsets[8]
@@ -1695,6 +1698,28 @@ struct BlobVert
 {
 	Vector pos, normal;
 };
+struct CubemapSample_t
+{
+	Vector origin;
+	CTextureReference texture;
+	int resolution;
+
+	// HACKHACK: CUtlVector is confused without this
+	void operator=(const CubemapSample_t ref)
+	{
+		origin = ref.origin;
+		texture = *const_cast<CTextureReference*>(&ref.texture);
+		resolution = resolution;
+	}
+};
+struct LightingState_t
+{
+	Vector         ambient[6];
+	int            light_count;
+	dworldlight_t* lights[4];
+};
+typedef ITexture* (*FuncGetLightingState)(Vector*, LightingState_t*, int*, int, bool);
+FuncGetLightingState GetLightingState = nullptr;
 class C_NPC_Blob : public C_AI_BaseNPC
 {
 	DECLARE_CLASS(C_NPC_Blob, C_AI_BaseNPC);
@@ -1715,31 +1740,99 @@ class C_NPC_Blob : public C_AI_BaseNPC
 	Vector				ClosestElementPos();
 	void				EdgeInterp(Vector vert1, Vector vert2, bool bDebug, int i, int j, int k, int edgeCase, float* passdif, Vector* passnormal);
 	int					m_iCubeWidth;
+	void				Spawn();
+	IMaterial*			m_pMaterial;
+	//CUtlVector<CubemapSample_t> m_Cubemaps;
+	//CUtlVector<int> m_SortedCubemapIndices;
+	//int _cdecl			CubemapSort(const int *_a, const int *_b);
 };
 IMPLEMENT_CLIENTCLASS_DT(C_NPC_Blob, DT_NPC_Blob, CNPC_Blob)
 RecvPropArray3(RECVINFO_ARRAY(m_Elements), RecvPropEHandle(RECVINFO(m_Elements[0]))),
 RecvPropInt(RECVINFO(m_iNumElements)),
 END_RECV_TABLE()
-ConVar blob_wireframe("blob_wireframe", "0");
-ConVar blob_show_rbox("blob_show_rbox", "0");
-int C_NPC_Blob::DrawModel(int flags)
+/*
+int _cdecl C_NPC_Blob::CubemapSort(const int *_a, const int *_b)
 {
-	if (m_iNumElements <= 0)
-		return 0;
-	IMaterial *pMaterial;
+	int
+		a = *_a,
+		b = *_b;
+	const CubemapSample_t
+		c1 = m_Cubemaps[a],
+		c2 = m_Cubemaps[b];
+
+	float distance1 = (c1.origin - GetAbsOrigin()).Length();
+	float distance2 = (c2.origin - GetAbsOrigin()).Length();
+	return int(distance1 - distance2);
+}
+*/
+ConVar blob_wireframe("blob_wireframe", "0");
+void C_NPC_Blob::Spawn()
+{
 	if (blob_wireframe.GetBool())
 	{
-		pMaterial = materials->FindMaterial("shadertest/wireframevertexcolor", TEXTURE_GROUP_OTHER);
+		m_pMaterial = materials->FindMaterial("shadertest/wireframevertexcolor", TEXTURE_GROUP_OTHER);
 	}
 	else
 	{
-		pMaterial = materials->FindMaterial("blobs/blob_black_surf", TEXTURE_GROUP_MODEL);
+		m_pMaterial = materials->FindMaterial("blobs/blob_black_surf", TEXTURE_GROUP_MODEL);
 	}
-	
+	/*
+	dheader_t hdr;
+	lump_t &cubemapLump = hdr.lumps[LUMP_CUBEMAPS];
+	const char *szLevelName = modelinfo->GetModelName(modelinfo->GetModel(1));
+	bool bHDR = g_pMaterialSystemHardwareConfig->GetHDREnabled();
+	if (cubemapLump.filelen == 0)
+	{
+		// TODO: add a single default cubemap here as fallback?
+	}
+	else
+	{
+		FileHandle_t hFile = NULL;
+		g_pFullFileSystem->Seek(hFile, cubemapLump.fileofs, FILESYSTEM_SEEK_HEAD);
+		int count = cubemapLump.filelen / sizeof(dcubemapsample_t);
+		m_Cubemaps.SetCount(count);
+
+		dcubemapsample_t *cubemaps = static_cast<dcubemapsample_t *>(calloc(count, sizeof(dcubemapsample_t)));
+
+		g_pFullFileSystem->Read(cubemaps, cubemapLump.filelen, hFile);
+
+		int i = 0;
+		for (auto &cubemap : m_Cubemaps)
+		{
+			dcubemapsample_t &in = cubemaps[i];
+			cubemap.origin = Vector(in.origin[0], in.origin[1], in.origin[2]);
+			if (bHDR)
+				cubemap.texture.Init(materials->FindTexture(CFmtStr("%s/c%d_%d_%d.hdr", szLevelName, in.origin[0], in.origin[1], in.origin[2]), TEXTURE_GROUP_CUBE_MAP));
+			else
+				cubemap.texture.Init(materials->FindTexture(CFmtStr("%s/c%d_%d_%d", szLevelName, in.origin[0], in.origin[1], in.origin[2]), TEXTURE_GROUP_CUBE_MAP));
+			cubemap.resolution = (in.size != 0) ? 1 << (in.size - 1) : 32;
+
+			//if (cubemap.texture->IsError())
+			//	Warning("FAILED TO LOAD CUBEMAP %s/c%d_%d_%d\n", szLevelName, in.origin[0], in.origin[1], in.origin[2]);
+
+			m_SortedCubemapIndices.AddToTail(i);
+			i++;
+		}
+	}
+	*/
+	char* GetLightingConditions = *(*(char***)enginetools + 77);
+	GetLightingState = (FuncGetLightingState)((GetLightingConditions + 0x20) + *(int*)(GetLightingConditions + 0x21) + 5);
+}
+ConVar blob_show_rbox("blob_show_rbox", "0");
+int C_NPC_Blob::DrawModel(int flags)
+{
 	CMatRenderContextPtr pRenderContext(materials);
 	pRenderContext->MatrixMode(MATERIAL_MODEL);
-	pRenderContext->Bind(pMaterial);
+	pRenderContext->Bind(m_pMaterial);
+	LightDesc_t spotLight(Vector(0, 0, 0), WorldGetLightForPoint(GetAbsOrigin(), false));
+	pRenderContext->SetLight(0, spotLight);
+	pRenderContext->SetAmbientLight(0.04, 0.04, 0.04);
 	IMesh* pMesh = pRenderContext->GetDynamicMesh(true);
+	if ((UTIL_PlayerByIndex(1)->GetAbsOrigin() - GetAbsOrigin()).Length() > 1500)
+		return 0;//far away
+	if (m_iNumElements <= 0)
+		return 0;
+	
 	m_iCubeWidth = MIN_SAMPLE_INTERVAL;
 	//int iMarches = 0;
 	//int iSamples = 0;
@@ -1827,6 +1920,12 @@ int C_NPC_Blob::DrawModel(int flags)
 	if (vertices.Count() <= 0)
 		return 0;
 
+	Vector pos = GetAbsOrigin();
+	LightingState_t state;
+	int dummy;
+	ITexture* pCubemap = GetLightingState(&pos, &state, &dummy, 7, false);
+	pRenderContext->BindLocalCubemap(pCubemap);
+
 	meshBuilder.Begin(pMesh, MATERIAL_TRIANGLES, vertices.Count(), indices.Count());
 	//NDebugOverlay::Line(GetAbsOrigin(), vertices[0], 255, 255, 0, true, 0.1);
 	//now build mesh
@@ -1859,18 +1958,33 @@ int C_NPC_Blob::DrawModel(int flags)
 		}
 		*/
 		//DevMsg("Vert %i at %f %f %f\n", iVert, vertices[iVert].x, vertices[iVert].y, vertices[iVert].z);
-		meshBuilder.Position3fv(vertices[iVert].pos.Base());
-		int iVertNumInTri = iVertInTri;
-		if (iVertNumInTri == 0)
+		BlobVert bvert = vertices[iVert];
+		meshBuilder.Position3fv(bvert.pos.Base());
+		if (iVertInTri == 0)
 			meshBuilder.TexCoord2f(0, 0, 0);
-		else if (iVertNumInTri == 1)
+		else if (iVertInTri == 1)
 			meshBuilder.TexCoord2f(0, 0, 1);
 		else
 			meshBuilder.TexCoord2f(0, 1, 0);
-		Vector vecNorm = vertices[iVert].normal;
+		Vector vecNorm = bvert.normal;
 		vecNorm = -vecNorm.Normalized();
-		meshBuilder.Color4ub(vecNorm.x * 255, vecNorm.y * 255, vecNorm.z * 255, 100);
 		meshBuilder.Normal3fv(vecNorm.Base());
+		if (blob_wireframe.GetBool())
+			meshBuilder.Color4ub(vecNorm.x * 255, vecNorm.y * 255, vecNorm.z * 255, 100);
+		else
+		{
+			/*
+			Vector vLight;// = WorldGetLightForPoint(bvert.pos, false);
+			engine->ComputeLighting(bvert.pos, &vecNorm, true, vLight, NULL);
+			//if (g_pMaterialSystemHardwareConfig->GetHDREnabled())
+			//vLight *= 2;
+			vLight[0] = clamp(vLight[0], 0, 1);
+			vLight[1] = clamp(vLight[1], 0, 1);
+			vLight[2] = clamp(vLight[2], 0, 1);
+			meshBuilder.Color3f(vLight[0], vLight[1], vLight[2]);
+			*/
+		}
+		//Msg("vecNorm %f %f %f\n", vecNorm.x, vecNorm.y, vecNorm.z);
 		meshBuilder.AdvanceVertex();
 	}
 
@@ -2036,11 +2150,11 @@ void C_NPC_Blob::EdgeInterp(Vector vert1, Vector vert2, bool bDebug, int i, int 
 		float flLevel = blob_isolevel.GetFloat();
 		dif = (flLevel - s1.dif) / (s2.dif - s1.dif);
 		//dif = clamp(dif * blob_interpfactor.GetFloat(), 0, 1);
-		normal.x = (flLevel - max(s1.normal.x, s2.normal.x)) / (min(s2.dif, s1.dif) - max(s1.dif, s2.dif));
-		normal.y = (flLevel - max(s1.normal.y, s2.normal.y)) / (min(s2.dif, s1.dif) - max(s1.dif, s2.dif));
-		normal.z = (flLevel - max(s1.normal.z, s2.normal.z)) / (min(s2.dif, s1.dif) - max(s1.dif, s2.dif));
-		//normal = clamp(normal * blob_interpfactor.GetFloat(), 0, 1);
-		//Msg("s1 %f s2 %f dif %f\n", s1, s2, dif);
+		float flMinDif = min(s2.dif, s1.dif);
+		float flMaxDif = max(s1.dif, s2.dif);
+		normal.x = (flLevel - max(s1.normal.x, s2.normal.x)) / (flMinDif - flMaxDif);
+		normal.y = (flLevel - max(s1.normal.y, s2.normal.y)) / (flMinDif - flMaxDif);
+		normal.z = (flLevel - max(s1.normal.z, s2.normal.z)) / (flMinDif - flMaxDif);
 	}
 	if (bDebug && dif >= blob_interp_debug_min.GetFloat() && dif <= blob_interp_debug_max.GetFloat())
 	{

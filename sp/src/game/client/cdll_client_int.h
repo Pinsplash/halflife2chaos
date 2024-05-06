@@ -16,7 +16,7 @@
 #include "cdll_int.h"
 #include "eiface.h"
 
-
+class IEngineTool;
 class IVModelRender;
 class IVEngineClient;
 class IVModelRender;
@@ -70,7 +70,7 @@ class AchievementsAndStatsInterface;
 //=============================================================================
 // HPE_END
 //=============================================================================
-
+extern IEngineTool* enginetools;
 extern IVModelRender *modelrender;
 extern IVEngineClient	*engine;
 extern IVModelRender *modelrender;

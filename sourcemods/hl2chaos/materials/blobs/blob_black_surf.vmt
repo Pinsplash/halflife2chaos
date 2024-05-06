@@ -1,14 +1,10 @@
-VertexLitGeneric
+UnlitGeneric
 {
-$baseTexture "blobs\blob_black_surf"
-$bumpmap "blobs\blob_surface_normal"
-$bumpstrength "0.4"
-$envmap "blobs\blob_envmap_hdr"
-$phong 1
-$phongexponent 40 
-$phongboost 2 
-$phongexponent2 400 
-$phongboost2 7 
-$fresnelBumpStrength 0
-$nocull 1
+$baseTexture "blobs/blob_black_surf"
+//$bumpmap "blobs/blob_surface_normal"//only with VLG
+//$envmap "blobs/blob_envmap"
+$envmap env_cubemap
+$envmaptint 0.25
+$envmapcontrast .9
+$envmapsaturation .7
 }

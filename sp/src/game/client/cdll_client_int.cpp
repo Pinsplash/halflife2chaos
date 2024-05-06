@@ -87,6 +87,7 @@
 #include "ihudlcd.h"
 #include "toolframework_client.h"
 #include "hltvcamera.h"
+#include "toolframework/ienginetool.h"
 #if defined( REPLAY_ENABLED )
 #include "replay/replaycamera.h"
 #include "replay/replay_ragdoll.h"
@@ -175,6 +176,7 @@ extern vgui::IInputInternal *g_InputInternal;
 extern IClientMode *GetClientModeNormal();
 
 // IF YOU ADD AN INTERFACE, EXTERN IT IN THE HEADER FILE.
+IEngineTool* enginetools = NULL;
 IVEngineClient	*engine = NULL;
 IVModelRender *modelrender = NULL;
 IVEfx *effects = NULL;
@@ -874,6 +876,8 @@ int CHLClient::Init( CreateInterfaceFn appSystemFactory, CreateInterfaceFn physi
 	ClientSteamContext().Activate();
 #endif
 
+	if ((enginetools = (IEngineTool*)appSystemFactory(VENGINETOOL_INTERFACE_VERSION, nullptr)) == NULL)
+		return false;
 	// We aren't happy unless we get all of our interfaces.
 	// please don't collapse this into one monolithic boolean expression (impossible to debug)
 	if ( (engine = (IVEngineClient *)appSystemFactory( VENGINE_CLIENT_INTERFACE_VERSION, NULL )) == NULL )
