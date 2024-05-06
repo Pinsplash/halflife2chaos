@@ -8556,7 +8556,8 @@ void CEMountedGun::StartEffect()
 void CERestartLevel::StartEffect()
 {
 	g_bGoBackLevel = true;
-	engine->ClientCommand(engine->PEntityOfEntIndex(1), "restart");
+	const char *pMapName = STRING(gpGlobals->mapname);
+	engine->ClientCommand(engine->PEntityOfEntIndex(1), "changelevel %s", pMapName);
 }
 void CERemovePickups::StartEffect()
 {
