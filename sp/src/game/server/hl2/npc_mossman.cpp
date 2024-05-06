@@ -43,7 +43,7 @@ public:
 	int		SelectSchedule( void );
 
 private:
-	CAI_FollowBehavior		m_FollowBehavior;
+	//CAI_FollowBehavior		m_FollowBehavior;
 };
 
 LINK_ENTITY_TO_CLASS( npc_mossman, CNPC_Mossman );
@@ -132,7 +132,7 @@ void CNPC_Mossman::Precache()
 //=========================================================
 bool CNPC_Mossman::CreateBehaviors()
 {
-	AddBehavior( &m_FollowBehavior );
+	//AddBehavior( &m_FollowBehavior );
 	
 	return BaseClass::CreateBehaviors();
 }
