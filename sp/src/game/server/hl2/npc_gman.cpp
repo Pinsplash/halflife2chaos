@@ -44,7 +44,7 @@ public:
 	int		SelectSchedule( void );
 
 private:
-	CAI_FollowBehavior	m_FollowBehavior;
+	//CAI_FollowBehavior	m_FollowBehavior;
 };
 
 LINK_ENTITY_TO_CLASS( npc_gman, CNPC_GMan );
@@ -145,7 +145,7 @@ Disposition_t CNPC_GMan::IRelationType(CBaseEntity *pTarget)
 //=========================================================
 bool CNPC_GMan::CreateBehaviors()
 {
-	AddBehavior( &m_FollowBehavior );
+	//AddBehavior( &m_FollowBehavior );
 	
 	return BaseClass::CreateBehaviors();
 }
