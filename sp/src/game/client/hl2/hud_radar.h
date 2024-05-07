@@ -74,5 +74,5 @@ private:
 	int				m_textureID_IconBase;
 };
 
-extern CHudRadar *GetHudRadar();
+//extern CHudRadar *GetHudRadar();
 #endif // HUD_RADAR_H

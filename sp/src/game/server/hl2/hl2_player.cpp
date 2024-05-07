@@ -7261,31 +7261,19 @@ void CERandomVehicle::StartEffect()
 	nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 5) : chaos_rng1.GetInt();
 	if (nRandom == 5)
 	{
-		if (gEntList.FindEntityByClassname(NULL, "prop_vehicle_jeep"))//avoid radar issues that come up when there is more than one jalopy in the map at a time
-		{
-			nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 4) : chaos_rng1.GetInt();
-		}
+		CBaseEntity *pJalopy;
+		if (UTIL_GetLocalPlayer()->GetModelScale() == 2)
+			pJalopy = ChaosSpawnVehicle("prop_vehicle_jeep", MAKE_STRING("Spawn Jalopy"), SPAWNTYPE_VEHICLE, "models/vehicle_2.mdl", "jalopy", "scripts/vehicles/jalopy_2.txt");
+		else if (UTIL_GetLocalPlayer()->GetModelScale() == 0.5)
+			pJalopy = ChaosSpawnVehicle("prop_vehicle_jeep", MAKE_STRING("Spawn Jalopy"), SPAWNTYPE_VEHICLE, "models/vehicle_0_5.mdl", "jalopy", "scripts/vehicles/jalopy_0_5.txt");
 		else
-		{
-			CBaseEntity *pJalopy;
-			if (UTIL_GetLocalPlayer()->GetModelScale() == 2)
-				pJalopy = ChaosSpawnVehicle("prop_vehicle_jeep", MAKE_STRING("Spawn Jalopy"), SPAWNTYPE_VEHICLE, "models/vehicle_2.mdl", "jalopy", "scripts/vehicles/jalopy_2.txt");
-			else if (UTIL_GetLocalPlayer()->GetModelScale() == 0.5)
-				pJalopy = ChaosSpawnVehicle("prop_vehicle_jeep", MAKE_STRING("Spawn Jalopy"), SPAWNTYPE_VEHICLE, "models/vehicle_0_5.mdl", "jalopy", "scripts/vehicles/jalopy_0_5.txt");
-			else
-				pJalopy = ChaosSpawnVehicle("prop_vehicle_jeep", MAKE_STRING("Spawn Jalopy"), SPAWNTYPE_VEHICLE, "models/vehicle.mdl", "jalopy", "scripts/vehicles/jalopy.txt");
-			if (pJalopy == NULL)
-			{
-				Msg("Did not spawn jalopy\n");
-				return;
-			}
-			pJalopy->AcceptInput("EnableRadar", pJalopy, pJalopy, sVariant, 0);
-			pJalopy->AcceptInput("EnableRadarDetectEnemies", pJalopy, pJalopy, sVariant, 0);
-			pJalopy->AcceptInput("AddBusterToCargo", pJalopy, pJalopy, sVariant, 0);
-			CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
-			CHL2_Player *pHL2Player = static_cast<CHL2_Player*>(pPlayer);
-			pHL2Player->SetLocatorTargetEntity(pJalopy);
-		}
+			pJalopy = ChaosSpawnVehicle("prop_vehicle_jeep", MAKE_STRING("Spawn Jalopy"), SPAWNTYPE_VEHICLE, "models/vehicle.mdl", "jalopy", "scripts/vehicles/jalopy.txt");
+		pJalopy->AcceptInput("EnableRadar", pJalopy, pJalopy, sVariant, 0);
+		pJalopy->AcceptInput("EnableRadarDetectEnemies", pJalopy, pJalopy, sVariant, 0);
+		pJalopy->AcceptInput("AddBusterToCargo", pJalopy, pJalopy, sVariant, 0);
+		CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+		CHL2_Player *pHL2Player = static_cast<CHL2_Player*>(pPlayer);
+		pHL2Player->SetLocatorTargetEntity(pJalopy);
 	}
 	if (nRandom == 4)
 	{

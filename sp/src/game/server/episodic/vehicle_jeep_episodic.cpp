@@ -370,6 +370,7 @@ IMPLEMENT_SERVERCLASS_ST(CPropJeepEpisodic, DT_CPropJeepEpisodic)
 	//CNetworkVar( int, m_iNumRadarContacts );
 	SendPropInt( SENDINFO(m_iNumRadarContacts), 8 ),
 
+	SendPropEHandle(SENDINFO(m_hRadarScreen)),
 	//CNetworkArray( Vector, m_vecRadarContactPos, RADAR_MAX_CONTACTS );
 	SendPropArray( SendPropVector( SENDINFO_ARRAY(m_vecRadarContactPos), -1, SPROP_COORD), m_vecRadarContactPos ),
 
@@ -966,12 +967,13 @@ void CPropJeepEpisodic::UpdateRadar( bool forceUpdate )
 	}
 
 	//Msg("Server detected %d objects\n", m_iNumRadarContacts );
-
+	/*
 	CBasePlayer *pPlayer = AI_GetSinglePlayer();
 	CSingleUserRecipientFilter filter(pPlayer);
 	UserMessageBegin( filter, "UpdateJalopyRadar" );
 	WRITE_BYTE( 0 ); // end marker
 	MessageEnd();	// send message
+	*/
 }
 
 ConVar jalopy_cargo_anim_time( "jalopy_cargo_anim_time", "1.0" );

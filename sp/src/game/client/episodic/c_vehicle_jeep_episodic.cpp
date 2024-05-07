@@ -41,13 +41,17 @@ public:
 	int		m_iNumRadarContacts;
 	Vector	m_vecRadarContactPos[ RADAR_MAX_CONTACTS ];
 	int		m_iRadarContactType[ RADAR_MAX_CONTACTS ];
+	EHANDLE m_hRadarScreen;
+	CHudRadar* m_Radar;
+	void UpdateJalopyRadar();
 };
-C_PropJeepEpisodic *g_pJalopy = NULL;
+//C_PropJeepEpisodic *g_pJalopy = NULL;
 
 IMPLEMENT_CLIENTCLASS_DT( C_PropJeepEpisodic, DT_CPropJeepEpisodic, CPropJeepEpisodic )
 	//CNetworkVar( int, m_iNumRadarContacts );
 	RecvPropInt( RECVINFO(m_iNumRadarContacts) ),
 
+	RecvPropEHandle(RECVINFO(m_hRadarScreen)),
 	//CNetworkArray( Vector, m_vecRadarContactPos, RADAR_MAX_CONTACTS );
 	RecvPropArray( RecvPropVector(RECVINFO(m_vecRadarContactPos[0])), m_vecRadarContactPos ),
 
@@ -59,28 +63,28 @@ END_RECV_TABLE()
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void __MsgFunc_UpdateJalopyRadar(bf_read &msg) 
+void C_PropJeepEpisodic::UpdateJalopyRadar()
 {
 	// Radar code here!
-	if( !GetHudRadar() )
+	if (!m_Radar)
 		return;
-
+	m_Radar->Paint();
 	// Sometimes we update more quickly when we need to track something in high resolution.
 	// Usually we do not, so default to false.
-	GetHudRadar()->m_bUseFastUpdate = false;
+	m_Radar->m_bUseFastUpdate = false;
 
-	for( int i = 0 ; i < g_pJalopy->m_iNumRadarContacts ; i++ )
+	for( int i = 0 ; i < m_iNumRadarContacts ; i++ )
 	{
-		if( g_pJalopy->m_iRadarContactType[i] == RADAR_CONTACT_DOG )
+		if( m_iRadarContactType[i] == RADAR_CONTACT_DOG )
 		{
-			GetHudRadar()->m_bUseFastUpdate = true;
+			m_Radar->m_bUseFastUpdate = true;
 			break;
 		}
 	}
 
 	float flContactTimeToLive;
 
-	if( GetHudRadar()->m_bUseFastUpdate )
+	if (m_Radar->m_bUseFastUpdate)
 	{
 		flContactTimeToLive = RADAR_UPDATE_FREQUENCY_FAST;
 	}
@@ -89,9 +93,9 @@ void __MsgFunc_UpdateJalopyRadar(bf_read &msg)
 		flContactTimeToLive = RADAR_UPDATE_FREQUENCY;
 	}
 
-	for( int i = 0 ; i < g_pJalopy->m_iNumRadarContacts ; i++ )
+	for( int i = 0 ; i < m_iNumRadarContacts ; i++ )
 	{
-		GetHudRadar()->AddRadarContact( g_pJalopy->m_vecRadarContactPos[i], g_pJalopy->m_iRadarContactType[i], flContactTimeToLive );	
+		m_Radar->AddRadarContact(m_vecRadarContactPos[i], m_iRadarContactType[i], flContactTimeToLive);
 	}
 }
 
@@ -99,12 +103,7 @@ void __MsgFunc_UpdateJalopyRadar(bf_read &msg)
 //-----------------------------------------------------------------------------
 C_PropJeepEpisodic::C_PropJeepEpisodic()
 {
-	if( g_pJalopy == NULL )
-	{
-		usermessages->HookMessage( "UpdateJalopyRadar", __MsgFunc_UpdateJalopyRadar );
-	}
-
-	g_pJalopy = this;
+	UpdateJalopyRadar();
 }
 
 //-----------------------------------------------------------------------------
@@ -112,14 +111,22 @@ C_PropJeepEpisodic::C_PropJeepEpisodic()
 //-----------------------------------------------------------------------------
 void C_PropJeepEpisodic::Simulate( void )
 {
+	if (m_hRadarScreen != NULL && m_Radar == NULL)
+	{
+		C_VGuiScreen *pScreen = dynamic_cast<C_VGuiScreen *>(m_hRadarScreen.Get());
+		if (pScreen)
+			m_Radar = dynamic_cast<CHudRadar *>(pScreen->m_PanelWrapper.GetPanel());
+	}
 	// Keep trying to hook to the radar.
-	if( GetHudRadar() != NULL )
+	if (m_Radar != NULL)
 	{
 		// This is not our ideal long-term solution. This will only work if you only have 
 		// one jalopy in a given level. The Jalopy and the Radar Screen are currently both
 		// assumed to be singletons. This is appropriate for EP2, however. (sjb)
-		GetHudRadar()->SetVehicle( this );
+		m_Radar->SetVehicle(this);
 	}
+
+	UpdateJalopyRadar();
 
 	BaseClass::Simulate();
 }

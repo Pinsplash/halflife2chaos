@@ -144,7 +144,7 @@ private:
 	bool	m_bRadarEnabled;
 	bool	m_bRadarDetectsEnemies;
 	float	m_flNextRadarUpdateTime;
-	EHANDLE	m_hRadarScreen;
+	CNetworkHandle(CBaseEntity, m_hRadarScreen);
 
 	EHANDLE	m_hLinkControllerFront;
 	EHANDLE m_hLinkControllerRear;

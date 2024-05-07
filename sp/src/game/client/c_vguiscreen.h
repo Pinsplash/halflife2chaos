@@ -69,6 +69,7 @@ public:
 	C_VGuiScreen();
 	~C_VGuiScreen();
 
+	CPanelWrapper m_PanelWrapper;
 	virtual void PreDataUpdate( DataUpdateType_t updateType );
 	virtual void OnDataChanged( DataUpdateType_t type );
 	virtual int DrawModel( int flags );
@@ -154,7 +155,6 @@ private:
 
 	VMatrix	m_PanelToWorld;
 
-	CPanelWrapper m_PanelWrapper;
 
 	CHandle<C_BasePlayer> m_hPlayerOwner;
 };
