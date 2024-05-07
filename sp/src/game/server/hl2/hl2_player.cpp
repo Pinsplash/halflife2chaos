@@ -9290,12 +9290,6 @@ void CEDejaVu::StartEffect()
 {
 	engine->ClientCommand(engine->PEntityOfEntIndex(1), "reload setpos");
 }
-void CEDejaVu::MaintainEffect()
-{
-	if (!m_bDone)
-		UTIL_GetLocalPlayer()->GetUnstuck(500);
-	m_bDone = true;
-}
 void CERandomCC::StartEffect()
 {
 	engine->ClientCommand(engine->PEntityOfEntIndex(1), "cc_generate");

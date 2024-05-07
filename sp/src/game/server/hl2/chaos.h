@@ -555,8 +555,6 @@ class CEDejaVu : public CChaosEffect
 {
 public:
 	void StartEffect() override;
-	void MaintainEffect() override;
-	bool m_bDone = false;
 };
 class CERandomCC : public CChaosEffect
 {
