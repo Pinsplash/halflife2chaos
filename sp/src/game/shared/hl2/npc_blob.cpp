@@ -36,7 +36,7 @@ ConVar blob_element_speed( "blob_element_speed", "0" );
 ConVar blob_element_speed("blob_element_speed", "120");
 #endif
 ConVar npc_blob_idle_speed_factor( "npc_blob_idle_speed_factor", "0.5" );
-
+ConVar blob_wall_climb_debug("blob_wall_climb_debug", "0");
 //ConVar blob_numelements( "blob_numelements", "20" );
 ConVar blob_batchpercent( "blob_batchpercent", "100" );
 
@@ -216,6 +216,7 @@ int CBlobElement::DrawDebugTextOverlays(void)
 //---------------------------------------------------------
 void CBlobElement::SetElementVelocity( Vector vecVelocity, bool bPlanarOnly )
 {
+	if (blob_wall_climb_debug.GetBool()) Msg("SetElementVelocity %0.1f %0.1f %0.1f\n", vecVelocity.x, vecVelocity.y, vecVelocity.z);
 	SetAbsVelocity( vecVelocity );
 }
 
@@ -225,6 +226,7 @@ void CBlobElement::SetElementVelocity( Vector vecVelocity, bool bPlanarOnly )
 //---------------------------------------------------------
 void CBlobElement::AddElementVelocity( Vector vecVelocityAdd, bool bPlanarOnly )
 {
+	if (blob_wall_climb_debug.GetBool()) Msg("AddElementVelocity %0.1f %0.1f %0.1f\n", vecVelocityAdd.x, vecVelocityAdd.y, vecVelocityAdd.z);
 	Vector vecSum = GetAbsVelocity() + vecVelocityAdd;
 	SetAbsVelocity( vecSum );
 }
@@ -256,7 +258,11 @@ void CBlobElement::ModifyVelocityForSurface( float flInterval, float flSpeed )
 	}
 	else
 	{
-		//NDebugOverlay::Cross3D( GetAbsOrigin(), 16, 255, 255, 0, false, 0.025f );
+		if (blob_wall_climb_debug.GetBool())
+		{
+			Msg("vecStart %0.1f %0.1f %0.1f GetAbsVelocity() %0.1f %0.1f %0.1f flInterval %0.1f\n", vecStart.x, vecStart.y, vecStart.z, GetAbsVelocity().x, GetAbsVelocity().y, GetAbsVelocity().z, flInterval);
+			NDebugOverlay::Line(vecStart + up, vecWishedGoal + up, 0, 255, 0, false, -1);
+		}
 
 		m_bOnWall = true;
 
@@ -1823,6 +1829,7 @@ void C_NPC_Blob::Spawn()
 	GetLightingState = (FuncGetLightingState)((GetLightingConditions + 0x20) + *(int*)(GetLightingConditions + 0x21) + 5);
 }
 ConVar blob_show_rbox("blob_show_rbox", "0");
+ConVar blob_debug_sample("blob_debug_sample", "-1");
 int C_NPC_Blob::DrawModel(int flags)
 {
 	CMatRenderContextPtr pRenderContext(materials);
@@ -1848,7 +1855,7 @@ int C_NPC_Blob::DrawModel(int flags)
 	int iYSamples = iYBound / m_iCubeWidth + 1;
 	int iZSamples = iZBound / m_iCubeWidth + 1;
 	//use coarser grid if getting too big
-	/*
+	///*
 	if (iXBound / MAX_SAMPLES_PER_AXIS > m_iCubeWidth)
 	{
 		m_iCubeWidth = iXBound / MAX_SAMPLES_PER_AXIS;
@@ -1864,8 +1871,7 @@ int C_NPC_Blob::DrawModel(int flags)
 		m_iCubeWidth = iZBound / MAX_SAMPLES_PER_AXIS;
 		iXSamples = iYSamples = iZSamples = MAX_SAMPLES_PER_AXIS;
 	}
-	*/
-	if (blob_show_rbox.GetBool()) NDebugOverlay::Box(vOrigin, vecRMins, vecRMaxs, 255, 255, 0, 0, -1);
+	//*/
 	///*
 	//precompute samples so we don't have so much redundancy
 	float x = vecRMins.x;
@@ -1886,7 +1892,7 @@ int C_NPC_Blob::DrawModel(int flags)
 				Sample sample;
 				float dif;
 				Vector normal;
-				SampleValue(vOrigin + Vector(x, y, z), false, &dif, &normal);
+				SampleValue(vOrigin + Vector(x, y, z), /*blob_debug_sample.GetInt() == i + j * MAX_SAMPLES_PER_AXIS + k * MAX_SAMPLES_PER_AXIS_SQUARED*/ false, &dif, &normal);
 				sample.dif = dif;
 				sample.normal = normal;
 				//iSamples++;
@@ -2051,6 +2057,7 @@ ConVar blob_metaball("blob_metaball", "1");//0 = simple ball sampling
 ConVar blob_isomode("blob_isomode", "0");//1 = simple ball marching cubes
 void C_NPC_Blob::SampleValue(Vector pos, bool bPrint, float *passdif, Vector *passnormal)
 {
+	//if (bPrint) NDebugOverlay::Line(pos, pos - Vector(1, 1, 1), 0, 255, 0, true, -1);
 	float dif = 0;
 	Vector normal = vec3_origin;
 	if (blob_metaball.GetBool())
@@ -2065,13 +2072,14 @@ void C_NPC_Blob::SampleValue(Vector pos, bool bPrint, float *passdif, Vector *pa
 				float flRadius = blob_element_radius.GetFloat();
 				if (flDistance > flRadius)//sample point was right on an element
 					continue;
+				//if (bPrint) NDebugOverlay::Line(pos, pEle->GetAbsOrigin(), 0, 255, 0, true, -1);
 				if (flDistance == 0)
 				{
 					*passdif = 1;
 					*passnormal = vec3_origin;
 					return;
 				}
-				if (bPrint) Msg("flValue (%f) += (%f - %f) / %f = %f\n", dif, flRadius, flDistance, flRadius, (flRadius - flDistance) / flRadius);
+				//if (bPrint) Msg("flValue (%f) += (%f - %f) / %f = %f\n", dif, flRadius, flDistance, flRadius, (flRadius - flDistance) / flRadius);
 				//https://github.com/Owlrazum/HeresyPackages/blob/66557172d8e08ccb36a47c2021c68eaf8884a8f3/Project/Assets/Heresy/MarchingCubes/Source/TestMarchingCubes.cs#L219
 				dif += (flRadius - flDistance) / flRadius;
 				//Msg("delta %0.1f %0.1f %0.1f\n", vDelta.x, vDelta.y, vDelta.z);
