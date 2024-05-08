@@ -1824,11 +1824,12 @@ int C_NPC_Blob::DrawModel(int flags)
 	CMatRenderContextPtr pRenderContext(materials);
 	pRenderContext->MatrixMode(MATERIAL_MODEL);
 	pRenderContext->Bind(m_pMaterial);
-	LightDesc_t spotLight(Vector(0, 0, 0), WorldGetLightForPoint(GetAbsOrigin(), false));
-	pRenderContext->SetLight(0, spotLight);
-	pRenderContext->SetAmbientLight(0.04, 0.04, 0.04);
+	//LightDesc_t spotLight(Vector(0, 0, 0), WorldGetLightForPoint(GetAbsOrigin(), false));
+	//pRenderContext->SetLight(0, spotLight);
+	//pRenderContext->SetAmbientLight(0.04, 0.04, 0.04);
 	IMesh* pMesh = pRenderContext->GetDynamicMesh(true);
-	if ((UTIL_PlayerByIndex(1)->GetAbsOrigin() - GetAbsOrigin()).Length() > 1500)
+	Vector vOrigin = GetAbsOrigin();
+	if ((UTIL_PlayerByIndex(1)->GetAbsOrigin() - vOrigin).Length() > 1500)
 		return 0;//far away
 	if (m_iNumElements <= 0)
 		return 0;
@@ -1860,7 +1861,7 @@ int C_NPC_Blob::DrawModel(int flags)
 		iXSamples = iYSamples = iZSamples = MAX_SAMPLES_PER_AXIS;
 	}
 	*/
-	if (blob_show_rbox.GetBool()) NDebugOverlay::Box(GetAbsOrigin(), vecRMins, vecRMaxs, 255, 255, 0, 0, -1);
+	if (blob_show_rbox.GetBool()) NDebugOverlay::Box(vOrigin, vecRMins, vecRMaxs, 255, 255, 0, 0, -1);
 	///*
 	//precompute samples so we don't have so much redundancy
 	float x = vecRMins.x;
@@ -1881,7 +1882,7 @@ int C_NPC_Blob::DrawModel(int flags)
 				Sample sample;
 				float dif;
 				Vector normal;
-				SampleValue(GetAbsOrigin() + Vector(x, y, z), false, &dif, &normal);
+				SampleValue(vOrigin + Vector(x, y, z), false, &dif, &normal);
 				sample.dif = dif;
 				sample.normal = normal;
 				//iSamples++;
@@ -1909,7 +1910,7 @@ int C_NPC_Blob::DrawModel(int flags)
 			for (int k = 0; k < iZSamples; k++)
 			{
 				z = vecRMins.z + (m_iCubeWidth * k);
-				MarchCube(GetAbsOrigin() + Vector(x, y, z), i, j, k);
+				MarchCube(vOrigin + Vector(x, y, z), i, j, k);
 				//iMarches++;
 				//Msg("MarchCube at %f %f %f\n", x, y, z);
 			}
@@ -1920,10 +1921,9 @@ int C_NPC_Blob::DrawModel(int flags)
 	if (vertices.Count() <= 0)
 		return 0;
 
-	Vector pos = GetAbsOrigin();
 	LightingState_t state;
 	int dummy;
-	ITexture* pCubemap = GetLightingState(&pos, &state, &dummy, 7, false);
+	ITexture* pCubemap = GetLightingState(&vOrigin, &state, &dummy, 7, false);
 	pRenderContext->BindLocalCubemap(pCubemap);
 
 	meshBuilder.Begin(pMesh, MATERIAL_TRIANGLES, vertices.Count(), indices.Count());

@@ -1,10 +1,19 @@
 UnlitGeneric
 {
-$baseTexture "blobs/blob_black_surf"
-//$bumpmap "blobs/blob_surface_normal"//only with VLG
-//$envmap "blobs/blob_envmap"
-$envmap env_cubemap
-$envmaptint 0.25
-$envmapcontrast .9
-$envmapsaturation .7
+	$baseTexture "blobs/blob_black_surf"
+	//$bumpmap "blobs/blob_surface_normal"//only with VLG - for now?
+	hdr
+	{
+		$envmap env_cubemap
+		$envmaptint 0.25
+		$envmapcontrast .9
+		$envmapsaturation .7
+	}
+	ldr
+	{
+		$envmap "blobs/blob_envmap"
+		$envmaptint "[.2 .2 .2]"
+		$envmapcontrast .8
+		$envmapsaturation "[1 .6 1.6]"
+	}
 }
