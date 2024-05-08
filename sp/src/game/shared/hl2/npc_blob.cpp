@@ -2008,7 +2008,7 @@ int C_NPC_Blob::DrawModel(int flags)
 	vertices.RemoveAll();
 	indices.RemoveAll();
 	//sampleCache.RemoveAll();
-	///*
+	/*
 	for (int i = 0; i < MAX_SAMPLES_PER_AXIS; i++)
 	{
 		for (int j = 0; j < MAX_SAMPLES_PER_AXIS; j++)
@@ -2019,7 +2019,7 @@ int C_NPC_Blob::DrawModel(int flags)
 			}
 		}
 	}
-	//*/
+	*/
 	return 1;
 }
 ConVar blob_element_radius("blob_element_radius", "16");//radius
