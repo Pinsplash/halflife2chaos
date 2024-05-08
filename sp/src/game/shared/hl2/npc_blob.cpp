@@ -30,7 +30,11 @@ extern float MOVE_HEIGHT_EPSILON;
 #define BLOB_MAX_AVOID_ORIGINS 3
 
 ConVar blob_mindist( "blob_mindist", "120.0" );
-ConVar blob_element_speed( "blob_element_speed", "120" );
+#ifdef DEBUG
+ConVar blob_element_speed( "blob_element_speed", "0" );
+#else
+ConVar blob_element_speed("blob_element_speed", "120");
+#endif
 ConVar npc_blob_idle_speed_factor( "npc_blob_idle_speed_factor", "0.5" );
 
 //ConVar blob_numelements( "blob_numelements", "20" );
@@ -678,7 +682,7 @@ void CNPC_Blob::GatherConditions( void )
 		if( !GetEnemy() || !GetEnemy()->IsAlive() )
 		{
 			m_bEatCombineHack = false;
-			blob_spread_radius.SetValue(160.0f);
+			blob_spread_radius.SetValue(30.0f);
 			RecomputeIdealElementDist();
 		}
 	}
