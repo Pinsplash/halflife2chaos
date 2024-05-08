@@ -1376,56 +1376,56 @@ static Vector cornerOffsets[8]
 };
 
 // offsets from the minimal corner to 2 ends of the edges
-static Vector edgeVertexOffsets[12][2]
+static Vector edgeVertexOffsets[12 * 2]
 {
-	{ Vector(0, 0, 0), Vector(1, 0, 0) },//X 0
-	{ Vector(1, 0, 0), Vector(1, 1, 0) },//Y 1
-	{ Vector(0, 1, 0), Vector(1, 1, 0) },//X 2
-	{ Vector(0, 0, 0), Vector(0, 1, 0) },//Y 3
-	{ Vector(0, 0, 1), Vector(1, 0, 1) },//X 4
-	{ Vector(1, 0, 1), Vector(1, 1, 1) },//Y 5
-	{ Vector(0, 1, 1), Vector(1, 1, 1) },//X 6
-	{ Vector(0, 0, 1), Vector(0, 1, 1) },//Y 7
-	{ Vector(0, 0, 0), Vector(0, 0, 1) },//Z 8
-	{ Vector(1, 0, 0), Vector(1, 0, 1) },//Z 9
-	{ Vector(1, 1, 0), Vector(1, 1, 1) },//Z 10
-	{ Vector(0, 1, 0), Vector(0, 1, 1) } //Z 11
+		Vector(0, 0, 0), Vector(1, 0, 0),//X 0
+		Vector(1, 0, 0), Vector(1, 1, 0),//Y 1
+		Vector(0, 1, 0), Vector(1, 1, 0),//X 2
+		Vector(0, 0, 0), Vector(0, 1, 0),//Y 3
+		Vector(0, 0, 1), Vector(1, 0, 1),//X 4
+		Vector(1, 0, 1), Vector(1, 1, 1),//Y 5
+		Vector(0, 1, 1), Vector(1, 1, 1),//X 6
+		Vector(0, 0, 1), Vector(0, 1, 1),//Y 7
+		Vector(0, 0, 0), Vector(0, 0, 1),//Z 8
+		Vector(1, 0, 0), Vector(1, 0, 1),//Z 9
+		Vector(1, 1, 0), Vector(1, 1, 1),//Z 10
+		Vector(0, 1, 0), Vector(0, 1, 1) //Z 11
 };
 
 //edgeCase to interpCache
 //1st int: direction we're moving back in. -1 means this edge cannot be used
 //2nd int: edge to look at in cube we've moved back to, inside cache
-static int ecTOic[12][2]
+static int ecTOic[12 * 2]
 {
-	{ 2, 4 },//0
-	{ 2, 5 },//1
-	{ 2, 6 },//2
-	{ 2, 7 },//3
-	{ 1, 6 },//4
-	{ -1, -1 },//5
-	{ -1, -1 },//6
-	{ 0, 5 },//7
-	{ 1, 11 },//8
-	{ 1, 10 },//9
-	{ -1, -1 },//10
-	{ 0, 10 }//11
+		2, 4,//0
+		2, 5,//1
+		2, 6,//2
+		2, 7,//3
+		1, 6,//4
+		-1, -1,//5
+		-1, -1,//6
+		0, 5,//7
+		1, 11,//8
+		1, 10,//9
+		-1, -1,//10
+		0, 10 //11
 };
 
 //alternate table because some edges could reference 1 extra cube (and 1 more after that but there's no need)
-static int ecTOicAlt[12][2]
+static int ecTOicAlt[12 * 2]
 {
-	{ 1, 2 },//0
-	{ -1, -1 },//1
-	{ -1, -1 },//2
-	{ 0, 1 },//3
-	{ -1, -1 },//4
-	{ -1, -1 },//5
-	{ -1, -1 },//6
-	{ -1, -1 },//7
-	{ 0, 9 },//8
-	{ -1, -1 },//9
-	{ -1, -1 },//10
-	{ -1, -1 }//11
+		1, 2,//0
+		-1, -1,//1
+		-1, -1,//2
+		0, 1,//3
+		-1, -1,//4
+		-1, -1,//5
+		-1, -1,//6
+		-1, -1,//7
+		0, 9,//8
+		-1, -1,//9
+		-1, -1,//10
+		-1, -1 //11
 };
 
 // list of triangles/vertices for every possible case
@@ -2117,12 +2117,12 @@ ConVar blob_interp_debug_min("blob_interp_debug_min", "0");//when blob_case_debu
 ConVar blob_interp_debug_max("blob_interp_debug_max", "1");//when blob_case_debug, filters lines to be below this dif
 void C_NPC_Blob::EdgeInterp(Vector vert1, Vector vert2, bool bDebug, int i, int j, int k, int edgeCase, float *passdif, Vector *passnormal)
 {
-	Vector vecOffset1 = edgeVertexOffsets[edgeCase][0];
+	Vector vecOffset1 = edgeVertexOffsets[edgeCase * 2];
 	int i1 = i + (int)vecOffset1.x;
 	int j1 = (j + (int)vecOffset1.y) * MAX_SAMPLES_PER_AXIS;
 	int k1 = (k + (int)vecOffset1.z) * MAX_SAMPLES_PER_AXIS_SQUARED;
 	Sample s1 = sampleCache[i1 + j1 + k1];
-	Vector vecOffset2 = edgeVertexOffsets[edgeCase][1];
+	Vector vecOffset2 = edgeVertexOffsets[edgeCase * 2 + 1];
 	int i2 = i + (int)vecOffset2.x;
 	int j2 = (j + (int)vecOffset2.y) * MAX_SAMPLES_PER_AXIS;
 	int k2 = (k + (int)vecOffset2.z) * MAX_SAMPLES_PER_AXIS_SQUARED;
@@ -2248,8 +2248,8 @@ void C_NPC_Blob::MarchCube(Vector minCornerPos, int i, int j, int k)
 			Vector normal;
 			if (bDebug) Msg("%i + %i * 256 = %i (%i)\n", caseIndex, caseVert, caseIndex + (caseVert * 256), edgeCase);
 
-			Vector vert1 = minCornerPos + (edgeVertexOffsets[edgeCase][0] * m_iCubeWidth); // beginning of the edge
-			Vector vert2 = minCornerPos + (edgeVertexOffsets[edgeCase][1] * m_iCubeWidth); // end of the edge
+			Vector vert1 = minCornerPos + (edgeVertexOffsets[edgeCase * 2] * m_iCubeWidth); // beginning of the edge
+			Vector vert2 = minCornerPos + (edgeVertexOffsets[edgeCase * 2 + 1] * m_iCubeWidth); // end of the edge
 
 			Vector vertPosInterpolated;
 			if (blob_interp.GetBool() && blob_case_override.GetInt() == -1)
@@ -2261,29 +2261,29 @@ void C_NPC_Blob::MarchCube(Vector minCornerPos, int i, int j, int k)
 				//int oldJ = j;
 				//int oldK = k;
 				int* vals[3] = { &i, &j, &k };
-				if (ecTOic[edgeCase][0] != -1)
+				if (ecTOic[edgeCase * 2] != -1)
 				{
-					*vals[ecTOic[edgeCase][0]] -= 1;
-					if (*vals[ecTOic[edgeCase][0]] > -1)
+					*vals[ecTOic[edgeCase * 2]] -= 1;
+					if (*vals[ecTOic[edgeCase * 2]] > -1)
 					{
-						sample = interpCache[i + j * MAX_SAMPLES_PER_AXIS + k * MAX_SAMPLES_PER_AXIS_SQUARED][ecTOic[edgeCase][1]];
+						sample = interpCache[i + j * MAX_SAMPLES_PER_AXIS + k * MAX_SAMPLES_PER_AXIS_SQUARED][ecTOic[edgeCase * 2 + 1]];
 						bGotResult = true;
 						//Msg("Copying interp value %f from cube %i %i %i edge %i to cube %i %i %i edge %i vert1 %0.1f %0.1f %0.1f vert2 %0.1f %0.1f %0.1f\n", dif, i, j, k, ecTOic[edgeCase][1], oldI, oldJ, oldK, edgeCase, vert1.x, vert1.y, vert1.z, vert2.x, vert2.y, vert2.z);
 					}
-					*vals[ecTOic[edgeCase][0]] += 1;
+					*vals[ecTOic[edgeCase * 2]] += 1;
 				}
 
 				//try other direction
-				if (!bGotResult && (edgeCase == 0 || edgeCase == 3 || edgeCase == 8) && ecTOicAlt[edgeCase][0] != -1)
+				if (!bGotResult && (edgeCase == 0 || edgeCase == 3 || edgeCase == 8) && ecTOicAlt[edgeCase * 2] != -1)
 				{
-					*vals[ecTOicAlt[edgeCase][0]] -= 1;
-					if (*vals[ecTOicAlt[edgeCase][0]] > -1)
+					*vals[ecTOicAlt[edgeCase * 2]] -= 1;
+					if (*vals[ecTOicAlt[edgeCase * 2]] > -1)
 					{
-						sample = interpCache[i + j * MAX_SAMPLES_PER_AXIS + k * MAX_SAMPLES_PER_AXIS_SQUARED][ecTOicAlt[edgeCase][1]];
+						sample = interpCache[i + j * MAX_SAMPLES_PER_AXIS + k * MAX_SAMPLES_PER_AXIS_SQUARED][ecTOicAlt[edgeCase * 2 + 1]];
 						bGotResult = true;
 						//Msg("Copying interp value %f from cube %i %i %i edge %i to cube %i %i %i edge %i vert1 %0.1f %0.1f %0.1f vert2 %0.1f %0.1f %0.1f\n", dif, i, j, k, ecTOicAlt[edgeCase][1], oldI, oldJ, oldK, edgeCase, vert1.x, vert1.y, vert1.z, vert2.x, vert2.y, vert2.z);
 					}
-					*vals[ecTOicAlt[edgeCase][0]] += 1;
+					*vals[ecTOicAlt[edgeCase * 2]] += 1;
 				}
 
 				if (!bGotResult)
