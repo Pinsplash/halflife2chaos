@@ -1935,7 +1935,7 @@ int C_NPC_Blob::DrawModel(int flags)
 	//now build mesh
 	for (int iVert = 0; iVert < vertices.Count(); iVert++)
 	{
-		int iVertInTri = iVert % 3;
+		//int iVertInTri = iVert % 3;
 		/*
 		if (iVertInTri == 0)
 		{
@@ -1964,12 +1964,12 @@ int C_NPC_Blob::DrawModel(int flags)
 		//DevMsg("Vert %i at %f %f %f\n", iVert, vertices[iVert].x, vertices[iVert].y, vertices[iVert].z);
 		BlobVert bvert = vertices[iVert];
 		meshBuilder.Position3fv(bvert.pos.Base());
-		if (iVertInTri == 0)
-			meshBuilder.TexCoord2f(0, 0, 0);
-		else if (iVertInTri == 1)
-			meshBuilder.TexCoord2f(0, 0, 1);
-		else
-			meshBuilder.TexCoord2f(0, 1, 0);
+		//if (iVertInTri == 0)
+		//	meshBuilder.TexCoord2f(0, 0, 0);
+		//else if (iVertInTri == 1)
+		//	meshBuilder.TexCoord2f(0, 0, 1);
+		//else
+		//	meshBuilder.TexCoord2f(0, 1, 0);
 		Vector vecNorm = bvert.normal;
 		vecNorm = -vecNorm.Normalized();
 		meshBuilder.Normal3fv(vecNorm.Base());
@@ -1991,14 +1991,18 @@ int C_NPC_Blob::DrawModel(int flags)
 		//Msg("vecNorm %f %f %f\n", vecNorm.x, vecNorm.y, vecNorm.z);
 		meshBuilder.AdvanceVertex();
 	}
-
+	/*
 	for (int iInd = 0; iInd < indices.Count(); iInd += 3)
 	{
 		meshBuilder.FastIndex(indices[iInd + 0]);
 		meshBuilder.FastIndex(indices[iInd + 1]);
 		meshBuilder.FastIndex(indices[iInd + 2]);
 	}
-
+	*/
+	for (int iInd = 0; iInd < indices.Count(); iInd += 2)
+	{
+		meshBuilder.FastIndex2(indices[iInd], indices[iInd + 1]);
+	}
 	meshBuilder.End();
 	pMesh->Draw();
 	vertices.RemoveAll();
