@@ -4,9 +4,11 @@
 //
 //=============================================================================//
 #include "cbase.h"
+#include "hl2_shareddefs.h"
 //pretty sure i have to make this a constant for networking...
 //default 20
 #define BLOB_NUM_ELEMENTS 20
+#define MASK_BLOB_SOLID MASK_NPCSOLID
 #ifndef CLIENT_DLL
 #include "ai_default.h"
 #include "ai_task.h"
@@ -55,6 +57,8 @@ ConVar npc_blob_straggler_dist( "npc_blob_straggler_dist", "240" );
 
 ConVar npc_blob_use_orientation( "npc_blob_use_orientation", "1" );
 ConVar npc_blob_use_model( "npc_blob_use_model", "1" );
+
+ConVar blob_velocity_show("blob_velocity_show", "0");
 
 ConVar npc_blob_think_interval( "npc_blob_think_interval", "0.025" );
 
@@ -216,7 +220,7 @@ int CBlobElement::DrawDebugTextOverlays(void)
 //---------------------------------------------------------
 void CBlobElement::SetElementVelocity( Vector vecVelocity, bool bPlanarOnly )
 {
-	if (blob_wall_climb_debug.GetBool()) Msg("SetElementVelocity %0.1f %0.1f %0.1f\n", vecVelocity.x, vecVelocity.y, vecVelocity.z);
+	if (blob_velocity_show.GetBool()) NDebugOverlay::Line(GetAbsOrigin(), GetAbsOrigin() + vecVelocity, 255, 0, 0, true, -1);
 	SetAbsVelocity( vecVelocity );
 }
 
@@ -226,7 +230,6 @@ void CBlobElement::SetElementVelocity( Vector vecVelocity, bool bPlanarOnly )
 //---------------------------------------------------------
 void CBlobElement::AddElementVelocity( Vector vecVelocityAdd, bool bPlanarOnly )
 {
-	if (blob_wall_climb_debug.GetBool()) Msg("AddElementVelocity %0.1f %0.1f %0.1f\n", vecVelocityAdd.x, vecVelocityAdd.y, vecVelocityAdd.z);
 	Vector vecSum = GetAbsVelocity() + vecVelocityAdd;
 	SetAbsVelocity( vecSum );
 }
@@ -242,51 +245,73 @@ void CBlobElement::ModifyVelocityForSurface( float flInterval, float flSpeed )
 	Vector vecStart = GetAbsOrigin();
 	Vector up = Vector( 0, 0, BLOB_TRACE_HEIGHT );
 
-	Vector vecWishedGoal = vecStart + (GetAbsVelocity() * flInterval);
+	Vector vecWishedGoal = vecStart + (GetAbsVelocity() * flInterval) / 2;//half to climb over rail in coast 04
 
-	UTIL_TraceLine( vecStart + up, vecWishedGoal + up, MASK_SHOT, this, COLLISION_GROUP_NONE, &tr );
+	UTIL_TraceLine(vecStart + up, vecWishedGoal + up, MASK_BLOB_SOLID, this, COLLISION_GROUP_NONE, &tr);
 
 	//NDebugOverlay::Line( tr.startpos, tr.endpos, 255, 0, 0, false, 0.1f );
 
+	//look at ceilings
+	//the ceiling above the element is not the one of the blob (target entity is always the npc_blob unless you use the chaseentity input)
+	//we're probably entering a building, and if we climb, we'll just end up on the roof
+	trace_t tr2;
+	UTIL_TraceLine(vecStart, vecStart + Vector(0, 0, MAX_TRACE_LENGTH), MASK_BLOB_SOLID, this, COLLISION_GROUP_NONE, &tr2);
+	trace_t tr3;
+	UTIL_TraceLine(tr2.endpos, GetTargetEntity()->GetAbsOrigin(), MASK_BLOB_SOLID, GetTargetEntity(), COLLISION_GROUP_NONE, &tr3);
+
+	if (blob_wall_climb_debug.GetBool())
+	{
+		NDebugOverlay::Line(vecStart, tr2.endpos, 0, 255, 255, true, -1);
+		NDebugOverlay::Line(tr2.endpos, tr3.endpos, 0, 0, 255, true, -1);
+	}
+
 	m_bOnWall = false;
 
-	if( tr.fraction == 1.0f )
+	if( tr.fraction == 1.0f || tr3.fraction != 1.0f)
 	{
-		UTIL_TraceLine( vecWishedGoal + up, vecWishedGoal - (up * 2.0f), MASK_SHOT, this, COLLISION_GROUP_NONE, &tr );
+		UTIL_TraceLine(vecWishedGoal + up, vecWishedGoal - (up * 2.0f), MASK_BLOB_SOLID, this, COLLISION_GROUP_NONE, &tr);
 		//NDebugOverlay::Line( tr.startpos, tr.endpos, 255, 255, 0, false, 0.1f );
 		tr.endpos.z += MOVE_HEIGHT_EPSILON;
+		if (blob_wall_climb_debug.GetBool() && tr3.DidHit())
+		{
+			NDebugOverlay::Line(vecStart, tr2.endpos, 0, 255, 255, true, -1);
+			NDebugOverlay::Line(tr2.endpos, tr3.endpos, 0, 0, 255, true, -1);
+		}
 	}
 	else
 	{
 		if (blob_wall_climb_debug.GetBool())
 		{
-			Msg("vecStart %0.1f %0.1f %0.1f GetAbsVelocity() %0.1f %0.1f %0.1f flInterval %0.1f\n", vecStart.x, vecStart.y, vecStart.z, GetAbsVelocity().x, GetAbsVelocity().y, GetAbsVelocity().z, flInterval);
-			NDebugOverlay::Line(vecStart + up, vecWishedGoal + up, 0, 255, 0, false, -1);
+			Msg("vecStart %0.1f %0.1f %0.1f GetAbsVelocity() %0.1f %0.1f %0.1f flInterval %f\n", vecStart.x, vecStart.y, vecStart.z, GetAbsVelocity().x, GetAbsVelocity().y, GetAbsVelocity().z, flInterval);
+			NDebugOverlay::Line(vecStart + up, tr.endpos, 0, 255, 0, true, -1);
+			NDebugOverlay::Line(tr.endpos, vecWishedGoal + up, 255, 0, 0, true, -1);
 		}
 
 		m_bOnWall = true;
 
-		if( tr.m_pEnt != NULL && !tr.m_pEnt->IsWorld() )
+		if (tr.m_pEnt != NULL && !tr.m_pEnt->IsWorld())
 		{
 			IPhysicsObject *pPhysics = tr.m_pEnt->VPhysicsGetObject();
 
-			if( pPhysics != NULL )
+			if (pPhysics != NULL)
 			{
 				Vector vecMassCenter;
 				Vector vecMassCenterWorld;
 
 				vecMassCenter = pPhysics->GetMassCenterLocalSpace();
-				pPhysics->LocalToWorld( &vecMassCenterWorld, vecMassCenter );
+				pPhysics->LocalToWorld(&vecMassCenterWorld, vecMassCenter);
 
-				if( tr.endpos.z > vecMassCenterWorld.z )
+				if (tr.endpos.z > vecMassCenterWorld.z)
 				{
-					pPhysics->ApplyForceOffset( (-150.0f * m_flRandomEightyPercent) * tr.plane.normal, tr.endpos );
+					pPhysics->ApplyForceOffset((-150.0f * m_flRandomEightyPercent) * tr.plane.normal, tr.endpos);
 				}
 			}
 		}
 	}
 
 	Vector vecDir = tr.endpos - vecStart;
+	if (tr3.DidHit())
+		vecDir.z = min(vecDir.z, 0);
 	VectorNormalize( vecDir );
 	SetElementVelocity( vecDir * flSpeed, false );
 }
@@ -312,6 +337,9 @@ void CBlobElement::MoveTowardsTargetEntity( float speed )
 
 		Vector vecDir = pTarget->WorldSpaceCenter() - GetAbsOrigin();
 		vecDir.NormalizeInPlace();
+		//Msg("target z: %0.1f my z: %0.1f going %f\n", pTarget->WorldSpaceCenter().z, GetAbsOrigin().z, vecDir.z);
+		//NDebugOverlay::Line(pTarget->WorldSpaceCenter(), GetAbsOrigin(), 0, 255, 0, true, -1);
+		//NDebugOverlay::Line(GetAbsOrigin(), GetAbsOrigin() + vecDir * speed, 0, 255, 0, true, -1);
 		SetElementVelocity( vecDir * speed, true );
 	}
 	else
@@ -734,7 +762,7 @@ void CNPC_Blob::DoBlobBatchedAI( int iStart, int iEnd )
 	float flMySine;
 	float flAmplitude = npc_blob_sin_amplitude.GetFloat();
 	float flMyAmplitude;
-	Vector vecRight;
+	Vector vecRight = vec3_origin;
 	Vector vecForward;
 
 	// Local fields for attract/repel
@@ -957,15 +985,15 @@ void CNPC_Blob::DoBlobBatchedAI( int iStart, int iEnd )
 			pThisElement->SetAbsAngles( angles );
 		}
 
-/*
+///*
 		//--
 		// Stragglers/Group integrity
 		//
-		if( pThisElement->m_flDistFromCentroidSqr > flStragglerDistSqr )
+		if (pThisElement->m_flDistFromCentroidSqr > npc_blob_straggler_dist.GetFloat())
 		{
-			NDebugOverlay::Line( pThisElement->GetAbsOrigin(), m_vecCentroid, 255, 0, 0, false, 0.025f );
+			NDebugOverlay::Line( pThisElement->GetAbsOrigin(), m_vecCentroid, 255, 255, 255, false, 0.025f );
 		}
-*/
+//*/
 	}
 }
 
@@ -1314,7 +1342,7 @@ void CNPC_Blob::InitializeElements()
 		}
 
 		trace_t tr;
-		UTIL_TraceLine( vecDest, vecDest + Vector (0, 0, MIN_COORD_FLOAT), MASK_SHOT, pElement, COLLISION_GROUP_NONE, &tr );
+		UTIL_TraceLine(vecDest, vecDest + Vector(0, 0, MIN_COORD_FLOAT), MASK_BLOB_SOLID, pElement, COLLISION_GROUP_NONE, &tr);
 
 		pElement->SetAbsOrigin( tr.endpos + Vector( 0, 0, 1 ) );
 
@@ -1749,7 +1777,7 @@ class C_NPC_Blob : public C_AI_BaseNPC
 	Vector				vecRMaxs;
 	Vector				ClosestElementPos();
 	void				EdgeInterp(Vector vert1, Vector vert2, bool bDebug, int i, int j, int k, int edgeCase, float* passdif, Vector* passnormal);
-	int					m_iCubeWidth;
+	float				m_flCubeWidth;
 	void				Spawn();
 	IMaterial*			m_pMaterial;
 	//CUtlVector<CubemapSample_t> m_Cubemaps;
@@ -1845,31 +1873,31 @@ int C_NPC_Blob::DrawModel(int flags)
 	if (m_iNumElements <= 0)
 		return 0;
 	
-	m_iCubeWidth = MIN_SAMPLE_INTERVAL;
+	m_flCubeWidth = MIN_SAMPLE_INTERVAL;
 	//int iMarches = 0;
 	//int iSamples = 0;
 	int iXBound = vecRMaxs.x - vecRMins.x;
 	int iYBound = vecRMaxs.y - vecRMins.y;
 	int iZBound = vecRMaxs.z - vecRMins.z;
-	int iXSamples = iXBound / m_iCubeWidth + 1;
-	int iYSamples = iYBound / m_iCubeWidth + 1;
-	int iZSamples = iZBound / m_iCubeWidth + 1;
+	int iXSamples = iXBound / m_flCubeWidth + 1;
+	int iYSamples = iYBound / m_flCubeWidth + 1;
+	int iZSamples = iZBound / m_flCubeWidth + 1;
 	//use coarser grid if getting too big
 	///*
-	if (iXBound / MAX_SAMPLES_PER_AXIS > m_iCubeWidth)
+	if (iXSamples > MAX_SAMPLES_PER_AXIS)
 	{
-		m_iCubeWidth = iXBound / MAX_SAMPLES_PER_AXIS;
-		iXSamples = iYSamples = iZSamples = MAX_SAMPLES_PER_AXIS;
+		m_flCubeWidth = max(m_flCubeWidth, iXBound / MAX_SAMPLES_PER_AXIS);
+		iXSamples = MAX_SAMPLES_PER_AXIS;
 	}
-	if (iYBound / MAX_SAMPLES_PER_AXIS > m_iCubeWidth)
+	if (iYSamples > MAX_SAMPLES_PER_AXIS)
 	{
-		m_iCubeWidth = iYBound / MAX_SAMPLES_PER_AXIS;
-		iXSamples = iYSamples = iZSamples = MAX_SAMPLES_PER_AXIS;
+		m_flCubeWidth = max(m_flCubeWidth, iYBound / MAX_SAMPLES_PER_AXIS);
+		iYSamples = MAX_SAMPLES_PER_AXIS;
 	}
-	if (iZBound / MAX_SAMPLES_PER_AXIS > m_iCubeWidth)
+	if (iZSamples > MAX_SAMPLES_PER_AXIS)
 	{
-		m_iCubeWidth = iZBound / MAX_SAMPLES_PER_AXIS;
-		iXSamples = iYSamples = iZSamples = MAX_SAMPLES_PER_AXIS;
+		m_flCubeWidth = max(m_flCubeWidth, iZBound / MAX_SAMPLES_PER_AXIS);
+		iZSamples = MAX_SAMPLES_PER_AXIS;
 	}
 	//*/
 	///*
@@ -1878,17 +1906,17 @@ int C_NPC_Blob::DrawModel(int flags)
 	//Vector iStart, iEnd;
 	for (int i = 0; i < iXSamples; i++)
 	{
-		x = vecRMins.x + (m_iCubeWidth * i);
+		x = vecRMins.x + (m_flCubeWidth * i);
 		float y = vecRMins.y;
 		//Vector jStart, jEnd;
 		for (int j = 0; j < iYSamples; j++)
 		{
-			y = vecRMins.y + (m_iCubeWidth * j);
+			y = vecRMins.y + (m_flCubeWidth * j);
 			float z = vecRMins.z;
 			//Vector kStart, kEnd;
 			for (int k = 0; k < iZSamples; k++)
 			{
-				z = vecRMins.z + (m_iCubeWidth * k);
+				z = vecRMins.z + (m_flCubeWidth * k);
 				Sample sample;
 				float dif;
 				Vector normal;
@@ -1911,15 +1939,15 @@ int C_NPC_Blob::DrawModel(int flags)
 	x = vecRMins.x;
 	for (int i = 0; i < iXSamples; i++)
 	{
-		x = vecRMins.x + (m_iCubeWidth * i);
+		x = vecRMins.x + (m_flCubeWidth * i);
 		float y = vecRMins.y;
 		for (int j = 0; j < iYSamples; j++)
 		{
-			y = vecRMins.y + (m_iCubeWidth * j);
+			y = vecRMins.y + (m_flCubeWidth * j);
 			float z = vecRMins.z;
 			for (int k = 0; k < iZSamples; k++)
 			{
-				z = vecRMins.z + (m_iCubeWidth * k);
+				z = vecRMins.z + (m_flCubeWidth * k);
 				MarchCube(vOrigin + Vector(x, y, z), i, j, k);
 				//iMarches++;
 				//Msg("MarchCube at %f %f %f\n", x, y, z);
@@ -1997,17 +2025,11 @@ int C_NPC_Blob::DrawModel(int flags)
 		//Msg("vecNorm %f %f %f\n", vecNorm.x, vecNorm.y, vecNorm.z);
 		meshBuilder.AdvanceVertex();
 	}
-	/*
 	for (int iInd = 0; iInd < indices.Count(); iInd += 3)
 	{
 		meshBuilder.FastIndex(indices[iInd + 0]);
 		meshBuilder.FastIndex(indices[iInd + 1]);
 		meshBuilder.FastIndex(indices[iInd + 2]);
-	}
-	*/
-	for (int iInd = 0; iInd < indices.Count(); iInd += 2)
-	{
-		meshBuilder.FastIndex2(indices[iInd], indices[iInd + 1]);
 	}
 	meshBuilder.End();
 	pMesh->Draw();
@@ -2203,7 +2225,7 @@ void C_NPC_Blob::MarchCube(Vector minCornerPos, int i, int j, int k)
 		//Msg("MarchCube to [%i][%i][%i] i %i j %i k %i offset %i %i %i\n", i + (int)cornerOffsets[l].x, j + (int)cornerOffsets[l].y, k + (int)cornerOffsets[l].z, i, j, k, (int)cornerOffsets[l].x, (int)cornerOffsets[l].y, (int)cornerOffsets[l].z);
 		Vector vecOffset = cornerOffsets[l];
 		float sample = sampleCache[i + (int)vecOffset.x + (j + (int)vecOffset.y) * MAX_SAMPLES_PER_AXIS + (k + (int)vecOffset.z) * MAX_SAMPLES_PER_AXIS_SQUARED].dif;
-		//float sample = SampleValue((minCornerPos + cornerOffsets[l] * m_iCubeWidth), false);
+		//float sample = SampleValue((minCornerPos + cornerOffsets[l] * m_flCubeWidth), false);
 		if (blob_metaball.GetBool())
 		{
 			//metaballs
@@ -2217,7 +2239,7 @@ void C_NPC_Blob::MarchCube(Vector minCornerPos, int i, int j, int k)
 			{
 				//int color = 255 * (sample / blob_threshold.GetFloat());
 				int color = 255 * sample;
-				NDebugOverlay::Line((minCornerPos + cornerOffsets[l] * m_iCubeWidth), (minCornerPos + cornerOffsets[l] * m_iCubeWidth) - Vector(0, 0, 0.3), color, color, color, true, -1);
+				NDebugOverlay::Line((minCornerPos + cornerOffsets[l] * m_flCubeWidth), (minCornerPos + cornerOffsets[l] * m_flCubeWidth) - Vector(0, 0, 0.3), color, color, color, true, -1);
 			}
 			*/
 		}
@@ -2232,7 +2254,7 @@ void C_NPC_Blob::MarchCube(Vector minCornerPos, int i, int j, int k)
 			/*
 			//int color =  255 * (sample / blob_threshold.GetFloat());
 			int color = 255 * sample;
-			NDebugOverlay::Line((minCornerPos + cornerOffsets[l] * m_iCubeWidth), (minCornerPos + cornerOffsets[l] * m_iCubeWidth) - Vector(0, 0, 0.3), color, color, color, true, -1);
+			NDebugOverlay::Line((minCornerPos + cornerOffsets[l] * m_flCubeWidth), (minCornerPos + cornerOffsets[l] * m_flCubeWidth) - Vector(0, 0, 0.3), color, color, color, true, -1);
 			*/
 		}
 	}
@@ -2260,8 +2282,8 @@ void C_NPC_Blob::MarchCube(Vector minCornerPos, int i, int j, int k)
 			Vector normal;
 			if (bDebug) Msg("%i + %i * 256 = %i (%i)\n", caseIndex, caseVert, caseIndex + (caseVert * 256), edgeCase);
 
-			Vector vert1 = minCornerPos + (edgeVertexOffsets[edgeCase * 2] * m_iCubeWidth); // beginning of the edge
-			Vector vert2 = minCornerPos + (edgeVertexOffsets[edgeCase * 2 + 1] * m_iCubeWidth); // end of the edge
+			Vector vert1 = minCornerPos + (edgeVertexOffsets[edgeCase * 2] * m_flCubeWidth); // beginning of the edge
+			Vector vert2 = minCornerPos + (edgeVertexOffsets[edgeCase * 2 + 1] * m_flCubeWidth); // end of the edge
 
 			Vector vertPosInterpolated;
 			if (blob_interp.GetBool() && blob_case_override.GetInt() == -1)
@@ -2309,7 +2331,7 @@ void C_NPC_Blob::MarchCube(Vector minCornerPos, int i, int j, int k)
 				interpCache[i + j * MAX_SAMPLES_PER_AXIS + k * MAX_SAMPLES_PER_AXIS_SQUARED][edgeCase] = sample;
 				
 				// Lerp
-				//dif *= m_iCubeWidth;
+				//dif *= m_flCubeWidth;
 				vertPosInterpolated = vert1 + ((vert2 - vert1) * sample.dif);
 				Assert(vertPosInterpolated.IsValid());
 			}
