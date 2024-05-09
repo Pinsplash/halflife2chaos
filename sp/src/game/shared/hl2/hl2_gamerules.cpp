@@ -1569,6 +1569,10 @@ bool CHalfLife2::ShouldCollide( int collisionGroup0, int collisionGroup1 )
 	if ( collisionGroup0 == HL2COLLISION_GROUP_STRIDER && collisionGroup1 == HL2COLLISION_GROUP_STRIDER )
 		return false;
 
+	// blob elements don't get stuck on each other
+	if (collisionGroup0 == HL2COLLISION_GROUP_BLOB && collisionGroup1 == HL2COLLISION_GROUP_BLOB)
+		return false;
+
 	// gunships don't collide with other gunships
 	if ( collisionGroup0 == HL2COLLISION_GROUP_GUNSHIP && collisionGroup1 == HL2COLLISION_GROUP_GUNSHIP )
 		return false;

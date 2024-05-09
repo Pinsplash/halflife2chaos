@@ -8,7 +8,7 @@
 //pretty sure i have to make this a constant for networking...
 //default 20
 #define BLOB_NUM_ELEMENTS 20
-#define MASK_BLOB_SOLID MASK_NPCSOLID
+#define MASK_BLOB_SOLID (MASK_SHOT)
 #ifndef CLIENT_DLL
 #include "ai_default.h"
 #include "ai_task.h"
@@ -39,6 +39,7 @@ ConVar blob_element_speed("blob_element_speed", "120");
 #endif
 ConVar npc_blob_idle_speed_factor( "npc_blob_idle_speed_factor", "0.5" );
 ConVar blob_wall_climb_debug("blob_wall_climb_debug", "0");
+ConVar blob_wall_climb_debug_ceiling("blob_wall_climb_debug_ceiling", "0");
 //ConVar blob_numelements( "blob_numelements", "20" );
 ConVar blob_batchpercent( "blob_batchpercent", "100" );
 
@@ -53,7 +54,7 @@ ConVar npc_blob_sin_amplitude( "npc_blob_sin_amplitude", "90.0f" );
 
 ConVar npc_blob_show_centroid( "npc_blob_show_centroid", "0" );
 
-ConVar npc_blob_straggler_dist( "npc_blob_straggler_dist", "240" );
+ConVar npc_blob_straggler_dist( "npc_blob_straggler_dist", "20000" );
 
 ConVar npc_blob_use_orientation( "npc_blob_use_orientation", "1" );
 ConVar npc_blob_use_model( "npc_blob_use_model", "1" );
@@ -61,7 +62,7 @@ ConVar npc_blob_use_model( "npc_blob_use_model", "1" );
 ConVar blob_velocity_show("blob_velocity_show", "0");
 
 ConVar npc_blob_think_interval( "npc_blob_think_interval", "0.025" );
-
+ConVar element_number_debug("element_number_debug", "-1");
 
 #define NPC_BLOB_MODEL "models/headcrab.mdl"
 
@@ -108,6 +109,7 @@ public:
 	void	ReconfigureRandomParams();
 	void	EnforceSpeedLimits( float flMinSpeed, float flMaxSpeed );
 
+	unsigned int PhysicsSolidMaskForEntity() const;
 	DECLARE_DATADESC();
 
 public:
@@ -118,7 +120,8 @@ public:
 	int		m_iElementNumber;
 	Vector	m_vecTargetLocation;
 	float	m_flRandomEightyPercent;
-
+	float	m_flStuckTime = 0;
+	Vector	m_flWishVel;
 private:
 	EHANDLE	m_hTargetEntity;
 	float	m_flSinePhase;
@@ -144,7 +147,8 @@ DEFINE_FIELD( m_flSinePhase,			FIELD_FLOAT ),
 DEFINE_FIELD( m_flSineAmplitude,		FIELD_FLOAT ),
 DEFINE_FIELD( m_flSineFrequency,		FIELD_FLOAT ),
 DEFINE_FIELD( m_iMovementRule,			FIELD_INTEGER ),
-
+DEFINE_FIELD(m_flStuckTime, FIELD_FLOAT),
+DEFINE_FIELD(m_flWishVel, FIELD_VECTOR),
 END_DATADESC()
 
 
@@ -163,6 +167,12 @@ const char *GetBlobModelName()
 	return pszBlobModels[ index ];
 }
 
+unsigned int CBlobElement::PhysicsSolidMaskForEntity() const
+{
+	//return BaseClass::PhysicsSolidMaskForEntity() & ~CONTENTS_GRATE;
+	return MASK_BLOB_SOLID;
+}
+
 //---------------------------------------------------------
 //---------------------------------------------------------
 void CBlobElement::Precache()
@@ -178,20 +188,20 @@ void CBlobElement::Spawn()
 {
 	Precache();
 	
-	SetSolid( SOLID_NONE );
-	SetMoveType( MOVETYPE_FLY );
+	SetSolid( SOLID_BBOX );
+	SetMoveType( MOVETYPE_STEP );
 	AddSolidFlags( FSOLID_NOT_STANDABLE | FSOLID_NOT_SOLID );
 	SetRenderMode(kRenderTransAdd);
 	SetRenderColorA(0);
 	SetModel( GetBlobModelName() );
-	UTIL_SetSize( this, vec3_origin, vec3_origin );
+	UTIL_SetSize(this, Vector(-1, -1, -1), Vector(1, 1, 1));
 
 	QAngle angles(0,0,0);
 	angles.y = random->RandomFloat( 0, 180 );
 	SetAbsAngles( angles );
 
 	AddEffects( EF_NOSHADOW );//EF_NODRAW intentionally left off so that elements will be networked... probably a better way out there
-
+	SetCollisionGroup(HL2COLLISION_GROUP_BLOB);
 	ReconfigureRandomParams();
 }
 
@@ -241,13 +251,14 @@ void CBlobElement::AddElementVelocity( Vector vecVelocityAdd, bool bPlanarOnly )
 #define BLOB_TRACE_HEIGHT 8.0f
 void CBlobElement::ModifyVelocityForSurface( float flInterval, float flSpeed )
 {
+	Assert(element_number_debug.GetInt() != m_iElementNumber);
 	trace_t tr;
 	Vector vecStart = GetAbsOrigin();
 	Vector up = Vector( 0, 0, BLOB_TRACE_HEIGHT );
 
-	Vector vecWishedGoal = vecStart + (GetAbsVelocity() * flInterval) / 2;//half to climb over rail in coast 04
+	Vector vecWishedGoal = vecStart + (m_flWishVel * flInterval);//half to climb over rail in coast 04
 
-	UTIL_TraceLine(vecStart + up, vecWishedGoal + up, MASK_BLOB_SOLID, this, COLLISION_GROUP_NONE, &tr);
+	UTIL_TraceHull(vecStart + Vector(0, 0, 1)/* + up*/, vecWishedGoal + up, Vector(-1, -1, -1), Vector(1, 1, 1), MASK_BLOB_SOLID, this, HL2COLLISION_GROUP_BLOB, &tr);
 
 	//NDebugOverlay::Line( tr.startpos, tr.endpos, 255, 0, 0, false, 0.1f );
 
@@ -255,38 +266,33 @@ void CBlobElement::ModifyVelocityForSurface( float flInterval, float flSpeed )
 	//the ceiling above the element is not the one of the blob (target entity is always the npc_blob unless you use the chaseentity input)
 	//we're probably entering a building, and if we climb, we'll just end up on the roof
 	trace_t tr2;
-	UTIL_TraceLine(vecStart, vecStart + Vector(0, 0, MAX_TRACE_LENGTH), MASK_BLOB_SOLID, this, COLLISION_GROUP_NONE, &tr2);
+	UTIL_TraceHull(vecStart, vecStart + Vector(0, 0, MAX_TRACE_LENGTH), Vector(-1, -1, -1), Vector(1, 1, 1), MASK_BLOB_SOLID, this, HL2COLLISION_GROUP_BLOB, &tr2);
 	trace_t tr3;
-	UTIL_TraceLine(tr2.endpos, GetTargetEntity()->GetAbsOrigin(), MASK_BLOB_SOLID, GetTargetEntity(), COLLISION_GROUP_NONE, &tr3);
+	UTIL_TraceHull(tr2.endpos, GetTargetEntity()->GetAbsOrigin(), Vector(-1, -1, -1), Vector(1, 1, 1), MASK_BLOB_SOLID & ~CONTENTS_MONSTER, GetTargetEntity(), HL2COLLISION_GROUP_BLOB, &tr3);
 
-	if (blob_wall_climb_debug.GetBool())
+	if (blob_wall_climb_debug_ceiling.GetBool())
 	{
 		NDebugOverlay::Line(vecStart, tr2.endpos, 0, 255, 255, true, -1);
 		NDebugOverlay::Line(tr2.endpos, tr3.endpos, 0, 0, 255, true, -1);
 	}
 
+	if (blob_wall_climb_debug.GetBool())
+	{
+		Msg("vecStart %0.1f %0.1f %0.1f GetAbsVelocity() %0.1f %0.1f %0.1f flInterval %f\n", vecStart.x, vecStart.y, vecStart.z, GetAbsVelocity().x, GetAbsVelocity().y, GetAbsVelocity().z, flInterval);
+		NDebugOverlay::Line(vecStart + up, tr.endpos, 0, 255, 0, true, -1);
+		NDebugOverlay::Line(tr.endpos, vecWishedGoal + up, 255, 0, 0, true, -1);
+	}
+
 	m_bOnWall = false;
 
-	if( tr.fraction == 1.0f || tr3.fraction != 1.0f)
+	if (tr.fraction == 1.0f || tr3.fraction < 0.9)
 	{
-		UTIL_TraceLine(vecWishedGoal + up, vecWishedGoal - (up * 2.0f), MASK_BLOB_SOLID, this, COLLISION_GROUP_NONE, &tr);
+		UTIL_TraceHull(vecWishedGoal + up, vecWishedGoal - (up * 2.0f), Vector(-1, -1, -1), Vector(1, 1, 1), MASK_BLOB_SOLID, this, HL2COLLISION_GROUP_BLOB, &tr);
 		//NDebugOverlay::Line( tr.startpos, tr.endpos, 255, 255, 0, false, 0.1f );
 		tr.endpos.z += MOVE_HEIGHT_EPSILON;
-		if (blob_wall_climb_debug.GetBool() && tr3.DidHit())
-		{
-			NDebugOverlay::Line(vecStart, tr2.endpos, 0, 255, 255, true, -1);
-			NDebugOverlay::Line(tr2.endpos, tr3.endpos, 0, 0, 255, true, -1);
-		}
 	}
 	else
 	{
-		if (blob_wall_climb_debug.GetBool())
-		{
-			Msg("vecStart %0.1f %0.1f %0.1f GetAbsVelocity() %0.1f %0.1f %0.1f flInterval %f\n", vecStart.x, vecStart.y, vecStart.z, GetAbsVelocity().x, GetAbsVelocity().y, GetAbsVelocity().z, flInterval);
-			NDebugOverlay::Line(vecStart + up, tr.endpos, 0, 255, 0, true, -1);
-			NDebugOverlay::Line(tr.endpos, vecWishedGoal + up, 255, 0, 0, true, -1);
-		}
-
 		m_bOnWall = true;
 
 		if (tr.m_pEnt != NULL && !tr.m_pEnt->IsWorld())
@@ -310,7 +316,7 @@ void CBlobElement::ModifyVelocityForSurface( float flInterval, float flSpeed )
 	}
 
 	Vector vecDir = tr.endpos - vecStart;
-	if (tr3.DidHit())
+	if (!m_bOnWall)
 		vecDir.z = min(vecDir.z, 0);
 	VectorNormalize( vecDir );
 	SetElementVelocity( vecDir * flSpeed, false );
@@ -340,11 +346,13 @@ void CBlobElement::MoveTowardsTargetEntity( float speed )
 		//Msg("target z: %0.1f my z: %0.1f going %f\n", pTarget->WorldSpaceCenter().z, GetAbsOrigin().z, vecDir.z);
 		//NDebugOverlay::Line(pTarget->WorldSpaceCenter(), GetAbsOrigin(), 0, 255, 0, true, -1);
 		//NDebugOverlay::Line(GetAbsOrigin(), GetAbsOrigin() + vecDir * speed, 0, 255, 0, true, -1);
-		SetElementVelocity( vecDir * speed, true );
+		//SetElementVelocity( vecDir * speed, true );
+		m_flWishVel = vecDir * speed;
 	}
 	else
 	{
-        SetElementVelocity( vec3_origin, true );
+        //SetElementVelocity( vec3_origin, true );
+		m_flWishVel = vec3_origin;
 	}
 }
 
@@ -387,16 +395,18 @@ void CBlobElement::ReconfigureRandomParams()
 //---------------------------------------------------------
 void CBlobElement::EnforceSpeedLimits( float flMinSpeed, float flMaxSpeed )
 {
-	Vector vecVelocity = GetAbsVelocity();
+	Vector vecVelocity = m_flWishVel;// GetAbsVelocity();
 	float flSpeed = VectorNormalize( vecVelocity );
 
 	if( flSpeed > flMaxSpeed )
 	{
-		SetElementVelocity( vecVelocity * flMaxSpeed, true );
+		//SetElementVelocity( vecVelocity * flMaxSpeed, true );
+		m_flWishVel = vecVelocity * flMaxSpeed;
 	}
 	else if( flSpeed < flMinSpeed )
 	{
-		SetElementVelocity( vecVelocity * flMinSpeed, true );
+		//SetElementVelocity( vecVelocity * flMinSpeed, true );
+		m_flWishVel = vecVelocity * flMinSpeed;
 	}
 }
 
@@ -481,11 +491,11 @@ public:
 	void InputChaseEntity( inputdata_t &inputdata );
 	void InputFormHemisphere( inputdata_t &inputdata );
 	void InputFormTwoSpheres( inputdata_t &inputdata );
-
+	void OnKilledNPC(CBaseCombatCharacter *pKilled);
 public:
 	Vector	m_vecAvoidOrigin[ BLOB_MAX_AVOID_ORIGINS ];
 	float	m_flAvoidRadiusSqr;
-
+	virtual Disposition_t IRelationType(CBaseEntity *pTarget);
 private:
 	int		m_iReconfigureElement;
 	int		m_iNumAvoidOrigins;
@@ -596,6 +606,19 @@ void CNPC_Blob::Spawn( void )
 	m_flMinElementDist = blob_mindist.GetFloat();
 }
 
+Disposition_t CNPC_Blob::IRelationType(CBaseEntity *pTarget)
+{
+	//we're useless against flying things
+	if (pTarget->Classify() == CLASS_SCANNER || pTarget->Classify() == CLASS_MANHACK)
+	{
+		return D_NU;
+	}
+	if (pTarget->GetFlags() & FL_FLY)
+	{
+		return D_NU;
+	}
+	return BaseClass::IRelationType(pTarget);
+}
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -669,19 +692,21 @@ void CNPC_Blob::RunAI()
 
 	if( GetEnemy() != NULL )
 	{
-		float flEnemyDistSqr = m_vecCentroid.DistToSqr( GetEnemy()->GetAbsOrigin() );
+		float flEnemyDistSqr = m_vecCentroid.DistToSqr( GetEnemy()->WorldSpaceCenter() );
 
-		if( flEnemyDistSqr <= Square( 32.0f ) )
+		if( flEnemyDistSqr <= Square( 40.0f ) )
 		{
+			//NDebugOverlay::Line(m_vecCentroid, GetEnemy()->WorldSpaceCenter(), 0, 255, 0, true, -1);
 			if( GetEnemy()->Classify() == CLASS_COMBINE )
 			{
 				if( !m_bEatCombineHack )
 				{
 					variant_t var;
 
-					var.SetFloat( 0 );
-					g_EventQueue.AddEvent( GetEnemy(), "HitByBugBait", 0.0f, this, this );
-					g_EventQueue.AddEvent( GetEnemy(), "SetHealth", var, 3.0f, this, this );
+					var.SetFloat(0);
+					g_EventQueue.AddEvent(GetEnemy(), "HitByBugBait", 0.0f, this, this);
+					g_EventQueue.AddEvent(GetEnemy(), "SetHealth", var, 3.0f, this, this);
+					g_EventQueue.AddEvent(this, "KilledNPC", var, 3.0f, this, this);
 					m_bEatCombineHack = true;
 
 					blob_spread_radius.SetValue(48.0f);
@@ -696,16 +721,23 @@ void CNPC_Blob::RunAI()
 				info.SetInflictor( this );
 				info.SetDamage( 5 );
 				info.SetDamageType( DMG_SLASH );
-				info.SetDamageForce( Vector( 0, 0, 1 ) );
+				info.SetDamageForce( Vector( 0, 0, 10 ) );
 
 				GetEnemy()->TakeDamage( info );
 			}
+		}
+		else
+		{
+			NDebugOverlay::Line(m_vecCentroid, GetEnemy()->WorldSpaceCenter(), 255, 0, 0, true, -1);
 		}
 	}
 
 	SetNextThink( gpGlobals->curtime + npc_blob_think_interval.GetFloat() );
 }
-
+void CNPC_Blob::OnKilledNPC(CBaseCombatCharacter *pKilled)
+{
+	m_bEatCombineHack = false;
+}
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 void CNPC_Blob::GatherConditions( void )
@@ -745,7 +777,9 @@ void CNPC_Blob::ComputeCentroid()
 
 	for( int i = 0 ; i < m_Elements.Count() ; i++ )
 	{
-		m_vecCentroid += m_Elements[ i ]->GetAbsOrigin();
+		if (!m_Elements[i])
+			continue;
+		m_vecCentroid += m_Elements[i]->GetAbsOrigin();
 	}
 
 	m_vecCentroid /= m_Elements.Count();
@@ -809,6 +843,8 @@ void CNPC_Blob::DoBlobBatchedAI( int iStart, int iEnd )
 	for( int i = iStart ; i < iEnd ; i++ )
 	{
 		CBlobElement *pThisElement = (CBlobElement *)m_Elements[i].Get();
+		if (!pThisElement)
+			continue;
 
 		//--
 		// Initial movement
@@ -828,12 +864,13 @@ void CNPC_Blob::DoBlobBatchedAI( int iStart, int iEnd )
 		{
 		case BLOB_MOVE_DONT_MOVE:
 			{
-				pThisElement->SetElementVelocity( vec3_origin, true );
+				//pThisElement->SetElementVelocity( vec3_origin, true );
+				pThisElement->m_flWishVel = vec3_origin;
 
 				trace_t tr;
 				Vector vecOrigin = pThisElement->GetAbsOrigin();
 
-				UTIL_TraceLine( vecOrigin, vecOrigin - Vector( 0, 0, 16), MASK_SHOT, this, COLLISION_GROUP_NONE, &tr );
+				UTIL_TraceHull(vecOrigin, vecOrigin - Vector(0, 0, 16), Vector(-1, -1, -1), Vector(1, 1, 1), MASK_BLOB_SOLID, this, HL2COLLISION_GROUP_BLOB, &tr);
 
 				if( tr.fraction < 1.0f )
 				{
@@ -912,6 +949,8 @@ void CNPC_Blob::DoBlobBatchedAI( int iStart, int iEnd )
 					continue;
 
 				CBlobElement *pThatElement = (CBlobElement *)m_Elements[j].Get();
+				if (!pThatElement)
+					continue;
 				if( i != j )
 				{
 					Vector vecThatElementOrigin = pThatElement->GetAbsOrigin();
@@ -924,9 +963,11 @@ void CNPC_Blob::DoBlobBatchedAI( int iStart, int iEnd )
 						Vector vecRepelDir = ( vecThisElementOrigin - vecThatElementOrigin );
 
 						vecRepelDir.NormalizeInPlace();
-						flRepelSpeed = (flSpeed * ( 1.0f - ( distSqr / minDistSqr ) ) ) * pThatElement->GetSinePhase(); 
-						pThisElement->AddElementVelocity( vecRepelDir * flRepelSpeed, true );
-
+						flRepelSpeed = (flSpeed * (1.0f - (distSqr / minDistSqr))) * pThatElement->GetSinePhase();
+						if (GetEnemy())
+							flRepelSpeed /= 3;//spread less when chasing an enemy for visual appeal
+						//pThisElement->AddElementVelocity( vecRepelDir * flRepelSpeed, true );
+						pThisElement->m_flWishVel += vecRepelDir * flRepelSpeed;
 						// Since we altered this element's velocity after it was initially set, there's a chance
 						// that the sums of multiple vectors will cause the element to over or underspeed, so 
 						// mark it for speed limit enforcement
@@ -943,7 +984,8 @@ void CNPC_Blob::DoBlobBatchedAI( int iStart, int iEnd )
 		{
 			flMySine = sin( gpGlobals->curtime * pThisElement->GetSineFrequency() );
 			flMyAmplitude = flAmplitude * pThisElement->GetSineAmplitude();
-			pThisElement->AddElementVelocity( vecRight * (flMySine * flMyAmplitude), true );
+			//pThisElement->AddElementVelocity( vecRight * (flMySine * flMyAmplitude), true );
+			pThisElement->m_flWishVel += vecRight * (flMySine * flMyAmplitude);
 		}
 
 		// Avoidance
@@ -954,7 +996,8 @@ void CNPC_Blob::DoBlobBatchedAI( int iStart, int iEnd )
 			if( vecAvoidDir.LengthSqr() <= (m_flAvoidRadiusSqr * pThisElement->m_flRandomEightyPercent) )
 			{
 				VectorNormalize( vecAvoidDir );
-				pThisElement->AddElementVelocity( vecAvoidDir * (flSpeed * 2.0f), true );
+				//pThisElement->AddElementVelocity( vecAvoidDir * (flSpeed * 2.0f), true );
+				pThisElement->m_flWishVel += vecAvoidDir * (flSpeed * 2.0f);
 				break;
 			}
 		}
@@ -973,9 +1016,23 @@ void CNPC_Blob::DoBlobBatchedAI( int iStart, int iEnd )
 		pThisElement->ModifyVelocityForSurface( flInterval, flSpeed );
 
 		// For identifying stuck elements.
-		pThisElement->m_vecPrevOrigin = pThisElement->GetAbsOrigin(); 
-
-		pThisElement->m_flDistFromCentroidSqr = pThisElement->m_vecPrevOrigin.DistToSqr( m_vecCentroid );
+		pThisElement->m_flDistFromCentroidSqr = pThisElement->GetAbsOrigin().DistToSqr(m_vecCentroid);
+		//if an element is stuck for too long, let it teleport to the blob
+		trace_t trToCentroid;
+		UTIL_TraceHull(pThisElement->GetAbsOrigin(), m_vecCentroid, Vector(-1, -1, -1), Vector(1, 1, 1), MASK_BLOB_SOLID, this, HL2COLLISION_GROUP_BLOB, &trToCentroid);
+		if ((pThisElement->m_flDistFromCentroidSqr > npc_blob_straggler_dist.GetFloat() || trToCentroid.fraction < 1) && (pThisElement->m_vecPrevOrigin - pThisElement->GetAbsOrigin()).Length() < 32)
+		{
+			pThisElement->m_flStuckTime += npc_blob_think_interval.GetFloat();
+			if (pThisElement->m_flStuckTime > 10)
+			{
+				pThisElement->SetAbsOrigin(GetAbsOrigin() + Vector(RandomFloat(-1, 1), RandomFloat(-1, 1), 2));//offset prevents elements being stuck together forever because vecRight may come back 0
+			}
+		}
+		else
+		{
+			pThisElement->m_flStuckTime = 0;
+			pThisElement->m_vecPrevOrigin = pThisElement->GetAbsOrigin();
+		}
 
 		// Orientation
 		if( bDoOrientation )
@@ -984,16 +1041,6 @@ void CNPC_Blob::DoBlobBatchedAI( int iStart, int iEnd )
 			VectorAngles( pThisElement->GetAbsVelocity(), angles );
 			pThisElement->SetAbsAngles( angles );
 		}
-
-///*
-		//--
-		// Stragglers/Group integrity
-		//
-		if (pThisElement->m_flDistFromCentroidSqr > npc_blob_straggler_dist.GetFloat())
-		{
-			NDebugOverlay::Line( pThisElement->GetAbsOrigin(), m_vecCentroid, 255, 255, 255, false, 0.025f );
-		}
-//*/
 	}
 }
 
@@ -1042,8 +1089,14 @@ void CNPC_Blob::AddNewElements( int iNumElements )
 			// Copy the origin of some element that is not me. This will make the expansion
 			// of the group easier on the eye, since this element will spawn inside of some
 			// other element, and then be pushed out by the blob's repel rules.
-			int iCopyElement = random->RandomInt( 0, iInitialElements - 1 );
+			int iCopyElement = random->RandomInt(0, iInitialElements - 1);
+			CBlobElement *pCopyElement = (CBlobElement *)m_Elements[iCopyElement].Get();
+			if (!pCopyElement)
+				continue;
+			if (pCopyElement->m_flStuckTime > 0)//don't copy an element that's stuck
+				continue;
 			pElement->SetAbsOrigin( m_Elements[iCopyElement]->GetAbsOrigin() );
+			//Msg("new element at %0.1f %0.1f %0.1f\n", m_Elements[iCopyElement]->GetAbsOrigin().x, m_Elements[iCopyElement]->GetAbsOrigin().y, m_Elements[iCopyElement]->GetAbsOrigin().z);
 		}
 	}
 }
@@ -1342,7 +1395,7 @@ void CNPC_Blob::InitializeElements()
 		}
 
 		trace_t tr;
-		UTIL_TraceLine(vecDest, vecDest + Vector(0, 0, MIN_COORD_FLOAT), MASK_BLOB_SOLID, pElement, COLLISION_GROUP_NONE, &tr);
+		UTIL_TraceHull(vecDest, vecDest + Vector(0, 0, MIN_COORD_FLOAT), Vector(-1, -1, -1), Vector(1, 1, 1), MASK_BLOB_SOLID, pElement, HL2COLLISION_GROUP_BLOB, &tr);
 
 		pElement->SetAbsOrigin( tr.endpos + Vector( 0, 0, 1 ) );
 
@@ -2036,18 +2089,18 @@ int C_NPC_Blob::DrawModel(int flags)
 	vertices.RemoveAll();
 	indices.RemoveAll();
 	//sampleCache.RemoveAll();
-	/*
+	///*
 	for (int i = 0; i < MAX_SAMPLES_PER_AXIS; i++)
 	{
 		for (int j = 0; j < MAX_SAMPLES_PER_AXIS; j++)
 		{
 			for (int k = 0; k < MAX_SAMPLES_PER_AXIS; k++)
 			{
-				//delete &sampleCache[i + j * MAX_SAMPLES_PER_AXIS + k * MAX_SAMPLES_PER_AXIS_SQUARED];
+				sampleCache[i + j * MAX_SAMPLES_PER_AXIS + k * MAX_SAMPLES_PER_AXIS_SQUARED].dif = 0;
 			}
 		}
 	}
-	*/
+	//*/
 	return 1;
 }
 ConVar blob_element_radius("blob_element_radius", "16");//radius
@@ -2074,6 +2127,7 @@ void C_NPC_Blob::GetRenderBounds(Vector& theMins, Vector& theMaxs)
 	float flPad = blob_rbox_padtoradius.GetFloat() / 2;
 	theMins = vecRMins = mins - Vector(flPad, flPad, flPad) - GetAbsOrigin();
 	theMaxs = vecRMaxs = maxs + Vector(flPad, flPad, flPad) - GetAbsOrigin();
+	Assert(theMins.IsValid() && theMaxs.IsValid());
 }
 ConVar blob_metaball("blob_metaball", "1");//0 = simple ball sampling
 ConVar blob_isomode("blob_isomode", "0");//1 = simple ball marching cubes
