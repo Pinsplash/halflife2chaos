@@ -36,7 +36,7 @@ if %errorlevel% neq 0 (
     pause
     exit
 )
-echo Steps 5, 6, 7 and 8 done.
+echo Steps 3, 4, 5 and 6 done.
 
 
 set "iniFile=%appdata%\obs-studio\global.ini"
@@ -44,25 +44,25 @@ if exist "%iniFile%" (
     findstr /c:"[Python]" "%iniFile%" > nul 2>&1
     if !errorlevel! neq 0 (
         py -c "import os; import sys; executable = '/'.join(sys.executable.split('\\')[:-1]); f = open(os.path.expandvars('${appdata}/obs-studio/global.ini'), 'a'); f.writelines(['\n', '[Python]\n', f'Path64bit={executable}\n']); f.close();"
-        echo Step 9 done.
+        echo Step 7 done.
     ) else (
-        echo Step 9 already done.
+        echo Step 7 already done.
     )   
 ) else (
-    echo Can't find global.ini file. Try starting and closing OBS, then run this script again, if that doesn't help, perform step 9 manually.
+    echo Can't find global.ini file. Try starting and closing OBS, then run this script again, if that doesn't help, perform step 7 manually.
 )
 
 set cnt=0
 for %%A in (%appdata%\obs-studio\basic\scenes\*.json) do set /a cnt+=1
 
 if %cnt% == 0 (
-    echo Couldn't find OBS scenes, you'll have to do step 10 manually.
+    echo Couldn't find OBS scenes, you'll have to do step 8 manually.
 ) else if %cnt% == 1 (
     py -c "import glob; import os; import json; print('You must run this script in twitch-integration folder.') or quit(0) if not os.path.exists(os.getcwd() + '\\youtube_integration.py') else None; f = open(glob.glob(os.path.expandvars('${appdata}/obs-studio/basic/scenes/*.json'))[0], 'r'); data = json.loads(f.read()); f.close(); quit(0) if any('youtube_integration.py' in script['path'] for script in data['modules']['scripts-tool']) else None; data['modules']['scripts-tool'].append({'path': os.getcwd().replace('\\', '/') + '/youtube_integration.py', 'settings': {}}); dump = json.dumps(data); f = open(glob.glob(os.path.expandvars('${appdata}/obs-studio/basic/scenes/*.json'))[0], 'w'); f.write(dump); f.close();"
-    echo Step 10 done.
+    echo Step 8 done.
 ) else (
     py -c "import glob; import os; import json; print('You must run this script in twitch-integration folder.') or quit(0) if not os.path.exists(os.getcwd() + '\\youtube_integration.py') else None; user_input = input('In which profile to add twitch integration? Possible answer [' + ', '.join(path.split('\\')[-1].split('.')[0].lower() for path in glob.glob(os.path.expandvars('${appdata}/obs-studio/basic/scenes/*.json'))) + '] - '); print('Incorrect value. If you want to try again, run the script again.') or quit(0) if not os.path.exists(os.path.expandvars('${appdata}/obs-studio/basic/scenes/'+ user_input + '.json')) else None; f = open(os.path.expandvars('${appdata}/obs-studio/basic/scenes/'+ user_input + '.json'), 'r'); data = json.loads(f.read()); f.close(); quit(0) if any('youtube_integration.py' in script['path'] for script in data['modules']['scripts-tool']) else None; data['modules']['scripts-tool'].append({'path': os.getcwd().replace('\\', '/') + '/youtube_integration.py', 'settings': {}}); dump = json.dumps(data); f = open(os.path.expandvars('${appdata}/obs-studio/basic/scenes/'+ user_input + '.json'), 'w'); f.write(dump); f.close();"
-    echo Step 10 done.
+    echo Step 8 done.
 )
 
 echo Done.
