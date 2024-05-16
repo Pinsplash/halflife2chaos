@@ -6080,8 +6080,15 @@ Activity CAI_BaseNPC::TranslateActivity( Activity idealActivity, Activity *pIdea
 	if ( baseTranslation != weaponTranslation && HaveSequenceForActivity( baseTranslation ) )
 		return baseTranslation;
 
-	if ( idealWeaponActivity != baseTranslation && HaveSequenceForActivity( idealWeaponActivity ) )
-		return idealActivity;
+	if (idealWeaponActivity != baseTranslation && HaveSequenceForActivity(idealWeaponActivity))
+	{
+		//this used to return idealActivity instead, but i found that this was causing grigori to use non-weapon activities in town 02a.
+		//i don't know when this bug started happening.
+		//no other NPCs appear to go down this same code path, but if in the future an NPC is animating incorrectly and this message appears, now you know why.
+		//this may also remove the need for some weapon acttables referencing readiness levels.
+		Msg("%s weapon activity is %s, ideal activity %s\n", GetClassname(), GetActivityName(idealWeaponActivity), GetActivityName(idealActivity));
+		return idealWeaponActivity;
+	}
 
 	if ( idealActivity != idealWeaponActivity && HaveSequenceForActivity( idealActivity ) )
 		return idealActivity;
