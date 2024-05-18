@@ -43,7 +43,7 @@ ConVar blob_wall_climb_debug_ceiling("blob_wall_climb_debug_ceiling", "0");
 //ConVar blob_numelements( "blob_numelements", "20" );
 ConVar blob_batchpercent( "blob_batchpercent", "100" );
 
-ConVar blob_spread_radius( "blob_spread_radius", "30" );//renamed from blob_radius to avoid confusion
+//ConVar blob_spread_radius( "blob_spread_radius", "30" );//renamed from blob_radius to avoid confusion
 
 //ConVar blob_min_element_speed( "blob_min_element_speed", "50" );
 //ConVar blob_max_element_speed( "blob_max_element_speed", "250" );
@@ -471,7 +471,7 @@ public:
 
 	void	FormShapeFromPath( string_t iszPathName );
 	void	SetRadius( float flRadius );
-
+	float	m_flRadius;
 	DECLARE_DATADESC();
 	DECLARE_SERVERCLASS();
 
@@ -519,6 +519,7 @@ DEFINE_FIELD( m_vecCentroid, FIELD_POSITION_VECTOR ),
 DEFINE_FIELD( m_flMinElementDist, FIELD_FLOAT ),
 DEFINE_FIELD( m_iReconfigureElement, FIELD_INTEGER ),
 DEFINE_AUTO_ARRAY( m_Elements, FIELD_EHANDLE ),
+DEFINE_FIELD(m_flRadius, FIELD_FLOAT),
 
 DEFINE_INPUTFUNC( FIELD_STRING, "FormPathShape", InputFormPathShape ),
 DEFINE_INPUTFUNC( FIELD_FLOAT, "SetRadius", InputSetRadius ),
@@ -600,7 +601,7 @@ void CNPC_Blob::Spawn( void )
 	//m_Elements.RemoveAll();
 
 	NPCInit();
-
+	m_flRadius = 30;
 	AddEffects( EF_NOSHADOW );
 
 	m_flMinElementDist = blob_mindist.GetFloat();
@@ -709,7 +710,7 @@ void CNPC_Blob::RunAI()
 					g_EventQueue.AddEvent(this, "KilledNPC", var, 3.0f, this, this);
 					m_bEatCombineHack = true;
 
-					blob_spread_radius.SetValue(48.0f);
+					m_flRadius = 48;
 					RecomputeIdealElementDist();
 				}
 			}
@@ -728,7 +729,7 @@ void CNPC_Blob::RunAI()
 		}
 		else
 		{
-			NDebugOverlay::Line(m_vecCentroid, GetEnemy()->WorldSpaceCenter(), 255, 0, 0, true, -1);
+			//NDebugOverlay::Line(m_vecCentroid, GetEnemy()->WorldSpaceCenter(), 255, 0, 0, true, -1);
 		}
 	}
 
@@ -736,7 +737,12 @@ void CNPC_Blob::RunAI()
 }
 void CNPC_Blob::OnKilledNPC(CBaseCombatCharacter *pKilled)
 {
-	m_bEatCombineHack = false;
+	if (m_bEatCombineHack)
+	{
+		m_bEatCombineHack = false;
+		m_flRadius = 30;
+		RecomputeIdealElementDist();
+	}
 }
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
@@ -748,7 +754,7 @@ void CNPC_Blob::GatherConditions( void )
 		if( !GetEnemy() || !GetEnemy()->IsAlive() )
 		{
 			m_bEatCombineHack = false;
-			blob_spread_radius.SetValue(30.0f);
+			m_flRadius = 30;
 			RecomputeIdealElementDist();
 		}
 	}
@@ -814,7 +820,7 @@ void CNPC_Blob::DoBlobBatchedAI( int iStart, int iEnd )
 	float flIdleSpeedFactor = npc_blob_idle_speed_factor.GetFloat();
 
 	// Group cohesion
-	float flBlobRadiusSqr = Square( blob_spread_radius.GetFloat() + 48.0f ); // Four feet of fudge
+	float flBlobRadiusSqr = Square(m_flRadius + 48.0f); // Four feet of fudge
 
 	// Build a right-hand vector along which we'll add some sine wave data to give each
 	// element a unique insect-like undulation along an axis perpendicular to their path,
@@ -1189,7 +1195,7 @@ void CNPC_Blob::FormShapeFromPath( string_t iszPathName )
 //-----------------------------------------------------------------------------
 void CNPC_Blob::SetRadius( float flRadius )
 {
-	blob_spread_radius.SetValue(flRadius);
+	m_flRadius = flRadius;
 	RecomputeIdealElementDist();
 }
 
@@ -1384,7 +1390,7 @@ void CNPC_Blob::InitializeElements()
 		Vector vecDir;
 		Vector vecDest;
 		AngleVectors( angDistributor, &vecDir, NULL, NULL );
-		vecDest = WorldSpaceCenter() + vecDir * blob_spread_radius.GetFloat();
+		vecDest = WorldSpaceCenter() + vecDir * m_flRadius;
 
 		CBlobElement *pElement = CreateNewElement();
 
@@ -1431,8 +1437,7 @@ void CNPC_Blob::InitializeElements()
 //-----------------------------------------------------------------------------
 void CNPC_Blob::RecomputeIdealElementDist()
 {
-	float radius = blob_spread_radius.GetFloat();
-	float area = M_PI * Square(radius);
+	float area = M_PI * Square(m_flRadius);
 
 	//Msg("Area of blob is: %f\n", area );
 
