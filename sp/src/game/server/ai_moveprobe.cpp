@@ -254,8 +254,8 @@ bool CAI_MoveProbe::CheckStep( const CheckStepArgs_t &args, CheckStepResult_t *p
 
 	if ( g_bAIDebugStep )
 	{
-		NDebugOverlay::Line( stepStart, stepEnd, 255, 255, 255, true, 5 );
-		NDebugOverlay::Cross3D( stepEnd, 32, 255, 255, 255, true, 5 );
+		NDebugOverlay::Line( stepStart, stepEnd, 255, 255, 255, true, -1 );
+		NDebugOverlay::Line(stepEnd, stepEnd + Vector(0, 0, 16), 255, 255, 255, true, -1);
 	}
 
 	trace_t trace;

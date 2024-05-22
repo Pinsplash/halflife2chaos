@@ -43,6 +43,8 @@ ConVar blob_wall_climb_debug_ceiling("blob_wall_climb_debug_ceiling", "0");
 //ConVar blob_numelements( "blob_numelements", "20" );
 ConVar blob_batchpercent( "blob_batchpercent", "100" );
 
+ConVar blob_stuck_time("blob_stuck_time", "2.5");
+ConVar blob_stuck_moveddist("blob_stuck_moveddist", "32");
 //ConVar blob_spread_radius( "blob_spread_radius", "30" );//renamed from blob_radius to avoid confusion
 
 //ConVar blob_min_element_speed( "blob_min_element_speed", "50" );
@@ -338,7 +340,11 @@ void CBlobElement::MoveTowardsTargetEntity( float speed )
 
 		if( pTargetEnemy != NULL )
 		{
-			pTarget = pTargetEnemy;
+			//don't go to enemy if we can't see it
+			trace_t trToEnemy;
+			UTIL_TraceLine(GetAbsOrigin(), pTargetEnemy->GetAbsOrigin(), MASK_BLOB_SOLID, this, HL2COLLISION_GROUP_BLOB, &trToEnemy);
+			if (trToEnemy.fraction == 1 || trToEnemy.m_pEnt == pTargetEnemy)
+				pTarget = pTargetEnemy;
 		}
 
 		Vector vecDir = pTarget->WorldSpaceCenter() - GetAbsOrigin();
@@ -452,7 +458,7 @@ public:
 	int		SelectSchedule( void );
 	int		GetSoundInterests( void ) { return (SOUND_BUGBAIT); }
 
-
+	float	GetSequenceGroundSpeed(CStudioHdr *pStudioHdr, int iSequence);
 	void	ComputeCentroid();
 
 	void	DoBlobBatchedAI( int iStart, int iEnd );
@@ -472,6 +478,7 @@ public:
 	void	FormShapeFromPath( string_t iszPathName );
 	void	SetRadius( float flRadius );
 	float	m_flRadius;
+	virtual Vector BodyTarget(const Vector &posSrc, bool bNoisy);
 	DECLARE_DATADESC();
 	DECLARE_SERVERCLASS();
 
@@ -771,6 +778,12 @@ int CNPC_Blob::SelectSchedule( void )
 	if( GetEnemy() == NULL )
 		return SCHED_IDLE_STAND;
 
+	//if we've lost sight of the centroid, stop and wait for elements to catch up
+	trace_t trToCentroid;
+	UTIL_TraceLine(GetAbsOrigin(), m_vecCentroid, MASK_BLOB_SOLID, this, HL2COLLISION_GROUP_BLOB, &trToCentroid);
+	if (trToCentroid.DidHit())
+		return SCHED_IDLE_STAND;
+
 	return SCHED_CHASE_ENEMY;
 }
 
@@ -1025,17 +1038,21 @@ void CNPC_Blob::DoBlobBatchedAI( int iStart, int iEnd )
 		pThisElement->m_flDistFromCentroidSqr = pThisElement->GetAbsOrigin().DistToSqr(m_vecCentroid);
 		//if an element is stuck for too long, let it teleport to the blob
 		trace_t trToCentroid;
-		UTIL_TraceHull(pThisElement->GetAbsOrigin(), m_vecCentroid, Vector(-1, -1, -1), Vector(1, 1, 1), MASK_BLOB_SOLID, this, HL2COLLISION_GROUP_BLOB, &trToCentroid);
-		if ((pThisElement->m_flDistFromCentroidSqr > npc_blob_straggler_dist.GetFloat() || trToCentroid.fraction < 1) && (pThisElement->m_vecPrevOrigin - pThisElement->GetAbsOrigin()).Length() < 32)
+		UTIL_TraceLine(pThisElement->GetAbsOrigin(), m_vecCentroid, MASK_BLOB_SOLID, this, HL2COLLISION_GROUP_BLOB, &trToCentroid);
+		//NDebugOverlay::Line(pThisElement->GetAbsOrigin(), m_vecCentroid, bFarAway ? 255 : 0, bBlocked ? 255 : 0, bNotMoving ? 255 : 0, true, -1);
+		//an element is stuck if it's far from the centroid or it is obstructed from the centroid, and it isn't moving much.
+		if ((pThisElement->m_flDistFromCentroidSqr > npc_blob_straggler_dist.GetFloat() || trToCentroid.fraction < 1 || trToCentroid.m_pEnt != GetEnemy()) && (pThisElement->m_vecPrevOrigin - pThisElement->GetAbsOrigin()).Length() < blob_stuck_moveddist.GetFloat())
 		{
 			pThisElement->m_flStuckTime += npc_blob_think_interval.GetFloat();
-			if (pThisElement->m_flStuckTime > 10)
+			if (pThisElement->m_flStuckTime > blob_stuck_time.GetFloat())
 			{
 				pThisElement->SetAbsOrigin(GetAbsOrigin() + Vector(RandomFloat(-1, 1), RandomFloat(-1, 1), 2));//offset prevents elements being stuck together forever because vecRight may come back 0
 			}
 		}
 		else
 		{
+			//if (pThisElement->m_flStuckTime > 0 && (pThisElement->m_vecPrevOrigin - pThisElement->GetAbsOrigin()).Length() < 32)
+			//	Msg("Element became unstuck after being stuck for %f seconds\n", pThisElement->m_flStuckTime);
 			pThisElement->m_flStuckTime = 0;
 			pThisElement->m_vecPrevOrigin = pThisElement->GetAbsOrigin();
 		}
@@ -1447,6 +1464,15 @@ void CNPC_Blob::RecomputeIdealElementDist()
 	//Msg("New element dist: %f\n", m_flMinElementDist );
 }
 
+Vector CNPC_Blob::BodyTarget(const Vector &posSrc, bool bNoisy)
+{
+	return m_vecCentroid;
+}
+
+float CNPC_Blob::GetSequenceGroundSpeed(CStudioHdr *pStudioHdr, int iSequence)
+{
+	return blob_element_speed.GetFloat();
+}
 #else //#ifndef CLIENT_DLL
 #include "debugoverlay_shared.h"
 #include "c_ai_basenpc.h"
