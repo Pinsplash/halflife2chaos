@@ -1769,7 +1769,7 @@ void CNPC_Citizen::RunTask( const Task_t *pTask )
 						pRPG->StartGuiding();
 					}
 
-					Vector vecEnemyPos = GetEnemy()->BodyTarget(GetAbsOrigin(), false);
+					Vector vecEnemyPos = GetEnemy()->BodyTarget(false);
 					CBasePlayer *pPlayer = AI_GetSinglePlayer();
 					if ( pPlayer && ( ( vecEnemyPos - pPlayer->GetAbsOrigin() ).LengthSqr() < RPG_SAFE_DISTANCE * RPG_SAFE_DISTANCE ) )
 					{

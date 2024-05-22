@@ -395,7 +395,7 @@ void CWeaponAR2::FireNPCSecondaryAttack( CBaseCombatCharacter *pOperator, bool b
 			if ( !pNPC->GetEnemy() )
 				return;
 				
-			vecTarget = pNPC->GetEnemy()->BodyTarget( vecSrc );
+			vecTarget = pNPC->GetEnemy()->BodyTarget(true);
 		}
 
 		vecAiming = vecTarget - vecSrc;

@@ -966,7 +966,7 @@ void CNPC_CombineGunship::ManageWarningBeam( void )
 			{
 				CTakeDamageInfo	info( this, this, 1.0f, DMG_ENERGYBEAM );
 
-				Vector vTargetDir = tr.m_pEnt->BodyTarget( tr.endpos, false ) - tr.endpos;
+				Vector vTargetDir = tr.m_pEnt->BodyTarget( false ) - tr.endpos;
 
 				VectorNormalize( vTargetDir );
 
@@ -1044,7 +1044,7 @@ void CNPC_CombineGunship::DoBellyBlastDamage( trace_t &tr, Vector vMins, Vector 
 
 		CTakeDamageInfo	info( this, this, damage, DMG_DISSOLVE );
 
-		Vector vTargetDir = pEntity->BodyTarget( tr.endpos, false ) - tr.endpos;
+		Vector vTargetDir = pEntity->BodyTarget( false ) - tr.endpos;
 
 		VectorNormalize( vTargetDir );
 

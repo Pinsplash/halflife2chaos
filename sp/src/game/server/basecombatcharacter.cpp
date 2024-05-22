@@ -654,7 +654,7 @@ CProp_Portal* CBaseCombatCharacter::FInViewConeThroughPortal( const Vector &vecS
 //=========================================================
 bool CBaseCombatCharacter::FInAimCone( CBaseEntity *pEntity )
 {
-	return FInAimCone( pEntity->BodyTarget( EyePosition() ) );
+	return FInAimCone(pEntity->BodyTarget(true));
 }
 
 

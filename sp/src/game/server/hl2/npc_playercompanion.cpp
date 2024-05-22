@@ -2322,7 +2322,7 @@ Vector CNPC_PlayerCompanion::GetActualShootPosition( const Vector &shootOrigin )
 {
 	if( GetEnemy() && GetEnemy()->Classify() == CLASS_ZOMBIE && random->RandomInt( 1, CITIZEN_HEADSHOT_FREQUENCY ) == 1 )
 	{
-		return GetEnemy()->HeadTarget( shootOrigin );
+		return GetEnemy()->HeadTarget();
 	}
 
 	return BaseClass::GetActualShootPosition( shootOrigin );
@@ -2776,7 +2776,7 @@ void CNPC_PlayerCompanion::OnFriendDamaged( CBaseCombatCharacter *pSquadmate, CB
 						   GetSenses()->DidSeeEntity( pSquadmate ) ) ) );
 		if ( bDirect )
 		{
-			UpdateEnemyMemory( pAttacker, pAttacker->GetAbsOrigin(), pSquadmate );
+			UpdateEnemyMemory(pAttacker, pAttacker->BodyTarget(false), pSquadmate);
 		}
 		else
 		{
@@ -2784,7 +2784,7 @@ void CNPC_PlayerCompanion::OnFriendDamaged( CBaseCombatCharacter *pSquadmate, CB
 			{
 				AI_EnemyInfo_t *pInfo = GetEnemies()->Find( pAttacker );
 				if ( !pInfo || ( gpGlobals->curtime - pInfo->timeLastSeen ) > 15.0 )
-					UpdateEnemyMemory( pAttacker, pSquadmate->GetAbsOrigin(), pSquadmate );
+					UpdateEnemyMemory(pAttacker, pSquadmate->BodyTarget(false), pSquadmate);
 			}
 		}
 

@@ -478,7 +478,7 @@ public:
 	void	FormShapeFromPath( string_t iszPathName );
 	void	SetRadius( float flRadius );
 	float	m_flRadius;
-	virtual Vector BodyTarget(const Vector &posSrc, bool bNoisy);
+	virtual Vector BodyTarget(bool bNoisy);
 	DECLARE_DATADESC();
 	DECLARE_SERVERCLASS();
 
@@ -1464,7 +1464,7 @@ void CNPC_Blob::RecomputeIdealElementDist()
 	//Msg("New element dist: %f\n", m_flMinElementDist );
 }
 
-Vector CNPC_Blob::BodyTarget(const Vector &posSrc, bool bNoisy)
+Vector CNPC_Blob::BodyTarget(bool bNoisy)
 {
 	return m_vecCentroid;
 }

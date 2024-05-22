@@ -542,7 +542,7 @@ void CAI_BaseNPC::CleanupOnDeath( CBaseEntity *pCulprit, bool bFireDeathOutput )
 				// If we already have some danger memory, don't do this cheat
 				if ( GetEnemies()->GetDangerMemory() == NULL )
 				{
-					UpdateEnemyMemory( pCulprit, GetAbsOrigin() );
+					UpdateEnemyMemory(pCulprit, BodyTarget(false));
 				}
 			}
 
@@ -847,7 +847,7 @@ int CAI_BaseNPC::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 			Vector vAttackPos;
 			if (info.GetInflictor())
 			{
-				vAttackPos = info.GetInflictor()->GetAbsOrigin();
+				vAttackPos = info.GetInflictor()->BodyTarget(false);
 			}
 			else
 			{
@@ -2084,12 +2084,12 @@ void CAI_BaseNPC::OnLooked( int iDistance )
 					{
 						SetCondition(COND_SEE_HATE);
 					}
-					UpdateEnemyMemory(pSightEnt,pSightEnt->GetAbsOrigin());
+					UpdateEnemyMemory(pSightEnt, pSightEnt->BodyTarget(false));
 					break;
 
 				}
 			case D_FR:
-				UpdateEnemyMemory(pSightEnt,pSightEnt->GetAbsOrigin());
+				UpdateEnemyMemory(pSightEnt, pSightEnt->BodyTarget(false));
 				SetCondition(COND_SEE_FEAR);
 				break;
 			case D_LI:
@@ -4311,7 +4311,7 @@ void CAI_BaseNPC::GatherAttackConditions( CBaseEntity *pTarget, float flDist )
 	{
 		AI_PROFILE_SCOPE( CAI_BaseNPC_GatherAttackConditions_SecondaryWeaponLOS );
 		ClearAttackConditions( );
-		targetPos		= pTarget->BodyTarget( GetAbsOrigin() );
+		targetPos		= pTarget->BodyTarget(true);
 		bWeaponHasLOS	= CurrentWeaponLOSCondition( targetPos, true );
 	}
 	else
@@ -5683,12 +5683,12 @@ void CAI_BaseNPC::GatherEnemyConditions( CBaseEntity *pEnemy )
 		// Trail the enemy a bit if he's moving
 		if (pEnemy->GetSmoothedVelocity() != vec3_origin)
 		{
-			Vector vTrailPos = pEnemy->GetAbsOrigin() - pEnemy->GetSmoothedVelocity() * random->RandomFloat( -0.05, 0 );
+			Vector vTrailPos = pEnemy->BodyTarget(false) - pEnemy->GetSmoothedVelocity() * random->RandomFloat(-0.05, 0);
 			UpdateEnemyMemory(pEnemy,vTrailPos);
 		}
 		else
 		{
-			UpdateEnemyMemory(pEnemy,pEnemy->GetAbsOrigin());
+			UpdateEnemyMemory(pEnemy, pEnemy->BodyTarget(false));
 		}
 
 		// If it's not an NPC, assume it can't see me
@@ -5709,7 +5709,7 @@ void CAI_BaseNPC::GatherEnemyConditions( CBaseEntity *pEnemy )
 		// if the enemy is near enough the npc, we go ahead and let the npc know where the
 		// enemy is. Send the enemy in as the informer so this knowledge will be regarded as 
 		// secondhand so that the NPC doesn't 
-		UpdateEnemyMemory( pEnemy, pEnemy->GetAbsOrigin(), pEnemy );
+		UpdateEnemyMemory(pEnemy, pEnemy->BodyTarget(false), pEnemy);
 	}
 
 	AI_PROFILE_SCOPE_END();
@@ -9525,7 +9525,7 @@ Vector CAI_BaseNPC::GetShootEnemyDir( const Vector &shootOrigin, bool bNoisy )
 	{
 		Vector vecEnemyLKP = GetEnemyLKP();
 
-		Vector vecEnemyOffset = pEnemy->BodyTarget( shootOrigin, bNoisy ) - pEnemy->GetAbsOrigin();
+		Vector vecEnemyOffset = pEnemy->BodyTarget( bNoisy ) - pEnemy->GetAbsOrigin();
 
 #ifdef PORTAL
 		// Translate the enemy's position across the portals if it's only seen in the portal view cone
@@ -9607,7 +9607,7 @@ Vector CAI_BaseNPC::GetActualShootPosition( const Vector &shootOrigin )
 {
 	// Project the target's location into the future.
 	Vector vecEnemyLKP = GetEnemyLKP();
-	Vector vecEnemyOffset = GetEnemy()->BodyTarget( shootOrigin ) - GetEnemy()->GetAbsOrigin();
+	Vector vecEnemyOffset = GetEnemy()->BodyTarget(true) - GetEnemy()->GetAbsOrigin();
 	Vector vecTargetPosition = vecEnemyOffset + vecEnemyLKP;
 
 #ifdef PORTAL
@@ -9841,7 +9841,7 @@ Vector CAI_BaseNPC::GetActualShootTrajectory( const Vector &shootOrigin )
 
 //-----------------------------------------------------------------------------
 
-Vector CAI_BaseNPC::BodyTarget( const Vector &posSrc, bool bNoisy ) 
+Vector CAI_BaseNPC::BodyTarget( bool bNoisy ) 
 { 
 	Vector low = WorldSpaceCenter() - ( WorldSpaceCenter() - GetAbsOrigin() ) * .25;
 	Vector high = EyePosition();
@@ -11717,7 +11717,7 @@ void CAI_BaseNPC::InputUpdateEnemyMemory( inputdata_t &inputdata )
 
 	if( pEnemy )
 	{
-		UpdateEnemyMemory( pEnemy, pEnemy->GetAbsOrigin(), this );
+		UpdateEnemyMemory(pEnemy, pEnemy->BodyTarget(false), this);
 	}
 }
 
@@ -14060,11 +14060,11 @@ bool CAI_BaseNPC::CouldShootIfCrouching( CBaseEntity *pTarget )
 	Vector vecTarget;
 	if (GetActiveWeapon())
 	{
-		vecTarget = pTarget->BodyTarget( GetActiveWeapon()->GetLocalOrigin() );
+		vecTarget = pTarget->BodyTarget(true);
 	}
 	else 
 	{
-		vecTarget = pTarget->BodyTarget( GetLocalOrigin() );
+		vecTarget = pTarget->BodyTarget(true);
 	}
 
 	bool bResult = WeaponLOSCondition( GetLocalOrigin(), vecTarget, false );

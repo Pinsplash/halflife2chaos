@@ -484,7 +484,7 @@ int CAI_PolicingBehavior::SelectSuppressSchedule( void )
 		// Attack the target
 		GetOuter()->SetEnemy( pTarget );
 		GetOuter()->SetState( NPC_STATE_COMBAT );
-		GetOuter()->UpdateEnemyMemory( pTarget, pTarget->GetAbsOrigin() );
+		GetOuter()->UpdateEnemyMemory(pTarget, pTarget->BodyTarget(false));
 
 		HostSetBatonState( true );
 		
@@ -566,7 +566,7 @@ int CAI_PolicingBehavior::SelectHarassSchedule( void )
 
 				GetOuter()->SetEnemy( pTarget );
 				GetOuter()->SetState( NPC_STATE_COMBAT );
-				GetOuter()->UpdateEnemyMemory( pTarget, pTarget->GetAbsOrigin() );
+				GetOuter()->UpdateEnemyMemory(pTarget, pTarget->BodyTarget(false));
 				HostSetBatonState( true );
 				
 				m_hPoliceGoal->FireWarningLevelOutput( 4 );

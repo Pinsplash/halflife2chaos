@@ -782,7 +782,7 @@ void CHunterFlechette::SeekThink()
 {
 	if ( m_hSeekTarget )
 	{
-		Vector vecBodyTarget = m_hSeekTarget->BodyTarget( GetAbsOrigin() );
+		Vector vecBodyTarget = m_hSeekTarget->BodyTarget(true);
 
 		Vector vecClosest;
 		CalcClosestPointOnLineSegment( GetAbsOrigin(), m_vecShootPosition, vecBodyTarget, vecClosest, NULL );
@@ -1152,7 +1152,7 @@ public:
 	const impactdamagetable_t &GetPhysicsImpactDamageTable();
 
 	Class_T			Classify();
-	Vector			BodyTarget( const Vector &posSrc, bool bNoisy /*= true*/ );
+	Vector			BodyTarget( bool bNoisy /*= true*/ );
 
 	int				DrawDebugTextOverlays();
 	void			DrawDebugGeometryOverlays();
@@ -2032,7 +2032,7 @@ Class_T CNPC_Hunter::Classify()
 //-----------------------------------------------------------------------------
 // Compensate for the hunter's long legs by moving the bodytarget up to his head.
 //-----------------------------------------------------------------------------
-Vector CNPC_Hunter::BodyTarget( const Vector &posSrc, bool bNoisy /*= true*/ )
+Vector CNPC_Hunter::BodyTarget( bool bNoisy /*= true*/ )
 { 
 	Vector vecResult;
 	QAngle vecAngle;
@@ -2460,7 +2460,7 @@ void CNPC_Hunter::ManageSiegeTargets()
 			m_hCurrentSiegeTarget.Set( pSiegeTarget );
 
 			AddEntityRelationship( pSiegeTarget, D_HT, 1 );
-			GetEnemies()->UpdateMemory( GetNavigator()->GetNetwork(), pSiegeTarget, pSiegeTarget->GetAbsOrigin(), 0.0f, true );
+			GetEnemies()->UpdateMemory(GetNavigator()->GetNetwork(), pSiegeTarget, pSiegeTarget->BodyTarget(false), 0.0f, true);
 			AI_EnemyInfo_t *pMemory = GetEnemies()->Find( pSiegeTarget );
 
 			if( pMemory )
@@ -4372,7 +4372,7 @@ void CNPC_Hunter::HandleAnimEvent( animevent_t *pEvent )
 void CNPC_Hunter::AddEntityRelationship( CBaseEntity *pEntity, Disposition_t nDisposition, int nPriority )
 {
 	if ( nDisposition ==  D_HT && pEntity->ClassMatches("npc_bullseye") )
-		UpdateEnemyMemory( pEntity, pEntity->GetAbsOrigin() );
+		UpdateEnemyMemory(pEntity, pEntity->BodyTarget(false));
 	BaseClass::AddEntityRelationship( pEntity, nDisposition, nPriority );
 }
 
@@ -5748,7 +5748,7 @@ int CNPC_Hunter::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 			// making the Hunter's current enemy invalid for a short time.
 			if( !GetEnemy() || !GetEnemy()->IsPlayer() )
 			{
-				UpdateEnemyMemory( pAttacker, pAttacker->GetAbsOrigin(), this );
+				UpdateEnemyMemory(pAttacker, pAttacker->BodyTarget(false), this);
 
 				if( GetEnemy() )
 				{
@@ -5795,7 +5795,7 @@ void CNPC_Hunter::Event_Killed( const CTakeDamageInfo &info )
 			m_EscortBehavior.GetEscortTarget()->AlertSound();
 			if ( info.GetAttacker() && info.GetAttacker()->IsPlayer() )
 			{
-				m_EscortBehavior.GetEscortTarget()->UpdateEnemyMemory( UTIL_GetLocalPlayer(), UTIL_GetLocalPlayer()->GetAbsOrigin(), this );
+				m_EscortBehavior.GetEscortTarget()->UpdateEnemyMemory(UTIL_GetLocalPlayer(), UTIL_GetLocalPlayer()->BodyTarget(false), this);
 			}
 		}
 	}
@@ -6036,7 +6036,7 @@ void CNPC_Hunter::GetShootDir( Vector &vecDir, const Vector &vecSrc, CBaseEntity
 	}
 	else
 	{
-		vecBodyTarget = pTargetEntity->BodyTarget( vecSrc );
+		vecBodyTarget = pTargetEntity->BodyTarget(true);
 	}
 
 	Vector vecTarget = vecBodyTarget;
@@ -7054,7 +7054,7 @@ void Hunter_StriderBusterLaunched( CBaseEntity *pBuster )
 				{
 					pNPC->SetEnemy( pBuster );
 					pNPC->SetState( NPC_STATE_COMBAT );
-					pNPC->UpdateEnemyMemory( pBuster, pBuster->GetAbsOrigin() );
+					pNPC->UpdateEnemyMemory(pBuster, pBuster->BodyTarget(false));
 
 					// Stop whatever we're doing.
 					pNPC->SetCondition( COND_SCHEDULE_DONE );

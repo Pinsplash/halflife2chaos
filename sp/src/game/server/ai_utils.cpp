@@ -459,7 +459,7 @@ void CAI_FreePass::Revoke( bool bUpdateMemory )
 	m_FreePassTimeRemaining = 0;
 	if ( bUpdateMemory && GetPassTarget() )
 	{
-		GetOuter()->UpdateEnemyMemory( GetPassTarget(), GetPassTarget()->GetAbsOrigin() );
+		GetOuter()->UpdateEnemyMemory(GetPassTarget(), GetPassTarget()->BodyTarget(false));
 	}
 }
 

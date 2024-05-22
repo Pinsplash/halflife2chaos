@@ -6721,11 +6721,11 @@ QAngle CBasePlayer::BodyAngles()
 // Input   :
 // Output  :
 //------------------------------------------------------------------------------
-Vector CBasePlayer::BodyTarget( const Vector &posSrc, bool bNoisy ) 
+Vector CBasePlayer::BodyTarget( bool bNoisy ) 
 { 
 	if ( IsInAVehicle() )
 	{
-		return GetVehicle()->GetVehicleEnt()->BodyTarget( posSrc, bNoisy );
+		return GetVehicle()->GetVehicleEnt()->BodyTarget( bNoisy );
 	}
 	if (bNoisy)
 	{
@@ -7161,7 +7161,7 @@ QAngle CBasePlayer::AutoaimDeflection( Vector &vecSrc, autoaim_params_t &params 
 			}
 
 			// Don't autoaim at the noisy bodytarget, this makes the autoaim crosshair wobble.
-			//center = pEntity->BodyTarget( vecSrc, false );
+			//center = pEntity->BodyTarget( false );
 			center = pEntity->WorldSpaceCenter();
 
 			dir = (center - vecSrc);
@@ -7234,7 +7234,7 @@ QAngle CBasePlayer::AutoaimDeflection( Vector &vecSrc, autoaim_params_t &params 
 			// Autoaim detected a target for us. Aim automatically at its bodytarget.
 			params.m_hAutoAimEntity.Set(bestent);
 			params.m_vecAutoAimDir = bestdir;
-			params.m_vecAutoAimPoint = bestent->BodyTarget( vecSrc, false );
+			params.m_vecAutoAimPoint = bestent->BodyTarget( false );
 			params.m_bAutoAimAssisting = true;
 
 			return bestang;

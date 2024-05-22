@@ -1169,7 +1169,7 @@ void CAPCMissile::DoExplosion( void )
 //-----------------------------------------------------------------------------
 void CAPCMissile::ComputeLeadingPosition( const Vector &vecShootPosition, CBaseEntity *pTarget, Vector *pLeadPosition )
 {
-	Vector vecTarget = pTarget->BodyTarget( vecShootPosition, false );
+	Vector vecTarget = pTarget->BodyTarget( false );
 	float flShotSpeed = GetAbsVelocity().Length();
 	if ( flShotSpeed == 0 )
 	{
@@ -1238,7 +1238,7 @@ void CAPCMissile::ComputeActualDotPosition( CLaserDot *pLaserDot, Vector *pActua
 		CBaseEntity *pTarget = pLaserDot->GetTargetEntity();
 		if ( pTarget )
 		{
-			vecOrigin = pTarget->BodyTarget( GetAbsOrigin(), false );
+			vecOrigin = pTarget->BodyTarget( false );
 			vecVelocity	= pTarget->GetSmoothedVelocity();
 		}
 		else
@@ -1289,7 +1289,7 @@ void CAPCMissile::ComputeActualDotPosition( CLaserDot *pLaserDot, Vector *pActua
 	*pHomingSpeed = APC_LAUNCH_HOMING_SPEED;
 
 	//Get the laser's vector
-	Vector vecTargetPosition = pLaserTarget->BodyTarget( GetAbsOrigin(), false );
+	Vector vecTargetPosition = pLaserTarget->BodyTarget( false );
 
 	// Compute leading position
 	Vector vecLeadPosition;

@@ -330,7 +330,7 @@ void CAI_Relationship::DiscloseNPCLocation( CBaseCombatCharacter *pSubject, CBas
 	CAI_BaseNPC *pNPC = pSubject->MyNPCPointer();
 	if ( pNPC != NULL )
 	{
-		pNPC->UpdateEnemyMemory( pTarget, pTarget->GetAbsOrigin() );
+		pNPC->UpdateEnemyMemory(pTarget, pTarget->BodyTarget(false));
 	}
 }
 

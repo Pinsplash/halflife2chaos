@@ -844,7 +844,7 @@ void CNPC_FloorTurret::ActiveThink( void )
 	
 	//Get our shot positions
 	Vector vecMid = EyePosition();
-	Vector vecMidEnemy = GetEnemy()->BodyTarget( vecMid );
+	Vector vecMidEnemy = GetEnemy()->BodyTarget(true);
 
 	// Store off our last seen location so we can suppress it later
 	m_vecEnemyLKP = vecMidEnemy;

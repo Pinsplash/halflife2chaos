@@ -2300,7 +2300,7 @@ void CNPC_AttackHelicopter::ComputeVehicleFireAtPosition( Vector *pVecActualTarg
 
 	// Make sure the circle of death doesn't move more than N units
 	// This will cause the target to have to maintain a large enough speed
-	*pVecActualTargetPosition = pVehicle->BodyTarget( GetAbsOrigin(), false );
+	*pVecActualTargetPosition = pVehicle->BodyTarget( false );
 
 //	NDebugOverlay::Box( *pVecActualTargetPosition,
 //		Vector(-m_flCircleOfDeathRadius, -m_flCircleOfDeathRadius, 0), 
@@ -2814,7 +2814,7 @@ bool CNPC_AttackHelicopter::IsBombDropFair( const Vector &vecBombStartPos, const
 	{
 		// How much time will it take to fall?
 		// dx = 0.5 * a * t^2
-		Vector vecTarget = GetEnemy()->BodyTarget( GetAbsOrigin(), false );
+		Vector vecTarget = GetEnemy()->BodyTarget( false );
 		float dz = vecBombStartPos.z - vecTarget.z;
 		float dt = (dz > 0.0f) ? sqrt( 2 * dz / GetCurrentGravity() ) : 0.0f;
 
@@ -3000,7 +3000,7 @@ void CNPC_AttackHelicopter::InputDropBombAtTargetInternal( inputdata_t &inputdat
 	GetAttachment( m_nBombAttachment, vTipPos );
 
 	// Compute the time it would take to fall to the target
-	Vector vecTarget = pBombEnt->BodyTarget( GetAbsOrigin(), false );
+	Vector vecTarget = pBombEnt->BodyTarget( false );
 	float dz = vTipPos.z - vecTarget.z;
 	if ( dz <= 0.0f )
 	{

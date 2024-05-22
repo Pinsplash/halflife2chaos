@@ -96,7 +96,7 @@ public:
 	virtual void	Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value );
 	virtual void	DrawDebugGeometryOverlays( void );
 
-	virtual Vector	BodyTarget( const Vector &posSrc, bool bNoisy = true );
+	virtual Vector	BodyTarget( bool bNoisy = true );
 	virtual void	TraceAttack( const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr, CDmgAccumulator *pAccumulator );
 	virtual int		OnTakeDamage( const CTakeDamageInfo &info );
 
@@ -297,7 +297,7 @@ int CPropVehiclePrisonerPod::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-Vector CPropVehiclePrisonerPod::BodyTarget( const Vector &posSrc, bool bNoisy )
+Vector CPropVehiclePrisonerPod::BodyTarget( bool bNoisy )
 {
 	Vector	shotPos;
 	matrix3x4_t	matrix;

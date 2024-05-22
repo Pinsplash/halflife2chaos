@@ -44,7 +44,7 @@ public:
 	virtual void TouchDamage( CBaseEntity *pOther );
 	bool	CorpseGib( const CTakeDamageInfo &info );
 	void	Touch( CBaseEntity *pOther );
-	Vector	BodyTarget( const Vector &posSrc, bool bNoisy = true );
+	Vector	BodyTarget( bool bNoisy/* = true */);
 	float	GetAutoAimRadius();
 	void	TraceAttack( const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr, CDmgAccumulator *pAccumulator );
 	void	Ignite( float flFlameLifetime, bool bNPCOnly = true, float flSize = 0.0f, bool bCalledByLevelDesigner = false );

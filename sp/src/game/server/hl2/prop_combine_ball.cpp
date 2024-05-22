@@ -1400,7 +1400,7 @@ bool CPropCombineBall::IsAttractiveTarget( CBaseEntity *pEntity )
 
 		// We must be able to hit them
 		trace_t	tr;
-		UTIL_TraceLine( WorldSpaceCenter(), pEntity->BodyTarget( WorldSpaceCenter() ), MASK_SOLID, this, COLLISION_GROUP_NONE, &tr );
+		UTIL_TraceLine(WorldSpaceCenter(), pEntity->BodyTarget(true), MASK_SOLID, this, COLLISION_GROUP_NONE, &tr);
 
 		if ( tr.fraction < 1.0f && tr.m_pEnt != pEntity )
 			return false;

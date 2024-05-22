@@ -373,7 +373,7 @@ int CPropJeep::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-Vector CPropJeep::BodyTarget( const Vector &posSrc, bool bNoisy )
+Vector CPropJeep::BodyTarget( bool bNoisy )
 {
 	Vector	shotPos;
 	matrix3x4_t	matrix;

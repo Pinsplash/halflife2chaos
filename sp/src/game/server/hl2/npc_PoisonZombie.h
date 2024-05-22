@@ -42,7 +42,7 @@ public:
 	//
 	// CBaseZombie implemenation.
 	//
-	virtual Vector HeadTarget( const Vector &posSrc );
+	virtual Vector HeadTarget();
 	bool ShouldBecomeTorso( const CTakeDamageInfo &info, float flDamageThreshold );
 	virtual bool IsChopped( const CTakeDamageInfo &info )	{ return false; }
 

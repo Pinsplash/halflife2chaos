@@ -133,7 +133,7 @@ public:
 		return (info.GetDamageType() & (DMG_RADIATION|DMG_BLAST) ) == 0; 
 	}
 
-	virtual Vector	BodyTarget( const Vector &posSrc, bool bNoisy = true );
+	virtual Vector	BodyTarget( bool bNoisy = true );
 	virtual void	TraceAttack( const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr, CDmgAccumulator *pAccumulator );
 	virtual int		OnTakeDamage( const CTakeDamageInfo &info );
 

@@ -349,7 +349,7 @@ public:
 	void					SnapEyeAngles( const QAngle &viewAngles );
 
 	virtual QAngle			BodyAngles();
-	virtual Vector			BodyTarget( const Vector &posSrc, bool bNoisy);
+	virtual Vector			BodyTarget( bool bNoisy);
 	virtual bool			ShouldFadeOnDeath( void ) { return FALSE; }
 	
 	virtual const impactdamagetable_t &GetPhysicsImpactDamageTable();

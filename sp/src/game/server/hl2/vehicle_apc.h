@@ -74,7 +74,7 @@ public:
 	void			DoMuzzleFlash( void );
 
 	virtual Vector	EyePosition( );				// position of eyes
-	Vector			BodyTarget( const Vector &posSrc, bool bNoisy );
+	Vector			BodyTarget( bool bNoisy );
 
 	
 	virtual void	Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value );

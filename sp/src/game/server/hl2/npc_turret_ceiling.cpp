@@ -614,7 +614,7 @@ void CNPC_CeilingTurret::ActiveThink( void )
 	
 	//Get our shot positions
 	Vector vecMid = EyePosition();
-	Vector vecMidEnemy = GetEnemy()->GetAbsOrigin();
+	Vector vecMidEnemy = GetEnemy()->BodyTarget(false);
 
 	//Store off our last seen location
 	UpdateEnemyMemory( GetEnemy(), vecMidEnemy );

@@ -470,7 +470,7 @@ void CNPC_VehicleDriver::RunTask( const Task_t *pTask )
 			if ( pEnemy )
 			{
 				// TODO: Get a bodytarget from the firing point of the gun in the vehicle
-				Vector vecTarget = GetEnemy()->BodyTarget( GetAbsOrigin(), false );
+				Vector vecTarget = GetEnemy()->BodyTarget( false );
 				m_pVehicleInterface->NPC_AimPrimaryWeapon( vecTarget );
 				m_pVehicleInterface->NPC_PrimaryFire();
 				TaskComplete();
@@ -490,7 +490,7 @@ void CNPC_VehicleDriver::RunTask( const Task_t *pTask )
 			if ( pEnemy )
 			{
 				// TODO: Get a bodytarget from the firing point of the gun in the vehicle
-				Vector vecTarget = GetEnemy()->BodyTarget( GetAbsOrigin(), false );
+				Vector vecTarget = GetEnemy()->BodyTarget( false );
 				m_pVehicleInterface->NPC_AimSecondaryWeapon( vecTarget );
 				m_pVehicleInterface->NPC_SecondaryFire();
 				TaskComplete();

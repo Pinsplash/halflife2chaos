@@ -534,7 +534,7 @@ Vector  CNPC_Vortigaunt::FacingPosition( void )
 // Output : 
 //-----------------------------------------------------------------------------
 
-Vector CNPC_Vortigaunt::BodyTarget( const Vector &posSrc, bool bNoisy ) 
+Vector CNPC_Vortigaunt::BodyTarget( bool bNoisy ) 
 { 
 	Vector low = WorldSpaceCenter() - ( WorldSpaceCenter() - GetAbsOrigin() ) * .25;
 
@@ -582,14 +582,14 @@ bool CNPC_Vortigaunt::InnateWeaponLOSCondition( const Vector &ownerPos, const Ve
 	UTIL_PredictedPosition( GetEnemy(), flTimeDelta, &vecNewTargetPos );
 
 	Vector vecDelta = vecNewTargetPos - GetEnemy()->GetAbsOrigin();
-	Vector vecFinalTargetPos = GetEnemy()->BodyTarget( vecNewOwnerPos ) + vecDelta;
+	Vector vecFinalTargetPos = GetEnemy()->BodyTarget(true) + vecDelta;
 
 	// Debug data
 	/*
-	NDebugOverlay::Box( GetEnemy()->BodyTarget( vecNewOwnerPos ), -Vector(4,4,4), Vector(4,4,4), 255, 0, 0, 0, 3.0f );
+	NDebugOverlay::Box( GetEnemy()->BodyTarget(), -Vector(4,4,4), Vector(4,4,4), 255, 0, 0, 0, 3.0f );
 	NDebugOverlay::Box( vecFinalTargetPos, -Vector(4,4,4), Vector(4,4,4), 255, 255, 0, 0, 3.0f );
-	NDebugOverlay::HorzArrow( GetEnemy()->BodyTarget( vecNewOwnerPos ), vecFinalTargetPos, 12.0f, 255, 0, 0, 16.0f, true, 3.0f );
-	NDebugOverlay::HorzArrow( vecNewOwnerPos, GetEnemy()->BodyTarget( vecNewOwnerPos ), 8.0f, 255, 255, 0, 32.0f, true, 3.0f );
+	NDebugOverlay::HorzArrow( GetEnemy()->BodyTarget(), vecFinalTargetPos, 12.0f, 255, 0, 0, 16.0f, true, 3.0f );
+	NDebugOverlay::HorzArrow( vecNewOwnerPos, GetEnemy()->BodyTarget(), 8.0f, 255, 255, 0, 32.0f, true, 3.0f );
 	*/
 
 	return BaseClass::InnateWeaponLOSCondition( vecNewOwnerPos, vecFinalTargetPos, bSetConditions );
@@ -2061,7 +2061,7 @@ void CNPC_Vortigaunt::ZapBeam( int nHand )
 
 	if ( GetEnemy() )
 	{
-		Vector vecTarget = GetEnemy()->BodyTarget( vecSrc, false );
+		Vector vecTarget = GetEnemy()->BodyTarget( false );
 				
 		if ( g_debug_vortigaunt_aim.GetBool() )
 		{
@@ -2527,7 +2527,7 @@ void CNPC_Vortigaunt::DispelAntlions( const Vector &vecOrigin, float flRadius, b
 		if ( pAntlion->IsWorker() == false )
 		{
 			// Attempt to trace a line to hit the target
-			UTIL_TraceLine( vecOrigin, pAntlion->BodyTarget( vecOrigin ), MASK_SOLID_BRUSHONLY, this, COLLISION_GROUP_NONE, &tr );
+			UTIL_TraceLine(vecOrigin, pAntlion->BodyTarget(true), MASK_SOLID_BRUSHONLY, this, COLLISION_GROUP_NONE, &tr);
 			if ( tr.fraction < 1.0f && tr.m_pEnt != pAntlion )
 				continue;
 

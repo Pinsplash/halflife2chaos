@@ -1773,8 +1773,8 @@ public:
 	virtual	float		GetSpreadBias( CBaseCombatWeapon *pWeapon, CBaseEntity *pTarget );
 #endif //HL2_DLL
 	virtual void		CollectShotStats( const Vector &vecShootOrigin, const Vector &vecShootDir );
-	virtual Vector		BodyTarget( const Vector &posSrc, bool bNoisy = true );
-	virtual Vector		GetAutoAimCenter() { return BodyTarget(vec3_origin, false); }
+	virtual Vector		BodyTarget( bool bNoisy/* = true */);
+	virtual Vector		GetAutoAimCenter() { return BodyTarget(false); }
 	virtual void		FireBullets( const FireBulletsInfo_t &info );
 
 	// OLD VERSION! Use the struct version

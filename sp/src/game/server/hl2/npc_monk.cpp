@@ -329,11 +329,11 @@ Vector CNPC_Monk::GetActualShootTrajectory( const Vector &shootOrigin )
 
 		if( m_bPerfectAccuracy || random->RandomInt( 1, monk_headshot_freq.GetInt() ) == 1 )
 		{
-			vecShootDir = GetEnemy()->HeadTarget( shootOrigin ) - shootOrigin;
+			vecShootDir = GetEnemy()->HeadTarget() - shootOrigin;
 		}
 		else
 		{
-			vecShootDir = GetEnemy()->BodyTarget( shootOrigin ) - shootOrigin;
+			vecShootDir = GetEnemy()->BodyTarget(true) - shootOrigin;
 		}
 
 		VectorNormalize( vecShootDir );

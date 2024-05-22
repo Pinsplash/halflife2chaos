@@ -262,7 +262,7 @@ bool CBaseHelicopter::GetTrackPatherTarget( Vector *pPos )
 { 
 	if ( GetEnemy() ) 
 	{ 
-		*pPos = GetEnemy()->BodyTarget( GetAbsOrigin(), false ); 
+		*pPos = GetEnemy()->BodyTarget( false ); 
 		return true; 
 	}
 	
@@ -439,7 +439,7 @@ bool CBaseHelicopter::DoWashPush( washentity_t *pWash, const Vector &vecWashOrig
 	if ( pEntity->IsEFlagSet( EFL_NO_ROTORWASH_PUSH ))
 		return false;
 
-	Vector vecSpot = pEntity->BodyTarget( vecWashOrigin );
+	Vector vecSpot = pEntity->BodyTarget(true);
 	Vector vecToSpot = ( vecSpot - vecWashOrigin );
 	vecToSpot.z = 0;
 	float flDist = VectorNormalize( vecToSpot );
@@ -601,7 +601,7 @@ void CBaseHelicopter::DoRotorPhysicsPush( const Vector &vecRotorOrigin, float fl
 			if ( flMass > flLightestMass )
 				continue;
 
-			Vector vecSpot = pEntity->BodyTarget( vecPhysicsOrigin );
+			Vector vecSpot = pEntity->BodyTarget(true);
 
 			// Don't push things too far below our starting point (helps reduce through-roof cases w/o doing a trace)
 			if ( fabs( vecSpot.z - vecPhysicsOrigin.z ) > 96 )

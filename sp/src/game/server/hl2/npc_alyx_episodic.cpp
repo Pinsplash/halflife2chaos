@@ -899,14 +899,14 @@ void CNPC_Alyx::AnalyzeGunfireSound( CSound *pSound )
 	if( pSoundTarget == this )
 	{
 		// The shooter is firing at me. Assume if Alyx can hear the gunfire, she can deduce its origin.
-		UpdateEnemyMemory( pSoundOriginBCC, pSoundOriginBCC->GetAbsOrigin(), this );
+		UpdateEnemyMemory(pSoundOriginBCC, pSoundOriginBCC->BodyTarget(false), this);
 	}
 	else if( pSoundTarget == pPlayer )
 	{
 		// The shooter is firing at the player. Assume Alyx can deduce the origin if the player COULD see the origin, and Alyx COULD see the player.
 		if( pPlayer->FVisible(pSoundOriginBCC) && FVisible(pPlayer) )
 		{
-			UpdateEnemyMemory( pSoundOriginBCC, pSoundOriginBCC->GetAbsOrigin(), this );
+			UpdateEnemyMemory(pSoundOriginBCC, pSoundOriginBCC->BodyTarget(false), this);
 		}
 	}
 }
@@ -1001,7 +1001,7 @@ void CNPC_Alyx::Event_KilledOther( CBaseEntity *pVictim, const CTakeDamageInfo &
 		// Update or Create a memory entry for this target and make Alyx think she's seen this target recently.
 		// This prevents the baseclass from not recognizing this target and forcing Alyx into 
 		// SCHED_WAKE_ANGRY, which wastes time and causes her to change animation sequences rapidly.
-		GetEnemies()->UpdateMemory( GetNavigator()->GetNetwork(), pTarget, pTarget->GetAbsOrigin(), 0.0f, true );
+		GetEnemies()->UpdateMemory( GetNavigator()->GetNetwork(), pTarget, pTarget->BodyTarget(false), 0.0f, true );
 		AI_EnemyInfo_t *pMemory = GetEnemies()->Find( pTarget );
 
 		if( pMemory )
@@ -2873,7 +2873,7 @@ Vector CNPC_Alyx::GetActualShootPosition( const Vector &shootOrigin )
 	if( HasShotgun() && GetEnemy() && GetEnemy()->Classify() == CLASS_ZOMBIE && random->RandomInt( 0, 1 ) == 1 )
 	{
 		// 50-50 zombie headshots with shotgun!
-		return GetEnemy()->HeadTarget( shootOrigin );
+		return GetEnemy()->HeadTarget();
 	}
 
 	return BaseClass::GetActualShootPosition( shootOrigin );

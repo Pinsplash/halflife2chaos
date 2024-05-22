@@ -103,7 +103,7 @@ public:
 	virtual void Spawn( void );
 	virtual void Precache( void );
 
-	virtual Vector BodyTarget( const Vector &posSrc, bool bNoisy = true );
+	virtual Vector BodyTarget( bool bNoisy/* = true */);
 
 	virtual int DrawDebugTextOverlays( void );
 

@@ -2440,12 +2440,12 @@ Vector CProtoSniper::DesiredBodyTarget( CBaseEntity *pTarget )
 		{
 			if( flTimeSinceLastMiss > 0.0f && flTimeSinceLastMiss < 4.0f && hl2_episodic.GetBool() )
 			{
-				vecTarget = pTarget->BodyTarget( GetBulletOrigin(), false );
+				vecTarget = pTarget->BodyTarget( false );
 			}
 			else
 			{
 				// Shoot zombies in the headcrab
-				vecTarget = pTarget->HeadTarget( GetBulletOrigin() );
+				vecTarget = pTarget->HeadTarget();
 			}
 		}
 		else if( pTarget->Classify() == CLASS_ANTLION )

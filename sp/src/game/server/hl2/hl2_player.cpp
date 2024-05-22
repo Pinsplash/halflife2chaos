@@ -3840,7 +3840,7 @@ void CHL2_Player::GetAutoaimVector( autoaim_params_t &params )
 
 				//Ignore autoaim and just keep aiming at this target.
 				params.m_hAutoAimEntity = m_hLockedAutoAimEntity;
-				Vector vecTarget = m_hLockedAutoAimEntity->BodyTarget( EyePosition(), false );
+				Vector vecTarget = m_hLockedAutoAimEntity->BodyTarget( false );
 				Vector vecDir = vecTarget - EyePosition();
 				VectorNormalize( vecDir );
 

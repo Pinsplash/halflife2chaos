@@ -100,7 +100,7 @@ public:
 	virtual void	StopLoopingSounds();
 
 	// position to shoot at
-	virtual Vector	BodyTarget( const Vector &posSrc, bool bNoisy );
+	virtual Vector	BodyTarget( bool bNoisy );
 	virtual Vector	GetSmoothedVelocity( void );
 
 	virtual void	EnterVehicle( CBaseCombatCharacter *pPlayer );
@@ -773,7 +773,7 @@ void CPropAirboat::HeadlightTurnOff( void )
 //-----------------------------------------------------------------------------
 // position to shoot at
 //-----------------------------------------------------------------------------
-Vector CPropAirboat::BodyTarget( const Vector &posSrc, bool bNoisy ) 
+Vector CPropAirboat::BodyTarget( bool bNoisy ) 
 {
 	Vector vecPosition;
 	QAngle angles;

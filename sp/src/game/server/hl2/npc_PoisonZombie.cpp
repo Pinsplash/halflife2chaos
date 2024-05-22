@@ -513,7 +513,7 @@ int CNPC_PoisonZombie::RangeAttack2Conditions( float flDot, float flDist )
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-Vector CNPC_PoisonZombie::HeadTarget( const Vector &posSrc )
+Vector CNPC_PoisonZombie::HeadTarget()
 {
 	int iCrabAttachment = LookupAttachment( "headcrab1" );
 	Assert( iCrabAttachment > 0 );

@@ -699,7 +699,7 @@ void CNPC_CombineCamera::TrackTarget( CBaseEntity *pTarget )
 
 	// Calculate direction to target
 	Vector vecMid = EyePosition();
-	Vector vecMidTarget = pTarget->BodyTarget(vecMid);
+	Vector vecMidTarget = pTarget->BodyTarget(true);
 	Vector vecDirToTarget = vecMidTarget - vecMid;	
 
 	// We want to look at the target's eyes so we don't jitter

@@ -1128,7 +1128,7 @@ void CNPC_Strider::GatherConditions()
 			{
 				if ( !IsStriderCrouching() && !IsStriderStanding() &&
 					 ( !HasCondition( COND_SEE_ENEMY ) || 
-					   !WeaponLOSCondition( GetAdjustedOrigin(), GetEnemy()->BodyTarget( GetAdjustedOrigin() ), false ) ) )
+					 !WeaponLOSCondition(GetAdjustedOrigin(), GetEnemy()->BodyTarget(true), false)))
 				{
 #if 0
 					if ( !HasCondition( COND_STRIDER_SHOULD_CROUCH ) )
@@ -1180,7 +1180,7 @@ void CNPC_Strider::GatherHeightConditions( const Vector &vTestPos, CBaseEntity *
 			if ( pEntity && fabs( newHeight - GetHeight() ) < 12 && newHeight < GetMinHeight() + GetHeightRange() * .33 )
 			{
 				Vector muzzlePos;
-				Vector targetPos = pEntity->BodyTarget( GetAdjustedOrigin() );
+				Vector targetPos = pEntity->BodyTarget(true);
 
 				GetAttachment( "minigun", muzzlePos );
 				
@@ -1995,7 +1995,7 @@ Disposition_t CNPC_Strider::IRelationType( CBaseEntity *pTarget )
 void CNPC_Strider::AddEntityRelationship( CBaseEntity *pEntity, Disposition_t nDisposition, int nPriority )
 {
 	if ( nDisposition ==  D_HT && pEntity->ClassMatches("npc_bullseye") )
-		UpdateEnemyMemory( pEntity, pEntity->GetAbsOrigin() );
+		UpdateEnemyMemory(pEntity, pEntity->BodyTarget(false));
 	BaseClass::AddEntityRelationship( pEntity, nDisposition, nPriority );
 }
 
@@ -2383,7 +2383,7 @@ bool CNPC_Strider::FVisible( CBaseEntity *pEntity, int traceMask, CBaseEntity **
 
 //---------------------------------------------------------
 //---------------------------------------------------------
-Vector CNPC_Strider::BodyTarget( const Vector &posSrc, bool bNoisy )
+Vector CNPC_Strider::BodyTarget( bool bNoisy )
 {
 	if ( m_BodyTargetBone != -1 )
 	{
@@ -2392,7 +2392,7 @@ Vector CNPC_Strider::BodyTarget( const Vector &posSrc, bool bNoisy )
 		GetBonePosition( m_BodyTargetBone, position, angles );
 		return position;
 	}
-	return BaseClass::BodyTarget( posSrc, bNoisy );
+	return BaseClass::BodyTarget( bNoisy );
 }
 
 //---------------------------------------------------------
@@ -2451,7 +2451,7 @@ bool CNPC_Strider::UpdateEnemyMemory( CBaseEntity *pEnemy, const Vector &positio
 			m_PlayerFreePass.Revoke();
 		}
 		
-		BaseClass::UpdateEnemyMemory( GetFocus(), GetFocus()->GetAbsOrigin(), pInformer );
+		BaseClass::UpdateEnemyMemory(GetFocus(), GetFocus()->BodyTarget(false), pInformer);
 
 		// Change the informer to myself so that information provided by a scanner is 
 		// as good as firsthand knowledge insofar as enemy memory is concerned.
@@ -2864,7 +2864,7 @@ CNPC_Bullseye *CNPC_Strider::GetFocus()
 bool CNPC_Strider::GetWeaponLosZ( const Vector &vOrigin, float minZ, float maxZ, float increment, CBaseEntity *pTarget, float *pResult )
 {
 	Vector vTestPos;
-	Vector vTargetPos = pTarget->BodyTarget(vOrigin, false);
+	Vector vTargetPos = pTarget->BodyTarget(false);
 	Vector vIncrement( 0, 0, increment );
 
 	// Try right where am
@@ -3069,14 +3069,14 @@ int CNPC_Strider::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 		// Any damage the player inflicts gets my attention, even if it doesn't actually harm me.
 		if ( info.GetAttacker()->IsPlayer() )
 		{
-			UpdateEnemyMemory( info.GetAttacker(), info.GetAttacker()->GetAbsOrigin() );
+			UpdateEnemyMemory(info.GetAttacker(), info.GetAttacker()->BodyTarget(false));
 		}
 	}
 
 	//int healthIncrement = 5 - ( m_iHealth / ( m_iMaxHealth / 5 ) );
 	if ( (info.GetDamageType() & DMG_BLAST) && info.GetMaxDamage() >= 50 )
 	{
-		Vector headPos = BodyTarget( info.GetDamagePosition(), false );
+		Vector headPos = BodyTarget( false );
 		
 		float dist = CalcDistanceToAABB( WorldAlignMins(), WorldAlignMaxs(), info.GetDamagePosition() - headPos );
 		// close enough to do damage?
@@ -3088,7 +3088,7 @@ int CNPC_Strider::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 				m_PlayerFreePass.Revoke();
 				AddFacingTarget( info.GetAttacker(), info.GetAttacker()->GetAbsOrigin(), 1.0, 2.0 );
 
-				UpdateEnemyMemory( info.GetAttacker(), info.GetAttacker()->GetAbsOrigin() );
+				UpdateEnemyMemory(info.GetAttacker(), info.GetAttacker()->BodyTarget(false));
 			}
 			else
 				AddFacingTarget( info.GetAttacker(), info.GetAttacker()->GetAbsOrigin(), 0.5, 2.0 );
@@ -4913,7 +4913,7 @@ void CStriderMinigun::AimAtTarget( IStriderMinigunHost *pHost, CBaseEntity *pTar
 {
 	if ( pTarget && !(CAI_BaseNPC::m_nDebugBits & bits_debugDisableAI) )
 	{
-		Vector vecTargetPos = pTarget->BodyTarget( pHost->GetEntity()->EyePosition() );
+		Vector vecTargetPos = pTarget->BodyTarget(true);
 		AimAtPoint( pHost, vecTargetPos, bSnap );
 	}
 }
@@ -5317,7 +5317,7 @@ void CStriderMinigun::Think( IStriderMinigunHost *pHost, float dt )
 
 			flFactor = MAX( 0.0f, flFactor );
 
-			Vector vecTarget = pTargetEnt->BodyTarget( assert_cast<CNPC_Strider *>(pHost->GetEntity())->GetAdjustedOrigin());
+			Vector vecTarget = pTargetEnt->BodyTarget(true);
 
 			Vector vecLine = m_vecAnchor - vecTarget;
 			

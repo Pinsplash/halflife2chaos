@@ -1961,7 +1961,7 @@ void CNPC_CScanner::BlindFlashTarget( CBaseEntity *pTarget )
 		{
 			if( FClassnameIs( ppAIs[ i ], "npc_strider" ) )
 			{
-				ppAIs[ i ]->UpdateEnemyMemory( pTarget, pTarget->GetAbsOrigin(), this );
+				ppAIs[i]->UpdateEnemyMemory(pTarget, pTarget->BodyTarget(false), this);
 			}
 		}
 	}

@@ -2633,7 +2633,7 @@ Activity CNPC_BaseZombie::NPC_TranslateActivity( Activity baseAct )
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-Vector CNPC_BaseZombie::BodyTarget( const Vector &posSrc, bool bNoisy ) 
+Vector CNPC_BaseZombie::BodyTarget( bool bNoisy ) 
 { 
 	
 	if( IsCurSchedule(SCHED_BIG_FLINCH) || m_ActBusyBehavior.IsActive() )
@@ -2642,17 +2642,17 @@ Vector CNPC_BaseZombie::BodyTarget( const Vector &posSrc, bool bNoisy )
 		// Return a position that's centered over the absorigin,
 		// halfway between the origin and the head. 
 		Vector vecTarget = GetAbsOrigin();
-		Vector vecHead = HeadTarget( posSrc );
+		Vector vecHead = HeadTarget();
 		vecTarget.z = ((vecTarget.z + vecHead.z) * 0.5f);
 		return vecTarget;
 	}
 
-	return BaseClass::BodyTarget( posSrc, bNoisy );
+	return BaseClass::BodyTarget( bNoisy );
 }
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-Vector CNPC_BaseZombie::HeadTarget( const Vector &posSrc )
+Vector CNPC_BaseZombie::HeadTarget()
 {
 	int iCrabAttachment = LookupAttachment( "headcrab" );
 	Assert( iCrabAttachment > 0 );

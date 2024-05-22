@@ -442,7 +442,7 @@ int CWeaponSMG1::WeaponRangeAttack2Condition( float flDot, float flDist )
 		// toss it to where you last saw them
 		vecTarget = vecEnemyLKP;
 	}
-	// vecTarget = m_vecEnemyLKP + (pEnemy->BodyTarget( GetLocalOrigin() ) - pEnemy->GetLocalOrigin());
+	// vecTarget = m_vecEnemyLKP + (pEnemy->BodyTarget() - pEnemy->GetLocalOrigin());
 	// estimate position
 	// vecTarget = vecTarget + pEnemy->m_vecVelocity * 2;
 

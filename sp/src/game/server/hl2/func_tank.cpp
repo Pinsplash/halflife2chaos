@@ -1299,7 +1299,7 @@ void CFuncTank::NPC_Fire( void )
 		// Every third shot should be fired directly at the player
 		if ( m_nBulletCount%2 == 0 )
 		{
-			Vector vecBodyTarget = pEnemy->BodyTarget( vecBarrelEnd, false );
+			Vector vecBodyTarget = pEnemy->BodyTarget( false );
 			vecForward = (vecBodyTarget - vecBarrelEnd);
 			VectorNormalize( vecForward );
 			bIgnoreSpread = true;
@@ -1728,7 +1728,7 @@ void CFuncTank::CalcNPCEnemyTarget( Vector *pVecTarget )
 	if ( pEnemy )
 	{
 		// Clear the idle target
-		*pVecTarget = pEnemy->BodyTarget( GetAbsOrigin(), false );
+		*pVecTarget = pEnemy->BodyTarget( false );
 		m_vecNPCIdleTarget = *pVecTarget;
 	}
 	else
@@ -1829,7 +1829,7 @@ void CFuncTank::LostTarget( void )
 //-----------------------------------------------------------------------------
 void CFuncTank::ComputeLeadingPosition( const Vector &vecShootPosition, CBaseEntity *pTarget, Vector *pLeadPosition )
 {
-	Vector vecTarget = pTarget->BodyTarget( vecShootPosition, false );
+	Vector vecTarget = pTarget->BodyTarget( false );
 	float flShotSpeed = GetShotSpeed();
 	if ( flShotSpeed == 0 )
 	{
@@ -1935,7 +1935,7 @@ void CFuncTank::AimFuncTankAtTarget( void )
 			pTargetVehicle = pPlayer->GetVehicleEntity();
 			if ( pTargetVehicle )
 			{
-				worldTargetPosition = pTargetVehicle->BodyTarget( GetAbsOrigin(), false );
+				worldTargetPosition = pTargetVehicle->BodyTarget( false );
 			}
 		}
 	}
@@ -1981,7 +1981,7 @@ void CFuncTank::AimFuncTankAtTarget( void )
 				CBaseEntity *pInstance = pTargetVehicle ? pTargetVehicle : pTarget;
 				m_hFuncTankTarget = pInstance;
 
-				m_sightOrigin = pInstance->BodyTarget( GetAbsOrigin(), false );
+				m_sightOrigin = pInstance->BodyTarget( false );
 				if ( m_bPerformLeading )
 				{
 					ComputeLeadingPosition( barrelEnd, pInstance, &vecAimOrigin );
@@ -2386,7 +2386,7 @@ bool CFuncTank::HasLOSTo( CBaseEntity *pEntity )
 
 	// Get the barrel position
 	Vector vecBarrelEnd = WorldBarrelPosition();
-	Vector vecTarget = pEntity->BodyTarget( GetAbsOrigin(), false );
+	Vector vecTarget = pEntity->BodyTarget( false );
 	trace_t tr;
 
 	// Ignore the func_tank and any prop it's parented to
@@ -4334,7 +4334,7 @@ void CFuncTankCombineCannon::Fire( int bulletCount, const Vector &barrelEnd, con
 
 	if( m_hTarget != NULL )
 	{
-		Vector vecToTarget = m_hTarget->BodyTarget( barrelEnd, false ) - barrelEnd;
+		Vector vecToTarget = m_hTarget->BodyTarget( false ) - barrelEnd;
 		VectorNormalize( vecToTarget );
 
 		float flDot = DotProduct( vecToTarget, forward );

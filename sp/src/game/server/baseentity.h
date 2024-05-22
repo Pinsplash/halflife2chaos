@@ -1184,8 +1184,8 @@ public:
 	const QAngle &LocalEyeAngles( void ) const;	// Direction of eyes
 	Vector	EarPosition( void ) const;			// position of ears
 
-	virtual Vector	BodyTarget( const Vector &posSrc, bool bNoisy = true);		// position to shoot at
-	virtual Vector	HeadTarget( const Vector &posSrc );
+	virtual Vector	BodyTarget( bool bNoisy/* = true*/);		// position to shoot at
+	virtual Vector	HeadTarget();
 	virtual void	GetVectors(Vector* forward, Vector* right, Vector* up) const;
 
 	virtual const Vector &GetViewOffset() const;

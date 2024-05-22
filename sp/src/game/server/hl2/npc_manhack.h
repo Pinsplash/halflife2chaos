@@ -98,7 +98,7 @@ public:
 
 	void			StartEngine( bool fStartSound );
 
-	virtual Vector	BodyTarget( const Vector &posSrc, bool bNoisy = true ) { return WorldSpaceCenter(); }
+	virtual Vector	BodyTarget( bool bNoisy/* = true */) { return WorldSpaceCenter(); }
 
 	virtual float	GetHeadTurnRate( void ) { return 45.0f; } // Degrees per second
 

@@ -376,7 +376,7 @@ Class_T	CBaseHeadcrab::Classify( void )
 // Input  : &posSrc - 
 // Output : Vector
 //-----------------------------------------------------------------------------
-Vector CBaseHeadcrab::BodyTarget( const Vector &posSrc, bool bNoisy ) 
+Vector CBaseHeadcrab::BodyTarget( bool bNoisy ) 
 { 
 	Vector vecResult;
 	vecResult = GetAbsOrigin();
@@ -2169,7 +2169,7 @@ void CBaseHeadcrab::ClearBurrowPoint( const Vector &origin )
 	{
 		if ( pEntity->m_takedamage != DAMAGE_NO && pEntity->Classify() != CLASS_PLAYER && pEntity->VPhysicsGetObject() )
 		{
-			vecSpot	 = pEntity->BodyTarget( origin );
+			vecSpot = pEntity->BodyTarget(true);
 			vecForce = ( vecSpot - origin ) + Vector( 0, 0, 16 );
 
 			// decrease damage for an ent that's farther from the bomb.
@@ -3317,7 +3317,7 @@ void CBlackHeadcrab::Eject( const QAngle &vecAngles, float flVelocityScale, CBas
 	if ( pEnemy )
 	{
 		SetEnemy( pEnemy );
-		UpdateEnemyMemory(pEnemy, pEnemy->GetAbsOrigin());
+		UpdateEnemyMemory(pEnemy, pEnemy->BodyTarget(false));
 	}
 
 	SetActivity( ACT_RANGE_ATTACK1 );

@@ -89,7 +89,7 @@ public:
 
 	Vector			EyeOffset( Activity nActivity );
 	Vector			EyePosition( void );
-	Vector			BodyTarget( const Vector &posSrc, bool bNoisy = true );
+	Vector			BodyTarget( bool bNoisy/* = true */);
 	Vector			GetAltFireTarget();
 
 	void			StartTask( const Task_t *pTask );

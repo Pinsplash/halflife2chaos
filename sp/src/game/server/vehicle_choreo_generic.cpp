@@ -126,7 +126,7 @@ public:
 	virtual void	Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value );
 	virtual void	DrawDebugGeometryOverlays( void );
 
-	virtual Vector	BodyTarget( const Vector &posSrc, bool bNoisy = true );
+	virtual Vector	BodyTarget( bool bNoisy/* = true */);
 	virtual void	TraceAttack( const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr );
 	virtual int		OnTakeDamage( const CTakeDamageInfo &info );
 
@@ -386,7 +386,7 @@ int CPropVehicleChoreoGeneric::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-Vector CPropVehicleChoreoGeneric::BodyTarget( const Vector &posSrc, bool bNoisy )
+Vector CPropVehicleChoreoGeneric::BodyTarget( bool bNoisy )
 {
 	Vector	shotPos;
 

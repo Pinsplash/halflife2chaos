@@ -376,7 +376,7 @@ void CGameRules::RadiusDamage( const CTakeDamageInfo &info, const Vector &vecSrc
 			continue;
 
 		// Check that the explosion can 'see' this entity.
-		vecSpot = pEntity->BodyTarget( vecSrc, false );
+		vecSpot = pEntity->BodyTarget( false );
 		UTIL_TraceLine( vecSrc, vecSpot, MASK_RADIUS_DAMAGE, info.GetInflictor(), COLLISION_GROUP_NONE, &tr );
 
 		if( old_radius_damage.GetBool() )

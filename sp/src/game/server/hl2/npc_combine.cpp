@@ -1177,9 +1177,9 @@ void CNPC_Combine::RunTask( const Task_t *pTask )
 // Input   :
 // Output  :
 //------------------------------------------------------------------------------
-Vector CNPC_Combine::BodyTarget( const Vector &posSrc, bool bNoisy ) 
+Vector CNPC_Combine::BodyTarget( bool bNoisy ) 
 {
-	Vector result = BaseClass::BodyTarget( posSrc, bNoisy );
+	Vector result = BaseClass::BodyTarget( bNoisy );
 
 	// @TODO (toml 02-02-04): this seems wrong. Isn't this already be accounted for 
 	// with the eye position used in the base BodyTarget()
@@ -2224,7 +2224,7 @@ int CNPC_Combine::TranslateSchedule( int scheduleType )
 						// try crouching
 						Crouch();
 
-						Vector targetPos = GetEnemy()->BodyTarget(GetActiveWeapon()->GetLocalOrigin());
+						Vector targetPos = GetEnemy()->BodyTarget(true);
 
 						// if we can't see it crouched, stand up
 						if (!WeaponLOSCondition(GetLocalOrigin(),targetPos,false))

@@ -1051,7 +1051,7 @@ void CNPC_Antlion::HandleAnimEvent( animevent_t *pEvent )
 			else
 			{
 				// Otherwise he can't see us and he won't be able to dodge
-				vTarget = GetEnemy()->BodyTarget(vSpitPos, true);
+				vTarget = GetEnemy()->BodyTarget(true);
 			}
 
 			vTarget[2] += random->RandomFloat(0.0f, 32.0f);
@@ -2433,7 +2433,7 @@ int CNPC_Antlion::SelectSchedule( void )
 						SetNextAttack( gpGlobals->curtime + random->RandomFloat( 0.5f, 2.5f ) );
 						if ( GetEnemy() )
 						{
-							m_vSavePosition = GetEnemy()->BodyTarget( GetAbsOrigin() );
+							m_vSavePosition = GetEnemy()->BodyTarget(true);
 						}
 
 						return SCHED_ANTLION_WORKER_RANGE_ATTACK1;
@@ -3083,7 +3083,7 @@ void CNPC_Antlion::ClearBurrowPoint( const Vector &origin )
 
 		if ( pEntity->m_takedamage != DAMAGE_NO && pEntity->Classify() != CLASS_PLAYER && pEntity->VPhysicsGetObject() )
 		{
-			vecSpot	 = pEntity->BodyTarget( origin );
+			vecSpot = pEntity->BodyTarget(true);
 			vecForce = ( vecSpot - origin ) + Vector( 0, 0, 16 );
 
 			// decrease damage for an ent that's farther from the bomb.
@@ -4255,7 +4255,7 @@ void CNPC_Antlion::SetMoveState( AntlionMoveState_e state )
 //-----------------------------------------------------------------------------
 // Purpose: Special version helps other NPCs hit overturned antlion
 //-----------------------------------------------------------------------------
-Vector CNPC_Antlion::BodyTarget( const Vector &posSrc, bool bNoisy /*= true*/ )
+Vector CNPC_Antlion::BodyTarget( bool bNoisy /*= true*/ )
 { 
 	// Cache the bone away to avoid future lookups
 	if ( m_nBodyBone == -1 )

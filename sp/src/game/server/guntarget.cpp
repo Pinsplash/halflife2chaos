@@ -40,7 +40,7 @@ public:
 	virtual Class_T Classify( void ) { return CLASS_NONE; }
 #endif
 	virtual int OnTakeDamage( const CTakeDamageInfo &info );
-	virtual Vector BodyTarget( const Vector &posSrc, bool bNoisy = true ) { return GetAbsOrigin(); }
+	virtual Vector BodyTarget( bool bNoisy/* = true */) { return GetAbsOrigin(); }
 
 	// Input handlers
 	void InputStart( inputdata_t &inputdata );

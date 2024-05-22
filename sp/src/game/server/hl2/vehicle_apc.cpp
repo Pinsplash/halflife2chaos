@@ -275,14 +275,14 @@ Vector CPropAPC::EyePosition( )
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-Vector CPropAPC::BodyTarget( const Vector &posSrc, bool bNoisy ) 
+Vector CPropAPC::BodyTarget( bool bNoisy ) 
 {
 	if( g_pGameRules->GetAutoAimMode() == AUTOAIM_ON_CONSOLE )
 	{
 		return WorldSpaceCenter();
 	}
 
-	return BaseClass::BodyTarget( posSrc, bNoisy );
+	return BaseClass::BodyTarget( bNoisy );
 }
 	
 //-----------------------------------------------------------------------------
@@ -685,7 +685,7 @@ void CPropAPC::AimSecondaryWeaponAt( CBaseEntity *pTarget )
 
 	if ( m_hRocketTarget )
 	{
-		m_hLaserDot->SetAbsOrigin( m_hRocketTarget->BodyTarget( WorldSpaceCenter(), false ) );
+		m_hLaserDot->SetAbsOrigin( m_hRocketTarget->BodyTarget( false ) );
 	}
 	SetLaserDotTarget( m_hLaserDot, m_hRocketTarget );
 	EnableLaserDot( m_hLaserDot, m_hRocketTarget != NULL );

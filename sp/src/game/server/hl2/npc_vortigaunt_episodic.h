@@ -54,7 +54,7 @@ public:
 	virtual float	MaxYawSpeed( void );
 
 	virtual	Vector  FacingPosition( void );
-	virtual Vector	BodyTarget( const Vector &posSrc, bool bNoisy = true );
+	virtual Vector	BodyTarget( bool bNoisy/* = true */);
 
 	virtual void	PrescheduleThink( void );
 	virtual void	BuildScheduleTestBits( void );

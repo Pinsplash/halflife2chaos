@@ -227,8 +227,8 @@ public:
 	virtual const char *GetTorsoModel( void ) = 0;
 	virtual const char *GetHeadcrabModel( void ) = 0;
 
-	virtual Vector BodyTarget( const Vector &posSrc, bool bNoisy );
-	virtual Vector HeadTarget( const Vector &posSrc );
+	virtual Vector BodyTarget( bool bNoisy );
+	virtual Vector HeadTarget();
 	virtual float  GetAutoAimRadius();
 	virtual void TranslateNavGoal( CBaseEntity *pEnemy, Vector &chasePosition );
 

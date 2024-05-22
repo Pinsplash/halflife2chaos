@@ -684,13 +684,13 @@ void CBaseEntity::SetModelIndexOverride( int index, int nValue )
 }
 	  
 // position to shoot at
-Vector CBaseEntity::BodyTarget( const Vector &posSrc, bool bNoisy) 
+Vector CBaseEntity::BodyTarget( bool bNoisy) 
 { 
 	return WorldSpaceCenter( ); 
 }
 
 // return the position of my head. someone's trying to attack it.
-Vector CBaseEntity::HeadTarget( const Vector &posSrc )
+Vector CBaseEntity::HeadTarget()
 {
 	return EyePosition();
 }

@@ -279,7 +279,7 @@ void CNPC_APCDriver::PrescheduleThink( )
 	{
 		if ( GetEnemy() )
 		{
-			m_hAPC->AimPrimaryWeapon( GetEnemy()->BodyTarget( GetAbsOrigin(), false ) );
+			m_hAPC->AimPrimaryWeapon( GetEnemy()->BodyTarget( false ) );
 		}
 		m_hAPC->AimSecondaryWeaponAt( GetEnemy() );
 	}

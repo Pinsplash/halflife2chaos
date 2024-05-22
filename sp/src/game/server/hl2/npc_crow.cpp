@@ -185,7 +185,7 @@ void CNPC_Crow::GatherEnemyConditions( CBaseEntity *pEnemy )
 // Input  : posSrc - 
 // Output : Vector
 //-----------------------------------------------------------------------------
-Vector CNPC_Crow::BodyTarget( const Vector &posSrc, bool bNoisy ) 
+Vector CNPC_Crow::BodyTarget( bool bNoisy ) 
 { 
 	Vector vecResult;
 	vecResult = GetAbsOrigin();

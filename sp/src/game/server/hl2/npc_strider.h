@@ -178,7 +178,7 @@ public:
 	bool			HasPass()	{ return m_PlayerFreePass.HasPass(); }
 
 	bool			FVisible( CBaseEntity *pEntity, int traceMask = MASK_BLOCKLOS, CBaseEntity **ppBlocker = NULL );
-	Vector			BodyTarget( const Vector &posSrc, bool bNoisy );
+	Vector			BodyTarget( bool bNoisy );
 
 	bool			IsValidEnemy( CBaseEntity *pTarget );
 	bool			UpdateEnemyMemory( CBaseEntity *pEnemy, const Vector &position, CBaseEntity *pInformer = NULL );

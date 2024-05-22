@@ -1301,7 +1301,7 @@ Vector CNPC_MetroPolice::StitchAimTarget( const Vector &posSrc, bool bNoisy )
 {
 	// This will make us aim a stitch at the feet of the player so we can see it
 	if ( !GetEnemy()->IsPlayer() )
-		return GetShootTarget()->BodyTarget( posSrc, bNoisy );
+		return GetShootTarget()->BodyTarget( bNoisy );
 
 	if ( !IsEnemyInAnAirboat() )
 	{
@@ -1314,7 +1314,7 @@ Vector CNPC_MetroPolice::StitchAimTarget( const Vector &posSrc, bool bNoisy )
 
 		// Underwater? Just use the normal thing
 		if ( GetEnemy()->GetWaterLevel() == 3 )
-			return GetShootTarget()->BodyTarget( posSrc, bNoisy );
+			return GetShootTarget()->BodyTarget( bNoisy );
 
 		// Trace down...
 		trace_t	trace;
@@ -3093,7 +3093,7 @@ void CNPC_MetroPolice::ReleaseManhack( void )
 		m_hManhack->SetEnemy( GetEnemy() );
 		m_hManhack->SetState( NPC_STATE_COMBAT );
 
-		m_hManhack->UpdateEnemyMemory( GetEnemy(), GetEnemy()->GetAbsOrigin() );
+		m_hManhack->UpdateEnemyMemory(GetEnemy(), GetEnemy()->BodyTarget(false));
 	}
 
 	// Place him into our squad so we can communicate
@@ -3987,7 +3987,7 @@ void CNPC_MetroPolice::AdministerJustice( void )
 		CBasePlayer *pPlayer = UTIL_PlayerByIndex(1);
 		SetEnemy( pPlayer );
 		SetState( NPC_STATE_COMBAT );
-		UpdateEnemyMemory( pPlayer, pPlayer->GetAbsOrigin() );
+		UpdateEnemyMemory(pPlayer, pPlayer->BodyTarget(false));
 	}
 	else
 	{

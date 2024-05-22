@@ -1215,7 +1215,7 @@ int CNPC_AntlionGuard::SelectSchedule( void )
 		{
 			m_hOldTarget = GetEnemy();
 			SetEnemy( m_hChargeTarget );
-			UpdateEnemyMemory( m_hChargeTarget, m_hChargeTarget->GetAbsOrigin() );
+			UpdateEnemyMemory(m_hChargeTarget, m_hChargeTarget->BodyTarget(false));
 
 			//If we can't see the target, run to somewhere we can
 			if ( ShouldCharge( GetAbsOrigin(), GetEnemy()->GetAbsOrigin(), false, false ) == false )
@@ -3245,7 +3245,7 @@ void CNPC_AntlionGuard::SummonAntlions( void )
 		{
 			pAntlion->SetEnemy( GetEnemy() );
 			pAntlion->SetState( NPC_STATE_COMBAT );
-			pAntlion->UpdateEnemyMemory( GetEnemy(), GetEnemy()->GetAbsOrigin() );
+			pAntlion->UpdateEnemyMemory(GetEnemy(), GetEnemy()->BodyTarget(false));
 		}
 
 		m_iNumLiveAntlions++;
@@ -4013,7 +4013,7 @@ CBaseEntity *CNPC_AntlionGuard::FindPhysicsObjectTarget( const PhysicsObjectCrit
 
 		// Check for a (roughly) clear trajectory path from the object to target
 		trace_t	tr;
-		UTIL_TraceLine( vecObjCenter, criteria.pTarget->BodyTarget( vecObjCenter ), MASK_SOLID_BRUSHONLY, this, COLLISION_GROUP_NONE, &tr );
+		UTIL_TraceLine(vecObjCenter, criteria.pTarget->BodyTarget(true), MASK_SOLID_BRUSHONLY, this, COLLISION_GROUP_NONE, &tr);
 		
 		// See how close to our target we got (we still look good hurling things that won't necessarily hit)
 		if ( ( tr.endpos - criteria.pTarget->WorldSpaceCenter() ).LengthSqr() > Square(criteria.flNearRadius) )
@@ -4113,7 +4113,7 @@ void CNPC_AntlionGuard::ImpactShock( const Vector &origin, float radius, float m
 		// UNDONE: Ask the object if it should get force if it's not MOVETYPE_VPHYSICS?
 		if ( pEntity->GetMoveType() == MOVETYPE_VPHYSICS || ( pEntity->VPhysicsGetObject() && pEntity->IsPlayer() == false ) )
 		{
-			vecSpot = pEntity->BodyTarget( GetAbsOrigin() );
+			vecSpot = pEntity->BodyTarget(true);
 			
 			// decrease damage for an ent that's farther from the bomb.
 			flDist = ( GetAbsOrigin() - vecSpot ).Length();

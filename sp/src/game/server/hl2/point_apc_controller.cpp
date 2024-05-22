@@ -382,7 +382,7 @@ void CAPCController::TrackTarget( void )
 			updateTime = TRUE;
 
 			// Sight position is BodyTarget with no noise (so gun doesn't bob up and down)
-			m_sightOrigin = pInstance->BodyTarget( GetLocalOrigin(), false );
+			m_sightOrigin = pInstance->BodyTarget( false );
 		}
 	}
 

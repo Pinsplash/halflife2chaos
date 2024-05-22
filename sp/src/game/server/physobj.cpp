@@ -947,7 +947,7 @@ void CPhysExplosion::Explode( CBaseEntity *pActivator, CBaseEntity *pCaller )
 		{
 			vecOrigin = GetAbsOrigin();
 			
-			vecSpot = pEntity->BodyTarget( vecOrigin );
+			vecSpot = pEntity->BodyTarget(true);
 			// Squash this down to a circle
 			if ( HasSpawnFlags( SF_PHYSEXPLOSION_RADIAL ) )
 			{
@@ -962,7 +962,7 @@ void CPhysExplosion::Explode( CBaseEntity *pActivator, CBaseEntity *pCaller )
 				if ( HasSpawnFlags( SF_PHYSEXPLOSION_TEST_LOS ) )
 				{
 					Vector vecStartPos = GetAbsOrigin();
-					Vector vecEndPos = pEntity->BodyTarget( vecStartPos, false );
+					Vector vecEndPos = pEntity->BodyTarget( false );
 
 					if ( m_flInnerRadius != 0.0f )
 					{
@@ -974,7 +974,7 @@ void CPhysExplosion::Explode( CBaseEntity *pActivator, CBaseEntity *pCaller )
 
 					trace_t tr;
 					UTIL_TraceLine( vecStartPos, 
-						pEntity->BodyTarget( vecStartPos, false ), 
+						pEntity->BodyTarget( false ), 
 						MASK_SOLID_BRUSHONLY, 
 						this, 
 						COLLISION_GROUP_NONE, 
@@ -1000,7 +1000,7 @@ void CPhysExplosion::Explode( CBaseEntity *pActivator, CBaseEntity *pCaller )
 				{
 					if ( pEntity->IsPlayer() )
 					{
-						Vector vecPushDir = ( pEntity->BodyTarget( GetAbsOrigin(), false ) - GetAbsOrigin() );
+						Vector vecPushDir = ( pEntity->BodyTarget( false ) - GetAbsOrigin() );
 						float dist = VectorNormalize( vecPushDir );
 
 						float flFalloff = RemapValClamped( dist, m_radius, m_radius*0.75f, 0.0f, 1.0f );
@@ -2027,7 +2027,7 @@ void CPointPush::PushEntity( CBaseEntity *pTarget )
 	}
 	else
 	{
-		vecPushDir = ( pTarget->BodyTarget( GetAbsOrigin(), false ) - GetAbsOrigin() );
+		vecPushDir = ( pTarget->BodyTarget( false ) - GetAbsOrigin() );
 	}
 
 	float dist = VectorNormalize( vecPushDir );
@@ -2119,7 +2119,7 @@ void CPointPush::PushThink( void )
 		if ( HasSpawnFlags( SF_PUSH_TEST_LOS ) )
 		{
 			Vector vecStartPos = GetAbsOrigin();
-			Vector vecEndPos = pEnts[i]->BodyTarget( vecStartPos, false );
+			Vector vecEndPos = pEnts[i]->BodyTarget( false );
 
 			if ( m_flInnerRadius != 0.0f )
 			{
@@ -2131,7 +2131,7 @@ void CPointPush::PushThink( void )
 
 			trace_t tr;
 			UTIL_TraceLine( vecStartPos, 
-							pEnts[i]->BodyTarget( vecStartPos, false ), 
+							pEnts[i]->BodyTarget( false ), 
 							MASK_SOLID_BRUSHONLY, 
 							this, 
 							COLLISION_GROUP_NONE, 

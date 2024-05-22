@@ -164,7 +164,7 @@ public:
 	virtual void StopLoopingSounds( void );
 	bool    AllowedToBePushed( void );
 
-	virtual Vector BodyTarget( const Vector &posSrc, bool bNoisy = true );
+	virtual Vector BodyTarget( bool bNoisy/* = true */);
 	virtual float GetAutoAimRadius() { return 36.0f; }
 
 	void	ClearBurrowPoint( const Vector &origin );

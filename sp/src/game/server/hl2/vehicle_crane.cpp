@@ -291,7 +291,7 @@ int CPropCrane::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-Vector CPropCrane::BodyTarget( const Vector &posSrc, bool bNoisy )
+Vector CPropCrane::BodyTarget( bool bNoisy )
 {
 	Vector	shotPos;
 	matrix3x4_t	matrix;

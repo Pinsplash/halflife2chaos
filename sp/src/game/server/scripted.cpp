@@ -1776,7 +1776,7 @@ void CAI_ScriptedSchedule::StartSchedule( CAI_BaseNPC *pTarget )
 		if ( pGoalEnt && pGoalEnt->MyCombatCharacterPointer() )
 		{
 			pTarget->SetEnemy( pGoalEnt );
-			pTarget->UpdateEnemyMemory( pGoalEnt, pGoalEnt->GetAbsOrigin() );
+			pTarget->UpdateEnemyMemory(pGoalEnt, pGoalEnt->BodyTarget(false));
 			pTarget->SetCondition( COND_SCHEDULE_DONE );
 		}
 		else
