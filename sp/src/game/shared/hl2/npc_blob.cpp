@@ -7,7 +7,7 @@
 #include "hl2_shareddefs.h"
 //pretty sure i have to make this a constant for networking...
 //default 20
-#define BLOB_NUM_ELEMENTS 20
+#define BLOB_NUM_ELEMENTS 10
 #define MASK_BLOB_SOLID (MASK_SHOT)
 #ifndef CLIENT_DLL
 #include "ai_default.h"
@@ -390,9 +390,9 @@ void CBlobElement::MoveTowardsTargetLocation( float speed )
 //---------------------------------------------------------
 void CBlobElement::ReconfigureRandomParams()
 {
-	m_flSinePhase = random->RandomFloat( 0.01f, 0.9f );
-	m_flSineFrequency = random->RandomFloat( 10.0f, 20.0f );
-	m_flSineAmplitude = random->RandomFloat( 0.5f, 1.5f );
+	m_flSinePhase = random->RandomFloat( 0.01f, 0.5f );
+	m_flSineFrequency = random->RandomFloat( 7.5f, 20.0f );
+	m_flSineAmplitude = random->RandomFloat( 0.25f, 1.0f );
 }
 
 //---------------------------------------------------------
@@ -1810,7 +1810,7 @@ static int triangleTable[256 * 16]
 #define MAX_SAMPLES_PER_AXIS 64
 #define MAX_SAMPLES_PER_AXIS_SQUARED	MAX_SAMPLES_PER_AXIS * MAX_SAMPLES_PER_AXIS
 #define MAX_SAMPLES_PER_AXIS_CUBED		MAX_SAMPLES_PER_AXIS * MAX_SAMPLES_PER_AXIS * MAX_SAMPLES_PER_AXIS
-#define MIN_SAMPLE_INTERVAL 4
+#define MIN_SAMPLE_INTERVAL 5
 struct Sample
 {
 	float dif;
@@ -2134,8 +2134,8 @@ int C_NPC_Blob::DrawModel(int flags)
 	//*/
 	return 1;
 }
-ConVar blob_element_radius("blob_element_radius", "16");//radius
-ConVar blob_rbox_padtoradius("blob_rbox_padtoradius", "24");//we should pretend this is the radius for the purpose of expanding the render box, because when balls overlap, they become larger
+ConVar blob_element_radius("blob_element_radius", "22");//radius
+ConVar blob_rbox_padtoradius("blob_rbox_padtoradius", "36");//we should pretend this is the radius for the purpose of expanding the render box, because when balls overlap, they become larger
 void C_NPC_Blob::GetRenderBounds(Vector& theMins, Vector& theMaxs)
 {
 	//render bounds should encompass all our elements
