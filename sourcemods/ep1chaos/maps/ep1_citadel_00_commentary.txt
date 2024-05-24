@@ -1,0 +1,284 @@
+"Entities"
+{
+	"entity"
+	{
+		"classname" "commentary_auto"
+
+		"connections"
+		{
+			"OnCommentaryNewGame" "Intro,StartUnstoppableCommentary,,7.0,1"
+			"OnCommentaryNewGame" "relay_start_citadel_debris,Disable,,0.1,1"
+			"OnCommentaryNewGame" "lrelay_trains_debris,CancelPending,,0.1,1"
+			"OnCommentaryNewGame" "credits,SetLogoLength,55,0.1,1"
+		}
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Intro"
+		"origin" "10688 -5342 -9505"
+		"angles" "0.0000000000 -10.7100000381 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\intro.wav"
+		"printname" "Welcome to Episode 1"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 1
+		"speakers" "Gabe Newell"
+		"synopsis" "Welcome to Half-Life 2, Episode 1. We received a great deal of positive feedback on the commentary track in The Lost Coast, and so we've included the same feature in this episode. To listen to a commentary node, put your crosshair over the floating commentary symbol and press your use key. To stop a commentary node, put your crosshair over the rotating node and press the use key again. Some commentary nodes may take control of the game in order to show something to you. In these cases, simply press your use key again to stop the commentary. With episodic content, we are hoping to release games much more frequently than has been possible with the monolithic development schedules of the past. Game developers and game customers have been wanting to try this for years. Please let me know what you think after you have had a chance to play this, our latest installment in the ongoing adventures of Gordon Freeman. I can be reached at gaben@valvesoftware.com. Thanks, and have fun!"
+		"connections"
+		{
+			"OnCommentaryStopped" "point_viewcontrol_01,Enable,,0,-1"
+			"OnCommentaryStopped" "relay_start_citadel_debris,Enable,,0,-1"
+			"OnCommentaryStopped" "relay_start_citadel_debris,Trigger,,0.1,-1"
+			"OnCommentaryStopped" "lcs_create,Start,,2.0,-1"
+			"OnCommentaryStopped" "Intro_gary,StartUnstoppableCommentary,,20.0,1"
+		}
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Intro_gary"
+		"origin" "10688 -5342 -9505"
+		"angles" "0.0000000000 88.5400009155 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\intro_effects.wav"
+		"printname" "Vortigaunt Shaders"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 1
+		"speakers" "Gary McTaggart"
+		"synopsis" "We used an upgrade of the refract shader from Half-Life 2 to make the Vortigaunts warp into the intro. The major difference is that this time we are refracting only pixels that come from the Vortigaunts themselves.  We placed a large sheet of refractive geometry in front of each Vortigaunt to achieve this effect."
+		"connections"
+		{
+			"OnCommentaryStopped" "Intro_greg,StartUnstoppableCommentary,,2.0,1"
+		}
+
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Intro_greg"
+		"origin" "10688 -5342 -9505"
+		"angles" "0.0000000000 171.5000000000 -100.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\intro_design.wav"
+		"printname" "The Intro Sequence"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 1
+		"speakers" "Greg Coomer"
+		"synopsis" "This intro sequence establishes some important initial pieces of episode one's story and setting. Our earlier versions of the intro sequence were heavy on graphic effects and relatively light on storytelling. When we showed those early versions to playtesters, they thought it was cool, but rarely had any idea what was supposed to be happening. We went through several iterations, each time simplifying the editing and tightening the effects. We eventually arrived at a good middle ground between the sort of psychedelic look we were shooting for and basic comprehension of what was actually taking place."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "dog my hero"
+		"origin" "-8941.833984 5873.173340 -108.96875"
+		"angles" "0.0000000000 40.9700012207 0.7300000191"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\dogmyhero.wav"
+		"printname" "Players Love Dog"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Bill Fletcher"
+		"synopsis" "Players love Dog, so we made sure that he was the first thing you see when you wake up in Episode 1. We also wanted players to get a glimpse of the crippled Citadel. When Dog lifts you out of the rubble, it's one of the few instances in the game where we take control of the player's view. This allowed us to ensure the player's view lingered briefly on the Citadel before Dog set them down."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "citadel skybox/debris"
+		"origin" "-8787.485352 5758.244629 -114.22541"
+		"angles" "0.0000000000 -25.9500000477 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\citadel_skybox.wav"
+		"printname" "Citadel Skybox"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Jay Stelly"
+		"synopsis" "The Citadel is supposed to be a building of unprecedented scale – so out of scale with the rest of the world, in fact, that we couldn’t render it without our 3d skybox technology. This technology allows us to build the Citadel as a 1/16th scale model off in an unreachable corner of the map and seamlessly merge it into the scene. We also use this technology to create the illusion of vast spaces and distant horizons."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Falling debris"
+		"origin" "-8831.602539 6001.249023 -143.84783"
+		"angles" "0.0000000000 80.8000030518 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\falling_debris.wav"
+		"printname" "Falling Debris"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Matt T. Wood"
+		"synopsis" "Since we never take control away from the player, it can be a real pain to get them to notice important environmental events. It's a constant design challenge for us. The Citadel will be erupting in a massive light show that took ten of us two months to orchestrate, and, if we're not careful, the player will end up facing the other direction staring at a tire. In this case, to establish that the Citadel is coming apart at the seams, we wanted the player to notice the debris falling off of it. We used a pretty straightforward method here - Alyx explicitly mentions the citadel while pointing at it. Like most of these solutions, it's not foolproof, but it has a high success rate."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "sometimes you just have to do it."
+		"origin" "-8725.099609 5933.526367 -155.349915"
+		"angles" "0.0000000000 28.2099990845 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\justhavetodoit.wav"
+		"printname" "Exposition"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Matt Scott"
+		"synopsis" "This area was redesigned several times in order to keep the player in this space while Alyx delivers some exposition. As much as we hated to do it, the final solution was to have Alyx climb out while the player looks for an alternate route. We portray Alyx as more athletic and nimble than Gordon, so the player shouldn’t get too irritated by the fact that she can get to places they can't. Honestly, we're not especially happy with this crutch, but it's a trade-off we sometimes have to make so that we can get Alyx out of the way of interesting player challenges."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Monitor scene"
+		"origin" "-7886.929199 5910.352539 73.35746"
+		"angles" "0.0000000000 -5.1199998856 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\monitor_scene.wav"
+		"printname" "Monitor Scenes"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Marc Laidlaw"
+		"synopsis" "Right off the bat, we needed to hammer home some story points, reintroduce the cast of characters, and explain the player's immediate goal. It was a pretty intimidating chunk of non-interactive exposition. We generally approach these scenes by writing way too much, and then, through constant playtesting, trimming the scene to more manageable levels. In this case, even after some heroic pruning, the opening scene still felt too long. We ended up splitting the introductory sequence into three scenes, seperated by some gravity gun puzzle solving and then a dramatic walk across a crumbling ledge."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "improvements to our character systems"
+		"origin" "-7835.908203 5834.480957 80.85951"
+		"angles" "0.0000000000 -2.9000000954 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\charactersys.wav"
+		"printname" "Better Faces"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Ken Birdwell"
+		"synopsis" "When we designed the Half-Life 2 facial system back in 2000, our goal was to get a natural looking performance at a moderate distance.  Given our realtime polygon and texture budgets, we chose fairly reserved or constrained performance over ever having the actors faces get into a bad looking or unnatural expression. For Episode 1, we wanted to extend the characters' facial systems to support more intense performances with a wider range of facial expressions, that would hold up better at close range. These facial improvements included increasing the detail around the eyes and mouth, increasing the number of facial shape targets – think of these as movements of muscle groups – by about 50%, rewriting the rules that control how these shapes blend, and increasing the intensity of many of our existing shapes. In addition, we added support for controlling the amplitude of the facial movement for lip-sync animation, which let us dampen or amplify the mouth shapes based on the volume or intensity of the dialogue."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Monitors and Character Relationships"
+		"origin" "-7835.061523 5780.108887 130.82139"
+		"angles" "0.0000000000 0.4799995422 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\monitorscene.wav"
+		"printname" "Monitors and Character Relationships"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Bill Fletcher"
+		"synopsis" "Monitor scenes are especially difficult to make interesting, since they tend to involve literally just talking heads. By interweaving critical expository information - like how dangerous the Citadel has become - with some dramatic character interactions between Alyx, Eli, and Dr. Kleiner, we were able to convert a potential liability into one of the strongest scenes in the game. A great way to illustrate characters' relationships to each other is to have one of the characters in danger and show the others' reactions to it, which is what this scene is all about."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Dog lifting drophip"
+		"origin" "-7997.582520 5688.000000 65.41386"
+		"angles" "0.0000000000 -88.1100006104 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\dog_dropship.wav"
+		"printname" "Dog Gate"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Bill Van Buren"
+		"synopsis" "Sometimes, we need to keep the player in an area so that we can deliver some critical dialog or run an important sequence of events. In these cases, we temporarily block the player's path using what we call a 'gate'. These gates generally take the form of some obstacle that can only be removed or opened by some character or event. In this case, the obstacle is a crashed gunship that can only be moved out of the way by Dog. Though the final scene looks pretty straightforward, a lot of care had to be taken to make sure that Dog hit his marks and played his sequences without trampling and damaging the player."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Alyx Specular Lighting"
+		"origin" "-7921.7202148438 5472.8901367188 65.0899963379"
+		"angles" "0.0000000000 90.0100002289 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\alyx_specular.wav"
+		"printname" "Specular Lighting"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Jason Mitchell"
+		"synopsis" "Alyx travels through much of Episode 1 with the player and consequently passes through a wider variety of lighting conditions than she did in Half-Life 2.  This meant that we had to improve the quality of the lighting algorithms used on Alyx to look realistic in any situation, from the eerie hallways of the Citadel to the streets of City 17 at sunset.  For this episode, we added a specular lighting term to the shaders used on Alyx, which provides a realistic shiny look to her skin, her leather jacket and even her teeth.  In these new lighting calculations, we chose to specifically emphasize bright highlights caused by illumination from grazing angles.  This type of lighting, also referred to as 'rim lighting' is particularly dramatic when coming from low-angle light sources such as this bright sunset.  You’ll also note that the rim lighting is further enhanced by our high-dynamic range postprocessing, which causes the specular highlights to bloom in a striking and dramatic fashion.  We have found that the move to an episodic development cycle allows us to take advantage of the fast pace of graphics hardware innovation by incrementally adding new features, such as Alyx’s new lighting techniques, to the Source engine with each new episode."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Alyx navigating ledge"
+		"origin" "-7412.761230 5272.658203 -125.96875"
+		"angles" "0.0000000000 -20.4299926758 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\alyx_ledge.wav"
+		"printname" "Alyx Navigating the Ledge"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Robin Walker"
+		"synopsis" "This ledge is a really tricky spot for NPCs to navigate. While we wanted Alyx to be able to maneuver dynamically through any complex environment, in certain navigation situations we’re faced with a trade off between flexibility and visual quality. In this particular case, she navigates this ledge with a combination of AI and scripted animations. We continue to evolve the systems of Half-Life 2 whereby characters move fluidly through dynamic AI and scripted navigation, but ultimately what matters most is how it looks to the player."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Dog throwing the van"
+		"origin" "-6622.780762 5980.761719 -64.18225"
+		"angles" "0.0000000000 88.1900024414 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\dog_throw.wav"
+		"printname" "Dog Throwing the Van"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Bill Van Buren"
+		"synopsis" "Our games are created by design collectives that we call 'cabals'. When the idea to have you and Alyx sit in a van and then have Dog toss it across the gorge was first suggested during a cabal meeting, everyone thought it was funny - and then we moved on to more serious solutions for the gorge crossing. As the design progressed, though, we kept coming back to the van idea, and eventually everyone agreed that we should give it a try. Even though the idea was kind of outrageous, it satisfied some key goals we had for the scene: Alyx and the player get across the impassable gorge and Dog is able to play a key role in the mission while also plausibly getting left behind. There were still some problems to solve, though: attaching animated models to the van was tricky, making sure the van didn't kill the player took some thought, and it took a number of tries before we were able to really illuminate Dog's thinking, as he went from testing his idea with chunks of debris to finally presenting the plan to Alyx. Ultimately, we were able to create a scene that solved some tricky game design issues, provided an intimate view of the relationship between Alyx and Dog, and delivered a surprising and visceral entrance to the Citadel."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "You did do the math, right?"
+		"origin" "-6388.243164 6136.28125 -66.92815"
+		"angles" "0.0000000000 0.0400009155 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\youdidthemath.wav"
+		"printname" "You Did Do the Math, Right?"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Yahn Bernier"
+		"synopsis" "It's really important to us to create scenes that showcase strong relationships between our characters. The relationship between Alyx and Dog seems to be especially satisfying to players. In the scene leading up to the van toss, we had a bug before the animation was complete where Dog’s head would shake as he looked back at Alyx. In a happy accident, his head shook right after she asked him, 'You did do the math, right?' In playtests, players thought this was intentional and always laughed.  Because of that, we worked it into the animation and it ended up being a terrific little moment between Dog and Alyx."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Alyx the nag"
+		"origin" "4753.918457 3786.550049 -6309.96875"
+		"angles" "0.0000000000 -20.8600006104 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\alyxnag.wav"
+		"printname" "Alyx the Nag"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Matt T. Wood"
+		"synopsis" "To convey a sense of urgency, we originally designed Alyx to nag the player pretty frequently. She'd say things like 'Hurry up!' and 'Keep moving!' Whether or not this created a sense of urgency is debatable. But after about three minutes of this, the one thing it definitely did was make the player hate Alyx. This was one of the observations that eventually led us to switch Alyx from generally leading players to almost always following. Through playtesting we discovered that players much preferred to set the pace themselves and that they especially disliked virtually any hint of bossiness from Alyx."
+	}
+}

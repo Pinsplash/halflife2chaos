@@ -1,0 +1,38 @@
+"Entities"
+{
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Hunter Arena"
+		"origin" "102.8700027 -9493.169922 -1392.180054 "
+		"angles" "0 178.4299926758 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment186.wav"
+		"printname" "Hunter Arena"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Matt T. Wood"
+		"synopsis" "One of our main goals for hunters was to make the player feel he was vulnerable wherever he might hide. This arena in the secondary silo became our testbed for improving the hunters' close-combat behavior. A classic combat space, featuring multiple exits and many possible paths, we tuned it for a strong cat-and-mouse gameplay experience.  While players have many options for escape, the map is designed so that hunters will never completely lose them--but always be able to pursue and flush the player out of hiding."
+		"parser_id" "186"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Particle Water"
+		"origin" "-547.1300049 -11211.16992 -1208 "
+		"angles" "0 -12.6099996567 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment187.wav"
+		"printname" "Particle Water"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Scott Dalton"
+		"synopsis" "Level Designers and Artists now have the ability to create unique effects as needed for game play or to add dynamic life to a level.  In this case, this simple water leak wouldn't have been possible before without involving a programmer to create a new class of effect.  Thanks to the new particle system, unique effects like this are easily created as needed without any programming.  This leak adds a visual point of interest to the area, and also blocks direct line of site into the nearby corridor without blocking the space itself.  These effects can be placed and controlled within levels, attached to animation events of characters, or called by code.  Allowing particles to be attached to objects in the world, emitted from a model's hitboxes, and locked to bone positions allows for them to serve a variety of functions, such as the new Vortigaunt beams or the burning effect of a zombie.  We hope this feature will allow level and mod authors to create a wide variety of effects quickly and easily to suit their purposes."
+		"parser_id" "187"
+	}
+
+}

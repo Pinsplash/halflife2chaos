@@ -1,0 +1,41 @@
+models/props_lab/freightelevator_sheet2
+particle/fire_burning_character/fire_burning_character
+models/humans/female/group01/citizen_sheet
+models/humans/female/group02/citizen_sheet
+models/weapons/v_physcannon/v_superphyscannon_sheet
+models/props_c17/door01a_skin2
+models/props_c17/door01a_skin3
+models/props_c17/door01a_skin4
+models/props_c17/door01a_skin5
+models/props_c17/door01a_skin7
+models/props_c17/door01a_skin8
+models/props_c17/door01a_skin9
+models/props_c17/door01a_skin10
+models/props_c17/door01a_skin11
+models/props_c17/door01a_skin12
+models/props_c17/door01a_skin14
+models/props_c17/door01a_skin3_normal
+models/props_c17/door01a_skin12_normal
+models/props_c17/door01a_skin13
+models/props_c17/door01a_skin14_normal
+models/props_c17/door01a_skin16
+models/humans/female/group01/lakeetra_facemap
+models/humans/female/group01/naomi_facemap
+models/humans/female/group01/chau_facemap
+models/humans/female/group01/kim_facemap
+models/humans/female/group01/kanisha_cylmap
+models/humans/female/group01/joey_facemap
+models/humans/female/group02/lakeetra_facemap
+models/humans/female/group02/naomi_facemap
+models/humans/female/group02/chau_facemap
+models/humans/female/group02/kim_facemap
+models/humans/female/group02/joey_facemap
+
+1024 models/props_foliage/arbre01
+512 models/props_foliage/arbrefallen01
+512 models/props_silo/rocket_low_normal
+512 models/props_silo/silo_workspace1_sheet
+1024 particle/fire_particle_7/fire_particle_7
+128 models/vortigaunt/vortigaunt_normal
+1024 models/vehicle/helicopter
+256 models/props_mining/diesel_generator

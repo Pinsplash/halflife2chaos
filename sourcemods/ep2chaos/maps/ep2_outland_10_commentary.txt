@@ -1,0 +1,140 @@
+"Entities"
+{
+
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "The Environment tells a story"
+		"origin" "4759.102539 -9977.057617 -998.124268; "
+		"angles" "0 74.780724 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment177.wav"
+		"printname" "Environmental Storytelling"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "David Speyrer"
+		"synopsis" "The approach to the White Forest Inn contains a number of elements that set the scene for the coming ambush. The road is blocked by Combine walls; a soldier spots you in the distance and radios you in; and two hunters run across an opening on the far side of a fence.  All these clues are there for the attentive player to spot directly, or to create a sense of growing apprehension in the player who might be paying slightly less attention to the details."
+		"parser_id" "177"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Color_Blue"
+		"origin" "4984.955566 -9450.667969 -992.529419 "
+		"angles" "0 68.260780  0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment176.wav"
+		"printname" "Blue"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Jess Cliffe"
+		"synopsis" "In each episode we start by agreeing on how to use color choices to create and reinforce the right thematic tone. The tint of a scene can be a powerful source of mood. Episode 1 was pervaded by deep reds.  For Episode 2, we made heavy use of blue tints in the outdoor areas.  The blue was meant to set an ominous tone, while the warm splashes of sunlight were intended to offer visual contrast, that suggest a glimmer of hope."
+		"parser_id" "176"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Acting in a Game v. Acting for Film/Stage"
+		"origin" "2761.160400 -6713.124023 -248.253326"
+		"angles" "0 123.349991   0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment244.wav"
+		"printname" "Game Acting"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Merle Dandridge: Voice of Alyx Vance"
+		"synopsis" "A question I get asked a lot is, ‘What is the big difference between acting for stage and film and then acting for a videogame?’  Because this is the first time I’ve ever done a videogame.   In general, in acting, it’s helpful to have a director’s clear vision from which to spring.  Then the actor can run with the idea, play with it, imagine new things, fill it out and make it a tangible thing or a tangible character.  And the great thing about videogame acting for me is that I’m completely unlimited.  I’m not bound by what I can do physically or how I look or what kind of environment can be physically created.  So the possibilities are completely limitless.  There are no boundaries with this.  So when we get together and we talk about what the scene is, when they set the stage for me and what environment I’m going to be in, I immediately get a complete high.  And I can only imagine it is something like how somebody gets when they actually see the game, because it blows my mind, the pictures that they paint, about where we are, what situations we’re in.  So we discuss that a little and then from there we just kind of go on, I guess instinct is the only way I can really describe it, because I take what they give to me and kind of volley it back in the way that it comes out immediately.  So I just go into my little dark booth and I can imagine that I’m anywhere.  And it’s the best--the best kind of make-believe for a storyteller, when you just aren’t limited.  "
+		"parser_id" "244"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "combine siege behaviour"
+		"origin" "2801.242676 -2197.259033 -62.513557"
+		"angles" "0 -100.601448 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment180.wav"
+		"printname" "Combine Siege Behavior"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Tom Leonard"
+		"synopsis" "One issue with a number of our encounters with the Combine is that they don't live long enough for players to experience some of their more interesting AI. Some unique elements introduced here with respect to the Combine are: Branching assaults, so that soldiers introduced to the field don't take up predictable positions. Flexible assault points, so that soldiers can stray from designer specified locations to establish line of fire or cover. Assault progression is a feedback system so that the timing of the soldiers advances responds to player actions and skill rather than timing. We give soldiers different tactical roles. For instance, squads in the field distract the player, allowing other soldiers to execute surprise moves not present in our typical frontal assault scenarios. The net effect of these changes is that the soldiers are perceived to have awareness of the layout of the building that you're trapped in, and a strategyfor flushing you out."
+		"parser_id" "180"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Hunter combat behavior"
+		"origin" "2480.789307 -1026.042236 -93.968750"
+		"angles" "0 -90.827980 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment181.wav"
+		"printname" "Hunters in Combat"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Steve Bond"
+		"synopsis" "To compliment the Hunter's aggressive AI, the White Forest Inn was designed with a non-linear floorplan.  There are multiple ways in and out of each room, as well as alternate routes to the basement and the second floor. As the player moves through the inn, the Hunters often select a shorter route and surprise the player by arriving first or by heading them off altogether. The last Hunters that enter the building, destroy two of the doors that have trapped Alyx and the Player inside.  Removing these obstacles opens the entire outdoor arena for combat, allowing the player to choose whether to fight the Hunters within the building, or take them on outside."
+		"parser_id" "181"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "combine siege behaviour"
+		"origin" "3067.791260 -814.436707 34.031250"
+		"angles" "0 45 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment238.wav"
+		"printname" "The Battle at White Forest Inn"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Tom Leonard"
+		"synopsis" "The Inn is designed as a crafted experience that is controlled but not linear. The encounter is intended to create a heightened sense of danger without actually being particularly dangerous. The idea is to create opportunities for some memorable unscripted combat moments by keeping the player a bit on their heels. Normally, Alyx is out of frame during combat and soldiers don't survive very long. By encouraging the player to move back from the windows, the map creates space for Alyx and the soldiers to exhibit interesting behaviors that reinforce the mood of the seige."
+		"parser_id" "238"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "getting players to carry out a deliberately dangerous looking jump"
+		"origin" "4826.160156 2326.050049 -286.8699951 "
+		"angles" "0 0 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment182.wav"
+		"printname" "Reckless Driving"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Gautam Babbar"
+		"synopsis" "Sometimes, even in an action game, it can be hard to convince players to act like an action movie hero. Here, we wanted the player to make a 150 foot turbo jump off the edge of the road and crash into the boxes at the bottom.  Instead, wary playtesters routinely took the safe way down. To encourage more recklessly heroic behaviour, we disguised the easy path and added obvious ramps to clearly communicate this was a legitimate feature of the level."
+		"parser_id" "182"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Stage Door Story"
+		"origin" "4842.239746 -1051.209106 -658.206604"
+		"angles" "0 84.203629 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment254.wav"
+		"printname" "Stage Door Story"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Merle Dandridge: Voice of Alyx Vance"
+		"synopsis" "As I’m sure a lot of people know, I perform on Broadway.  And sometimes people will show up at the stage door with Alyx Vance posters to sign or just an encouraging word about the game.  ‘Oh my gosh, I saw in the playbill that you played Alyx Vance!’  It gets me so hyped when people come up to me and are excited about the game.  Because I don’t get that immediate feedback that I get on stage every night, so when somebody tells me that they liked it face to face, it’s really exciting to me.  So I guess a couple of people have taken pictures with me at the stage door.  And I went through a phase where I wanted to know what people thought of the game, so I was looking on message boards and checking out what the chat was, and I found that thread that had a picture of me with somebody at the stage door.  They were talking about, ‘Look, this is me with Alyx Vance!’  And the first response was, ‘She is so ugly!’  I thought that was cute."
+		"parser_id" "254"
+	}
+}

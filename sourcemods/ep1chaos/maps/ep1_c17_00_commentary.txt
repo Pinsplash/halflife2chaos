@@ -1,0 +1,283 @@
+"Entities"
+{
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Hold up a sec."
+		"origin" "4939.426270 -5749.500977 -81.968750"
+		"angles" "0.0000000000 -32.0699996948 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\holdupasec.wav"
+		"printname" "Hold up a Sec"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Bill Fletcher"
+		"synopsis" "This is another multipurpose scene. First, Alyx is visibly shaken, which once again humanizes her. But she also states the player's goal for the second half of the game: climb to the surface and get to the train station."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Flashlight Evolution"
+		"origin" "3798.225830 -1953.501587 -89.96875"
+		"angles" "0.0000000000 110.0699996948 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\flashlightgameplay.wav"
+		"printname" "Flashlight Evolution"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Steve Bond"
+		"synopsis" "Initially, the player wasn't going to have a weapon here. The combination of no weapon and near total darkness forced the player to use the flashlight to direct Alyx's fire. We liked the idea that you could interact with Alyx in a meaningful way using elements that were already built into the interface. Unfortunately, playtesters didn't like not having a weapon. So we added weapons back in. Luckily, it turned out that, even armed, players tended to still use and enjoy the flashlight mechanic."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Weapon Pickup"
+		"origin" "4352.534180 -2365.083740 -85.968750"
+		"angles" "0.0000000000 -35.2799987793 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\weaponpickup.wav"
+		"printname" "Weapon Rationing"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Jim Dose"
+		"synopsis" "Before we armed players with traditional weapons, we wanted to give them a chance to appreciate Alyx's combat abilities. Toward that goal, we created a very specific combat style for the early parts of the journey outside the Citadel - dark, tense, surrounded by zombies, and either weaponless or starved for ammo so that players needed to rely on the gravity gun and, more importantly, Alyx. This is where players finally get a weapon. Since the door only opens when the padlock is shot, players can't proceed without finding the pistol. It's effectively a weapon gate - once players are through the door, we can be sure they've got a pistol."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Power BOxes"
+		"origin" "4457.6699218750 -2909.7900390625 -85.97065"
+		"angles" "0.0000000000 125.0599999428 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\powerboxes.wav"
+		"printname" "Power Boxes"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Jake Nicholson"
+		"synopsis" "Originally, the player couldn't operate the power boxes and would have to wait for Alyx to do it. We thought it'd be entertaining to watch Alyx do some cool thing while you protected her. Unfortunately, that didn't work out. Playtesters were more annoyed than entertained. The other problem was that having Alyx committed to a particular activity while action was still going on in the world tended to quickly expose her most robotic tendencies. She'd either ignore what was going on or completely stop whatever activity the player was waiting for her to finish. Either way, it was unconvincing and frustrating. We learned that whenever Alyx commits to some action in a dynamic environment, she needs to finish it quickly and move on."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Benefits of Darkness"
+		"origin" "3991.8100585938 -2568.0000000000 -85.0099983215"
+		"angles" "0.0000000000 136.1000061035 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\benefitsofdarkness.wav"
+		"printname" "Benefits of Darkness"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "John Guthrie"
+		"synopsis" "The darkness in this area has a few real gameplay benefits. It slows the player down, which most of the time keeps Alyx at your side. The claustrophobia, the close in combat, and Alyx's constant presence and reliance on your flashlight help enhance the tension and your sense of camaraderie. In the dark, the limited flashlight battery adds an extra layer of resource management to the tactics of combat."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Likeability"
+		"origin" "4302.542480 -250.018616 -69.36418"
+		"angles" "0.0000000000 177.6799926758 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\likeablealyx.wav"
+		"printname" "Likeability"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Erik Wolpaw"
+		"synopsis" "If you don’t like Alyx, you’re not going to have much fun with Episode 1.  So Alyx being likeable was one of our most crucial design goals. Little moments like the Zombine joke are designed to make Alyx more endearing. Since we like to multitask, it also had the practical purpose of introducing a new monster. The success of the scene relied on a combination of dialog, voice acting, and animation. Surprisingly, lighting was really important too. Under red light, Alyx's self-deprecating groan looked more like she was sneering at the player for not getting the joke. Changing the lighting to blue and then adjusting the direction of the light so that it changed the shadows on her face fixed the problem."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Monster Introductions"
+		"origin" "4174.463867 -316.202850 -35.41748"
+		"angles" "0.0000000000 177.6799926758 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\monsterintro.wav"
+		"printname" "Monster Introductions"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Adrian Finol"
+		"synopsis" "It's important that monsters get very deliberate introductions since players are going to interact with them a lot. Generally, we let the player first see a new monster in a safe environment, so that they can start thinking about it before they have to fight it."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Zombine Music"
+		"origin" "4023.970459 178.112762 -87.77524"
+		"angles" "0.0000000000 72.4100036621 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\zombinemusic.wav"
+		"printname" "Zombine Music"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Kelly Bailey"
+		"synopsis" "The soundtrack here was created for the introduction of a new adversary, the Combine zombie, or Zombine.  Dischordant guitar tones and bends, and a low-fi, fast beat work in the background of this encounter to create an off balance and disturbing mood."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Response Rules"
+		"origin" "4100.751953 1404.019775 -89.968750"
+		"angles" "0.0000000000 86.1399993896 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\responserules.wav"
+		"printname" "Response Rules"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Jim Dose"
+		"synopsis" "For Episode 1, we implemented a scripting component, called the 'Response Rules System', for dynamically managing NPC speech. We wanted to take NPC speech out of the hands of the programmers and let the writers control it. The writers were able to set up a wide range of situationally triggered character responses. For instance, Alyx has different reactions to different enemies, can warn the player of danger, calls for help when she's mobbed, and will ask for light. The combat responses worked out great, but it's especially satisfying when Alyx's comments on some situation mirror your own thoughts. The writers really went crazy with this, so be on the lookout for lots of little easter egg responses to unusual situations."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Flares"
+		"origin" "4410.561523 1033.670288 -89.96875"
+		"angles" "0.0000000000 33.8899993896 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\flares.wav"
+		"printname" "Flares"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Robin Walker"
+		"synopsis" "We always try to exploit a feature as much as possible throughout a game. For instance, these flares. They're an exploration reward, they've got a simple, satisfying interaction with the gravity gun, and they're a good tactical alternative to the flashlight. Finally, they're a weapon that will ignite zombies, which in turn become a new light source."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Poison Ambush"
+		"origin" "3584.081055 1503.042358 184.03125"
+		"angles" "0.0000000000 0.7400016785 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\poisonambush.wav"
+		"printname" "Poison Ambush"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "John Guthrie"
+		"synopsis" "Poison headcrabs are ideal for ambushes, because they startle you, but can't actually kill you. Here, after a series of right hand turns, you round a corner into a dead end. While you're cracking open a box of goodies, you're ambushed by a poison headcrab. Constructing the ambush this way increased the odds that you wouldn't see the crab, but would hear it just in time to turn around as it leapt at your head."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Hole Training"
+		"origin" "2591.444824 1716.339844 174.03125"
+		"angles" "0.0000000000 0.9800033569 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\holetraining.wav"
+		"printname" "Hole Training"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Jason Deakins"
+		"synopsis" "The antlion hole training is unusual, because it requires the player to learn a new skill in combat. This is a rare case where training occurs under duress, so Alyx states the problem and helps in the fight without giving away the solution."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Dynamic Scripted Sequences"
+		"origin" "1911.784668 -564.41589 174.80300"
+		"angles" "0.0000000000 0.7600002289 0.0000000000"
+		"precommands" "notarget"
+		"postcommands" "notarget"
+		"commentaryfile" "#commentary\dynamicss.wav"
+		"printname" "Dynamic Scripted Sequences"
+		"viewtarget" "commentary_viewtarget_dss"
+		"viewposition" "commentary_viewposition_dss"
+		"prevent_movement" 0
+		"speakers" "Robin Walker"
+		"synopsis" "You fight alongside Alyx for much of Episode 1, so her combat really needed to look varied and exciting. We especially wanted to get her into some convincing physical contact with her enemies. We'd always wanted to do this kind of dynamic character interaction, but getting the NPCs into position for their interactions has a wide-ranging set of problems. We ended up taking an opportunistic approach for Episode 1; Instead of figuring out how to maneuver characters into proximity, the system monitors their positions, and fires the appropriate animations whenever it notices that they're correctly aligned. Given how well these interactions worked out between Alyx and zombies, headcrabs, and antlions, we’re looking forward to extending this kind of behavior to all of our NPCs."
+		"connections"
+		{
+			"OnCommentaryStarted" "example_commentary_dss_spawn,Trigger,,3,-1"
+			"OnCommentaryStarted" "example_commentary_dss_spawn,Trigger,,13,-1"
+			"OnCommentaryStarted" "example_commentary_dss_spawn,Trigger,,23,-1"
+			"OnCommentaryStarted" "example_commentary_dss_spawn,Trigger,,33,-1"
+			"OnCommentaryStopped" "example_commentary_dss_cleanup,Trigger,,0,-1"
+		}
+	}
+	"entity"
+	{
+		"classname" "npc_maker"
+		"targetname" "example_commentary_zombie_maker"
+		"origin" "1913.782349 -683.92053 144.40567"
+		"angles" "0 90 0"
+		"spawnflags" "48"
+		"StartDisabled" "1"
+		"MaxNPCCount" "-1"
+		"NPCType" "npc_zombie"
+		"NPCTargetname" "example_commentary_zombie"
+	}
+	"entity"
+	{
+		"classname" "npc_maker"
+		"targetname" "example_commentary_alyx_maker"
+		"origin" "1915.296997 -611.548767 144.40567"
+		"angles" "0 -90 0"
+		"spawnflags" "48"
+		"StartDisabled" "1"
+		"MaxNPCCount" "-1"
+		"NPCType" "npc_alyx"
+		"NPCTargetname" "example_commentary_alyx"
+		"additionalequipment" "weapon_alyxgun"
+	}
+	"entity"
+	{
+		"classname" "info_target"
+		"targetname" "commentary_viewtarget_dss"
+		"origin" "1911.681396 -645.40380 184.03125"
+	}
+	"entity"
+	{
+		"classname" "info_target"
+		"targetname" "commentary_viewposition_dss"
+		"origin" "1807.802979 -645.99414 204.03125"
+	}
+	"entity"
+	{
+		"classname" "logic_relay"
+		"targetname" "example_commentary_dss_spawn"
+		"connections"
+		{
+			"OnTrigger" "example_commentary_alyx_maker,Spawn,0,0,-1"
+			"OnTrigger" "example_commentary_zombie_maker,Spawn,0,0,-1"
+			"OnTrigger" "alyx,SetRelationship,example_commentary_zombie D_NU 99,0.1,-1"
+			"OnTrigger" "example_commentary_zombie,SetRelationship,player D_NU 99,0.1,-1"
+			"OnTrigger" "example_commentary_zombie,SetRelationship,alyx D_NU 99,0.1,-1"
+			"OnTrigger" "example_commentary_alyx,forceinteractionwithnpc,example_commentary_zombie alyx_v_zombie_180deg_6,0.3,-1"
+			"OnTrigger" "example_commentary_alyx,AddOutput,OnForcedInteractionFinished example_commentary_dss_cleanup:Trigger::1:1,0.3,-1"
+			"OnTrigger" "example_commentary_alyx,AddOutput,OnForcedInteractionAborted example_commentary_dss_cleanup:Trigger::1:1,0.3,-1"
+		}
+	}
+	"entity"
+	{
+		"classname" "logic_relay"
+		"targetname" "example_commentary_dss_cleanup"
+		"connections"
+		{
+			"OnTrigger" "example_commentary_zombie,Kill,0,-1"
+			"OnTrigger" "example_commentary_alyx,Kill,0,-1"
+			"OnTrigger" "example_commentary_dss_spawn,CancelPending,0,-1"
+		}
+	}
+}

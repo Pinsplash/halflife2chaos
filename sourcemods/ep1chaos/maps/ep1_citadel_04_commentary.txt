@@ -1,0 +1,67 @@
+"Entities"
+{
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Hacking rollers"
+		"origin" "4040.806641 11830.345703 3634.03125"
+		"angles" "0.0000000000 0.1000003815 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\hackingrollers.wav"
+		"printname" "Hacking the Rollers"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Matt T. Wood"
+		"synopsis" "Usually, the second step of our training arcs involve a threatening training area. This is the second step in the rollermine training, and true to form, there's a threat. The indestructible rollermines endlessly attack the player in a gated space. The only way to defeat them is to have Alyx convert them, which means there's no way the player can miss the point of the training. Players also like to see the AI characters fight each other, so after reminding the player about Alyx's rollermine hacking talent, we let you sic them on a pack of Combine soldiers."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Stalker train 1"
+		"origin" "3635.555420 -125.625427 3482.00268"
+		"angles" "0.0000000000 30.2500000000 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\stalkertrainmodels.wav"
+		"printname" "Stalker Train"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Matt T. Wood"
+		"synopsis" "In much the same way that movie effects often utilize different versions of the same model, there are actually three trains that make up the stalker scene. The first one is the moving train you see arrive at the platform. The one you're in right now is a static interior with lights moving outside of it to give the illusion of motion. The third train is the crashed version. It's a tilted, banged up, and totally separate area from the moving version. The transition from moving to crashed is disguised by a brief fade to black."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Crashed stalker car 1"
+		"origin" "4219.220703 7933.894043 3528.23828"
+		"angles" "0.0000000000 0.4099998474 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\crashedstalkercar.wav"
+		"printname" "Navigating the Stalker Car"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Matt T. Wood"
+		"synopsis" "We wanted the crashed train car to be very disorienting. In early tests, though, players felt that it was too confusing and too hard to navigate. That feedback prompted us to tone it down a bit. By rearranging some of the geometry, we were able to create a banged up, tilted environment that still offered a relatively unobstructed path to Alyx."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Stalker scene iteration"
+		"origin" "3650.617188 -219.981415 3506.19799"
+		"angles" "0.0000000000 -30.9900000095 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\stalkeriteration.wav"
+		"printname" "Stalker Scene Iteration"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Bill Fletcher"
+		"synopsis" "Alyx's reactions to the Stalkers went through a number of iterations. In very early versions, Alyx was frightened by the Stalkers. That didn't work because it didn't fit with Alyx's earlier reactions to Stalkers in the Citadel. We changed it so that she expressed anger at the Stalkers' predicament. Early versions of this new direction failed because Alyx's transition from generally upbeat to blind rage was simply too abrupt. Ultimately, through rewrites and rigorous testing, we found the right tone for the scene - a simmering anger level that was more in tune with the situation."
+	}
+}

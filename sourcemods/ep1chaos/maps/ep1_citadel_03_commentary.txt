@@ -1,0 +1,244 @@
+"Entities"
+{
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Oh my God."
+		"origin" "1738.461182 12167.886719 5346.031250"
+		"angles" "0.0000000000 10.2000007629 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ohmygod.wav"
+		"printname" "Vista Rewards"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Doug Wood"
+		"synopsis" "This is another key vista - this time showing the core. It's a visual payoff for the player's success in getting here and, simultaneously, a way to present the player with a view of the next challenge."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Hurry back"
+		"origin" "1360.004150 11780.403320 5346.03125"
+		"angles" "0.0000000000 0.5400009155 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\hurryback.wav"
+		"printname" "Hurry Back"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Bill Fletcher"
+		"synopsis" "Creating a believable, interesting relationship between Gordon and Alyx is made a lot tougher by the fact that Gordon never talks. This elevator scene presented a nice little opportunity to have Alyx express some emotion in a situation where Gordon isn't really in a position to respond."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "The Core"
+		"origin" "2071.864502 11839.248047 4258.03125"
+		"angles" "0.0000000000 22.7000007629 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\thecore.wav"
+		"printname" "The Core"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Dhabih Eng"
+		"synopsis" "The core design posed a lot of difficult challenges. Generally speaking, if the gameplay in a particular map isn't working, we can simply cut the entire area. That wasn't true of the core, because we knew it was critical to the story. On top of that, designing Citadel gameplay is often a bigger challenge than working out areas in City 17, largely because Citadel levels have a narrower set of gameplay tools; There are less enemy types available and the player is usually only armed with the gravity gun. Because of this, we had to go through many iterations of the core design. One of the early prototypes was a kind of futuristic version of 'Operation' where players had to use the gravity gun to cleanly manipulate rods into slots in the core. That didn't work partly because playtesters found that their view was obstructed by the rods, which made it frustratingly difficult to manipulate them with any kind of precision. We prototyped, playtested, and abandoned several other designs until we finally arrived at one that was fun while still being challenging enough to give players the sense that they'd accomplished a significant goal."
+		"connections"
+		{
+			"OnCommentaryStarted" "monitor_scenes,Enable,,0,1"
+		}
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Skill level change"
+		"origin" "3634.030518 12176.11425 4768.80615"
+		"angles" "0.0000000000 177.8800048828 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\skilllevelchange.wav"
+		"printname" "Skill Levels"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Steve Bond"
+		"synopsis" "The difference between skill levels isn't just a matter of damage dealt and received. For instance, in easy mode, we increase the length of time a Combine ball survives before exploding, putting less pressure on the player to get the ball into a socket."
+		"connections"
+		{
+			"OnCommentaryStarted" "monitor_scenes,Enable,,0,1"
+		}
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Ball Tubes"
+		"origin" "3812.477051 10768.031250 4770.03125"
+		"angles" "0.0000000000 90.9400024414 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\balltubes.wav"
+		"printname" "Ball Tubes"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Scott Dalton"
+		"synopsis" "The ball tubes are an example of us working within our available toolkit to create a puzzle around a recognized concept.  As a physical navigation puzzle, it's different from what the player has experienced before, and it's challenging while not being a binary succeed or fail situation.  There are a number of ways to approach this puzzle.  In addition to simply dodging, jumping and ducking the balls, the player can grab or deflect them with his gravity gun, or pick up the hatch and use it as a shield to block the incoming barrage."
+		"connections"
+		{
+			"OnCommentaryStarted" "monitor_scenes,Enable,,0,1"
+		}
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Core Sphere"
+		"origin" "2151.689941 11579.471680 5026.01416"
+		"angles" "0.0000000000 -20.8799972534 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\coresphere.wav"
+		"printname" "Core Sphere"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Gary McTaggart"
+		"synopsis" "The core sphere was one of the last special effects that we finished. To achieve its effect, the core uses animated textures, flowmaps, normalmapped refraction and specularity, as well as volumetric particulate matter rendering, which takes advantage of the core being a sphere."
+		"connections"
+		{
+			"OnCommentaryStarted" "monitor_scenes,Enable,,0,1"
+		}
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Combine Core Look"
+		"origin" "2473.296143 11535.763672 5026.01416"
+		"angles" "0.0000000000 90.4899997711 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\combinecorelook.wav"
+		"printname" "Art Direction in the Core"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Dhabih Eng"
+		"synopsis" "The Combine core was another new space that needed to stand out from the rest of the environment. We wanted the core to look hot and dangerous, but still be distinct from the fires and the cool blues of the rest of the Citadel. The core became the primary light source in this space and in conjunction with the white set of Combine materials, we created an extreme contrast with the normally dark values of the Citadel metals."
+		"connections"
+		{
+			"OnCommentaryStarted" "monitor_scenes,Enable,,0,1"
+		}
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Color Scheme"
+		"origin" "2058.000732 12408.716797 5026.01416"
+		"angles" "0.0000000000 90.5799999237 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\corecolorscheme.wav"
+		"printname" "Core Colors"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Randy Lundeen"
+		"synopsis" "The higher contrast white Combine motif of the core sets it apart from the rest of the Citadel and heightens its importance within the visual style of Combine aesthetics. It also helps enhance the sense of heat and radiation in the space."
+		"connections"
+		{
+			"OnCommentaryStarted" "monitor_scenes,Enable,,0,1"
+		}
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Repeated paths through the space"
+		"origin" "3052.618896 11766.578125 5656.03125"
+		"angles" "0.0000000000 90.2399978638 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\corepaths.wav"
+		"printname" "Zigzagging"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Greg Coomer"
+		"synopsis" "The core was a central element of this part of the game, and, as much as possible, we wanted to constantly reinforce its importance. Zigzagging through the space in three dimensions while navigating a variety of challenges let us present a few different visual and gameplay perspectives on the same space.  By letting the player see the core from a bunch of different angles, we were able to give them a real sense of its scale."
+		"connections"
+		{
+			"OnCommentaryStarted" "monitor_scenes,Enable,,0,1"
+		}
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Second Ball Tube"
+		"origin" "3225.293457 14623.539063 5373.345703"
+		"angles" "0.0000000000 137.4100036621 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\secondballtube.wav"
+		"printname" "Ball Tube 2"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Scott Dalton"
+		"synopsis" "The second ball tube presents a variation of the pattern the player learned in the first ball tube.  While the first tube can be crossed slowly by crouching and maneuvering your way up, the second ratchets up the pace, requiring a quicker, more responsive approach."
+		"connections"
+		{
+			"OnCommentaryStarted" "monitor_scenes,Enable,,0,1"
+		}
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Final Control Room Puzzle"
+		"origin" " 1573.557007 13377.871094 5218.03125"
+		"angles" "0.0000000000 -50.7800006866 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\finalcontrolroompuzzle.wav"
+		"printname" "Final Control Room Puzzle"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Scott Dalton"
+		"synopsis" "The goal of this logic puzzle isn't figuring out that you need to put balls in the batteries, it's coming to the realization that by filling all of them, you've denied yourself an exit, and that you have to desocket one, climb on the lift, and then resocket it.  Sparks guide the player to the source of the balls, which happens to be the tube they just passed through."
+		"connections"
+		{
+			"OnCommentaryStarted" "monitor_scenes,Enable,,0,1"
+		}
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "monitor_scenes"
+		"origin" "1283.704712 11629.728516 5345.96484"
+		"angles" "0.0000000000 -60.1399993896 0.0000000000"
+		"precommands" "notarget"
+		"postcommands" "notarget"
+		"start_disabled" "1"
+		"commentaryfile" "#commentary\whereisshe.wav"
+		"printname" "Monitor Trickery"
+		"viewtarget" "commentary_viewtarget_mossman"
+		"viewposition" "commentary_viewposition_mossman"
+		"prevent_movement" 0
+		"speakers" "Doug Wood"
+		"synopsis" "Monitor scenes, such as this video transmission from Dr. Mossman, aren't simply prerendered video. These scenes actually unfold live in an inaccessible section of the map, while being projected onto the monitor screen. Here's Dr. Mossman in the small arctic base set. It's not nearly as far away from the Citadel's core control room as it appears to be in the level."
+	}
+	"entity"
+	{
+		"classname" "info_target"
+		"targetname" "commentary_viewtarget_mossman"
+		"origin" "-1139.704712 13242.641602 5541.75195"
+	}
+	"entity"
+	{
+		"classname" "info_target"
+		"targetname" "commentary_viewposition_mossman"
+		"origin" "-1038.362793 13264.671875 5555.97851"
+	}
+}

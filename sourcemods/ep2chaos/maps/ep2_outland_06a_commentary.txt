@@ -1,0 +1,123 @@
+"Entities"
+{
+
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Directing the player in a non-linear space"
+		"origin" "-2108.674072 -8716.523438 -1507.814209"
+		"angles" "0 135 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment112.wav"
+		"printname" "Directing the Player in a Non-Linear Space"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Jeff Sorenson"
+		"synopsis" "Even though this compound appears open and non-linear, we're striving for a fairly reliable progression of events, so that we can fine tune pacing.  The building on the right is bright and eye-catching, with the intention of drawing the player there first. The entrance to the ruined building is around the back, so that initial exploration through the center of the compound tends to lead to the radio room first. The drop-down entrance from the roof of the ruined building also helps us pace the experience, because players are cautious about committing to a space, until they've explored the alternatives."
+		"parser_id" "112"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Magnusson Transmission"
+		"origin" "-2253.535400 -7971.962402 -1463.810791"
+		"angles" "0 -30 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment105.wav"
+		"printname" "Calling Dr. Magnusson"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Lars Jensvold"
+		"synopsis" "In this brief transmission scene, we are restating the goals of the level, while introducing a note of uncertainty and developing Dr. Magnusson's character.  This scene was not strictly necessary, but it helped players feel some connection to Magnusson when they finally reached White Forest and met him in person for the first time.  In earlier versions, we tried having the Hunters cut the power and interrupt the transmission, but this felt arbitrary, and players were more receptive to the scene after they had solved the power puzzles and survived hunter combat.  It feels like a small reward in addition to the simple satisfaction of beating the Hunters."
+		"parser_id" "105"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Hunter arena design"
+		"origin" "-3245.246582 -9099.216797 -1503.326538"
+		"angles" "0 180 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment111.wav"
+		"printname" "Designing the Hunter Arena"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Jess Cliffe"
+		"synopsis" "This area was designed to train the player in the art of Hunter combat, and during the development process it changed continually to suit the Hunter's behavior.  The first Hunter prototypes could be killed only by the blunt impact of physics objects.  Therefore, to make sure the player learned this technique, we trapped him in this area with one Hunter and kept him locked in until he had defeated it.  Upon the Hunter's death, reinforcements broke down the gate and doors, opening up the arena.  As time went on, and the Hunter was modified to make it vulnerable to all types of damage, our grip on the player gradually relaxed, permitting freedom of movement and a wider range of tactics right from the start of the encounter."
+		"parser_id" "111"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Power puzzle design"
+		"origin" "-3011.714355 -9864.838867 -1661.968750"
+		"angles" "0 -30 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment109.wav"
+		"printname" "Designing the Power Puzzle"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Bryn Moslow"
+		"synopsis" "This room is designed so that the player will notice the main set of plugs right away, but is less likely to spot the second set at first. One end of the long cable is already plugged in, encouraging the player to grab the loose end and put it into the powered socket.  This makes the faulty wire break loose and spark.  With the power on, players try to return upstairs only to discover that now the elevator needs power.  At this point, they look about more carefully and discover the elevator sockets. The short cord is tucked next to the elevator sockets, so that they are likely to use it there first before realizing they need a longer one. Given this fairly reliable progression of events, we were able to write a limited number of lines for Alyx, so that she could react each time the puzzle changed state."
+		"parser_id" "109"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Hunter ambush design and history"
+		"origin" "-3387.158936 -9657.670898 -1493.968750"
+		"angles" "0 135 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment110.wav"
+		"printname" "Evolution of the Hunter Ambush"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "David Sawyer"
+		"synopsis" "In earlier versions of the Hunter intro, the Hunters burst physically into the room by shouldering their way through the door. As the Hunter's flechette attack came online, we decided this was no longer appropriate. Now that the Hunter had an effective ranged attack, having him burst into the room with you  actually put him into his least viable tactical position during your very first encounter, making him seem ineffective and a bit dumb. The current design is intended to showcase his abilities, while giving the player the time and space to understand the situation before pushing out into close combat."
+		"parser_id" "110"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Hunter Attack Scene"
+		"origin" "-3361.031250 -9843.831055 -1493.968750"
+		"angles" "0 45 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment104.wav"
+		"printname" "Alyx and the Hunters"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Nick Maggiore"
+		"synopsis" "The scene where Alyx sees the Hunters for the first time since her injury was meant to be a turning point for her as a character, and an emotional highlight of the episode, both for Gordon and for Alyx.  One reason we had a hunter injure Alyx in the beginning of the episode was so that she could have a strong emotional reaction to the creatures, and use the start of combat as a way of building a good character moment.  Alyx's previous encounter has given her a visceral fear of hunters, but now she has to make a conscious choice to get past her fear and into the right state for fighting them.  She uses anger to get there.  We also use Alyx's intensity to draw the player's attention to subtler aspects of the scene'getting the player in position for the best view of the hunters as the attack gets underway."
+		"parser_id" "104"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Focusing on Character"
+		"origin" "-2992.603516 -9647.841797 -1493.968750"
+		"angles" "0 45 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment246.wav"
+		"printname" "Acting for Games"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Merle Dandridge: Voice of Alyx Vance"
+		"synopsis" "The other thing that’s so great about acting for videogames—and I guess voiceover in general, but for this particular game is so amazing—I don’t have to worry about hitting my mark, or playing to the camera or forgetting my lines.  That’s usually my biggest thing, you can see the wheels turning on camera because I’m trying to keep up with my lines.  But this, they’re all right there so I don’t even have to worry about that and I can just worry about the delivery, the emotional vibe that needs to come across, and just be the sense of immediacy—I don’t even have to worry about the words.  So that takes a whole other level off to let the actor get down and into the work, which is really, really great.  Which is why I love this job."
+		"parser_id" "246"
+	}
+}

@@ -1,0 +1,207 @@
+"Entities"
+{
+	
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "opening vista"
+		"origin" "-2862.234375 -62.552597 464.373413"
+		"angles" "0 -45 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment094.wav"
+		"printname" "Bridge Vista"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "John Cook"
+		"synopsis" "In this vista, we release the player from the confines of the subterranean world and thrust them into a vast open space on a scale rarely seen in our previous games.  The narrative takes advantage of this scale as well.  With our allies at close range and our enemies on the distant bridge, we are reminded of the personal stakes and the larger threat, all in one short scene."
+		"parser_id" "94"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Barrel Gate"
+		"origin" "-2784.063721 -233.177979 498.032593"
+		"angles" "0 0 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment086.wav"
+		"printname" "Barrel Gate"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Doug Lombardi"
+		"synopsis" "Most of our dramatic scenes are constrained in such a way that the player can't progress until the scene is over.  For example, there might be a gate that only Alyx or a vortigaunt can open.  In this scene, where the Vortigaunt and Alyx first see the Combine marching on White Forest, we simply placed a few barrels to block the way while Alyx and the Vortigaunt speak.  Even with this slight impediment, every playtester stayed and watched the scene as we intended, so no explicit gate was needed."
+		"parser_id" "86"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Troops Walk"
+		"origin" "-2914.822754 -361.985992 482.031250"
+		"angles" "0 -90 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment097.wav"
+		"printname" "The Troop March"
+		"viewtarget" "Troops Walk Target"
+		"viewposition" "Watch Troops Position"
+		"prevent_movement" 1
+		"speakers" "Steve McClure"
+		"synopsis" "Sometimes very small changes can make a big difference. Originally these troops all marched in lockstep, using the same walk animation.  This looked extremely robotic. We took a second walk animation that had been done for this troop skeleton -- a more upright, casual walk -- and programmed each soldier to randomly blend between the two walk-cycles as he crossed the bridge. This thirty-minute change made a huge difference in the scene."
+		"parser_id" "97"
+	}
+	"entity"
+	{
+		"classname" "info_target"
+		"targetname" "Troops Walk Target"
+		"origin" "-2656.76001 -3775.590088 1769.699951 "
+		"angles" "0 -90.7900009155 0"
+		"parser_id" "98"
+	}
+	"entity"
+	{
+		"classname" "info_target"
+		"targetname" "Watch Troops Position"
+		"origin" "-2914.822754 -320.166840 512.031250"
+		"angles" "0 -90.7900009155 0"
+		"parser_id" "301"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Advisor Appearance"
+		"origin" "-3000 -361.732147 482.031250"
+		"angles" "0 -90.75 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment088.wav"
+		"printname" "Advisors on Parade"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Yahn Bernier"
+		"synopsis" "We tried several different ways of showing the Advisor traveling with the Combine forces.  We started off with an Advisor pod flying over the troops, much as they flew from the Citadel at the end of Episode One.  However, we didn't want to give the impression that those pods were anything but emergency escape units; they were not meant to be self-powered flying crafts that could be piloted around in future episodes.  We ended up with the solution you see here: APC's are pulling a structure holding an inert Advisor pod.  This lets the players study the Advisors at different points in their lifecycle.  They see the main stages of the Advisors' metamorphosis from harmless larvae into powerful and highly mobile monsters."
+		"parser_id" "88"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "commentary_alyx ep2 upgrade"
+		"origin" "-1494.125732 -1242.919312 41.634224"
+		"angles" "0 90 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment085.wav"
+		"printname" "Alyx Enhancements"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Steve Kalning"
+		"synopsis" "Alyx's model underwent some upgrades for Episode 2.  We added two new holes to her jacket - courtesy of a hunter - and dirtied her texture up a bit to show wear and tear.  We also increased her polygon count - and to help with her jacket we added shoulder blades to her back so that it flexes better when she lifts her arms. Additionally, we reconnected her belt so that instead of being rigidly attached it now flexes and slides around more. A lot of this stuff you won't even notice, it'll just look right - 'yeah, that's Alyx, she's wearing a jacket' - you won't even think about it. It's easy to have the computer draw something stiff and awkward, but doing that pulls you out of the game, you stop believing in the characters.  They just become icons.  Our goal is to make our characters simply look natural, but to do that requires lots and lots of work and tons of new technology. The irony is, if we've done our job, you won't even notice, it'll just look right.   [It'd be good to show wireframes of the model, and maybe 'Before and after' images.]"
+		"parser_id" "85"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Sandtraps"
+		"origin" "-278.913666 -149.804810 34.031250"
+		"angles" "0 90 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment089.wav"
+		"printname" "Sandtraps"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Julie Caldwell"
+		"synopsis" "Initially, we built this area around the Sandtraps mechanic from Half-Life 2, warning the player that stepping on sand would trigger swarms of antlions.  Soon after the warning, however, the safe islands of rock ran out and the player was forced to run across the sand as quickly as possible.  Players were confused by this, and upset because Alyx and the vortigaunt would simply say they had no choice, and head straight across the sand.  To solve this, we decided to stage the combat with safe zones around thumpers instead."
+		"parser_id" "89"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Tech: use of displacements and models for valley rendering"
+		"origin" "306.383301 -285.749268 34.031250"
+		"angles" "0 -30 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment095.wav"
+		"printname" "Rendering the Valley"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Kathy Gehrig"
+		"synopsis" "This vista is one of the largest open outdoor areas we've tackled in our games. When rendering such an area in real time, it's necessary to use various level-of-detail techniques made available to us by the Source engine.  For example, the distant foliage and Combine enemies are rendered with far fewer polygons than they would be if they were meant to be viewed up close.  Additionally, the organic shapes used to model the rocky outcroppings and valley floor below use complex shading operations to combine a relatively modest amount of texture data.  This tradeoff, which requires a manageable amount of texture data, allows us to use more polygons, enabling us to represent more organic shapes which are in contrast to the orthogonal forms common to our traditional urban environments."
+		"parser_id" "95"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Alyx Injured"
+		"origin" "-55.237614 1073.078979 30.874352"
+		"angles" "0 -54 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment090.wav"
+		"printname" "Alyx's Recovery"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Quintin Doroquez"
+		"synopsis" "Early in the development for this level, we used an animation for Alyx that showed her as clearly injured as she ran along behind the player. This really slowed her down, however, and playtesters did not enjoy waiting for her to catch up, or going back to retrieve her. To address this, we started her recovery in the preceding map to make sure she was healthy enough to run at regular speed before reaching this area."
+		"parser_id" "90"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Antlion Guard Standoff"
+		"origin" " -143.591904 3974.210938 89.290680"
+		"angles" "0 30 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment084.wav"
+		"printname" "Antlion Guard Standoff"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Matt T. Wood"
+		"synopsis" "This scenario required significant changes to the antlion guard behavior. Players of past games were used to dealing with only one guard in a confined space and without anywhere to hide.  In this scenario the player had a safe zone, but couldn't remain there to accomplish their goals.  One change we made to the guards was in altering how they throw objects at the player. Originally, they shoved objects directly toward the player at high speeds.  These objects were really hard to dodge, and if you weren't paying complete attention, you could easily be blindsided and killed.  The guards now hurl objects along an arcing trajectory, which not only gives the player a greater opportunity to dodge, but looks awesome.  The player gets to see the guard launch a car from a hundred feet away, then step aside just as it crashes to the ground where they were standing."
+		"parser_id" "84"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Revenge on the Guardian"
+		"origin" "559.411987 5045.537109 63.821533"
+		"angles" "0 45 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment091.wav"
+		"printname" "Revenge on the Guardian"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Iestyn Bleasdale-Shepherd"
+		"synopsis" "We wanted to create a tension between Gordon and the antlion guardians that would develop over several levels and only resolve out here in the open.  In order to differentiate this guardian from others the player had encountered throughout Half-Life 2 and Episode One, we changed his texture to a glowing green.  This gave the player the satisfaction of revenging himself on the creature that had chased him through the underground lair."
+		"parser_id" "91"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Guard bleeding"
+		"origin" "-901.559814 4277.237793 77.355606"
+		"angles" "0 -144 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment099.wav"
+		"printname" "Harming the Guardian"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Milton Ngan"
+		"synopsis" "Some testers had trouble realizing when they were doing damage to the antlion guards, so we've added a bleeding effect that grows more serious as the guard's hitpoints decline.  This kind of visual feedback makes intuitive sense to players, it suits the biological nature of the creature, and frees us from having to rely on spoken explanations of gameplay."
+		"parser_id" "99"
+	}
+}

@@ -1,0 +1,35 @@
+models/humans/female/group01/citizen_sheet
+models/humans/female/group02/citizen_sheet
+models/props_vehicles/truck001c_02
+decals/extinguish1
+decals/extinguish2
+decals/decalborealispuddlemask001a
+models/props_lab/monitor02b
+models/props_c17/oil_drum001a
+models/props_c17/oil_drum001e
+models/props_c17/oil_drum001f
+models/items/boxmrounds
+models/props_silo/desk_console1b
+models/props_silo/desk_console1c
+models/props_silo/wall_console1c
+models/weapons/v_physcannon/v_superphyscannon_sheet
+models/props_wasteland/light_spotlight01b
+models/props_pipes/pipesystem01a_skin3
+models/props_pipes/valve001_skin2
+models/props_pipes/valve001_skin3
+models/props_c17/metalladder003
+models/props_silo/wall_console1b
+models/props_debris/concretedebris_chunk01
+effects/strider_bulge_normal
+effects/fisheyelens_normal
+particle/fastsidesprites/fastsidesprite128
+particle/fire_particle_7/fire_particle_7
+
+1024 models/props_silo/rocket_body_normal
+1024 models/props_silo/rocket_body
+512 models/vortigaunt/vortigaunt_normal
+512 models/props_c17/furniturecouch001a
+512 models/magnusson_teleporter/magnusson_teleporter_off
+1024 models/props_vehicles/truck001c_01
+512 particle/fire_burning_character/fire_burning_character
+512 models/props_silo/fuel_cask

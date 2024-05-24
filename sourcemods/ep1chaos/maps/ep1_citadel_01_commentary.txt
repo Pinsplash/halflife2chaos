@@ -1,0 +1,163 @@
+"Entities"
+{
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "First Vista"
+		"origin" "-5027.115723 6339.063477 2688.03125"
+		"angles" "0.0000000000 -4.9099998474 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\firstvista.wav"
+		"printname" "Citadel Vista"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Charlie Brown"
+		"synopsis" "We populate our environments with spots where players can take a break to look out over an expanse of cool scenery. We call these 'vistas'. This particular vista was designed to give anyone familiar with the Citadel interior from Half-Life 2 a good view of what it looks like now that everything's falling apart. The pods that are sliding off their track and into the abyss really sell the idea that the Citadel is half-abandoned and in chaos."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Alyx using console"
+		"origin" "-4936.499512 6860.241699 2554.00805"
+		"angles" "0.0000000000 57.8199996948 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\alyxconsole.wav"
+		"printname" "The Console"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Matt T. Wood"
+		"synopsis" "In an early version of this map, Alyx led the player through the whole thing. To make Alyx seem less omniscient, we had her access a console here to 'get her bearings'. It exploded, which helped drive home the point that the Citadel was in bad shape, but, generally, it was a long pause in the action without a lot of payoff. After we made the high level decision to have Alyx follow the player, this entire scene became irrelevant, and we happily cut the whole thing."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Roller Training"
+		"origin" "-4817.040039 7797.832031 2553.98803"
+		"angles" "0.0000000000 -75.0899963379 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\rollertraining.wav"
+		"printname" "Roller Training"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Matt T. Wood"
+		"synopsis" "Training is one of the fundamental tenets of our design philosophy. Before the player is required to utilize some new game mechanic or new weapon, or face a new monster under pressure in a dangerous situation, we always introduce the concept in a relatively calm but ideally still entertaining way. This entire scene teaches the the player that Alyx can convert rollermines so that they can be used as a friendly weapon. Later, the player is required to do this in more pressing circumstances, but at this point everything's still pretty calm. In the original design, the player retrieved a rollermine from a dispenser and used it to take out a Combine soldier who was holding the field from the other side.  Eventually, we scrapped that idea and combined the rollermine training with some stalker exposition that originally occurred in a separate scene."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Roller adventure"
+		"origin" "-4959.968750 7679.650879 2553.97265"
+		"angles" "0.0000000000 0.8000030518 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\rolleradventure.wav"
+		"printname" "Roller Adventure"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Steve Bond"
+		"synopsis" "In a good puzzle, the player is presented with an overall goal and then faces a number of smaller challenges in pursuit of that goal. In the case of the Stalker puzzle, we start with 'How do I open the door?' From there we move to 'How do I get to the Stalker?', then to 'How do I get to the rollermines?', 'How do I get the rollermine back to Alyx?', and, finally, 'How do I use the rollermine to disable the stalker?'"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Alyx tone and acting in citadel"
+		"origin" "-3973.185547 7327.870117 2553.79809"
+		"angles" "0.0000000000 -65.5600013733 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\alyxcitadeltone.wav"
+		"printname" "Acting in the Citadel"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Bill Van Buren"
+		"synopsis" "We wanted to create an atmosphere of urgency in the Citadel, with Alyx and the player focused on getting to the core to stop the impending collapse. Initially, we tried to reflect that urgency through Alyx's behavior and acting. This proved to be unsustainable, however; if the player didn't choose to advance, Alyx eventually ran out of lines or animations and was forced into her very non-urgent idle states. We found that the best approach was for Alyx to have such implicit trust in, and sympathy with, the player that she is always content to proceed at whatever pace the player chooses. Once we adopted this principle, lines where Alyx sounded impatient or frustrated with the pace of progress quickly stood out and were cut."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Citadel Look"
+		"origin" "-2966.879150 5911.253418 2634.108643"
+		"angles" "0.0000000000 25.4300000668 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\citadellook.wav"
+		"printname" "Citadel Interiors"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Randy Lundeen"
+		"synopsis" "We created a new Citadel destruction set of 'broken' Combine panels and prefabs for the interior spaces to help make the Citadel look like it was on the verge of exploding. We also introduced a strong ambient orange color to help sell the fact that the Citadel was in a much different state from the last time the player passed through. The orange atmosphere was justified due to all the fires and smoke inside the Citadel."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Vortex of Love"
+		"origin" "-4983.669434 5158.507813 2628.28564"
+		"angles" "0.0000000000 0.6100006104 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\vortexoflove.wav"
+		"printname" "Vortex of Love"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Matt T. Wood"
+		"synopsis" "The primary goal of the first Citadel map is to communicate to players that the Citadel is falling apart. The vortex was a late addition to the map in an effort to beef up the idea that the Citadel was becoming a very dangerous place.  We had particular difficulty in conveying the 'danger zone' here. In early playtests, players thought that the entire bridge was dangerous at all times. Some additional effects work helped let players know where the dangerous areas were.  We would have loved to base more gameplay on this vortex idea, but we just didn't have the time."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Pod room look and feel"
+		"origin" "-4504.148438 1384.582642 2492.01904"
+		"angles" "0.0000000000 -20.7999992371 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\podroomlook.wav"
+		"printname" "The Pod Room"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Randy Lundeen"
+		"synopsis" "We decided this space needed to look unique and appear to have more significance than the rest of the Citadel areas the player had already traveled through, while at the same time feeling as though it was still made with Combine technology. This room introduces a story point that plays a big role in Episode 2, so the player has to feel like something important is going on in here. A different fog setting as well as different light styles and configurations helped achieve this. The red lighting is a good contrast to the traditional blue/green colors of the Citadel."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Pod rising up"
+		"origin" "-4556.291016 1621.968750 2496.03125"
+		"angles" "0.0000000000 70.8600006104 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\podrising.wav"
+		"printname" "Pod Rising"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Ted Backman"
+		"synopsis" "We revealed the pod here to let players see it up close. At the same time, we didn't want the player to get too good a look at what's inside.  An old version of this scene had the pod simply hanging from the ceiling. It would burst open and then charge up your gravity gun, but not do much else.  The current scene gives us a much more dramatic reveal of the pod and an opportunity to introduce the mind blast it's capable of emitting. Though they don't play a large role in Episode 1, these guys were a functional requirement of Episode 2, which meant we effectively had to ship a piece of that episode early."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "what the hell was that thing"
+		"origin" "-4120.165527 1684.54553 2494.01904"
+		"angles" "0.0000000000 26.1399993896 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\whatwasthatthing.wav"
+		"printname" "Empathy"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Keith Huggins"
+		"synopsis" "It's important that the player has some empathy for Alyx, rather than just seeing her as a bullet-spitting robot. The brief recovery scene after the pod mind attack reminds the player that Alyx is affected by events in the world."
+	}
+}

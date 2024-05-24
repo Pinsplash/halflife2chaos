@@ -1,0 +1,81 @@
+models/props_combine/combine_innerwall001_skin2
+models/humans/female/group01/citizen_sheet
+plaster/plasterwallpaper001a_normal
+models/props_vehicles/car001b_02
+models/props_combine/combine_intmonitor001_disp_alert
+models/props_wasteland/prison_objects004_on
+models/weapons/v_physcannon/v_superphyscannon_sheet
+models/weapons/w_physics/w_physics_sheet2
+models/props_junk/plasticcrate01a
+models/props_junk/plasticcrate01c
+models/props_junk/plasticcrate01d
+models/props_junk/plasticcrate01e
+models/roller/rollermine_normal
+decals/decalborealispuddlemask001a
+models/props_foliage/tree_deciduous_01a_lod
+plaster/plasterwall051c
+plaster/plasterwallpaper001a
+models/props_c17/metalladder002
+models/props_combine/combine_fence01b
+models/props_wasteland/coolingtank02_skin2
+models/props_wasteland/coolingtank02_skin3
+models/props_c17/oil_drum001e
+models/props_c17/oil_drum001f
+models/props_c17/door01a_skin3_normal
+models/props_c17/door01a_skin12_normal
+models/props_c17/door01a_skin13
+models/props_c17/door01a_skin14_normal
+models/props_wasteland/wood_fence01a_skin2
+models/props_c17/door01a_skin16
+nature/gravelfloor002a
+props/paperposter003a
+models/props_combine/combine_intmonitor001_disp_off
+models/weapons/v_bugbait/bugbait_sheet
+models/props_c17/door01a_skin2
+models/props_c17/door01a_skin3
+models/props_c17/door01a_skin4
+models/props_c17/door01a_skin5
+models/props_c17/door01a_skin6
+models/props_c17/door01a_skin7
+models/props_c17/door01a_skin9
+models/props_c17/door01a_skin10
+models/props_c17/door01a_skin12
+models/props_c17/door01a_skin14
+models/roller/rollermine_sheet
+decals/rollermine_crater
+decals/extinguish1
+decals/extinguish2
+building_template/building_trainstation_template002k
+models/props_pipes/pipemetal004b
+models/gibs/woodgibs/woodgibs02
+models/gibs/woodgibs/woodgibs03
+models/gibs/hgibs/skull1
+models/gibs/hgibs/skull1_normal
+models/weapons/w_package/package_sheet
+models/props_lab/clipboard_sheet
+models/weapons/v_bugbait/bugbait_sheet_normal
+models/weapons/v_bugbait/bugbait_inside
+models/weapons/w_bugbait/wbugbait_sheet
+models/props_c17/door01a_powerlock
+models/props_junk/popcan02a
+models/props_junk/popcan03a
+models/combine_strider/striderdecalsheet
+models/combine_strider/stridernormal
+
+512 models/combine_dropship/combine_dropship01_normal
+512 models/combine_dropship/dropshipsheet
+512 models/props_trainstation/train002
+512 models/combine_dropship/combine_dropship01
+512 models/shield_scanner/minelayer_sheet
+512 models/props_citizen_tech/steam_engine001
+512 models/props_trainstation/train_outro01
+512 models/kleiner/kleiner_sheet
+512 models/props_combine/combine_innerwall001
+512 models/combine_helicopter/combine_helicopter01
+256 models/props_combine/combine_door01_normal
+256 models/props_combine/combine_tower01a
+128 models/props_combine/cit_lightning001/cit_lightning001
+128 models/props_combine/combine_interface003
+64 models/crane_docks/crane_body
+64 models/crane_docks/crane_base
+32 models/props_combine/combine_tower01b

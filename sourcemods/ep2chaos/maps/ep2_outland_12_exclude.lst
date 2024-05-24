@@ -1,0 +1,58 @@
+models/hevsuit/hevsuit_sheet
+models/props_silo/wall_console1c
+models/props_silo/wall_console1b
+models/props_silo/wall_console1b_ref
+models/props_silo/wall_console1c_ref
+models/props_foliage/tree_deciduous_01a_branches
+models/props_c17/furniture_detailprops001a
+models/weapons/v_physcannon/v_superphyscannon_sheet
+decals/rollermine_crater
+models/roller/rollermine_normal
+models/props_pipes/pipeset_metal02
+models/props_pipes/pipemetal004b
+models/props_wasteland/light_spotlight01b
+models/crow/crow01
+models/weapons/w_alyx_gun_xsi/alexgun_normal
+models/weapons/w_alyx_gun_xsi/alexgun
+models/humans/female/group03/citizen_sheet
+models/humans/female/group03/chau_facemap
+models/humans/female/group03/joey_facemap
+models/humans/female/group03/kanisha_cylmap
+models/humans/female/group03/kim_facemap
+models/humans/female/group03/lakeetra_facemap
+models/humans/female/group03/naomi_facemap
+models/humans/female/group03m/chau_facemap
+models/humans/female/group03m/joey_facemap
+models/humans/female/group03m/kanisha_facemap
+models/humans/female/group03m/kim_facemap
+models/humans/female/group03m/lakeetra_facemap
+models/humans/female/group03m/naomi_facemap
+models/humans/female/fmouth
+models/gibs/hgibs/skull1
+models/gibs/hgibs/skull1_normal
+models/weapons/v_bugbait/bugbait_sheet
+models/weapons/v_bugbait/bugbait_sheet_normal
+models/weapons/v_bugbait/bugbait_inside
+models/weapons/w_bugbait/wbugbait_sheet
+models/weapons/w_physics/w_physics_sheet2
+models/weapons/v_physcannon/v_superphyscannon_sheet
+decals/decalborealispuddlemask001a
+models/props_forest/light_security_off
+decals/extinguish1
+decals/extinguish2
+models/seagull/seagull
+models/weapons/w_package/package_sheet
+models/pigeon/pigeon_sheet
+particle/splash01/splash01
+models/props_vehicles/truck001c_02
+
+512 models/combine_dropship/dropshipsheet
+512 models/combine_strider/stridernormal
+512 models/ministrider/mini_armor_normal
+512 models/ministrider/mini_skin_normal
+512 models/ministrider/mini_armor_basecolor
+512 models/props_forest/sawmill
+512 models/props_foliage/arbrefallen01
+512 models/props_trainstation/diesel
+512 models/props_trainstation/flatcar
+256 models/combine_dropship/dropshipsheet_normal

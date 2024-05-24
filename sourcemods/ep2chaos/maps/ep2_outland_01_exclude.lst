@@ -1,0 +1,80 @@
+sprites/gunsmoke
+sprites/zerogxplode
+sprites/fire
+models/gibs/hgibs/skull1
+models/gibs/hgibs/skull1_normal
+models/items/grenade2
+models/weapons/w_pistol/pistol
+models/weapons/w_package/package_sheet
+models/items/healthkit01_mask
+models/props_junk/flare_burnt
+models/items/boxsrounds
+models/items/combine_rifle_cartridge01_mask
+models/items/boxart1
+models/items/combinerifle_ammo_warp
+models/props_pipes/pipemetal004b
+sprites/muzzleflash4
+models/props_lab/clipboard_sheet
+particle/droplets/droplets
+sprites/bloodspray
+engine/lightsprite
+models/weapons/w_rocket_launcher/w_rpg_sheet
+models/weapons/v_crossbow/rebar_normal
+models/weapons/v_bugbait/bugbait_sheet
+models/props_junk/flare
+models/items/boxmrounds_normal
+models/items/combine_rifle_cartridge01
+models/items/combinerifle_ammo
+models/items/combinerifle_ammo_normal
+models/seagull/seagull
+decals/rollermine_crater
+decals/extinguish1
+decals/extinguish2
+effects/splashwake3
+sprites/ar2_muzzle1
+particle/smokesprites0001
+models/weapons/v_grenade/top_normal
+models/weapons/v_grenade/handle
+models/weapons/v_grenade/grenade body
+sprites/steam1-
+sprites/physbeam
+models/items/boxmrounds
+models/props_c17/oil_drum001f
+models/props_junk/woodcrates02a
+models/weapons/v_smg1/v_smg1_sheet
+models/weapons/w_shotgun/w_shotgun_normal
+models/weapons/hunter_flechette
+models/weapons/hunter_flechette_normal
+effects/comball/comball
+models/weapons/v_rocket_launcher/rocket launcher sheet
+models/weapons/v_rocket_launcher/flat_normal
+models/weapons/v_pistol/v_pistol_sheet
+models/weapons/v_pistol/v_pistol_sheet_normal
+models/weapons/v_physcannon/v_superphyscannon_sheet
+models/weapons/w_physics/w_physics_sheet2
+models/weapons/v_357/357_sheet
+models/props_wasteland/prison_objects004_on
+decals/decalborealispuddlemask001a
+particle/fire_particle_7/fire_particle_7
+effects/strider_bulge_normal
+models/props_foliage/tree_deciduous_01a_branches
+models/weapons/v_smg1/smg1_normal
+models/weapons/v_shotgun/vshotgun_albedo
+models/weapons/v_shotgun/vshotgun_normal
+models/weapons/v_crossbow/crossbow dirtmap_glow
+models/weapons/v_crossbow/normal_map_composite copy
+models/weapons/v_irifle/v_irifle
+particle/fastsidesprites/fastsidesprite128
+
+128 models/combine_helicopter/combine_helicopter01
+128 models/combine_helicopter/combine_helicopter01_normal
+256 models/combine_helicopter/combine_helicopter_phong
+256 models/ministrider/mini_skin_normal
+126 models/ministrider/mini_armor_normal
+512 models/eli/eli_sheet
+512 models/magnusson/magnusson_body
+512 models/kleiner/kleiner_sheet
+512 models/props_trainstation/train_boxcar_damaged
+
+
+

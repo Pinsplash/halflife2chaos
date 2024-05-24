@@ -1,0 +1,57 @@
+models/humans/female/group03/citizen_sheet
+models/ministrider/mini_skin_normal
+models/ministrider/mini_armor_normal
+models/combine_soldier/combinesoldier_shotgun_noalpha
+models/weapons/v_rocket_launcher/rocket launcher sheet
+models/weapons/v_rocket_launcher/flat_normal
+models/weapons/v_physcannon/v_superphyscannon_sheet
+models/weapons/w_physics/w_physics_sheet2
+models/weapons/v_crossbow/crossbow dirtmap_glow
+models/weapons/v_crossbow/normal_map_composite copy
+models/weapons/v_irifle/v_irifle
+models/antlion_guard/antlionguard
+models/ministrider/mini_skin_basecolor
+decals/decalborealispuddlemask001a
+effects/comball/comball
+models/props_c17/oil_drum001a
+models/props_c17/oil_drum001c
+models/props_c17/oil_drum001e
+models/props_c17/oil_drum001f
+models/props_c17/oil_drum001g
+models/ministrider/mini_armor_basecolor
+models/humans/female/group03/joey_facemap
+models/humans/female/group03/kanisha_cylmap
+models/humans/female/group03/kim_facemap
+models/humans/female/group03/chau_facemap
+models/humans/female/group03/naomi_facemap
+models/humans/female/group03/lakeetra_facemap
+models/humans/female/group03m/joey_facemap
+models/humans/female/group03m/kanisha_facemap
+models/humans/female/group03m/kim_facemap
+models/humans/female/group03m/chau_facemap
+models/humans/female/group03m/naomi_facemap
+models/humans/female/group03m/lakeetra_facemap
+models/weapons/w_stunbaton/stunbaton
+models/weapons/v_crossbow/rebar_glow
+models/weapons/v_bugbait/bugbait_sheet_normal
+models/weapons/v_bugbait/bugbait_inside
+models/weapons/w_bugbait/wbugbait_sheet
+models/effects/comball_glow1
+models/effects/comball_glow2
+models/humans/female/fmouth
+models/humans/female/pupil_l
+models/humans/female/pupil_r
+
+256 models/combine_soldier/combinesoldier_noalpha
+256 models/magnusson/magnusson_body
+256 models/magnusson/magnusson_face
+256 models/magnusson/magnusson_face_normal
+512 models/combine_soldier/combinesoldier_normal
+512 models/alyx/alyx_flesh_color
+512 models/antlion_guard/antlionguard2
+1024 models/props_silo/rocket
+
+
+
+
+

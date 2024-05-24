@@ -1,0 +1,51 @@
+"Entities"
+{
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "puzzle arc"
+		"origin" "3275.517822 4745.663086 2540.03125"
+		"angles" "0.0000000000 25.1000000015 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\puzzlearc.wav"
+		"printname" "Puzzle Arc"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "John Guthrie"
+		"synopsis" "This is where some player training pays off. After earlier training players on the use of ballsockets, they get a sort of 'live fire' test here starting the elevator. This is the beginning of this level's puzzle arc, where a basic gameplay mechanic is made increasingly more complex by layering other puzzle elements on it.  This first puzzle only requires that the player find a combine ball and put it in the socket."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "stalkers and energy balls"
+		"origin" "3426.506836 4584.340332 -1584.04357"
+		"angles" "0.0000000000 -30.9300000072 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\stalkerball.wav"
+		"printname" "Stalkers and Energy Balls"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "John Guthrie"
+		"synopsis" "Here we're presenting the player with a now-familiar ballsocket challenge, but we're also bridging into some new training, showing the player that Stalkers can destroy the Combine energy balls."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "core doors"
+		"origin" "4736.341309 4701.895508 -6685.96875"
+		"angles" "0.0000000000 15.5199999809 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\coredoors.wav"
+		"printname" "Core Doors"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "John Morello"
+		"synopsis" "Late in development, we changed the art for these doors so that players understood that they were entering the core area. It turned out that having Alyx talk about the area wasn't enough to give playtesters the sense that they'd finally arrived at the core."
+	}
+}

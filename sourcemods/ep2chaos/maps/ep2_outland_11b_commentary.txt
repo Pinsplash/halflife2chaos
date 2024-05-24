@@ -1,0 +1,88 @@
+"Entities"
+{
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Different Takes on Dialog, Reworking Script in the Session"
+		"origin" "282.635498 -8613.408203 -284.968750"
+		"angles" "0 134.193512  0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment245.wav"
+		"printname" "Tuning the Script"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Merle Dandridge: Voice of Alyx Vance"
+		"synopsis" "So a lot of times we’ll try a line in several different ways, like set a different mood for a different scene, or maybe just do a different take on a line.  Like one might be, it sounds trite but, you know, one excited, one not so excited, or one a little more pensive and thoughtful.  Suggestions are always thrown out there for new reads and it’s the coolest kind of teamwork.  It’s not just—‘Here’s your script. Go!’  It’s, ‘Let’s work this out, let’s find the best middle ground,’ and everything is always pliable.  If it’s not working, maybe we’ll go back and do an instant rewrite or something, and for me that’s creative heaven.  Absolutely."
+		"parser_id" "245"
+	}	
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Aperture Science"
+		"origin" "420.507507 -8413.417969 -256.352386"
+		"angles" "0 89.066315 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment189.wav"
+		"printname" "Aperture Science"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Erik Wolpaw"
+		"synopsis" "Aperture Science, being specialized in the development of portal technology, fit naturally into the cosmology of Half-Life.  Rather than forcing Portal into the Half-Life franchise, we used it as an opportunity to make our world bigger.  By suggesting a long-term rivalry between Aperture Science and Black Mesa, we open up possibilities in both games that didn't exist when they were separate entities."
+		"parser_id" "189"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "From hopwire to buster"
+		"origin" "12.249697 -9177.845703 -285.967957"
+		"angles" "0 -110.442169  0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment215.wav"
+		"printname" "From Hopwire to Buster"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Joshua Weier"
+		"synopsis" "The striderbuster, or Magnusson Device, started life as a Half-Life 2 weapon called the hopwire.  This was a weapon that would leap into the air and create physical connections, via ropes, to the surface around it.  Once attached, the ball would be suspended in the air, ready for action.  We never shipped that weapon because it wasn't generally useable enough in our environments (especially outdoors).  One side experiment created the 'black hole' hopwire that the mod community found in Episode 1's code.  You can still find videos of this in action on YouTube.  The 'black hole' version created a true physical vortex that sucked anything near it into an incredibly dense singularity. This created a small dense block comprised of all the mass and matter the vortex had collected, which the player could then pick up and hurl at enemies.  We returned to the hopwire for Episode 2, where we thought we could use it to tie the strider's legs together and make it trip, but the mechanic of hurling and attaching the strider buster was more fun for players, so we moved the weapon in that direction."
+		"parser_id" "215"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Magnusson's Whiteboard"
+		"origin" "59.200253 -8977.860352 -285.968750"
+		"angles" "0 90 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment216.wav"
+		"printname" "Magnusson's Whiteboard"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Richard Lord"
+		"synopsis" " This whiteboard art went through several iterations, from highly stylized, to absurd, to something we believed we could ship."
+		"parser_id" "216"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "The Black Mesa Incident"
+		"origin" "-376.431671 -8952.031250 -285.968750"
+		"angles" "0 139.499557 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment217.wav"
+		"printname" "The Black Mesa Incident"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "John Guthrie"
+		"synopsis" " Fans of Half-Life 1 may remember a gag involving a microwave oven in the Black Mesa lunchroom.  If you push the microwave's button several times, the casserole inside it explodes--a memorable experience for many first-time players of Half-Life.  In Episode 2, we thought it was finally time to let you know whose lunch you had ruined, and give you a chance at redemption."
+		"parser_id" "217"
+	}
+}

@@ -1,0 +1,174 @@
+"Entities"
+{
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Trainstation Look"
+		"origin" "10709.293945 9329.066406 -701.96875"
+		"angles" "0.0000000000 -34.0299987793 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\newtrainstation.wav"
+		"printname" "The Trainstation"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Randy Lundeen"
+		"synopsis" "We needed a train station, but we didn't want something that was too similar to the one in Half-Life 2. We decided to give this station a more industrial look, to make it a place where trains were repaired and freight was offloaded. We included some Combine elements to help explain why the strider can't fire through the various strategic barricades required by the game design."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Separate from Alyx"
+		"origin" "12288.121094 8709.670898 -701.96875"
+		"angles" "0.0000000000 90.5599975586 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\separatefromalyx.wav"
+		"printname" "Flying Solo"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Ido Magal"
+		"synopsis" "We separate Alyx from the player here to make the strider battle a more intimate combat experience. While we generally want Alyx to be useful to the player, bosses tend to require a specific combat style to beat, and we've found that it usually doesn't make gameplay sense to keep her around. Plus, boss battles are the player's big hero moments, and having too much help dilutes the sense of individual accomplishment. Alyx more or less sits out all of our boss encounters."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "New Strider AI"
+		"origin" "12286.450195 10022.215820 -701.96875"
+		"angles" "0.0000000000 90.9299926758 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\newstrider.wav"
+		"printname" "Enhanced Strider AI"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Steve Bond"
+		"synopsis" "For this climactic battle, we created a new AI that makes the strider a more interesting opponent. It has a snappier cannon attack, can better track the player's movements, and it now has the ability to target the environment in dangerous ways. For instance, its cannon fire can shove heavy shipping containers straight into the player."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Padlock mistakes"
+		"origin" "11742.976563 9931.625000 -702.005127"
+		"angles" "0.0000000000 -45.1499938965 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\padlockmistakes.wav"
+		"printname" "Padlock Mistakes"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Erik Johnson"
+		"synopsis" "This shipping container used to be accessible only after the player destroyed a padlock. Given the amount of stress during this part of the game, even a simple puzzle (in this case, destroying a lock) would be completely missed by the player. In the end, we felt like the arena we had built for the player to fight the strider was fun enough without this added element, so we removed it."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "crumb trail"
+		"origin" "11570.607422 10041.142578 -563.85797"
+		"angles" "0.0000000000 90.2299957275 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\crumbtrail.wav"
+		"printname" "Crumb Trail"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Jeff Hameluck"
+		"synopsis" "We often use goodies - such as this crate and the scanner battery around the corner - to guide players along a preset route. We want players to hit their marks during a battle without drawing attention to the fact that they're being subtly manipulated down a particular path."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Temporary cover from Strider"
+		"origin" "12337.437500 9644.293945 -406.21966"
+		"angles" "0.0000000000 -75.3000030518 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\tempcover.wav"
+		"printname" "Temporary Cover"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Chet Faliszek"
+		"synopsis" "We wanted to keep the tension high in this fight, but we also realized that players would need some cover. These destuctible panels satisfied both of those design goals. Effectively, they're timed shelters. Players can hide behind the panels, but the strider will target them until they're destroyed. This gives players brief periods of safety during which they can plan their next move."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Strider/Player reflexes"
+		"origin" "10872.731445 8126.969727 -401.96875"
+		"angles" "0.0000000000 -2.7500000000 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\battleofreflexes.wav"
+		"printname" "Reflexive Behavior"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Steve Bond"
+		"synopsis" "We noticed during playtesting that players were often too afraid of the strider's weapons to stand in front of it and fire rockets. This was kind of a problem because rockets are virtually the only way to kill a strider. To help players, we modified the strider's AI so that a player-launched rocket will significantly delay the strider's attack. This 'battle of reflexes' lets players guide their missiles in safety, as long as they get their shot off before the strider does."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "victory"
+		"origin" "11850.034180 8128.884277 -701.96875"
+		"angles" "0.0000000000 -20.5299997330 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\youremynewhero.wav"
+		"printname" "Positive Feedback"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"start_disabled" "1"
+		"speakers" "Doug Wood"
+		"synopsis" "Along with vistas, positive feedback from Alyx is one of our primary means of rewarding players. In this case, Alyx's excitement over the strider's destruction adds a sense of closure to the battle and gives players the satisfaction that someone witnessed and appreciated their heroics."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Traincar Model"
+		"origin" "11901.379883 8279.086914 -701.96875"
+		"angles" "0.0000000000 25.6100006104 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\traincarmodel.wav"
+		"printname" "The Train Car"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Laura Dubuk"
+		"synopsis" "The train the player rides out of City 17 had two major design goals.  It had to visually connect the end of Episode 1 to the beginning of Episode 2, and it also needed to address some functional gameplay requirements of the second episode. Using reference material we'd collected on European train cars from the the 1980's, we built a basic version of the train that level designers could test. Once we got the thumbs-up from them, we added textures and lots of little details. The result is basically a caboose combined with rounder, more streamlined elements from a passenger car."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "trapcharger"
+		"origin" "11990.513672 8431.978516 -699.71875"
+		"angles" "0.0000000000 90.7200012207 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\finalereqs.wav"
+		"printname" "Climax Goals"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Lars Jensvold"
+		"synopsis" "Apart from being a big visual payoff to the episode, there were several story requirements that this ending sequence needed to convey. It had to make it very clear that the Citadel was destroyed, that the Citadel pods had escaped, and it needed to imply that a data transmission beam was streaming out of the ruins. We discovered that Alyx had to be mostly silent during this scene or else players tended to look at her instead of all of the chaos around them."
+	}
+	"entity"
+	{
+		"classname" "logic_auto"
+
+		"connections"
+		{
+			"OnMapSpawn" "relay_striderBattleOver,AddOutput,OnTrigger victory:Enable::0:0,0,-1"
+			"OnMapSpawn" "relay_start_razortrain,AddOutput,OnTrigger trapcharger:SetParent:razortrain3:0:0,0,-1"
+		}
+	}
+}

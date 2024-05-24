@@ -1,0 +1,115 @@
+"Entities"
+{
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "01 garrison approach"
+		"origin" "1176.854370 -534.591370 50.03125"
+		"angles" "0.0000000000 177.5000000000 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\garrisonapproach.wav"
+		"printname" "Approaching the Garrison"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Tom Leonard"
+		"synopsis" "Our AI is inherently unscripted, which means that we have to design spaces that permit our characters to make good choices. The AI is better able to make intelligent decisions when there are alternate routes through a combat space. This hallway started out as a straight-shot corridor with a door at the end for soldiers to enter through, but this design didn't provide the AI with enough choices to make the soldier behavior very interesting. Adding an additional space on the side allowed them to find cover and flank the player, both of which dramatically improved the entertainment value of this encounter."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Door Blast Assaults"
+		"origin" "1429.436523 -172.130737 50.03125"
+		"angles" "0.0000000000 60.4000015259 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\doorblasts.wav"
+		"printname" "Door Blast Assaults"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Charlie Burgin"
+		"synopsis" "The first prototype of Episode 1's door-blast effect was here in the Combine garrison. Being peppered with chunks of wood while soldiers poured into the room through a haze of smoke proved to be an effective dramatic tool. It was also an excellent way to simultaneously ungate the player and flood the area with enemies. It was so unanimously successful in playtests that we ended up adding it in several places throughout the episode."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Antlion Guard Vs. APC"
+		"origin" "466.357758 238.990433 49.04625"
+		"angles" "0.0000000000 0.4700012207 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\alg_vs_apc.wav"
+		"printname" "Antlion Guard vs. APC"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Scott Dalton"
+		"synopsis" "At this point in the action, we really felt that we needed a combat crescendo. Antlion guards make great boss challenges, and we decided to add some combine forces to the mix because watching AI characters fight each other is always entertaining. This setup had a few other benefits as well. Since players had previously only fought alone against the guards, this was the first time they'd actually witness second hand the effects of a Guard headbutt. They'd also see an APC in action, and, in case there was any doubt, get definite proof that Combine soldiers and antlion guards don't get along, underscoring the collapse of Combine dominance in City 17."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "AG Strategy"
+		"origin" "-821.227905 -181.624420 33.96487"
+		"angles" "0.0000000000 45.5800000429 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ALG_strategy.wav"
+		"printname" "Antlion Guard Arenas"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Steve Bond"
+		"synopsis" "Antlion guard arenas have a few specific design requirements. For instance, since the guard is only armed with a melee attack, we can't let the player reach any place that's inaccessible to the guard, such as rooftops and other high perches that the player could only arrive at after being launched by a guard headbutt. The arenas also need plenty of physics objects for the guard to toss, and at least one unlimited ammo crate so that the player can't run out of ammunition before killing the guard. For this battle, we also introduced a steady stream of regular antlions to limit the player's ability to constantly circle the antlion guard."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Refinement of spaces"
+		"origin" "-750.379211 2196.008545 -1.69134"
+		"angles" "0.0000000000 45.9800033569 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\spacerefinement.wav"
+		"printname" "Refining Spaces"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Charlie Burgin"
+		"synopsis" "In early versions of this area, there was no side passage off the street and the gash in the road was created by the gunship that the player later fights in the hospital attic. As development progressed, however, gameplay, story, and performace requirements made this initial design unworkable. The new side passage provided a short break in the combat tension after the boss battle and also helped us to stay within our performance budget."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "06 airvent collapse"
+		"origin" "-2159.235107 1435.018066 -229.96875"
+		"angles" "0.0000000000 45.8899999857 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\airventcollapse.wav"
+		"printname" "Airvent Collapse"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "John Guthrie"
+		"synopsis" "After the antlion guard fight, playtesters were reporting some combat fatigue. We decided to include an environmental puzzle here to break up the pacing before the subsequent street battle. We originally worried that a densely packed room full of hopper mines, tripmines, and explosive barrels was a little too implausible. But playtesters loved the sudden reveal of the room and then enjoyed navigating it, so this ended up being another case where we accepted a trade-off between fun and maintaining a strictly consistent fiction."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "07 collapsing elevator"
+		"origin" "-1965.156250 1346.325073 -238.40921"
+		"angles" "0.0000000000 9.6300001144 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\collapsingelevator.wav"
+		"printname" "Elevator Surprise"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "John Guthrie"
+		"synopsis" "At one point, this was the site of a physically simulated elevator puzzle. It was kind of neat, but it caused a lot of problems in playtests. Even though the puzzle mostly obeyed the laws of physics, it wasn't at all in line the with the way we'd trained players to expect elevators to work in our world. We considered adding some earlier training to support it, but quickly abandoned the idea in favor of a redesign that was more immediately understandable while still being fun."
+	}
+}

@@ -1,0 +1,51 @@
+"Entities"
+{
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "about zombie floor trap"
+		"origin" "1366.545410 1454.689209 34.03125"
+		"angles" "0.0000000000 90.9499969482 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\zombietrap.wav"
+		"printname" "Zombie Floor Trap"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "John Guthrie"
+		"synopsis" "This space was designed to lure players onto a section of breakable floor that drops them into a room full of zombies. Players are enticed into the trap by some reward items and a chance to peek into a hole. We like to surprise players, but we never want them to feel that they've been treated unfairly."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Old School"
+		"origin" "1196.227783 1987.991455 166.03125"
+		"angles" "0.0000000000 121.9499969482 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\oldschool.wav"
+		"printname" "Old School"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Marc Laidlaw"
+		"synopsis" "Barney, like Dr. Kleiner, are the two characters with the deepest roots in Half-Life 1. His personality is more iconic, and retains more of the comic stylization of the first game.  This type of character allows us to mix up the mood a little bit - to inject some absurd humor into the otherwise grim scenarios of the Half-Life universe.  While characters such as Alyx and Eli Vance have allowed us to explore more realistic dramatic possibilities, we are still very much attached to our roots in satire and black humor."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "crowbar aquisition"
+		"origin" "984.045288 1988.556274 166.03125"
+		"angles" "0.0000000000 -45.5899963379 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\barneysbigcrowbar.wav"
+		"printname" "The Crowbar"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Jake Nicholson"
+		"synopsis" "Barney's big crowbar scene required a few tricks to pull off. There are actually three separate crowbar models in the sequence. First, there's one stuck in the machine. When Barney grabs that one, we remove it from the world and switch on a crowbar that's been in Barney's hand the entire time, only invisible. Both of these models are purely decorative, so as soon as Barney makes his tossing motion, we hide his crowbar again and create a third, useable crowbar that then bounces to the ground."
+	}
+}

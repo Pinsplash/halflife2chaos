@@ -1,0 +1,123 @@
+"Entities"
+{
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Group Vision of Alyx"
+		"origin" "-416.722076 -1889.698975 -1533.968750"
+		"angles" "0 -139.140121 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment243.wav"
+		"printname" "Alyx & Hive Mind"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Merle Dandridge: Voice of Alyx Vance"
+		"synopsis" "It constantly amazes me how many people are involved in creating her because everyone involved seems to have the same vision for her.  And for so many people to have one mind about a character, it blows my mind.  Very rarely do I get a piece of direction or script that doesn’t ring true to how I feel about Alyx, and vice versa.  And strangely enough, as soon as I try something out and something doesn’t ring true, I’m usually not the first person to say it.  Even though I might be feeling it, somebody else will say it. And it’s just a testament to how in-tune everybody is about what kind of person Alyx is and what she would do, what she wouldn’t do, what kind of girl she is."
+		"parser_id" "243"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Tying up loose ends"
+		"origin" "-65.147324 -1697.651367 -1142.238770"
+		"angles" "0 58.728668 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment209.wav"
+		"printname" "Tying up Loose Ends"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Gary McTaggart"
+		"synopsis" "The launch of Magnusson's rocket ties directly into the rocket Gordon launched at Black Mesa.  Here, the portal satellite array that opened a gate to Xen in Half-Life One has been repurposed to shut the Combine out.  This is just another example of the way we constantly try to weave the old threads of the Half-Life story into the new episodes."
+		"parser_id" "209"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Matte paintings"
+		"origin" "565.481079 -2281.359131 -1139.968750; "
+		"angles" "0 -90 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment208.wav"
+		"printname" "Matte Paintings"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Jeremy Bennett"
+		"synopsis" "Episode 2's backgrounds or vistas if you like are created in a manner that fuses traditional 2D animation techniques (linear cards moving against each other to imply parallax) and a modern Digital take which involves placing these cards in a 3D environment and manipulating their size (distance from camera) depending on the scale needed. A series of cards can sit in front of a 3D Skybox and with the addition of fog\atmosphere a realistic result can be achieved."
+		"parser_id" "208"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Advisors"
+		"origin" "1320.900024 -2263.968750 -1141.968750"
+		"angles" "0 -90 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment206.wav"
+		"printname" "Advisors"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Eric Strand"
+		"synopsis" "Developing the Half-Life episodes allows us to steadily flesh out the details of an ongoing cosmic struggle.  Most of this conflict remains far in the background, but little by little we are able to bring new elements up front.  One of our goals for Episode 2 was to fully develop the grub-like Advisors, first glimpsed in Half-Life 2.  In Episode 1, they make several brief appearances but have no direct effect on events in the game.  In Episode 2, we deliberated about how soon to show them becoming active, and decided to pull back the veil in stages.  Therefore we first see them being hauled around by combine troops, completely passive.  Next, we see one waking up from incubation, still somewhat groggy and beginning to discover its power.  But at the end of the episode, the Advisors come fully into their own, front and center, as characters with a huge impact on the story."
+		"parser_id" "206"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Climactic Animatic"
+		"origin" "1363.262817 -2534.322021 -1141.968750"
+		"angles" "0 -130.4331212 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment207.wav"
+		"printname" "Climactic Animatic"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Bill Fletcher"
+		"synopsis" "To create the Eli death sequence, we talked it through in great detail, wrote up an outline with all the events we'd discussed, and then produced an animatic.  We used rough sketches painted over screenshots, and a variety of crude special effects and sounds to create a quick pre-visualization of how the scene would play out.  Not only did this help us to converge on a shared vision for the scene, but by working rough, we were able to quickly iterate until we had a design worth implementing in the game."
+		"animatic," " which is a slideshow mixing game art, concept sketches, and sounds, all cut together to give a rough sense of pacing of the scene.   [Play animatic here]"
+		"parser_id" "207"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Eli's End"
+		"origin" "1470.436768 -2551.796143 -1141.968750"
+		"angles" "0 -90 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment205.wav"
+		"printname" "Eli's End"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Bill Van Buren"
+		"synopsis" "The decision to kill Eli was not made lightly, and once we'd made it, we had to figure out how to make it meaningful.  We had already established Eli's frailty, as well as his importance to the Resistance and Alyx's devotion to him, so from a narrative point of view the impact of his death seemed obvious. The hard part would be the execution. The advisors' ability to immobilize the player gave us a way to stage the scene, the animations and the sound design made it believable, but none of this would have been enough without inspired performances by Merle Dandridge and Robert Guillaume."
+		"parser_id" "205"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Final Scene"
+		"origin" " 1727.932983 -2437.250488 -1141.968750"
+		"angles" "0 0 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment253.wav"
+		"printname" "Alyx's Loss"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Merle Dandridge: Voice of Alyx Vance"
+		"synopsis" "This final Episode 2 scene was…unbelievable.  Before we even started working on it, the team sat me down, and they did a little show and tell of the animation they had.  I think they were hesitant to show it to me but just from that rough animation I was so moved, I mean, immediately moved to tears.  I felt like I had just been gut-punched and I immediately felt it, and I was like, let’s go, let’s get on this.  It shouldn’t surprise me by now because I’ve been working on Alyx for so long now, but every time we come to the table to do a new scene or to lay down some new material, I am always blown away, and this scene was the epitome of that feeling.  I was so pumped to get in there and start working on it.  They’re always upping the ante and always taking it to the next level, but this time, this scene is different.  Cause this time, Alyx loses.  And I think this is a—I don’t think, it is a major sacrifice.  You see her carrying around the wounds of her mother that she lost, but her dad made her who she is.  Her dad taught her, her dad groomed her, and I think most importantly—he loved her.  This script was a gift and a gut-punch all in one.  When you give me something like that, it really motivates me to try to knock it out of the ballpark.  I love, love playing Alyx.  I have to say, it’s definitely my favorite acting job I’ve ever had—hands down."
+		"parser_id" "253"
+	}
+}

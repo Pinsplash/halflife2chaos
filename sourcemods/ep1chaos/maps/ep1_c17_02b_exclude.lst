@@ -1,0 +1,81 @@
+models/props_combine/cit_lightning001/cit_lightning001
+models/combine_strider/striderdecalsheet
+models/combine_strider/stridernormal
+models/humans/female/group02/citizen_sheet
+plaster/plasterwall044b_normal
+plaster/plasterwall005e_normal
+concrete/concretefloor011a_normal
+models/props_combine/combine_intmonitor001_disp_alert
+models/props_vehicles/van001b_01
+models/weapons/v_physcannon/v_superphyscannon_sheet
+models/weapons/w_physics/w_physics_sheet2
+models/weapons/v_357/357_sheet
+models/props_c17/hospital_bed01_skin2
+models/gunship/prop_off
+decals/decalborealispuddlemask001a
+effects/strider_pinch_normal
+effects/strider_bulge_normal
+models/props_foliage/tree_deciduous_01a_branches
+plaster/plasterwall044b
+plaster/plasterwall022a
+plaster/plasterwall005e
+models/props_debris/concretefloor030a
+models/props_interiors/radiator01b
+models/props_interiors/radiator01c
+models/props_c17/door01a_skin14_normal
+models/props_junk/woodcrates02a
+models/props_combine/cloudlightning/cit_cloudlight
+building_template/building_template014f
+props/paperposter003a
+models/props_combine/combine_intmonitor001_disp_off
+models/props_building_details/courtyard_template001c_bars_dark
+models/weapons/v_bugbait/bugbait_sheet
+models/props_c17/door01a_skin2
+models/props_c17/door01a_skin4
+models/props_c17/door01a_skin5
+models/props_c17/door01a_skin7
+models/props_c17/door01a_skin10
+models/props_c17/door01a_skin11
+models/props_c17/door01a_skin14
+decals/rollermine_crater
+decals/extinguish1
+decals/extinguish2
+props/carpetfloor003a
+models/props_wasteland/prison_lamp001a_off
+models/props_junk/glassbottle01a
+models/props_junk/glassbottle01b
+models/gibs/hgibs/skull1
+models/gibs/hgibs/skull1_normal
+models/weapons/v_bugbait/bugbait_sheet_normal
+models/weapons/v_bugbait/bugbait_inside
+models/humans/male/group03/eric_facemap
+models/humans/female/group03/kim_facemap
+models/humans/female/group03/chau_facemap
+models/humans/male/group03/sandro_facemap
+models/humans/female/group03/naomi_facemap
+models/humans/male/group03/vance_facemap
+models/humans/male/group03m/van_facemap
+models/humans/male/group03m/ted_facemap
+models/humans/female/group03m/joey_facemap
+models/humans/male/group03m/joe_facemap
+models/humans/female/group03m/kanisha_facemap
+models/humans/male/group03m/eric_facemap
+models/humans/female/group03m/kim_facemap
+models/humans/female/group03m/chau_facemap
+models/humans/male/group03m/sandro_facemap
+models/humans/female/group03m/naomi_facemap
+models/humans/male/group03m/mike_facemap
+models/humans/female/group03m/lakeetra_facemap
+models/humans/male/group03m/vance_facemap
+models/humans/male/group03m/erdim_facemap
+
+512 models/gunship/gunshipsheet
+512 models/props_c17/furniturecouch001a
+512 models/props_c17/furniturecouch002a
+512 models/props_combine/combine_barricade_tall03b
+512 models/props_combine/combine_interface001
+512 models/headcrab_black/blackcrab_sheet_normal
+256 models/gunship/gunshipsheet_normal
+256 models/charple/charple1_normal
+
+

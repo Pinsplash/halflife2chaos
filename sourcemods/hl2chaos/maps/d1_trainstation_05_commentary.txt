@@ -1,0 +1,62 @@
+"Entities"
+{
+	"entity"
+	{
+		"origin" "-6361 -1172 112"
+		"targetname" "achievement_break_miniteleporter"
+		"AchievementEvent" "ACHIEVEMENT_EVENT_HL2_BREAK_MINITELEPORTER"
+		"classname" "logic_achievement"
+	}
+	"entity"
+	{
+		"origin" "-6361 -1405.11 129.458"
+		"targetname" "achievement_find_gman_redletterday"
+		"AchievementEvent" "ACHIEVEMENT_EVENT_HL2_GMAN_KLEINERSLAB"
+		"classname" "logic_achievement"
+	}
+	"entity"
+	{
+		"origin" "-6361 -1428.73 130.312"
+		"targetname" "condition_look_at_gman"
+		"target" "look_securitymonitor_a"
+		"StartDisabled" "1"
+		"spawnflags" "0"
+		"ScriptStatus" "2"
+		"RequiredTime" "2.5"
+		"PlayerTargetProximity" "512"
+		"PlayerTargetLOS" "2"
+		"PlayerTargetFOVTrueCone" "1"
+		"PlayerTargetFOV" "40"
+		"PlayerInVehicle" "2"
+		"PlayerBlockingActor" "2"
+		"PlayerActorProximity" "0"
+		"PlayerActorLOS" "2"
+		"PlayerActorFOVTrueCone" "1"
+		"PlayerActorFOV" "40"
+		"MinimumState" "1"
+		"MaximumState" "3"
+		"ActorSeeTarget" "2"
+		"ActorSeePlayer" "2"
+		"ActorInVehicle" "2"
+		"ActorInPVS" "2"
+		"classname" "ai_script_conditions"
+		"OnConditionsSatisfied" "achievement_find_gman_redletterday,FireEvent,,0,-1"
+	}
+	"entity"
+	{
+		"origin" "-6578 -1011.21 46.0864"
+		"targetname" "achievement_first_lambda"
+		"StartDisabled" "0"
+		"AchievementEvent" "ACHIEVEMENT_EVENT_HL2_LAMDACACHE_KLEINERSLAB"
+		"classname" "logic_achievement"
+	}	
+	"entity"
+	{
+		"classname" "logic_auto"
+		"connections"
+		{
+			"OnMapSpawn" "kill_mtport_rl_1,AddOutput,OnTrigger achievement_break_miniteleporter:FireEvent,,4,-1"
+			"OnMapSpawn" "lcs_alyxgreet04,AddOutput,OnTrigger2 achievement_first_lambda:FireEvent,,1,-1"
+		}
+	}
+}

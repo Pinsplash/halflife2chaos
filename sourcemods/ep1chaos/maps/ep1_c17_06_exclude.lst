@@ -1,0 +1,23 @@
+models/weapons/v_physcannon/v_superphyscannon_sheet
+models/weapons/w_physics/w_physics_sheet2
+models/weapons/v_bugbait/bugbait_sheet	
+models/weapons/v_bugbait/bugbait_sheet_normal	
+models/weapons/v_bugbait/bugbait_inside	
+models/weapons/v_bugbait/bugbait_inside_normal	
+models/weapons/w_bugbait/wbugbait_sheet	
+
+128 models/props_combine/cit_lightning001/cit_lightning001
+512 models/advisor_pod/advisor_pod
+128 models/effects/portalrift_normal
+512 models/advisor_pod/advisor_pod_normal
+512 models/combine_strider/stridernormal
+512 models/gunship/gunshipsheet
+512 models/gunship/gunshipsheet_normal
+128 models/effects/portalrift
+256 models/headcrab_black/blackcrab_sheet_normal
+512 models/combine_strider/striderdecalsheet
+
+
+
+
+

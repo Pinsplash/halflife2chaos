@@ -1,0 +1,72 @@
+"Entities"
+{
+
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Advisor pod"
+		"origin" "-10137.425781 -13246.945313 317.573181"
+		"angles" "0 -157.221451  0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment141.wav"
+		"printname" "Advisor Pod"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Chris Douglas"
+		"synopsis" "This crashed advisor pod is a bit of storytelling embedded in the landscape.  It hints at what lies ahead, while suggesting what must have happened in this location only a few hours before Gordon and Alyx arrived.  By placing artifacts of this sort throughout the episode, we slowly bring Advisors into the foreground and develop their importance to the story in a way that doesn't depend on staged dramatic scenes."
+		"parser_id" "141"
+	}	
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Advisor Hatching Scene"
+		"origin" "-9572.519531 -9571.229492 98.031250"
+		"angles" "0 46.656242 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment140.wav"
+		"printname" "Advisor Hatching Scene"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Nick Maggiore"
+		"synopsis" "[Needs separate tech node] The barn scene was critical both to this episode and to the development of Advisors as characters in the series.  They represent another intersection of story and gameplay concerns.  This is the first time the player actually interacts with an Advisor, and determining the right level of interactivity was tricky, especially given the player's reasonable expectation that he'll get to fight them directly at some point.  Therefore, we wanted to show that they were powerful but not invulnerable.  This was a long-term goal.  For the short term, we wanted to get the player familiar with some Advisor behavior so that when the episode finale occurred, they would already understand how Advisors operate.  By showing the Advisor fumbling with an inert object, then a dead rebel, and finally grabbing the player, we allow the player to observe behavior, and then gradually make it more and more of a direct threat.  This all serves as foreshadowing for the episode's finale."
+		"parser_id" "140"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Cinematic Physics: Barn Escape"
+		"origin" "-9299.650391 -9558.209961 157.425858 "
+		"angles" "0 9.960166  0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment147.wav"
+		"printname" "Cinematic Physics in the Barn"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Gray Horsfield"
+		"synopsis" "This swirling debris effect uses much of the same underlying technology that powers other cinematic physics events in episode 2, but with a few important differences.  Firstly, instead of using primitives, every slat, tile and beam was modeled before being sent into the rigid body solver. Next, there was a large focus on handsculpting world forces to achieve a particular behavior in the debris.  Beyond the basics of gravity and collisions, we created spiral vortices, gravity wells, and some other more complex forces.  With over 1800 individually calculated dynamic moving parts over a 30 second period, this simulation represents the largest amount of animation data run through our game engine to date."
+		"parser_id" "147"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Combine combat"
+		"origin" "-9967.728516 -9342.072266 162.031250"
+		"angles" "0 -4.160686 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment143.wav"
+		"printname" "Combine Combat"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "David Sawyer"
+		"synopsis" "We've gotten better at building combat spaces that are open and tactically versatile, while still directing the player toward an optimal play experience. This combat is on its face pretty straightforward, but we're doing some subtle things to keep the experience even and well paced. We're using quite a few of our combat tools in this one scene. As the first soldiers enter the barn, we send them in the right direction with an initial cue about the player's location using an npc_enemyfinder. The first soldiers serve primarily to draw the player outwards, where the real meat of the combat takes place. The wave of soldiers that spawns as the player rounds the corner to the exit, are the most directly controlled. One pair uses Assault Points to dash across the open ground and flank the player on the right. Others are constrained to hint groups in and around the house across the way, spaced so that the player is hit with an even front of fire, keeping them pinned for a while and encouraging cautious sniping and probing at the windows and doors. The hint groups are important because they keep the soldiers in strong tactical positions and prevent them from rushing the player to their own disadvantage, as they would if left unconstrained. The broken down truck gives a vital bit of midground cover as players leave the barn and advance on the house. Finally, as the player leaves the barn, we spawn the reinforcing Hunter. We hold this back both to keep the difficulty more even, and because the Hunter combat is better when the player has pushed outwards before it begins."
+		"parser_id" "143"
+	}
+}

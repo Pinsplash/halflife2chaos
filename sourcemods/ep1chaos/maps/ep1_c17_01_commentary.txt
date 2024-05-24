@@ -1,0 +1,179 @@
+"Entities"
+{
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Vista"
+		"origin" "5465.643066 128.436920 34.031250"
+		"angles" "0.0000000000 4.6999998093 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\c17vista.wav"
+		"printname" "Destruction Vista"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Gautam Babbar"
+		"synopsis" "This City 17 vista is an explicit visual reward for survivng the elevator battle. Since early playtesters told us that we weren't communicating just how damaged the city was, this sweeping view of an extremely messed up City 17 serves a practical purpose as well as being a nice moment of calm between storms. The framing of your first view of the Citadel in this vista space is very deliberate. We included various leading elements, such as wires and light poles, that all drive the player's eye to the Citadel."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Kleiner on the jumbotron: non-linear story elements"
+		"origin" "5888.261719 -677.530396 194.39642"
+		"angles" "0.0000000000 -51.6300010681 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\kleinercast.wav"
+		"printname" "Kleinercast"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Marc Laidlaw"
+		"synopsis" "One thing we try to do when we're integrating storytelling and gameplay, something that has become a hallmark of ours, is to include non-linear bits of narrative - things that action-oriented players don't have to sit through, but that are available to players who want to learn more about the background of the story. Kleiner's broadcasts on the public address monitors are a good example of this method.  Apart from the strong visual image of Dr. Kleiner replacing his former boss on the giant screens, his speech conveys a lot of dense information about the state of the world and how things have changed due to the events of Half-Life 2.  We settled on this particular location for the Kleinercast as one of the few logical places where players can watch it in peace or move on to the next encounter. It's essentially a footnote embedded in the world.  Which makes this a footnote on a footnote."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "metal plates"
+		"origin" "4478.508301 842.385742 2.03125"
+		"angles" "0.0000000000 125.7200012207 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\metalplates.wav"
+		"printname" "Metal Plates"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Ido Magal"
+		"synopsis" "Later in the level, there's a ombine gunner protected behind some metal plates, just like the ones blocking the player's way here. We placed them here as a training tool to remind players that the gravity gun can grab and detach these things."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "silhouette"
+		"origin" "3796.290283 40.309032 34.03125"
+		"angles" "0.0000000000 -90.1100006104 0.0000000000"
+		"precommands" "ai_disable"
+		"postcommands" "ai_disable"
+		"commentaryfile" "#commentary\silhouette.wav"
+		"printname" "Silhouettes"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Ken Birdwell"
+		"synopsis" "Rappelling soldiers presented a difficult training problem, because we've found that it's tough to focus the player's attention upward. This entire alley was carefully designed to ensure that the player would see the descending soldiers. First, we framed the soldiers with a straight line of buildings.  Then we had them run across the rooftops so that they were starkly silhouetted against the sky before they dropped down in front of lightly colored buildings. Finally, we added a distinctive sound to the rappelling action so that players would recognize it later in the game."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "City look"
+		"origin" "2818.636475 -521.632385 34.03125"
+		"angles" "0.0000000000 45.1900024414 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\citylook.wav"
+		"printname" "City 17 Art Direction"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Randy Lundeen"
+		"synopsis" "The post-Half-Life 2 look of City 17 was difficult to nail down and went through many changes. We wanted to establish several things; Primarily that this was a different part of the same city with a slightly different atmosphere and that it had been severely damaged. This street was a test bed for a lot of our visual design work. First, we built an intact city street and then we beat up certain buildings, in some cases removing them entirely so that more destruction was visible in the distance. We did an initial lighting pass in the game engine, and then took screenshots of various locations. Using Photoshop, we manipulated those screenshots to establish a color scheme. Photoshop lets us quickly iterate through all kinds of skies, lighting styles, and color schemes. The environmental lighting colors that we ended up with were based on some photo references of the sun filtering through the smoke from a forest fire. Some falling ash effects and a closer-than-usual fog plane helped sell the effect."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Alyx crouching AI"
+		"origin" "2800.822754 -734.827454 34.03125"
+		"angles" "0.0000000000 0.4599990845 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\crouchingalyx.wav"
+		"printname" "Alyx Learns to Crouch"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Robin Walker"
+		"synopsis" "Character AI is all about putting on a good show. As we neared the end of production, we were still unhappy with the way that Alyx handled herself in combat. The most common thing she did was to run backwards while shooting at enemies. It was realistic, but boring. We added crouching and aiming at the last minute, and though it didn't change her combat effectiveness in any functional way, it made her a whole lot more fun to watch. This is a great example of how relatively minor presentation and behavior changes can have a major impact on entertainment value."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "tripmine setup"
+		"origin" "1512.050415 2017.541016 54.00119"
+		"angles" "0.0000000000 100.4000015259 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\tripminetraps.wav"
+		"printname" "Tripmine Design"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Ido Magal"
+		"synopsis" "Tripmine traps are great, but they were sort of hard to justify given the total chaos of City 17. Even though we couldn't use tripmines a lot, they made sense in this interrupted ambush scene."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "sealing off cafe entrance"
+		"origin" "1565.284424 1785.822876 220.75450"
+		"angles" "0.0000000000 65.1000061035 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\sealingoffcafe.wav"
+		"printname" "Sealing the Café"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Ido Magal"
+		"synopsis" "This explosion permanently seals the the cafe door, which has a few benefits. From a design perspective, we've found that when we limit the amount of backtracking players can do, it gives them confidence to venture forward. From a practical standpoint, we can clean up the now unreachable entities, giving us a big reduction in overhead. It also helps to minimize potential bugs and exploits."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "no ammo in 01"
+		"origin" "895.998840 1890.642090 34.03125"
+		"angles" "0.0000000000 -35.2300033569 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\noammo.wav"
+		"printname" "No Ammo"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Ido Magal"
+		"synopsis" "Originally, the player didn't get any weapons until the end of this map, so rollermines were the only way to kill the soldiers. As we added more content to previous levels, it became impractical for players to be without a gun for so long. As a result, players get weapons much earlier now."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "alyx as a sniper"
+		"origin" "-363.191162 480.089783 30.03125"
+		"angles" "0.0000000000 -7.5799999237 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\alyxsniper.wav"
+		"printname" "Alyx the Sniper"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Steve Kalning"
+		"synopsis" "One of the primary design goals of Episode 1 was to convey the sense that Alyx and the player are a team. This sniper sequence provides an opportunity for Alyx to offer combat support in a cool new way. It also gives players a chance to watch zombies get sniped up close and from various angles."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "skybridge zombies"
+		"origin" "-834.283875 485.581879 354.03125"
+		"angles" "0.0000000000 -85.8600006104 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\skybridgezombies.wav"
+		"printname" "Skybridge Zombies"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Ido Magal"
+		"synopsis" "Players didn't have any weapons in the original version of this map. That made it a lot more important to remove the boards with the gravity gun so that Alyx could snipe the zombies. Once weapons were added, though, the skybridge became less of a puzzle and more of straightforward a combat event. We added more zombies to increase the challenge, but pulling the boards off is still the most fun way to get through this section."
+	}
+}

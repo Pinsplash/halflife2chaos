@@ -1,0 +1,83 @@
+"Entities"
+{
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Three Step Approach"
+		"origin" "-7678.001953 930.612549 834.23870"
+		"angles" "0.0000000000 -3.2300000191 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\3stepapproach.wav"
+		"printname" "Three Step Approach"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Scott Dalton"
+		"synopsis" "The light bridge ball sockets are a clear example of our training approach to new gameplay elements.  We train players with a leading example, confirm they understand the concept, then switch up the problem set and make them use it in a new way.  The first bridge shows players the solution, the second one confirms they understand, the third, knowing they understand the gameplay mechanic, challenges them in a new way using that mechanism."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Iterative refinement of a simple puzzle"
+		"origin" "-3697.501221 1175.773438 831.99627"
+		"angles" "0.0000000000 45.5699999332 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\puzzlerefinement.wav"
+		"printname" "Iterating on a Simple Puzzle"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Scott Dalton"
+		"synopsis" "Having trained the player that balls fit into sockets, we wanted to introduce a puzzle where the question was HOW to get the ball into the socket. The puzzle we came up with involved a socket with an object blocking it, so that the player would have to ricochet the ball into place. That sounded simple until we actually tried to implement it. If we made the covering opaque, playtesters didn't realize that there was a socket behind it. When we made it translucent, they often didn't see it was there and were confused when their shot bounced off. Making it movable was a red herring making people think they could knock it away.  A couple of subtle art changes helped. We added some more prominent shadowing and made the glass panel flash whenever it was hit with a ball. Some playtesters consistently searched for a position to get a direct shot, which we didn't discourage as an alternate solution."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Citadel Destruction"
+		"origin" "-5936.724121 873.681458 834.85400"
+		"angles" "0.0000000000 -15.0000000000 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\citdestruction.wav"
+		"printname" "Citadel Destruction"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Scott Dalton"
+		"synopsis" "Impending destruction is a recurring theme in the Citadel.  From story, mood, and visual standpoints, this changes the Citadel.  The destruction needed to feel natural rather than entirely scripted on the player's actions.  Not showing the destructive events dynamically makes the player assume the level of damage is static. However, if the events are too obviously triggered by player movement, the destruction feels too scripted. We found the solution was to give the player glimpses of things happening at the periphery of the player space, as well as in their immediate vicinity, to give the feeling that this stuff is happening whether the player is present or not."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Drawing attention to show piece elements"
+		"origin" "421.994507 -860.342590 866.03125"
+		"angles" "0.0000000000 -5.9400000572 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\drawingattention.wav"
+		"printname" "Highlighting Events"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Brian Jacobson"
+		"synopsis" "This dropship scene was another case where we had to be clever about drawing the player's attention to something cool that was about to happen, which the player could easily miss if they weren't looking in the right direction.  We used a solitary soldier firing at the player to draw their attention to where the dropship climbs into view.  Once the player notices the dropship, there's a good chance they'll watch it until the payoff when it crashes."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Alyx run speed"
+		"origin" "-1769.610718 1004.124451 834.03125"
+		"angles" "0.0000000000 25.1300001144 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\alyxrunspeed.wav"
+		"printname" "Alyx's Speed"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Doug Wood"
+		"synopsis" "There are some little practical details that take a surprising amount of time and testing to get just right. For instance, it took us many playtests to figure out how fast Alyx should move. It turns out that her following behavior looks and feels the best when she's moving faster than the player's normal speed, but slower than the player's sprint speed."
+	}
+}

@@ -1,0 +1,54 @@
+"Entities"
+{
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Fast Zombie on car"
+		"origin" "-12901.227539 -1529.644653 188.857910;"
+		"angles" "0 89.093918 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment151.wav"
+		"printname" "Fast Zombie on the Car"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Taylor Sherman"
+		"synopsis" "Our playtesters loved to see the zombie jump on the front of the car, and this naturally encouraged us to want to do more of it.  We started off with a high frequency of occurrences of this behavior, treating the zombie leap as a gameplay element that could be played out in variations.  Eventually, though, we discovered that this didn't lead to any really interesting gameplay, so we ended up creating just one memorable showcase of the event instead."
+		"parser_id" "151"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Alyx Combat in the car"
+		"origin" "-12413.689453 962.999634 160.439484"
+		"angles" "0 90.757477  0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment150.wav"
+		"printname" "Passenger Combat"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Richard Lord"
+		"synopsis" "Having solved the problem of getting Alyx into the passenger seat, we were faced with the challenge of making her a useful companion. When we first hooked up her vehicle combat, Alyx constantly targeted and fired her gun at everything. This made her feel a bit like a turret. In response, we tuned her behavior so that while the vehicle is moving, Alyx fires more slowly, taking more time to aim at high speeds."
+		"parser_id" "150"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Chopper Fight"
+		"origin" "-2051.932373 1083.370483 98.031250"
+		"angles" "0 87.489731  0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment149.wav"
+		"printname" "Chopper Fight"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Dan LeFree"
+		"synopsis" "Originally, the Episode 2 chopper battle was a classic fight that relied on use of the RPG.  In the meantime we were experimenting with a completely new way of fighting the chopper which we hoped to have ready for Episode 3.  The early Ep3 experiments were so successful that we pulled them straight into Episode 2."
+		"parser_id" "149"
+	}
+}

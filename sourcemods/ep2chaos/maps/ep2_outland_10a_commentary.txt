@@ -1,0 +1,121 @@
+"Entities"
+{
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "new prop lighting technology allows more realistic shadowing"
+		"origin" "3170.139893 -5358.859863 -1557.719971 "
+		"angles" "0 66.7300033569 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment169.wav"
+		"printname" "Lighting Enhancements"
+		"viewtarget" "woods view target"
+		"viewposition" "woods view position"
+		"prevent_movement" 1
+		"speakers" "Jason Mitchell"
+		"synopsis" "In the Source engine, we use a realistic radiosity lighting simulator to generate lighting detail for the geometry in our game worlds.  In previous games using the Source engine, shadows were simulated as if cast by totally opaque objects.  In Episode 2, we needed to render large wooded areas, which required us to modify our shadowing technology to account for the sparse, semi-transparent nature of foliage.  With these upgrades to our radiosity lighting simulator, we are now able to realistically illuminate the trees themselves as well as generate soft semi-transparent shadows on the environment around them."
+		"parser_id" "169"
+	}
+	"entity"
+	{
+		"classname" "info_target"
+		"targetname" "woods view target"
+		"origin" "3475.179932 -5183.109863 -1600.72998 "
+		"angles" "0 -7.0199999809 0"
+		"parser_id" "171"
+	}
+	"entity"
+	{
+		"classname" "info_target"
+		"targetname" "woods view position"
+		"origin" "3183.277832 -5328.679199 -1547.224609"
+		"angles" "0 65 0"
+		"parser_id" "302"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "commentary_dog versus strider"
+		"origin" "2008.864868 -1306.354492 -1870.076172"
+		"angles" "0 99.853249 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment167.wav"
+		"printname" "Dog vs. Strider"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Bill Fletcher"
+		"synopsis" "Our main goal with this scene was to create a cinematic battle of the titans, Dog vs. a strider. While we were excited with the early implementations, it became obvious that players were uncertain of their role in the scene. Originally the confrontation built slowly with Dog squaring off against the strider, but having such a slow beginning proved problematic. It looked great in the trailer, but didn't play well in the game. Instead of the slow build, we decided to send Dog straight into action. He makes a grand entrance, jumps on the strider and the fight is on. The quick start helps to grab the players attention instead of giving them too much time to worry about what they ought to be doing."
+		"parser_id" "167"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "commentary_testing new technology on the strider"
+		"origin" "2296.797363 -1079.420410 -1923.544922"
+		"angles" "0 77.383301 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment166.wav"
+		"printname" "Strider Evolution"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Ken Birdwell"
+		"synopsis" "This Strider has big parts of him rip off, he spews goo everywhere - he's a great test bed for new modeling technology and our new particle system.  We custom built him just for this sequence.  With our Episodic process, a lot of new technology comes online throughout development.  Since any new technology takes a year or more to really work out all the bugs, we like to look for insolated areas - like this one - where we can test out new things without risking all the things we already know work.  We did this with HDR and our lostcoast demo; once we're sure we didn't break anything, we can move the features back into general use.  Since this strider worked out really well here, he'll be the new Strider as we move forward, and we'll be applying what we've learned to any new monsters in Episode 3."
+		"parser_id" "166"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "commentary_dog material upgrade"
+		"origin" "2037.923950 -905.015015 -1869.968750"
+		"angles" "0 70.786285 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment168.wav"
+		"printname" "Dog's Material Upgrade"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Derrick Birum"
+		"synopsis" "Alyx's robot Dog is cobbled together from spare parts, all of which are in various states of disrepair.  For Episode 2, we chose to use shading techniques to improve the look of Dog and better convey his scrapyard origins.  Along with upgrades to Dog's texture maps, his shader now uses a combination of Phong shading and environment mapping to increase the apparent detail and diversity of materials, from rusty bolts to the damaged metal flaps salvaged from a Combine scanner."
+		"parser_id" "168"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Dog race"
+		"origin" "2319.582764 -428.775970 -1884.054565"
+		"angles" "0 62.922062 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment172.wav"
+		"printname" "Dog Race"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Danika Wright"
+		"synopsis" "Racing Dog to the base was not a preconceived plan.  It was born out of testing the level over and over, and repeatedly trying to keep up with Dog as he ran to the base. This was sufficiently fun for us, that we began to figure out ways to encourage players to do it too."
+		"parser_id" "172"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Heads A-Poppin’"
+		"origin" "3164.765381 10489.003906 240.701416"
+		"angles" "0 43.792477  0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment250.wav"
+		"printname" "Heads A-Poppin’"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Merle Dandridge: Voice of Alyx Vance"
+		"synopsis" "A really cool experience was that, while I was at Valve I was talking to one of the animators in the hallway, and we were just carrying on the conversation, I was getting to know what he did, and I just happened to be looking over my shoulder and noticed that people kept popping their heads out of their offices.  And one of the other guys noted to me that these people, bless em, they have to sit around and listen to my voice all day long.  So for that voice to be chatting in the hallway was a little weird.  I guess I kind of liken that, I can understand it, because the very first time I saw my voice on Alyx Vance’s face, it was so bizarre.  And so when I watch people talk to me for the first time and they’ve heard my voice as Alyx, they have the exact same expression and I’m like, I understand.  I get it."
+		"parser_id" "250"
+	}
+}

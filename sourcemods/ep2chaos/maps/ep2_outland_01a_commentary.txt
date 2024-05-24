@@ -1,0 +1,36 @@
+"Entities"
+{
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Exposing Grub Nuggets"
+		"origin" "-10544.501953 -7646.844238 255.458496"
+		"angles" "0 90 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment028.wav"
+		"printname" "Exposing Grub Nuggets"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Carl Uhlman"
+		"synopsis" "In early tests, playtesters didn’t realize that antlion grubs drop health nuggets, since they tended to pick up the nuggets by accident after squishing the grubs.  In order to showcase the feature, we placed a grub on the far side of this webbing.  When a player breaks the web, they squish the grub and send the nugget rolling.  Most players chase the nugget and naturally understand how to exploit grubs in the future."
+		"parser_id" "028"
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Antlion Grubs"
+		"origin" "-10674.108398 -7265.548828 197.900925"
+		"angles" "0 -142 0"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\ep2-comment011.wav"
+		"printname" "Antlion Grubs"
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Ted Backman"
+		"synopsis" "The antlion grubs were initially created for Half-Life 2, to visually flesh out the lifecycle of the antlions.  We never found the right place for them in that game, but as we developed the antlion environments of Episode 2, they were an obvious choice for resurrection.  In addition to their role in the life cycle of the antlion, they provide an equally valuable service in these dark tunnels:  light.  As the grubs came to life, we made sure that killing them was more rewarding. In addition to the satisfying squish effects, we added the health nugget for ailing players.  Soon we found many players were compelled to squash every grub in the map.  It's worth pointing out that grubs also play a role in our dynamic resupply system: The more injured you are, the more health they provide, which allows us to create a consistent level of challenge for players at differing skill levels."
+		"parser_id" "011"
+	}	
+}

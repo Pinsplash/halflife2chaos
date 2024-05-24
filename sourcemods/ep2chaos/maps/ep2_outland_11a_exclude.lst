@@ -1,0 +1,55 @@
+models/humans/female/group03/citizen_sheet
+models/props_c17/furniture_detailprops001a
+models/weapons/w_physics/w_physics_sheet2
+models/combine_turrets/floor_turret/floor_turret_citizen_noalpha
+models/props_pipes/valvewheel001_skin2
+models/weapons/v_bugbait/bugbait_sheet
+models/humans/female/group03/chau_facemap
+models/humans/female/group03/lakeetra_facemap
+models/humans/female/group03m/chau_facemap
+models/humans/female/group03m/naomi_facemap
+models/humans/female/group02/joey_facemap
+models/humans/female/group02/kanisha_cylmap
+models/humans/female/group02/kim_facemap
+models/humans/female/group02/chau_facemap
+models/humans/female/group02/naomi_facemap
+models/humans/female/group02/lakeetra_facemap
+models/humans/female/group03/joey_facemap
+models/humans/female/group03/kanisha_cylmap
+models/humans/female/group03m/kanisha_facemap
+models/humans/female/group03m/kim_facemap
+models/humans/female/group03m/lakeetra_facemap
+models/props_pipes/pipemetal004b
+models/props_silo/floodlight02
+models/combine_turrets/floor_turret/floor_turret_citizen_glow
+sprites/physring1-
+models/humans/female/fmouth
+models/weapons/v_bugbait/bugbait_inside
+models/weapons/v_bugbait/bugbait_sheet_normal
+models/weapons/w_stunbaton/stunbaton
+models/humans/female/dark_eyeball_l
+models/humans/female/dark_eyeball_r
+models/humans/female/eyeball_l
+models/humans/female/eyeball_r
+models/weapons/v_stunbaton/w_attachment01a
+models/weapons/v_stunbaton/w_contacts01a
+models/weapons/v_stunbaton/w_handguard01a
+models/weapons/v_stunbaton/w_powersource01a
+models/props_c17/oil_drum001a
+models/weapons/v_physcannon/v_superphyscannon_sheet
+particle/fire_particle_7/fire_particle_7
+models/props_pipes/valve001_skin2
+models/props_pipes/valve001_skin3
+models/humans/female/group02/citizen_sheet
+
+256 models/combine_advisor/combine_advisor_skin_normal
+256 models/combine_advisor/combine_advisor_body_normal
+256 models/combine_advisor/combine_advisor_mechanics_albedo
+256 models/combine_advisor/combine_advisor_skin_albedo
+256 models/combine_advisor/combine_advisor_body_albedo
+512 models/combine_helicopter/combine_helicopter01_normal
+512 models/combine_advisor/combine_advisor_mechanics_normal
+512 models/combine_dropship/combine_dropship01_normal
+512 models/combine_helicopter/combine_helicopter01
+512 models/combine_dropship/dropshipsheet
+512 models/combine_dropship/combine_dropship01

@@ -1,0 +1,115 @@
+"Entities"
+{
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Burrow Blocking"
+		"origin" "430.414215 3844.667480 406.031250"
+		"angles" "0.0000000000 -155.1999969482 0.0000000000"
+		"precommands" "ai_disable"
+		"postcommands" "ai_disable"
+		"commentaryfile" "#commentary\burrowblocking.wav"
+		"printname" "Burrow Blocking"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "John Guthrie"
+		"synopsis" "This three level parking garage is where the antlion burrow training pays off. Because we've taught the player the burrow blocking mechanic earlier in a less hectic environment, the problem here becomes not what to do with the burrows, but where to find the cars to block them while fighting off a horde of antlions. The burrows themselves went through several iterations. At first, playtesters had a hard time seeing them, and once they'd pushed a car onto one, they often weren't sure if the hole was actually sealed. We eventually solved both of these problems by adding a particle effect to the burrows. This effect makes them recognizeable even at a distance, and its absence is a clear indication that a burrow is blocked."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "ArtPass Garage"
+		"origin" "-118.792488 3965.502930 528.12957"
+		"angles" "0.0000000000 122.8300018311 0.0000000000"
+		"precommands" "ai_disable"
+		"postcommands" "ai_disable"
+		"commentaryfile" "#commentary\artpassgarage.wav"
+		"printname" "Art-Passing the Garage"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Gautam Babbar"
+		"synopsis" "We generally design and prototype the basic gameplay in a level before we apply much art to it. Throughout the first several months of playtesting this garage map, the geometry was nothing more than basic shapes and textures. After we'd finalized most of the gameplay elements, we began to flesh out the visuals for the area. For this level, we left the office and took reference pictures of various garages. From these shots, we pulled out everything we liked and that we thought we could pull off well.  We combined these visual highlights into what we call a 'styleguide map', which is a standalone map with no gameplay that we use strictly as a visual reference. For this level, we actually made two styleguides - one a destroyed garage, the other intact. After the look was established, we brought the playable map's visual quality up to the level of the styleguides. Often, a map's geometry needs to be changed as the art goes in because areas that worked in the abstract version no longer make sense in a map that now looks like a real place. For instance, the side rooms where two of the cars are hidden were moved several times in order to make them feel more naturally part of a parking garage."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "HDR Comment"
+		"origin" "2724.077881 3924.608398 441.92456"
+		"angles" "0.0000000000 90.6099996567 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\hdrcomment.wav"
+		"printname" "High Dynamic Range"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Chris Green"
+		"synopsis" "Episode 1 is our first project to use HDR lighting heavily in dark, indoor environments. The interaction between the flashlight and the auto-exposure calculations done for HDR presented a real technical challenge. In dark areas where the flashlight was the only source of illumination, we found that we'd often end up with grossly over-exposed views. We ended up compensating for this by using a different set of exposure parameters when the flashlight was turned on. In particular, we drastically shrunk the region of the screen examined for exposure calculations, which permitted us to concentrate only on the much smaller area lit by the flashlight."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Follow the wire"
+		"origin" "4078.860596 3624.888184 442.03622"
+		"angles" "0.0000000000 9.6099996567 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\followthewire.wav"
+		"printname" "Follow the Wire"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Gautam Babbar"
+		"synopsis" "This area is the dramatic culmination of all the lightless combat that comes before it.  We wanted to create a dynamic fight that lasted several minutes while you waited for the elevator to arrive. The first iteration of this battle was very different from what we eventually shipped. The space was larger, had water in it, and wasn't completely dark.  Water is relatively expensive, performance-wise, so we cut that in favor of more zombies. We made the level smaller to ensure that the player would see the elevator and recognize the problem that needed to be solved before the fight started. We killed the lights both to enhance tension and to make this scene a final test of the dark-fighting skills that the player develops over the course of the episode. Finally, we added a wire running along the ceiling from the elevator to the powerbox to give players a guide as they familiarize themselves with the area."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Alyx The Objective Key"
+		"origin" "3814.770996 3324.602051 442.03125"
+		"angles" "0.0000000000 19.7700004578 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\alyxthekey.wav"
+		"printname" "Alyx The Objective Key"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Chet Faliszek"
+		"synopsis" "In early versions of the episode, Alyx was much more vocal about giving the player hints. However, playtests showed it was much more satisfying for players when Alyx stated a goal and then stepped aside until that goal was accomplished. Because of that feedback, almost all of Alyx's hint lines were cut. Eventually, though, we discovered through more playtesting that although players didn't like having Alyx hand them unsolicited hints, they did want to be able to explicitly request help from her. We added some of the hint dialog back in, but it's only accessible at the player's request by plus-using Alyx. Unfortunately, we learned these hint lessons late in the development cycle and didn't have time to properly train players for this feature. We plan to integrate the hint-on-demand dialog more thoroughly in future episodes."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Art and Gameplay Standards"
+		"origin" "3177.930420 3181.846191 442.03125"
+		"angles" "0.0000000000 -167.4700012207 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\artgameplaystandards.wav"
+		"printname" "Art and Gameplay Standards"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Ted Backman"
+		"synopsis" "Our art and gameplay standards encourage players to build a visual dictionary that defines how they expect things to work in the Half-Life world. For instance, even though the door to the powerbox room is metal, and would probably have a metal crossbar holding it shut, we barred it with a wooden plank. Because we've been consistent throughout the game, the player should recognize that a wooden plank can be both broken and manipulated with the gravity gun, properties that wouldn't be immediately apparent about a metal bar."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Zombine Grenade Behavior"
+		"origin" "3082.543213 3207.466797 442.03125"
+		"angles" "0.0000000000 25.4799957275 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\zombinegrenades.wav"
+		"printname" "Zombine Grenade Behavior"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Adrian Finol"
+		"synopsis" "We're really happy with the zombine's grenade behavior. It adds sudden danger spikes to the zombie horde, which force players to quickly re-prioritize their targets. And since the player can grab a grenade out of the zombine's hand with the gravity gun, these danger spikes can be converted into offensive opportunities. This kind of turnaround skill shot creates some dynamic, satisfying hero moments for the player. Originally, we didn't allow the player to snatch zombine grenades because we felt it broke the fiction of the gravity gun - if players could grab a zombine's grenade, why couldn't they grab the Combine soldiers' guns? After playtesting the grenade steal, though, fun won out over consistency."
+	}
+}

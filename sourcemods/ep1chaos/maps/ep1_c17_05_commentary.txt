@@ -1,0 +1,67 @@
+"Entities"
+{
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "advisor sighting"
+		"origin" "10205.013672 12259.232422 -597.86474"
+		"angles" "0.0000000000 -25.9000015259 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\advisorsighting.wav"
+		"printname" "Advisor Sighting"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Matt Scott"
+		"synopsis" "We wanted players to realize that they've been spotted and the Combine are now aware of their arrival at the train station. It sounds like a simple task, but it actually took a lot of thought to draw the player's attention to the various events that communicate this message. First, a train horn sounds, which gives Alyx an opportunity to mention that the station is in sight. Next, the lights go off to grab the player's attention and to make the monitors stand out in the dark. At this point, the player should be looking at one of the monitors, so, finally, the Kleiner transmission is interrupted briefly by a Combine advisor. Originally, the advisor appeared on a jumbotron outside, but we were never able to reliably make playtesters look at it. The flashing Combine camera should also provide some indication that trouble is brewing. Though it's not a proper gate, the zombie draped over the exit is designed to slow the player down just long enough for Alyx to finish her lines."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "stroll with barney"
+		"origin" "10413.535156 11446.154297 -661.96875"
+		"angles" "0.0000000000 -70.0299987793 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\strollwithbarney.wav"
+		"printname" "Stroll with Barney"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Wade Schin"
+		"synopsis" "Originally, Barney started off in this map in the doorway down by the citizens, but playtesters tended to wander around for a while before stumbling across him. We moved him up here to guarantee that his scene with Alyx would unfold before players began any exploration. He's standing over a dead metrocop because it's a plausible-looking long term activity, in case players don't move directly down to him. Nearby reward items also tend to draw players toward him."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "escort map"
+		"origin" "10064.958984 10303.586914 -797.96875"
+		"angles" "0.0000000000 -90.7399978638 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\escortmap.wav"
+		"printname" "Escort Mission"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Ido Magal"
+		"synopsis" "Here we wanted to include something a little different - an escort mission. Most of our gameplay involves constant forward motion, so we wanted to design a situation where players would fight through the same basic area multiple times. This temporary backtracking would create a series of encounters where players had a full tactical awareness of their surroundings. Once again, all of this turned out to be more easily said than done, and this sequence went through a lot of iterations. Originally, the train yard was one big space. This approach had a couple of problems. Since players had a constant, unbroken view of the entire area, it was virtually impossible to maneuver enemies into position for staged combat events. And because they could always see the goal, players didn't get much of a sense that they were leading citizens somewhere the citizens couldn't get to on their own. Ultimately, we broke the environment into two different spaces, a parking lot and a maintenance building. Because neither area can be seen from the other, we're able to repopulate the spaces with new, more deadly combinations of enemies while the player isn't looking. It also makes the journey feel lengthier and more significant."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "interior combat evolution"
+		"origin" " 8639.737305 10494.276367 -733.96875"
+		"angles" "0.0000000000 40.8699951172 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\plausiblerepopulation.wav"
+		"printname" "Plausible Repopulation"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Ido Magal"
+		"synopsis" "We wrestled with the problem of plausibly repopulating this area with soldiers between each trip. After several iterations, we decided to have the soldiers jump in through some high windows. This solution has several advantages beyond maintaining a credible fiction. It makes the incoming enemies more immediately visible and, since the windows are unreachable from the ground, players aren't able to exit through them.  Plus, leaping soldiers turn into tumbling ragdolls when shot, which is always entertaining."
+	}
+}

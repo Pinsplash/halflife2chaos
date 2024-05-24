@@ -1,0 +1,163 @@
+"Entities"
+{
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Framing and Foreshadowing Gunship"
+		"origin" "4759.509277 7254.365234 -2513.96875"
+		"angles" "0.0000000000 87.3000030518 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\foreshadowgunship.wav"
+		"printname" "Framing and Foreshadowing the Gunship"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Gautam Babbar"
+		"synopsis" "Whenever possible, we like to foreshadow impending boss battles by introducing the enemy before the actual fight. In this case, you know you're going to be seeing that gunship again pretty soon."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Dead Gunship close up"
+		"origin" "2377.525879 8100.402832 -2333.96875"
+		"angles" "0.0000000000 65.6500015259 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\gunshipcloseup.wav"
+		"printname" "Examining the Dead Gunship"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Gautam Babbar"
+		"synopsis" "Instead of letting the gunship AI have its own way here, we forced the ship to crash right into the attic.  It's a dramatic payoff for winning the battle, and it gives players an opportunity to examine a gunship up close at their leisure.."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Additional Gunship Battle Design Notes"
+		"origin" "2234.288086 8488.654297 -2525.96875"
+		"angles" "0.0000000000 90.0400009155 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\gunshipdesign.wav"
+		"printname" "Dynamic Arena"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Scott Dalton"
+		"synopsis" "We designed this gunship battle to create a dynamic evolving experience while still keeping the player within a constrained area. Initially, this space appears straightforward, and provides plenty of cover. As the environment gets progressively more damaged, combat becomes more challenging; players Pre increasingly open to enemy fire and the path to the rocket crate becomes more difficult to navigate. As the roof breaks apart, however, the gunship also becomes more visible and therefore easier to hit, keeping things relatively in balance. The lighting in this area was tuned to play off of the HDR tonemapping effects, between the dark inner spaces and the progressively open bright sky above."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "hospital artdir"
+		"origin" "927.516663 8942.84668 -2525.96875"
+		"angles" "0.0000000000 -55.3899993896 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\hospitalart.wav"
+		"printname" "The Hospital"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Randy Lundeen"
+		"synopsis" "The hospital was a completely new interior space that we had to design pretty much from scratch. Like most of City 17's visuals, it was inspired by Eastern European architecture. The surgery lamps and the overall white and yellow color scheme were drawn from photos of a hospital in Chernobyl. The tile work and the high archways were chosen to give the area the institutional feel of an old European hospital, and the beds were based on some old World War 2 images. In fact, we avoided modern-looking fixtures and furniture altogether in order to differentiate the place from a contemporary hospital."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Multi-faction AI battles"
+		"origin" "-28.259640 8929.636719 -2525.96875"
+		"angles" "0.0000000000 177.3600006104 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\shotgunalyx.wav"
+		"printname" "Multi-Faction AI Battles"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Robin Walker"
+		"synopsis" "We designed this area to be an entertaining showcase for NPC combat. Because of our dynamic AI, these kinds of battles never play out the same way twice. Players often like to sit back, watch the show, and then dive into the fray at their own discretion. We also felt it was time to introduce a new combat ability for Alyx, so we gave her a shotgun here. Not only are shotguns terrific for zombie hunting, their size and ponderous handling characteristics make for some great combat animations."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Banging zombies"
+		"origin" "-813.770813 8687.96875 -2525.96875"
+		"angles" "0.0000000000 75.6500000954 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\bangingzombies.wav"
+		"printname" "Banging Zombies"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Gautam Babbar"
+		"synopsis" "The door-banging zombies were supposed to give players a safe glimpse of a threat they'd have to face later in the level. In the original design, players couldn't open the door; The zombies would burst through on their own after the player had done a little exploring. We abandoned that plan when many playtesters exhibited a pretty much singleminded fascination with opening the door as soon as they saw it. We made the door openable, though if players ignore it the zombies will eventually break it down themselves."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "hospital prop models"
+		"origin" "-350.662903 8878.036133 -2541.96875"
+		"angles" "0.0000000000 -156.7700042725 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\hospitalprops.wav"
+		"printname" "Hospital Props"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Laura Dubuk"
+		"synopsis" "To make the set of empty corridors look like a hospital, we chose some iconic hospital props that could be used multiple times throughout the level. Then we built the models with details, multiple skins, and vertical and horizontal elements that would be visually interesting in the space."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Balancing pacing and variety"
+		"origin" "-749.551575 8990.330078 -2807.07788"
+		"angles" "0.0000000000 -2.9300000668 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\hospitalrespite.wav"
+		"printname" "Pacing and Variety"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Gautam Babbar"
+		"synopsis" "Too much of the same type of uninterrupted gameplay causes fatigue. Through repeated playtests, we learned that by the time players reached this part of the hospital, they were ready for a break from intense combat. In response to that feedback, we inserted this relatively calm exploration puzzle as a change of pace. It gives players a respite from combat while still prsenting them with an interesting challenge."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "Turrets"
+		"origin" "-1831.814453 8846.548828 -2801.27270"
+		"angles" "0.0000000000 -126.8000030518 0.0000000000"
+		"precommands" ""
+		"postcommands" ""
+		"commentaryfile" "#commentary\turrets.wav"
+		"printname" "Turrets"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Gautam Babbar"
+		"synopsis" "This turret scenario was designed to showcase Alyx's ability to provide cover for players in combat. She always hangs back a little, blasting anything that moves. In the original version, players could knock over the lightly protected turrets with a single rocket fired from the safe end of the corridor. We thought it'd be a nice way for players to feel like they'd pulled one over on the Combine. Unfortunately, playtesters routinely thought that they'd discovered a bug or, at best, an exploit that had arisen from sloppy design. So, in this case, a situation we'd deliberately created to make players feel clever actually caused them to think we weren't doing our job very well. As a result of this feedback, we added a force field and additional grating to better protect the turrets."
+	}
+	"entity"
+	{
+		"classname" "point_commentary_node"
+		"targetname" "AI Node graph"
+		"origin" "-1687.973022 8738.638672 -2801.27270"
+		"angles" "0.0000000000 -102.4300003052 0.0000000000"
+		"precommands" "ai_show_connect"
+		"postcommands" "ai_show_connect"
+		"commentaryfile" "#commentary\nodegraph.wav"
+		"printname" "AI Node Graph"
+		"viewtarget" ""
+		"viewposition" ""
+		"prevent_movement" 0
+		"speakers" "Robin Walker"
+		"synopsis" "What you're seeing here is a visual representation of a nodegraph - a set of nodes and the connections between them. Nodegraphs tell our NPCs how they can move around the world. It's not a specific set of instructions, but rather a sort of information repository. Among other things, NPCs use the nodegraph to dynamically chart paths to distant areas, find cover, and scout out firing positions with a clear line of sight to their enemy."
+	}
+}
