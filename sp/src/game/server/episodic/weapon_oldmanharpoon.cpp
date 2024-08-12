@@ -30,7 +30,7 @@ PRECACHE_WEAPON_REGISTER( weapon_oldmanharpoon );
 
 acttable_t	CWeaponOldManHarpoon::m_acttable[] = 
 {
-	{ ACT_IDLE,						ACT_IDLE_SUITCASE,					false },
-	{ ACT_WALK,						ACT_WALK_SUITCASE,					false },
+	{ ACT_IDLE,						ACT_IDLE_HARPOON,					false },
+	{ ACT_WALK,						ACT_WALK_HARPOON,					false },
 };
 IMPLEMENT_ACTTABLE( CWeaponOldManHarpoon );
