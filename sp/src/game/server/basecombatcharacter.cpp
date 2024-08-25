@@ -1380,7 +1380,14 @@ Vector CBaseCombatCharacter::CalcDamageForceVector( const CTakeDamageInfo &info 
 {
 	// Already have a damage force in the data, use that.
 	bool bNoPhysicsForceDamage = g_pGameRules->Damage_NoPhysicsForce( info.GetDamageType() );
-	if ( info.GetDamageForce() != vec3_origin || bNoPhysicsForceDamage )
+	//original line:
+	//if ( info.GetDamageForce() != vec3_origin || bNoPhysicsForceDamage )
+	//i changed this because the fisherman harpoon was flinging enemies with crazy force.
+	//this is also the reason the hack of setting an antlion guard's health to 1 before dying exists.
+	if (bNoPhysicsForceDamage)
+		return vec3_origin;
+
+	if (info.GetDamageForce() != vec3_origin)
 	{
 		if( info.GetDamageType() & DMG_BLAST )
 		{

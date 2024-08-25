@@ -9145,16 +9145,17 @@ int CAI_BaseNPC::DrawDebugTextOverlays(void)
 		// --------------
 		if( m_Activity != ACT_INVALID && m_IdealActivity != ACT_INVALID && m_Activity != ACT_RESET)
 		{
-			Activity iActivity		= TranslateActivity( m_Activity );
+			Activity iActivity = TranslateActivity(m_Activity);
 
-			Activity iIdealActivity	= Weapon_TranslateActivity( m_IdealActivity );
-			iIdealActivity			= NPC_TranslateActivity( iIdealActivity );
+			Activity iWeaponActivity = Weapon_TranslateActivity(m_IdealActivity);
+			Activity iIdealActivity = NPC_TranslateActivity(iWeaponActivity);
 
-			const char *pszActivity = GetActivityName( iActivity );
-			const char *pszIdealActivity = GetActivityName( iIdealActivity );
-			const char *pszRootActivity = GetActivityName( m_Activity );
+			const char *pszActivity = GetActivityName(iActivity);
+			const char *pszWeaponActivity = GetActivityName(iWeaponActivity);
+			const char *pszIdealActivity = GetActivityName(iIdealActivity);
+			const char *pszRootActivity = GetActivityName(m_Activity);
 
-			Q_snprintf(tempstr,sizeof(tempstr),"Actv: %s (%s) [%s]\n", pszActivity, pszIdealActivity, pszRootActivity );
+			Q_snprintf(tempstr, sizeof(tempstr), "Actv: %s {%s} (%s) [%s]\n", pszActivity, pszWeaponActivity, pszIdealActivity, pszRootActivity);
 		}
 		else if (m_Activity == ACT_RESET)
 		{

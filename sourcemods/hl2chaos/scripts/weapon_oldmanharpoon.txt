@@ -23,6 +23,9 @@ WeaponData
 	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)
 	SoundData
 	{
+		"single_shot"		"weapon.ImpactSoft"
+		"melee_hit"			"Flesh_Bloody.ImpactHard"
+		"melee_hit_world"	"Plastic_Box.ImpactHard"
 	}
 
 	// Weapon Sprite data is loaded by the Client DLL.

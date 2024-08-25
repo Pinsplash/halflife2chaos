@@ -120,7 +120,7 @@ bool CSingleplayRules::Damage_ShowOnHUD( int iDmgType )
 bool CSingleplayRules::Damage_NoPhysicsForce( int iDmgType )
 {
 	// Damage types that don't have to supply a physics force & position.
-	int iTimeBasedDamage = Damage_GetTimeBased();
+	int iTimeBasedDamage = Damage_GetTimeBased() & ~DMG_POISON;
 	return ( ( iDmgType & ( DMG_FALL | DMG_BURN | DMG_PLASMA | DMG_DROWN | iTimeBasedDamage | DMG_CRUSH | DMG_PHYSGUN | DMG_PREVENT_PHYSICS_FORCE ) ) != 0 );
 }
 

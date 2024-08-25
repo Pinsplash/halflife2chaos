@@ -99,7 +99,7 @@ public:
 	bool ShouldLookForBetterWeapon() { return false; }
 	virtual bool	IgnorePlayerPushing( void ) { return true; }
 	void	DeathSound( const CTakeDamageInfo &info );
-
+	virtual bool IsReadinessCapable();
 	int m_iHatLayer;	// overlay layer for hat, don't save/restore.
 	int m_iHatState;	// hat state, persistant.
 
@@ -226,6 +226,14 @@ void CNPC_Fisherman::DeathSound( const CTakeDamageInfo &info )
 {
 	// Sentences don't play on dead NPCs
 	SentenceStop();
+}
+
+bool CNPC_Fisherman::IsReadinessCapable()
+{
+	if (GetActiveWeapon())
+		return true;
+	else
+		return false;
 }
 
 //-----------------------------------------------------------------------------

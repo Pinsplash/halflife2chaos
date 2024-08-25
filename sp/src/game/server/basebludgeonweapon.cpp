@@ -48,8 +48,8 @@ void CBaseHLBludgeonWeapon::Spawn( void )
 {
 	m_fMinRange1	= 0;
 	m_fMinRange2	= 0;
-	m_fMaxRange1	= 64;
-	m_fMaxRange2	= 64;
+	m_fMaxRange1	= GetRange();
+	m_fMaxRange2	= GetRange();
 	//Call base class first
 	BaseClass::Spawn();
 }
