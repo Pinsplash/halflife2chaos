@@ -141,11 +141,14 @@ void CWeaponOldManHarpoon::HandleAnimEventMeleeHit(animevent_t *pEvent, CBaseCom
 		// play sound
 		WeaponSound(MELEE_HIT);
 		pHurt->DispatchTraceAttack(info, vecDirection, &traceHit);
+		ApplyMultiDamage();
+		/*
 		if (pHurt->VPhysicsIsFlesh())
 		{
 			trace_t traceHit;
 			pHurt->ImpactTrace(&traceHit, iDamageType, "bloodimpact");
 		}
+		*/
 	}
 	else
 	{
