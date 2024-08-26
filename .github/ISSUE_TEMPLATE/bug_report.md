@@ -7,6 +7,8 @@ assignees: ''
 
 ---
 
+If you're having an installation issue, see [here](https://github.com/Pinsplash/halflife2chaos/discussions/121) before making a bug report.
+
 **Describe the bug**
 A description of what the bug is.
 
