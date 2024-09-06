@@ -9186,6 +9186,8 @@ void CEPhysConvert::StartEffect()
 			variant_t emptyVariant;
 			pEnt->AcceptInput("Break", pEnt, pEnt, emptyVariant, 0);
 			pEnt->AcceptInput("Turnoff", pEnt, pEnt, emptyVariant, 0);//Also hit phys_thruster and torque
+			if (pEnt->ClassMatches("phys_spring"))//no break or turnoff input, just directly kill i guess
+				pEnt->AcceptInput("Kill", pEnt, pEnt, emptyVariant, 0);
 			pEnt = gEntList.NextEnt(pEnt);
 			continue;
 		}
