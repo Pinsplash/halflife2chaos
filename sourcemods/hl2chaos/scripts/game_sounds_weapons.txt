@@ -1027,12 +1027,11 @@
 	"channel"		"CHAN_WEAPON"
 	"volume"		"0.7"
 	"soundlevel"	"SNDLVL_NORM"
-	"pitch"			"95,102"
+	"pitch"			"50,55"
 
 	"rndwave"
 	{
-		"wave"			"weapons/stunstick/stunstick_swing1.wav"
-		"wave"			"weapons/stunstick/stunstick_swing2.wav"
+		"wave"			"weapons/iceaxe/iceaxe_swing1.wav"
 	}
 }
 

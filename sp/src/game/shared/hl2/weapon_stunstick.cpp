@@ -95,6 +95,7 @@ public:
 	
 	void		Drop( const Vector &vecVelocity );
 	void		ImpactEffect( trace_t &traceHit );
+	bool		ImpactWater(const Vector &start, const Vector &end);
 	void		SecondaryAttack( void )	{}
 	void		SetStunState( bool state );
 	bool		GetStunState( void );
@@ -250,6 +251,11 @@ void CWeaponStunStick::ImpactEffect( trace_t &traceHit )
 
 #ifndef CLIENT_DLL
 
+bool CWeaponStunStick::ImpactWater(const Vector &start, const Vector &end)
+{
+	EmitSound("Weapon_StunStick.Swing");
+	return BaseClass::ImpactWater(start, end);
+}
 
 int CWeaponStunStick::WeaponMeleeAttack1Condition( float flDot, float flDist )
 {
