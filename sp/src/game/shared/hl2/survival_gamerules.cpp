@@ -179,7 +179,7 @@ void CHalfLife2Survival::PlayerSpawn( CBasePlayer *pPlayer )
 
 	for ( int i = 0; i < m_SurvivalSettings.m_Loadout.Count(); ++i )
 	{
-		pPlayer->GiveNamedItem( m_SurvivalSettings.m_Loadout[i] );
+		pPlayer->GiveNamedItem( m_SurvivalSettings.m_Loadout[i], false);
 	}
 
 	for ( int i = 0; i < m_SurvivalSettings.m_Ammo.Count(); ++i )

@@ -5663,7 +5663,7 @@ void CBloodSplat::Think( void )
 //-----------------------------------------------------------------------------
 // Purpose: Create and give the named item to the player. Then return it.
 //-----------------------------------------------------------------------------
-CBaseEntity	*CBasePlayer::GiveNamedItem( const char *pszName, int iSubType )
+CBaseEntity	*CBasePlayer::GiveNamedItem(const char *pszName, bool bChaos, int iSubType)
 {
 	// If I already own this type don't create one
 	if ( Weapon_OwnsThisType(pszName, iSubType) )
@@ -5679,7 +5679,7 @@ CBaseEntity	*CBasePlayer::GiveNamedItem( const char *pszName, int iSubType )
 		Msg( "NULL Ent in GiveNamedItem!\n" );
 		return NULL;
 	}
-
+	pent->m_bChaosSpawned = bChaos;
 	pent->SetLocalOrigin( GetAbsOrigin() );
 	pent->AddSpawnFlags( SF_NORESPAWN );
 
@@ -6129,7 +6129,7 @@ void CBasePlayer::CheatImpulseCommands( int iImpulse )
 
 	case 81:
 
-		GiveNamedItem( "weapon_cubemap" );
+		GiveNamedItem("weapon_cubemap", false);
 		break;
 
 	case 82:
@@ -6161,20 +6161,18 @@ void CBasePlayer::CheatImpulseCommands( int iImpulse )
 #ifdef HL2_EPISODIC
 		GiveAmmo( 5,	"Hopwire" );
 #endif		
-		GiveNamedItem( "weapon_smg1" );
-		GiveNamedItem( "weapon_frag" );
-		GiveNamedItem( "weapon_crowbar" );
-		GiveNamedItem( "weapon_pistol" );
-		GiveNamedItem( "weapon_ar2" );
-		GiveNamedItem( "weapon_shotgun" );
-		GiveNamedItem( "weapon_physcannon" );
-		GiveNamedItem( "weapon_bugbait" );
-		GiveNamedItem( "weapon_rpg" );
-		GiveNamedItem( "weapon_357" );
-		GiveNamedItem( "weapon_crossbow" );
-#ifdef HL2_EPISODIC
-		// GiveNamedItem( "weapon_magnade" );
-#endif
+		GiveNamedItem("weapon_smg1", false);
+		GiveNamedItem("weapon_frag", false);
+		GiveNamedItem("weapon_crowbar", false);
+		GiveNamedItem("weapon_pistol", false);
+		GiveNamedItem("weapon_ar2", false);
+		GiveNamedItem("weapon_shotgun", false);
+		GiveNamedItem("weapon_physcannon", false);
+		GiveNamedItem("weapon_bugbait", false);
+		GiveNamedItem("weapon_rpg", false);
+		GiveNamedItem("weapon_357", false);
+		GiveNamedItem("weapon_crossbow", false);
+
 		if ( GetHealth() < 100 )
 		{
 			TakeHealth( 25, DMG_GENERIC );

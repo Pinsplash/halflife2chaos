@@ -442,7 +442,7 @@ bool CAI_PolicingBehavior::ShouldKnockOutTarget( CBaseEntity *pTarget )
 	if ( m_hPoliceGoal == NULL )
 	{
 		//NOTENOTE: This has been called before the behavior is actually active, or the goal has gone invalid
-		Assert(0);
+		//Assert(0);
 		return false;
 	}
 

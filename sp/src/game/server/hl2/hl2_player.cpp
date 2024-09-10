@@ -3957,14 +3957,12 @@ int CHL2_Player::GiveAmmo( int nCount, int nAmmoIndex, bool bSuppressSound)
 //-----------------------------------------------------------------------------
 bool CHL2_Player::Weapon_CanUse( CBaseCombatWeapon *pWeapon )
 {
-#ifndef HL2MP	
-	if ( pWeapon->ClassMatches( "weapon_stunstick" ) )
+	if (pWeapon->ClassMatches("weapon_stunstick") && !pWeapon->m_bChaosSpawned)
 	{
 		if ( ApplyBattery( 0.5 ) )
 			UTIL_Remove( pWeapon );
 		return false;
 	}
-#endif
 
 	return BaseClass::Weapon_CanUse( pWeapon );
 }
@@ -6400,7 +6398,7 @@ CBaseEntity *CChaosEffect::ChaosSpawnVehicle(const char *className, string_t str
 }
 bool CChaosEffect::ChaosSpawnWeapon(const char *className, string_t strActualName, int iCount, const char *strAmmoType, int iCount2, const char *strAmmoType2)
 {
-	bool bGaveWeapon = UTIL_GetLocalPlayer()->GiveNamedItem(className) != NULL;
+	bool bGaveWeapon = UTIL_GetLocalPlayer()->GiveNamedItem(className, true) != NULL;
 	if (!bGaveWeapon)
 		return false;
 	m_strHudName = strActualName;
@@ -7228,10 +7226,10 @@ void CERandomWeaponGive::StartEffect()
 {
 	UTIL_GetLocalPlayer()->EquipSuit();
 	int nRandom;
-	//TODO: harpoon, stunstick, alyxgun, annabelle, citizenpackage, citizensuitcase
+	//TODO: harpoon, alyxgun, annabelle, citizenpackage, citizensuitcase
 	for (int iWeaponAttempts = 0; iWeaponAttempts <= 30; iWeaponAttempts++)
 	{
-		nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 12) : chaos_rng1.GetInt();
+		nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 13) : chaos_rng1.GetInt();
 		if (nRandom == 0) if (ChaosSpawnWeapon("weapon_crowbar", MAKE_STRING("Give Crowbar"))) return;
 		if (nRandom == 1) if (ChaosSpawnWeapon("weapon_physcannon", MAKE_STRING("Give Gravity Gun"))) return;
 		if (nRandom == 2) if (ChaosSpawnWeapon("weapon_pistol", MAKE_STRING("Give Pistol"), 255, "Pistol")) return;
@@ -7252,6 +7250,7 @@ void CERandomWeaponGive::StartEffect()
 		}
 		if (nRandom == 11) if (ChaosSpawnWeapon("weapon_slam", MAKE_STRING("Give S.L.A.M"), 5, "slam")) return;
 		if (nRandom == 12) if (ChaosSpawnWeapon("weapon_cubemap", MAKE_STRING("Give Orbs"))) return;
+		if (nRandom == 13) if (ChaosSpawnWeapon("weapon_stunstick", MAKE_STRING("Give Stunstick"))) return;
 	}
 }
 void CERandomVehicle::StartEffect()

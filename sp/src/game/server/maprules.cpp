@@ -658,7 +658,7 @@ void CGamePlayerEquip::EquipPlayer( CBaseEntity *pEntity )
 			break;
 		for ( int j = 0; j < m_weaponCount[i]; j++ )
 		{
- 			pPlayer->GiveNamedItem( STRING(m_weaponNames[i]) );
+			pPlayer->GiveNamedItem(STRING(m_weaponNames[i]), false);
 		}
 	}
 }

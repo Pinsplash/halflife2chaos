@@ -825,7 +825,7 @@ CON_COMMAND( give, "Give item to player.\n\tArguments: <item_name>" )
 		}
 
 		string_t iszItem = AllocPooledString( item_to_give );	// Make a copy of the classname
-		pPlayer->GiveNamedItem( STRING(iszItem) );
+		pPlayer->GiveNamedItem(STRING(iszItem), false);
 	}
 }
 

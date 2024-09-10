@@ -544,7 +544,7 @@ int CAI_LeadBehavior::SelectSchedule()
 					return SCHED_LEAD_PLAYERNEEDSWEAPON;
 
 				string_t iszItem = AllocPooledString( "weapon_bugbait" );
-				pFollower->GiveNamedItem( STRING(iszItem) );
+				pFollower->GiveNamedItem(STRING(iszItem), false);
 			}
 		}
 
