@@ -41,7 +41,11 @@ void CTeamSpawnPoint::Activate( void )
 	BaseClass::Activate();
 	if ( GetTeamNumber() > 0 && GetTeamNumber() <= MAX_TEAMS )
 	{
-		GetGlobalTeam( GetTeamNumber() )->AddSpawnpoint( this );
+		CTeam *pTeam = GetGlobalTeam(GetTeamNumber());
+		if (pTeam)
+			pTeam->AddSpawnpoint(this);
+		else
+			Warning("info_player_teamspawn but team didn't exist: %d\n", GetTeamNumber());
 	}
 	else
 	{
