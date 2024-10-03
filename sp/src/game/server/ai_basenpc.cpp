@@ -9524,9 +9524,8 @@ Vector CAI_BaseNPC::GetShootEnemyDir( const Vector &shootOrigin, bool bNoisy )
 
 	if ( pEnemy )
 	{
-		Vector vecEnemyLKP = GetEnemyLKP();
-
-		Vector vecEnemyOffset = pEnemy->BodyTarget( bNoisy ) - pEnemy->GetAbsOrigin();
+		//Vector vecEnemyLKP = GetEnemyLKP();
+		//Vector vecEnemyOffset = pEnemy->BodyTarget(bNoisy) -pEnemy->GetAbsOrigin();
 
 #ifdef PORTAL
 		// Translate the enemy's position across the portals if it's only seen in the portal view cone
@@ -9541,7 +9540,8 @@ Vector CAI_BaseNPC::GetShootEnemyDir( const Vector &shootOrigin, bool bNoisy )
 		}
 #endif
 
-		Vector retval = vecEnemyOffset + vecEnemyLKP - shootOrigin;
+		//PIN: NPCs were aiming above targets after bodytarget changes
+		Vector retval = pEnemy->BodyTarget(bNoisy) - shootOrigin;
 		VectorNormalize( retval );
 		return retval;
 	}
@@ -9606,10 +9606,14 @@ void CAI_BaseNPC::CollectShotStats( const Vector &vecShootOrigin, const Vector &
 //-----------------------------------------------------------------------------
 Vector CAI_BaseNPC::GetActualShootPosition( const Vector &shootOrigin )
 {
+	//PIN: Changed this code. removed the 1st 2 vectors and made the last one simply call bodytarget because what was here before seemed like nonsense.
 	// Project the target's location into the future.
-	Vector vecEnemyLKP = GetEnemyLKP();
-	Vector vecEnemyOffset = GetEnemy()->BodyTarget(true) - GetEnemy()->GetAbsOrigin();
-	Vector vecTargetPosition = vecEnemyOffset + vecEnemyLKP;
+	//Vector vecEnemyLKP = GetEnemyLKP();
+	//NDebugOverlay::Cross3D(vecEnemyLKP, 16, 255, 0, 0, true, 3);
+	//Vector vecEnemyOffset = GetEnemy()->BodyTarget(true) - GetEnemy()->GetAbsOrigin();
+	//NDebugOverlay::Cross3D(vecEnemyOffset, 16, 0, 255, 0, true, 3);
+	Vector vecTargetPosition = GetEnemy()->BodyTarget(true);
+	//NDebugOverlay::Cross3D(vecTargetPosition, 16, 0, 0, 255, true, 3);
 
 #ifdef PORTAL
 	// Check if it's also visible through portals

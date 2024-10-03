@@ -417,6 +417,8 @@ IMaterial *CEngineSprite::GetMaterial( RenderMode_t nRenderMode, int nFrame )
 	
 	
 	IMaterial *pMaterial = m_material[nRenderMode];
+	if (!pMaterial)//here because of an HLS issue, but good to have regardless
+		return NULL;
 	IMaterialVar* pFrameVar = pMaterial->FindVarFast( "$frame", &frameCache );
 	if ( pFrameVar )
 	{
