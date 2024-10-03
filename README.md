@@ -25,7 +25,7 @@ If you experience bugs with the mod, you can submit a bug report [here](https://
 Check the GitHub [wiki](https://github.com/Pinsplash/halflife2chaos/wiki) if you're looking for info about how Half-Life 2 Chaos works.
 
 ## Building from source for Linux
-No build enviroment setup required.
+No build environment setup required.
 1. `git clone --depth=1 https://github.com/Pinsplash/halflife2chaos`
 2. `cd halflife2chaos`
 3. `./sp/src/creategameprojects`
