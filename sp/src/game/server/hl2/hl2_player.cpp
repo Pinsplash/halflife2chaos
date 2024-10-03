@@ -8129,6 +8129,9 @@ void CEEvilNPC::EvilNoriko()
 	pNoriko->Teleport(&vecOrigin, &vecAngles, NULL);
 	pNoriko->AcceptInput("SetSequence", pNoriko, pNoriko, sVariant, 0);
 
+	//hello dr. freeman
+	engine->ClientCommand(engine->PEntityOfEntIndex(1), "play vo/noriko_hello.wav");
+
 	//driver
 	vecOrigin = pHL2Player->RotatedOffset(Vector(534, 64, 128), true);
 	vecAngles = QAngle(0, pPlayer->GetAbsAngles().y - 90, 0);
