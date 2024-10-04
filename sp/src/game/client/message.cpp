@@ -22,6 +22,7 @@
 #include "vgui/ISurface.h"
 #include "client_textmessage.h"
 #include "VGuiMatSurface/IMatSystemSurface.h"
+#include <string>
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -858,11 +859,26 @@ void CHudMessage::MsgFunc_HudMsg(bf_read &msg)
 	pNetMessage->holdtime = msg.ReadFloat();
 	pNetMessage->fxtime = msg.ReadFloat();
 	pNetMessage->drawtype = msg.ReadByte();
+	pNetMessage->timertime = msg.ReadByte();
 
 	pNetMessage->pName = s_NetworkMessageNames[ channel ];
 
 	// see tmessage.cpp why 512
 	msg.ReadString( (char*)pNetMessage->pMessage, 512 );
+
+	//maybe don't put literal 255 here...
+	if (pNetMessage->timertime != 255)
+	{
+		char szMessage[512];
+		const char *pOriginalMsg = pNetMessage->pMessage;
+		//localize right now. this is a special case because of the time display that comes after the string
+		wchar_t *pwcText = g_pVGuiLocalize->Find(pOriginalMsg);
+		std::wstring text_ws(pwcText);
+		std::string text_str(text_ws.begin(), text_ws.end());
+		const char* text_char = text_str.c_str();
+		Q_snprintf(szMessage, sizeof(szMessage), "%s (%d)", text_char, pNetMessage->timertime);
+		pNetMessage->pMessage = strdup(szMessage);
+	}
 
 	MessageAdd( pNetMessage->pName );
 }

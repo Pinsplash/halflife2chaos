@@ -2165,7 +2165,7 @@ void CHL2_Player::StartGame()
 	{
 		if (!IsInAVehicle() && gpGlobals->eLoadType != MapLoad_NewGame)
 		{
-			g_ChaosEffects[EFFECT_SPAWN_VEHICLE]->ChaosSpawnVehicle("prop_vehicle_airboat", MAKE_STRING("Spawn Airboat"), SPAWNTYPE_VEHICLE, "models/airboat.mdl", "airboat", "scripts/vehicles/airboat.txt");
+			g_ChaosEffects[EFFECT_SPAWN_VEHICLE]->ChaosSpawnVehicle("prop_vehicle_airboat", MAKE_STRING("#hl2c_spawn_airboat"), SPAWNTYPE_VEHICLE, "models/airboat.mdl", "airboat", "scripts/vehicles/airboat.txt");
 		}
 		return;
 	}
@@ -2283,7 +2283,7 @@ void CHL2_Player::StartGame()
 		CBaseEntity *pGravGun = gEntList.FindEntityByClassname(NULL, "weapon_physcannon");
 		if (!pGravGun && gpGlobals->eLoadType != MapLoad_NewGame)
 		{
-			g_ChaosEffects[EFFECT_GIVE_WEAPON]->ChaosSpawnWeapon("weapon_physcannon", MAKE_STRING("Give Gravity Gun"));
+			g_ChaosEffects[EFFECT_GIVE_WEAPON]->ChaosSpawnWeapon("weapon_physcannon", MAKE_STRING("#hl2c_give_gravgun"));
 		}
 		return;
 	}
@@ -5433,92 +5433,92 @@ ConVar chaos_prob_change_pitch("chaos_prob_change_pitch", "100");
 #define ERROR_WEIGHT 1
 void CHL2_Player::PopulateEffects()
 {
-	CreateEffect<>(EFFECT_ERROR,							MAKE_STRING("(Error)"),						EC_NONE,									-1,											ERROR_WEIGHT);
-	CreateEffect<CEGravitySet>(EFFECT_ZEROG,				MAKE_STRING("Zero Gravity"),				EC_NONE,									chaos_time_zerog.GetFloat(),				chaos_prob_zerog.GetInt());
-	CreateEffect<CEGravitySet>(EFFECT_SUPERG,				MAKE_STRING("Super Gravity"),				EC_NONE,									chaos_time_superg.GetFloat(),				chaos_prob_superg.GetInt());
-	CreateEffect<CEGravitySet>(EFFECT_LOWG,					MAKE_STRING("Low Gravity"),					EC_NONE,									chaos_time_lowg.GetFloat(),					chaos_prob_lowg.GetInt());
-	CreateEffect<CEGravitySet>(EFFECT_INVERTG,				MAKE_STRING("Invert Gravity"),				EC_NONE,									chaos_time_invertg.GetFloat(),				chaos_prob_invertg.GetInt());
-	CreateEffect<CEPhysSpeedSet>(EFFECT_PHYS_PAUSE,			MAKE_STRING("Pause Physics"),				EC_NO_VEHICLE,								chaos_time_phys_pause.GetFloat(),			chaos_prob_phys_pause.GetInt());
-	CreateEffect<CEPhysSpeedSet>(EFFECT_PHYS_FAST,			MAKE_STRING("Fast Physics"),				EC_NONE,									chaos_time_phys_fast.GetFloat(),			chaos_prob_phys_fast.GetInt());
-	CreateEffect<CEPhysSpeedSet>(EFFECT_PHYS_SLOW,			MAKE_STRING("Slow Physics"),				EC_NONE,									chaos_time_phys_slow.GetFloat(),			chaos_prob_phys_slow.GetInt());
-	CreateEffect<CEPullToPlayer>(EFFECT_PULL_TO_PLAYER,		MAKE_STRING("Black Hole"),					EC_NONE,									chaos_time_pull_to_player.GetFloat(),		chaos_prob_pull_to_player.GetInt());
-	CreateEffect<CEPushFromPlayer>(EFFECT_PUSH_FROM_PLAYER,	MAKE_STRING("Repulsive"),					EC_NONE,									chaos_time_push_from_player.GetFloat(),		chaos_prob_push_from_player.GetInt());
-	CreateEffect<CEStop>(EFFECT_NO_MOVEMENT,				MAKE_STRING("Stop"),						EC_NONE,									chaos_time_no_movement.GetFloat(),			chaos_prob_no_movement.GetInt());
-	CreateEffect<CESuperMovement>(EFFECT_SUPER_MOVEMENT,	MAKE_STRING("Super Speed"),					EC_NONE,									chaos_time_super_movement.GetFloat(),		chaos_prob_super_movement.GetInt());
-	CreateEffect<CELockVehicles>(EFFECT_LOCK_VEHICLE,		MAKE_STRING("Lock Vehicles"),				EC_BOAT | EC_BUGGY,							chaos_time_lock_vehicle.GetFloat(),			chaos_prob_lock_vehicle.GetInt());
-	CreateEffect<CENPCRels>(EFFECT_NPC_HATE,				MAKE_STRING("World of Hate"),				EC_NONE,									chaos_time_npc_hate.GetFloat(),				chaos_prob_npc_hate.GetInt());
-	CreateEffect<CENPCRels>(EFFECT_NPC_LIKE,				MAKE_STRING("World of Love"),				EC_NONE,									chaos_time_npc_like.GetFloat(),				chaos_prob_npc_like.GetInt());
-	CreateEffect<CENPCRels>(EFFECT_NPC_NEUTRAL,				MAKE_STRING("World of Apathy"),				EC_NONE,									chaos_time_npc_neutral.GetFloat(),			chaos_prob_npc_neutral.GetInt());
-	CreateEffect<CENPCRels>(EFFECT_NPC_FEAR,				MAKE_STRING("World of Fear"),				EC_NONE,									chaos_time_npc_fear.GetFloat(),				chaos_prob_npc_fear.GetInt());
-	CreateEffect<>(EFFECT_TELEPORT_RANDOM,					MAKE_STRING("Teleport to Random Place"),	EC_PLAYER_TELEPORT,							-1,											chaos_prob_teleport_random.GetInt());//
-	CreateEffect<CERandomVehicle>(EFFECT_SPAWN_VEHICLE,		MAKE_STRING("Spawn Random Vehicle"),		EC_NONE,									-1,											chaos_prob_spawn_vehicle.GetInt());
-	CreateEffect<CERandomNPC>(EFFECT_SPAWN_NPC,				MAKE_STRING("Spawn Random NPC"),			EC_NONE,									-1,											chaos_prob_spawn_npc.GetInt());
-	CreateEffect<CESwimInAir>(EFFECT_SWIM_IN_AIR,			MAKE_STRING("Water World"),					EC_PICKUPS,									chaos_time_swim_in_air.GetFloat(),			chaos_prob_swim_in_air.GetInt());
-	CreateEffect<>(EFFECT_ONLY_DRAW_WORLD,					MAKE_STRING("Where Are The Objects?"),		EC_NONE,									chaos_time_only_draw_world.GetFloat(),		chaos_prob_only_draw_world.GetInt());
-	CreateEffect<>(EFFECT_LOW_DETAIL,						MAKE_STRING("Ultra Low Detail"),			EC_NONE,									chaos_time_low_detail.GetFloat(),			chaos_prob_low_detail.GetInt());
-	CreateEffect<CEPlayerBig>(EFFECT_PLAYER_BIG,			MAKE_STRING("Player is Huge"),				EC_NONE,									chaos_time_player_big.GetFloat(),			chaos_prob_player_big.GetInt());
-	CreateEffect<CEPlayerSmall>(EFFECT_PLAYER_SMALL,		MAKE_STRING("Player is Tiny"),				EC_NONE,									chaos_time_player_small.GetFloat(),			chaos_prob_player_small.GetInt());
-	CreateEffect<>(EFFECT_NO_MOUSE_HORIZONTAL,				MAKE_STRING("No Looking Left/Right"),		EC_NONE,									chaos_time_no_mouse_horizontal.GetFloat(),	chaos_prob_no_mouse_horizontal.GetInt());
-	CreateEffect<>(EFFECT_NO_MOUSE_VERTICAL,				MAKE_STRING("No Looking Up/Down"),			EC_NONE,									chaos_time_no_mouse_vertical.GetFloat(),	chaos_prob_no_mouse_vertical.GetInt());
-	CreateEffect<CESuperGrab>(EFFECT_SUPER_GRAB,			MAKE_STRING("Didn't Skip Arm Day"),			EC_NONE,									chaos_time_super_grab.GetFloat(),			chaos_prob_super_grab.GetInt());
-	CreateEffect<CERandomWeaponGive>(EFFECT_GIVE_WEAPON,	MAKE_STRING("Give Random Weapon"),			EC_NONE,									-1,											chaos_prob_give_weapon.GetInt());
-	CreateEffect<>(EFFECT_GIVE_ALL_WEAPONS,					MAKE_STRING("Give All Weapons"),			EC_NONE,									-1,											chaos_prob_give_all_weapons.GetInt());
-	CreateEffect<CEWeaponsDrop>(EFFECT_DROP_WEAPONS,		MAKE_STRING("Drop Weapons"),				EC_HAS_WEAPON | EC_NEED_PHYSGUN,			-1,											chaos_prob_drop_weapons.GetInt());
-	CreateEffect<>(EFFECT_NADE_GUNS,						MAKE_STRING("Grenade Guns"),				EC_NO_INVULN,								chaos_time_nade_guns.GetFloat(),			chaos_prob_nade_guns.GetFloat());
-	CreateEffect<CEEarthquake>(EFFECT_EARTHQUAKE,			MAKE_STRING("Wobbly"),						EC_NONE,									chaos_time_earthquake.GetFloat(),			chaos_prob_earthquake.GetInt());
-	CreateEffect<CE420Joke>(EFFECT_420_JOKE,				MAKE_STRING("Funny Number"),				EC_NO_INVULN,								-1,											chaos_prob_420_joke.GetInt());
-	CreateEffect<CEZombieSpam>(EFFECT_ZOMBIE_SPAM,			MAKE_STRING("Left 4 Dead"),					EC_HAS_WEAPON,								chaos_time_zombiespam.GetFloat(),			chaos_prob_zombie_spam.GetInt());
-	CreateEffect<>(EFFECT_EXPLODE_ON_DEATH,					MAKE_STRING("NPCs Explode on Death"),		EC_NONE,									chaos_time_explode_on_death.GetFloat(),		chaos_prob_explode_on_death.GetInt());
-	CreateEffect<>(EFFECT_BULLET_TELEPORT,					MAKE_STRING("Teleporter Bullets"),			EC_NONE,									chaos_time_bullet_teleport.GetFloat(),		chaos_prob_bullet_teleport.GetInt());
-	CreateEffect<CECredits>(EFFECT_CREDITS,					MAKE_STRING("Credits"),						EC_NONE,									-1,											chaos_prob_credits.GetInt());
-	CreateEffect<CESuperhot>(EFFECT_SUPERHOT,				MAKE_STRING("Superhot"),					EC_NONE,									chaos_time_superhot.GetFloat(),				chaos_prob_superhot.GetInt());
-	CreateEffect<CESupercold>(EFFECT_SUPERCOLD,				MAKE_STRING("Supercold"),					EC_NONE,									chaos_time_supercold.GetFloat(),			chaos_prob_supercold.GetInt());
-	CreateEffect<CEBarrelShotgun>(EFFECT_BARREL_SHOTGUN,	MAKE_STRING("Double Barrel Shotgun"),		EC_NONE,									chaos_time_barrel_shotgun.GetFloat(),		chaos_prob_barrel_shotgun.GetInt());
-	CreateEffect<CEQuickclip>(EFFECT_QUICKCLIP_ON,			MAKE_STRING("Enable Quickclip"),			EC_QC_OFF,									chaos_time_quickclip_on.GetFloat(),			chaos_prob_quickclip_on.GetInt());
-	CreateEffect<CEQuickclip>(EFFECT_QUICKCLIP_OFF,			MAKE_STRING("Disable Quickclip"),			EC_NONE,									chaos_time_quickclip_off.GetFloat(),		chaos_prob_quickclip_off.GetInt());
-	CreateEffect<CESolidTriggers>(EFFECT_SOLID_TRIGGERS,	MAKE_STRING("Solid Triggers"),				EC_NONE,									chaos_time_solid_triggers.GetFloat(),		chaos_prob_solid_triggers.GetInt());
-	CreateEffect<CEColors>(EFFECT_RANDOM_COLORS,			MAKE_STRING("Pretty Colors"),				EC_NONE,									chaos_time_random_colors.GetFloat(),		chaos_prob_random_colors.GetInt());
-	CreateEffect<CEBottle>(EFFECT_BEER_BOTTLE,				MAKE_STRING("Beer I owed ya"),				EC_NONE,									-1,											chaos_prob_beer_bottle.GetInt());
-	CreateEffect<CEEvilNPC>(EFFECT_EVIL_ALYX,				MAKE_STRING("Annoying Alyx"),				EC_HAS_WEAPON,								-1,											chaos_prob_evil_alyx.GetInt());
-	CreateEffect<CEEvilNPC>(EFFECT_EVIL_NORIKO,				MAKE_STRING("Noriko, No!"),					EC_NONE,									-1,											chaos_prob_evil_noriko.GetInt());
-	CreateEffect<>(EFFECT_CANT_LEAVE_MAP,					MAKE_STRING("Why So Rushed?"),				EC_NONE,									chaos_time_cant_leave_map.GetFloat(),		chaos_prob_cant_leave_map.GetInt());
-	CreateEffect<CEFloorEffect>(EFFECT_FLOOR_IS_LAVA,		MAKE_STRING("Floor Is Lava"),				EC_NO_INVULN | EC_QC_OFF,					chaos_time_floor_is_lava.GetFloat(),		chaos_prob_floor_is_lava.GetInt());
-	CreateEffect<CERandomSong>(EFFECT_PLAY_MUSIC,			MAKE_STRING("Play Random Song"),			EC_NONE,									-1,											chaos_prob_play_music.GetInt());
-	CreateEffect<CEUseSpam>(EFFECT_USE_SPAM,				MAKE_STRING("Grabby"),						EC_NO_VEHICLE,								chaos_time_use_spam.GetFloat(),				chaos_prob_use_spam.GetInt());
-	CreateEffect<>(EFFECT_ORTHO_CAM,						MAKE_STRING("Orthographic Camera"),			EC_NONE,									chaos_time_ortho_cam.GetFloat(),			chaos_prob_ortho_cam.GetInt());
-	CreateEffect<CETreeSpam>(EFFECT_FOREST,					MAKE_STRING("Surprise Reforestation!"),		EC_NONE,									chaos_time_forest.GetFloat(),				chaos_prob_forest.GetInt());
-	CreateEffect<CEMountedGun>(EFFECT_SPAWN_MOUNTED_GUN,	MAKE_STRING("Spawn Mounted Gun"),			EC_NONE,									-1,											chaos_prob_spawn_mounted_gun.GetInt());
-	CreateEffect<CERestartLevel>(EFFECT_RESTART_LEVEL,		MAKE_STRING("Restart Level"),				EC_NONE,									-1,											chaos_prob_restart_level.GetInt());
-	CreateEffect<CERemovePickups>(EFFECT_REMOVE_PICKUPS,	MAKE_STRING("Remove All Pickups"),			EC_PICKUPS|EC_NEED_PHYSGUN|EC_HAS_WEAPON,	-1,											chaos_prob_remove_pickups.GetInt());
-	CreateEffect<CECloneNPCs>(EFFECT_CLONE_NPCS,			MAKE_STRING("Suppression Field Hiccup"),	EC_NONE,									-1,											chaos_prob_clone_npcs.GetInt());
-	CreateEffect<CELockPVS>(EFFECT_LOCK_PVS,				MAKE_STRING("Vision Machine Broke"),		EC_NONE,									chaos_time_lock_pvs.GetFloat(),				chaos_prob_lock_pvs.GetInt());
-	CreateEffect<CEDejaVu>(EFFECT_RELOAD_DEJA_VU,			MAKE_STRING("Deja Vu?"),					EC_PLAYER_TELEPORT,							-1,											chaos_prob_reload_deja_vu.GetInt());
-	CreateEffect<CEBumpy>(EFFECT_BUMPY,						MAKE_STRING("Bumpy Road"),					EC_BUGGY,									chaos_time_bumpy.GetFloat(),				chaos_prob_bumpy.GetInt());
-	CreateEffect<CENoBrake>(EFFECT_NO_BRAKE,				MAKE_STRING("Broken Brakes"),				EC_BUGGY,									chaos_time_no_brake.GetFloat(),				chaos_prob_no_brake.GetInt());
-	CreateEffect<CEForceInOutCar>(EFFECT_FORCE_INOUT_CAR,	MAKE_STRING("Force In/Out Vehicle"),		EC_BUGGY | EC_BOAT | EC_PLAYER_TELEPORT,	-1,											chaos_prob_force_inout_car.GetInt());
-	CreateEffect<CEWeaponRemove>(EFFECT_WEAPON_REMOVE,		MAKE_STRING("Remove Random Weapon"),		EC_NEED_PHYSGUN,							-1,											chaos_prob_weapon_remove.GetInt());
-	CreateEffect<>(EFFECT_INTERP_NPCS,						MAKE_STRING("Laggy NPCs"),					EC_NONE,									chaos_time_interp_npcs.GetFloat(),			chaos_prob_interp_npcs.GetInt());
-	CreateEffect<CEPhysConvert>(EFFECT_PHYS_CONVERT,		MAKE_STRING("Ran Out Of Glue"),				EC_NONE,									-1,											chaos_prob_phys_convert.GetInt());
-	CreateEffect<CEIncline>(EFFECT_INCLINE,					MAKE_STRING("No Climbing"),					EC_NONE,									chaos_time_incline.GetFloat(),				chaos_prob_incline.GetInt());
-	CreateEffect<>(EFFECT_DISABLE_SAVE,						MAKE_STRING("No Saving"),					EC_NONE,									chaos_time_disable_save.GetFloat(),			chaos_prob_disable_save.GetInt());
-	CreateEffect<>(EFFECT_NO_RELOAD,						MAKE_STRING("No One Can Reload"),			EC_HAS_WEAPON,								chaos_time_no_reload.GetFloat(),			chaos_prob_no_reload.GetInt());
-	CreateEffect<>(EFFECT_NPC_TELEPORT,						MAKE_STRING("You Teleport?"),				EC_NONE,									chaos_time_npc_teleport.GetFloat(),			chaos_prob_npc_teleport.GetInt());
-	CreateEffect<CEDeathWater>(EFFECT_DEATH_WATER,			MAKE_STRING("Death Water"),					EC_WATER,									chaos_time_death_water.GetFloat(),			chaos_prob_death_water.GetInt());
-	CreateEffect<CERandomCC>(EFFECT_RANDOM_CC,				MAKE_STRING("Color Incorrection"),			EC_NONE,									chaos_time_random_cc.GetFloat(),			chaos_prob_random_cc.GetInt());
-	CreateEffect<CEEvilNPC>(EFFECT_EVIL_BARNEY,				MAKE_STRING("Bastard Barney"),				EC_HAS_WEAPON,								-1,											chaos_prob_evil_barney.GetInt());
-	CreateEffect<>(EFFECT_GOOD_GMAN,						MAKE_STRING("Good Man"),					EC_NONE,									-1,											chaos_prob_good_gman.GetInt());
-	CreateEffect<CEEvilNPC>(EFFECT_EVIL_KLEINER,			MAKE_STRING("Krazy Kleiner"),				EC_HAS_WEAPON,								-1,											chaos_prob_evil_kleiner.GetInt());
-	CreateEffect<CEEvilNPC>(EFFECT_EVIL_GRIGORI,			MAKE_STRING("Griefing Grigori"),			EC_HAS_WEAPON,								-1,											chaos_prob_evil_grigori.GetInt());
-	CreateEffect<CEEvilNPC>(EFFECT_EVIL_MOSSMAN,			MAKE_STRING("Malignant Mossman"),			EC_HAS_WEAPON,								-1,											chaos_prob_evil_mossman.GetInt());
-	CreateEffect<CEEvilNPC>(EFFECT_EVIL_VORT,				MAKE_STRING("Vexing Vortigaunt"),			EC_HAS_WEAPON,								-1,											chaos_prob_evil_vort.GetInt());
-	CreateEffect<CESecondarySpam>(EFFECT_SECONDARY_SPAM,	MAKE_STRING("Spam Alt Fire"),				EC_NONE,									chaos_time_secondary_spam.GetFloat(),		chaos_prob_secondary_spam.GetInt());
-	CreateEffect<>(EFFECT_STEAL_HEALTH,						MAKE_STRING("Vampires"),					EC_NONE,									chaos_time_steal_health.GetFloat(),			chaos_prob_steal_health.GetInt());
-	CreateEffect<CESuitSwap>(EFFECT_SUIT_SWAP,				MAKE_STRING("Swap Health & Suit Power"),	EC_NONE,									-1,											chaos_prob_suit_swap.GetInt());
-	CreateEffect<>(EFFECT_YAWROLL,							MAKE_STRING("Yaw Is Roll"),					EC_NONE,									chaos_time_yawroll.GetFloat(),				chaos_prob_yawroll.GetInt());
-	CreateEffect<>(EFFECT_NORMAL_VISION,					MAKE_STRING("Normal Vision"),				EC_NONE,									chaos_time_normalvision.GetFloat(),			chaos_prob_normalvision.GetInt());
-	CreateEffect<CEGiveAllRPG>(EFFECT_GIVE_ALL_RPG,			MAKE_STRING("Give Everyone RPGs"),			EC_NONE,									-1,											chaos_prob_giveallrpg.GetInt());
-	CreateEffect<CEFloorEffect>(EFFECT_GRASS_HEAL,			MAKE_STRING("Touch the Grass"),				EC_NONE,									chaos_time_grass_heal.GetFloat(),			chaos_prob_grass_heal.GetInt());
-	CreateEffect<CEChangePitch>(EFFECT_CHANGE_PITCH,		MAKE_STRING("Changing Pitch"),				EC_NONE,									chaos_time_change_pitch.GetFloat(),			chaos_prob_change_pitch.GetInt());
+	CreateEffect<>(EFFECT_ERROR,							MAKE_STRING("#hl2c_null_effect"),		EC_NONE,									-1,											ERROR_WEIGHT);
+	CreateEffect<CEGravitySet>(EFFECT_ZEROG,				MAKE_STRING("#hl2c_zero_g"),			EC_NONE,									chaos_time_zerog.GetFloat(),				chaos_prob_zerog.GetInt());
+	CreateEffect<CEGravitySet>(EFFECT_SUPERG,				MAKE_STRING("#hl2c_super_g"),			EC_NONE,									chaos_time_superg.GetFloat(),				chaos_prob_superg.GetInt());
+	CreateEffect<CEGravitySet>(EFFECT_LOWG,					MAKE_STRING("#hl2c_low_g"),				EC_NONE,									chaos_time_lowg.GetFloat(),					chaos_prob_lowg.GetInt());
+	CreateEffect<CEGravitySet>(EFFECT_INVERTG,				MAKE_STRING("#hl2c_invert_g"),			EC_NONE,									chaos_time_invertg.GetFloat(),				chaos_prob_invertg.GetInt());
+	CreateEffect<CEPhysSpeedSet>(EFFECT_PHYS_PAUSE,			MAKE_STRING("#hl2c_phys_pause"),		EC_NO_VEHICLE,								chaos_time_phys_pause.GetFloat(),			chaos_prob_phys_pause.GetInt());
+	CreateEffect<CEPhysSpeedSet>(EFFECT_PHYS_FAST,			MAKE_STRING("#hl2c_phys_fast"),			EC_NONE,									chaos_time_phys_fast.GetFloat(),			chaos_prob_phys_fast.GetInt());
+	CreateEffect<CEPhysSpeedSet>(EFFECT_PHYS_SLOW,			MAKE_STRING("#hl2c_phys_slow"),			EC_NONE,									chaos_time_phys_slow.GetFloat(),			chaos_prob_phys_slow.GetInt());
+	CreateEffect<CEPullToPlayer>(EFFECT_PULL_TO_PLAYER,		MAKE_STRING("#hl2c_pulltoplr"),			EC_NONE,									chaos_time_pull_to_player.GetFloat(),		chaos_prob_pull_to_player.GetInt());
+	CreateEffect<CEPushFromPlayer>(EFFECT_PUSH_FROM_PLAYER,	MAKE_STRING("#hl2c_pushfromplr"),		EC_NONE,									chaos_time_push_from_player.GetFloat(),		chaos_prob_push_from_player.GetInt());
+	CreateEffect<CEStop>(EFFECT_NO_MOVEMENT,				MAKE_STRING("#hl2c_stop"),				EC_NONE,									chaos_time_no_movement.GetFloat(),			chaos_prob_no_movement.GetInt());
+	CreateEffect<CESuperMovement>(EFFECT_SUPER_MOVEMENT,	MAKE_STRING("#hl2c_super_speed"),		EC_NONE,									chaos_time_super_movement.GetFloat(),		chaos_prob_super_movement.GetInt());
+	CreateEffect<CELockVehicles>(EFFECT_LOCK_VEHICLE,		MAKE_STRING("#hl2c_lock_veh"),			EC_BOAT | EC_BUGGY,							chaos_time_lock_vehicle.GetFloat(),			chaos_prob_lock_vehicle.GetInt());
+	CreateEffect<CENPCRels>(EFFECT_NPC_HATE,				MAKE_STRING("#hl2c_npc_hate"),			EC_NONE,									chaos_time_npc_hate.GetFloat(),				chaos_prob_npc_hate.GetInt());
+	CreateEffect<CENPCRels>(EFFECT_NPC_LIKE,				MAKE_STRING("#hl2c_npc_like"),			EC_NONE,									chaos_time_npc_like.GetFloat(),				chaos_prob_npc_like.GetInt());
+	CreateEffect<CENPCRels>(EFFECT_NPC_NEUTRAL,				MAKE_STRING("#hl2c_npc_neutral"),		EC_NONE,									chaos_time_npc_neutral.GetFloat(),			chaos_prob_npc_neutral.GetInt());
+	CreateEffect<CENPCRels>(EFFECT_NPC_FEAR,				MAKE_STRING("#hl2c_npc_fear"),			EC_NONE,									chaos_time_npc_fear.GetFloat(),				chaos_prob_npc_fear.GetInt());
+	CreateEffect<>(EFFECT_TELEPORT_RANDOM,					MAKE_STRING("#hl2c_tele_random"),		EC_PLAYER_TELEPORT,							-1,											chaos_prob_teleport_random.GetInt());//
+	CreateEffect<CERandomVehicle>(EFFECT_SPAWN_VEHICLE,		MAKE_STRING("#hl2c_spawn_veh"),			EC_NONE,									-1,											chaos_prob_spawn_vehicle.GetInt());
+	CreateEffect<CERandomNPC>(EFFECT_SPAWN_NPC,				MAKE_STRING("#hl2c_spawn_npc"),			EC_NONE,									-1,											chaos_prob_spawn_npc.GetInt());
+	CreateEffect<CESwimInAir>(EFFECT_SWIM_IN_AIR,			MAKE_STRING("#hl2c_swiminair"),			EC_PICKUPS,									chaos_time_swim_in_air.GetFloat(),			chaos_prob_swim_in_air.GetInt());
+	CreateEffect<>(EFFECT_ONLY_DRAW_WORLD,					MAKE_STRING("#hl2c_onlydrawworld"),		EC_NONE,									chaos_time_only_draw_world.GetFloat(),		chaos_prob_only_draw_world.GetInt());
+	CreateEffect<>(EFFECT_LOW_DETAIL,						MAKE_STRING("#hl2c_low_detail"),		EC_NONE,									chaos_time_low_detail.GetFloat(),			chaos_prob_low_detail.GetInt());
+	CreateEffect<CEPlayerBig>(EFFECT_PLAYER_BIG,			MAKE_STRING("#hl2c_plr_big"),			EC_NONE,									chaos_time_player_big.GetFloat(),			chaos_prob_player_big.GetInt());
+	CreateEffect<CEPlayerSmall>(EFFECT_PLAYER_SMALL,		MAKE_STRING("#hl2c_plr_small"),			EC_NONE,									chaos_time_player_small.GetFloat(),			chaos_prob_player_small.GetInt());
+	CreateEffect<>(EFFECT_NO_MOUSE_HORIZONTAL,				MAKE_STRING("#hl2c_nomousehorz"),		EC_NONE,									chaos_time_no_mouse_horizontal.GetFloat(),	chaos_prob_no_mouse_horizontal.GetInt());
+	CreateEffect<>(EFFECT_NO_MOUSE_VERTICAL,				MAKE_STRING("#hl2c_npmousevert"),		EC_NONE,									chaos_time_no_mouse_vertical.GetFloat(),	chaos_prob_no_mouse_vertical.GetInt());
+	CreateEffect<CESuperGrab>(EFFECT_SUPER_GRAB,			MAKE_STRING("#hl2c_super_grab"),		EC_NONE,									chaos_time_super_grab.GetFloat(),			chaos_prob_super_grab.GetInt());
+	CreateEffect<CERandomWeaponGive>(EFFECT_GIVE_WEAPON,	MAKE_STRING("#hl2c_give_wep"),			EC_NONE,									-1,											chaos_prob_give_weapon.GetInt());
+	CreateEffect<>(EFFECT_GIVE_ALL_WEAPONS,					MAKE_STRING("#hl2c_giveallweps"),		EC_NONE,									-1,											chaos_prob_give_all_weapons.GetInt());
+	CreateEffect<CEWeaponsDrop>(EFFECT_DROP_WEAPONS,		MAKE_STRING("#hl2c_drop_weps"),			EC_HAS_WEAPON | EC_NEED_PHYSGUN,			-1,											chaos_prob_drop_weapons.GetInt());
+	CreateEffect<>(EFFECT_NADE_GUNS,						MAKE_STRING("#hl2c_nade_guns"),			EC_NO_INVULN,								chaos_time_nade_guns.GetFloat(),			chaos_prob_nade_guns.GetFloat());
+	CreateEffect<CEEarthquake>(EFFECT_EARTHQUAKE,			MAKE_STRING("#hl2c_shakecam"),			EC_NONE,									chaos_time_earthquake.GetFloat(),			chaos_prob_earthquake.GetInt());
+	CreateEffect<CE420Joke>(EFFECT_420_JOKE,				MAKE_STRING("#hl2c_420_health"),		EC_NO_INVULN,								-1,											chaos_prob_420_joke.GetInt());
+	CreateEffect<CEZombieSpam>(EFFECT_ZOMBIE_SPAM,			MAKE_STRING("#hl2c_zombie_spam"),		EC_HAS_WEAPON,								chaos_time_zombiespam.GetFloat(),			chaos_prob_zombie_spam.GetInt());
+	CreateEffect<>(EFFECT_EXPLODE_ON_DEATH,					MAKE_STRING("#hl2c_explodeondeath"),	EC_NONE,									chaos_time_explode_on_death.GetFloat(),		chaos_prob_explode_on_death.GetInt());
+	CreateEffect<>(EFFECT_BULLET_TELEPORT,					MAKE_STRING("#hl2c_bullet_tele"),		EC_NONE,									chaos_time_bullet_teleport.GetFloat(),		chaos_prob_bullet_teleport.GetInt());
+	CreateEffect<CECredits>(EFFECT_CREDITS,					MAKE_STRING("#hl2c_credits"),			EC_NONE,									-1,											chaos_prob_credits.GetInt());
+	CreateEffect<CESuperhot>(EFFECT_SUPERHOT,				MAKE_STRING("#hl2c_superhot"),			EC_NONE,									chaos_time_superhot.GetFloat(),				chaos_prob_superhot.GetInt());
+	CreateEffect<CESupercold>(EFFECT_SUPERCOLD,				MAKE_STRING("#hl2c_supercold"),			EC_NONE,									chaos_time_supercold.GetFloat(),			chaos_prob_supercold.GetInt());
+	CreateEffect<CEBarrelShotgun>(EFFECT_BARREL_SHOTGUN,	MAKE_STRING("#hl2c_barrel_shotgun"),	EC_NONE,									chaos_time_barrel_shotgun.GetFloat(),		chaos_prob_barrel_shotgun.GetInt());
+	CreateEffect<CEQuickclip>(EFFECT_QUICKCLIP_ON,			MAKE_STRING("#hl2c_quickclip_on"),		EC_QC_OFF,									chaos_time_quickclip_on.GetFloat(),			chaos_prob_quickclip_on.GetInt());
+	CreateEffect<CEQuickclip>(EFFECT_QUICKCLIP_OFF,			MAKE_STRING("#hl2c_quickclip_off"),		EC_NONE,									chaos_time_quickclip_off.GetFloat(),		chaos_prob_quickclip_off.GetInt());
+	CreateEffect<CESolidTriggers>(EFFECT_SOLID_TRIGGERS,	MAKE_STRING("#hl2c_solid_triggers"),	EC_NONE,									chaos_time_solid_triggers.GetFloat(),		chaos_prob_solid_triggers.GetInt());
+	CreateEffect<CEColors>(EFFECT_RANDOM_COLORS,			MAKE_STRING("#hl2c_rand_clr"),			EC_NONE,									chaos_time_random_colors.GetFloat(),		chaos_prob_random_colors.GetInt());
+	CreateEffect<CEBottle>(EFFECT_BEER_BOTTLE,				MAKE_STRING("#hl2c_beer_bottle"),		EC_NONE,									-1,											chaos_prob_beer_bottle.GetInt());
+	CreateEffect<CEEvilNPC>(EFFECT_EVIL_ALYX,				MAKE_STRING("#hl2c_evil_alyx"),			EC_HAS_WEAPON,								-1,											chaos_prob_evil_alyx.GetInt());
+	CreateEffect<CEEvilNPC>(EFFECT_EVIL_NORIKO,				MAKE_STRING("#hl2c_evil_noriko"),		EC_NONE,									-1,											chaos_prob_evil_noriko.GetInt());
+	CreateEffect<>(EFFECT_CANT_LEAVE_MAP,					MAKE_STRING("#hl2c_cantleavemap"),		EC_NONE,									chaos_time_cant_leave_map.GetFloat(),		chaos_prob_cant_leave_map.GetInt());
+	CreateEffect<CEFloorEffect>(EFFECT_FLOOR_IS_LAVA,		MAKE_STRING("#hl2c_floorislava"),		EC_NO_INVULN | EC_QC_OFF,					chaos_time_floor_is_lava.GetFloat(),		chaos_prob_floor_is_lava.GetInt());
+	CreateEffect<CERandomSong>(EFFECT_PLAY_MUSIC,			MAKE_STRING("#hl2c_play_music"),		EC_NONE,									-1,											chaos_prob_play_music.GetInt());
+	CreateEffect<CEUseSpam>(EFFECT_USE_SPAM,				MAKE_STRING("#hl2c_use_spam"),			EC_NO_VEHICLE,								chaos_time_use_spam.GetFloat(),				chaos_prob_use_spam.GetInt());
+	CreateEffect<>(EFFECT_ORTHO_CAM,						MAKE_STRING("#hl2c_ortho_cam"),			EC_NONE,									chaos_time_ortho_cam.GetFloat(),			chaos_prob_ortho_cam.GetInt());
+	CreateEffect<CETreeSpam>(EFFECT_FOREST,					MAKE_STRING("#hl2c_forest"),			EC_NONE,									chaos_time_forest.GetFloat(),				chaos_prob_forest.GetInt());
+	CreateEffect<CEMountedGun>(EFFECT_SPAWN_MOUNTED_GUN,	MAKE_STRING("#hl2c_mountedgun"),		EC_NONE,									-1,											chaos_prob_spawn_mounted_gun.GetInt());
+	CreateEffect<CERestartLevel>(EFFECT_RESTART_LEVEL,		MAKE_STRING("#hl2c_restart_lvl"),		EC_NONE,									-1,											chaos_prob_restart_level.GetInt());
+	CreateEffect<CERemovePickups>(EFFECT_REMOVE_PICKUPS,	MAKE_STRING("#hl2c_removepickups"),		EC_PICKUPS|EC_NEED_PHYSGUN|EC_HAS_WEAPON,	-1,											chaos_prob_remove_pickups.GetInt());
+	CreateEffect<CECloneNPCs>(EFFECT_CLONE_NPCS,			MAKE_STRING("#hl2c_clone_npcs"),		EC_NONE,									-1,											chaos_prob_clone_npcs.GetInt());
+	CreateEffect<CELockPVS>(EFFECT_LOCK_PVS,				MAKE_STRING("#hl2c_lock_pvs"),			EC_NONE,									chaos_time_lock_pvs.GetFloat(),				chaos_prob_lock_pvs.GetInt());
+	CreateEffect<CEDejaVu>(EFFECT_RELOAD_DEJA_VU,			MAKE_STRING("#hl2c_deja_vu"),			EC_PLAYER_TELEPORT,							-1,											chaos_prob_reload_deja_vu.GetInt());
+	CreateEffect<CEBumpy>(EFFECT_BUMPY,						MAKE_STRING("#hl2c_bumpy"),				EC_BUGGY,									chaos_time_bumpy.GetFloat(),				chaos_prob_bumpy.GetInt());
+	CreateEffect<CENoBrake>(EFFECT_NO_BRAKE,				MAKE_STRING("#hl2c_no_brake"),			EC_BUGGY,									chaos_time_no_brake.GetFloat(),				chaos_prob_no_brake.GetInt());
+	CreateEffect<CEForceInOutCar>(EFFECT_FORCE_INOUT_CAR,	MAKE_STRING("#hl2c_force_inout"),		EC_BUGGY | EC_BOAT | EC_PLAYER_TELEPORT,	-1,											chaos_prob_force_inout_car.GetInt());
+	CreateEffect<CEWeaponRemove>(EFFECT_WEAPON_REMOVE,		MAKE_STRING("#hl2c_wep_remove"),		EC_NEED_PHYSGUN,							-1,											chaos_prob_weapon_remove.GetInt());
+	CreateEffect<>(EFFECT_INTERP_NPCS,						MAKE_STRING("#hl2c_interp_npcs"),		EC_NONE,									chaos_time_interp_npcs.GetFloat(),			chaos_prob_interp_npcs.GetInt());
+	CreateEffect<CEPhysConvert>(EFFECT_PHYS_CONVERT,		MAKE_STRING("#hl2c_phys_convert"),		EC_NONE,									-1,											chaos_prob_phys_convert.GetInt());
+	CreateEffect<CEIncline>(EFFECT_INCLINE,					MAKE_STRING("#hl2c_no_climb"),			EC_NONE,									chaos_time_incline.GetFloat(),				chaos_prob_incline.GetInt());
+	CreateEffect<>(EFFECT_DISABLE_SAVE,						MAKE_STRING("#hl2c_no_save"),			EC_NONE,									chaos_time_disable_save.GetFloat(),			chaos_prob_disable_save.GetInt());
+	CreateEffect<>(EFFECT_NO_RELOAD,						MAKE_STRING("#hl2c_no_reload"),			EC_HAS_WEAPON,								chaos_time_no_reload.GetFloat(),			chaos_prob_no_reload.GetInt());
+	CreateEffect<>(EFFECT_NPC_TELEPORT,						MAKE_STRING("#hl2c_npc_teleport"),		EC_NONE,									chaos_time_npc_teleport.GetFloat(),			chaos_prob_npc_teleport.GetInt());
+	CreateEffect<CEDeathWater>(EFFECT_DEATH_WATER,			MAKE_STRING("#hl2c_death_water"),		EC_WATER,									chaos_time_death_water.GetFloat(),			chaos_prob_death_water.GetInt());
+	CreateEffect<CERandomCC>(EFFECT_RANDOM_CC,				MAKE_STRING("#hl2c_random_cc"),			EC_NONE,									chaos_time_random_cc.GetFloat(),			chaos_prob_random_cc.GetInt());
+	CreateEffect<CEEvilNPC>(EFFECT_EVIL_BARNEY,				MAKE_STRING("#hl2c_evil_barney"),		EC_HAS_WEAPON,								-1,											chaos_prob_evil_barney.GetInt());
+	CreateEffect<>(EFFECT_GOOD_GMAN,						MAKE_STRING("#hl2c_good_gman"),			EC_NONE,									-1,											chaos_prob_good_gman.GetInt());
+	CreateEffect<CEEvilNPC>(EFFECT_EVIL_KLEINER,			MAKE_STRING("#hl2c_evil_dr_k"),			EC_HAS_WEAPON,								-1,											chaos_prob_evil_kleiner.GetInt());
+	CreateEffect<CEEvilNPC>(EFFECT_EVIL_GRIGORI,			MAKE_STRING("#hl2c_evil_grig"),			EC_HAS_WEAPON,								-1,											chaos_prob_evil_grigori.GetInt());
+	CreateEffect<CEEvilNPC>(EFFECT_EVIL_MOSSMAN,			MAKE_STRING("#hl2c_evil_mossman"),		EC_HAS_WEAPON,								-1,											chaos_prob_evil_mossman.GetInt());
+	CreateEffect<CEEvilNPC>(EFFECT_EVIL_VORT,				MAKE_STRING("#hl2c_evil_vort"),			EC_HAS_WEAPON,								-1,											chaos_prob_evil_vort.GetInt());
+	CreateEffect<CESecondarySpam>(EFFECT_SECONDARY_SPAM,	MAKE_STRING("#hl2c_attack2_spam"),		EC_NONE,									chaos_time_secondary_spam.GetFloat(),		chaos_prob_secondary_spam.GetInt());
+	CreateEffect<>(EFFECT_STEAL_HEALTH,						MAKE_STRING("#hl2c_steal_health"),		EC_NONE,									chaos_time_steal_health.GetFloat(),			chaos_prob_steal_health.GetInt());
+	CreateEffect<CESuitSwap>(EFFECT_SUIT_SWAP,				MAKE_STRING("#hl2c_suit_swap"),			EC_NONE,									-1,											chaos_prob_suit_swap.GetInt());
+	CreateEffect<>(EFFECT_YAWROLL,							MAKE_STRING("#hl2c_yawroll"),			EC_NONE,									chaos_time_yawroll.GetFloat(),				chaos_prob_yawroll.GetInt());
+	CreateEffect<>(EFFECT_NORMAL_VISION,					MAKE_STRING("#hl2c_normal_view"),		EC_NONE,									chaos_time_normalvision.GetFloat(),			chaos_prob_normalvision.GetInt());
+	CreateEffect<CEGiveAllRPG>(EFFECT_GIVE_ALL_RPG,			MAKE_STRING("#hl2c_giveallrpgs"),		EC_NONE,									-1,											chaos_prob_giveallrpg.GetInt());
+	CreateEffect<CEFloorEffect>(EFFECT_GRASS_HEAL,			MAKE_STRING("#hl2c_grass_heal"),		EC_NONE,									chaos_time_grass_heal.GetFloat(),			chaos_prob_grass_heal.GetInt());
+	CreateEffect<CEChangePitch>(EFFECT_CHANGE_PITCH,		MAKE_STRING("#hl2c_change_pitch"),		EC_NONE,									chaos_time_change_pitch.GetFloat(),			chaos_prob_change_pitch.GetInt());
 	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_ELI,				MAKE_STRING("Evil Eli"),					EC_HAS_WEAPON,								-1,											chaos_prob_evil_eli.GetInt());
 	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_BREEN,			MAKE_STRING("Hands-on Dr. Breen"),			EC_HAS_WEAPON,								-1,											chaos_prob_evil_breen.GetInt());
 }
@@ -5638,13 +5638,13 @@ int CHL2_Player::PickEffect(int iWeightSum, bool bTest, int iControl)
 					}
 					else
 					{
-						if (chaos_print_rng.GetBool()) Msg("Bad context for i %i %s\n", i, STRING(g_ChaosEffects[i]->m_strGeneralName), nRememberRandom);
+						if (chaos_print_rng.GetBool()) Msg("Bad context for i %i %s\n", i, (g_ChaosEffects[i]->m_strGeneralName), nRememberRandom);
 						candEffect->m_iContextStatusCache = C_STATUS_BAD;
 					}
 				}
 				else
 				{
-					if (chaos_print_rng.GetBool()) Msg("Bad activeness for i %i %s\n", i, STRING(g_ChaosEffects[i]->m_strGeneralName), nRememberRandom);
+					if (chaos_print_rng.GetBool()) Msg("Bad activeness for i %i %s\n", i, (g_ChaosEffects[i]->m_strGeneralName), nRememberRandom);
 				}
 				if (!bGoodActiveness || !bGoodContext)
 				{
@@ -5924,13 +5924,13 @@ bool CChaosEffect::WasShufflePicked()
 			}
 			if (g_iShufflePicked[j] == m_nID)
 			{
-				if (chaos_shuffle_debug.GetBool()) Msg("effect %i, %s skipped for being already picked\n", m_nID, STRING(g_ChaosEffects[m_nID]->m_strGeneralName));
+				if (chaos_shuffle_debug.GetBool()) Msg("effect %i, %s skipped for being already picked\n", m_nID, (g_ChaosEffects[m_nID]->m_strGeneralName));
 				return true;
 			}
-			if (chaos_shuffle_debug.GetBool()) Msg("effect in slot %i, %i, %s was not our target of %i, %s\n", j, g_iShufflePicked[j], STRING(g_ChaosEffects[g_iShufflePicked[j]]->m_strGeneralName), m_nID, STRING(g_ChaosEffects[m_nID]->m_strGeneralName));
+			if (chaos_shuffle_debug.GetBool()) Msg("effect in slot %i, %i, %s was not our target of %i, %s\n", j, g_iShufflePicked[j], (g_ChaosEffects[g_iShufflePicked[j]]->m_strGeneralName), m_nID, (g_ChaosEffects[m_nID]->m_strGeneralName));
 		}
 	}
-	if (chaos_shuffle_debug.GetBool()) Msg("effect %i, %s has not been picked\n", m_nID, STRING(g_ChaosEffects[m_nID]->m_strGeneralName));
+	if (chaos_shuffle_debug.GetBool()) Msg("effect %i, %s has not been picked\n", m_nID, (g_ChaosEffects[m_nID]->m_strGeneralName));
 	return false;
 }
 
@@ -6000,10 +6000,9 @@ void PrintEffectName(int i, int iHidden, bool bDead, CChaosEffect *pEffect, bool
 	}
 	else
 	{
-		char szMessage[2048];
-		int iTime = ceil(pEffect->m_flTimeRem);
-		Q_snprintf(szMessage, sizeof(szMessage), "%s (%i)", STRING(pEffect->m_strHudName), iTime);
-		UTIL_HudMessage(UTIL_GetLocalPlayer(), textParams, bHidden ? " " : szMessage);
+		if (!bHidden)
+			textParams.timertime = ceil(pEffect->m_flTimeRem);
+		UTIL_HudMessage(UTIL_GetLocalPlayer(), textParams, bHidden ? " " : STRING(pEffect->m_strHudName));
 	}
 }
 void CHL2_Player::DoChaosHUDText()
@@ -6039,7 +6038,7 @@ void CHL2_Player::StartGivenEffect(int nID)
 {
 	Assert(nID != EFFECT_ERROR);
 	g_flNextEffectRem = chaos_effect_interval.GetFloat();
-	Msg("Effect %s\n", STRING(g_ChaosEffects[nID]->m_strHudName));
+	Msg("Effect %s\n", (g_ChaosEffects[nID]->m_strHudName));
 	g_ChaosEffects[nID]->m_bActive = true;
 	//add to list of picked effects if shuffle mode is on
 	if (chaos_shuffle_mode.GetBool())
@@ -6048,7 +6047,7 @@ void CHL2_Player::StartGivenEffect(int nID)
 		{
 			if (!g_iShufflePicked[j])
 			{
-				if (chaos_shuffle_debug.GetBool()) Msg("added effect %i, %s to picked list\n", nID, STRING(g_ChaosEffects[nID]->m_strGeneralName));
+				if (chaos_shuffle_debug.GetBool()) Msg("added effect %i, %s to picked list\n", nID, (g_ChaosEffects[nID]->m_strGeneralName));
 				g_iShufflePicked[j] = nID;
 				break;
 			}
@@ -6117,19 +6116,19 @@ void CChaosEffect::StartEffect()
 		break;
 	case EFFECT_GIVE_ALL_WEAPONS:
 		UTIL_GetLocalPlayer()->EquipSuit();
-		ChaosSpawnWeapon("weapon_crowbar", MAKE_STRING("Give All Weapons"));
-		ChaosSpawnWeapon("weapon_physcannon", MAKE_STRING("Give All Weapons"));
-		ChaosSpawnWeapon("weapon_pistol", MAKE_STRING("Give All Weapons"), 75, "Pistol");
-		ChaosSpawnWeapon("weapon_357", MAKE_STRING("Give All Weapons"), 9, "357");
-		ChaosSpawnWeapon("weapon_smg1", MAKE_STRING("Give All Weapons"), 128, "SMG1", 1, "smg1_grenade");
-		ChaosSpawnWeapon("weapon_ar2", MAKE_STRING("Give All Weapons"), 30, "AR2", 1, "AR2AltFire");
-		ChaosSpawnWeapon("weapon_shotgun", MAKE_STRING("Give All Weapons"), 15, "Buckshot");
-		ChaosSpawnWeapon("weapon_crossbow", MAKE_STRING("Give All Weapons"), 5, "XBowBolt");
-		ChaosSpawnWeapon("weapon_frag", MAKE_STRING("Give All Weapons"), 5, "grenade");
-		ChaosSpawnWeapon("weapon_rpg", MAKE_STRING("Give All Weapons"), 3, "rpg_round");
-		ChaosSpawnWeapon("weapon_bugbait", MAKE_STRING("Give All Weapons"));
+		ChaosSpawnWeapon("weapon_crowbar", MAKE_STRING("#hl2c_giveallweps"));
+		ChaosSpawnWeapon("weapon_physcannon", MAKE_STRING("#hl2c_giveallweps"));
+		ChaosSpawnWeapon("weapon_pistol", MAKE_STRING("#hl2c_giveallweps"), 75, "Pistol");
+		ChaosSpawnWeapon("weapon_357", MAKE_STRING("#hl2c_giveallweps"), 9, "357");
+		ChaosSpawnWeapon("weapon_smg1", MAKE_STRING("#hl2c_giveallweps"), 128, "SMG1", 1, "smg1_grenade");
+		ChaosSpawnWeapon("weapon_ar2", MAKE_STRING("#hl2c_giveallweps"), 30, "AR2", 1, "AR2AltFire");
+		ChaosSpawnWeapon("weapon_shotgun", MAKE_STRING("#hl2c_giveallweps"), 15, "Buckshot");
+		ChaosSpawnWeapon("weapon_crossbow", MAKE_STRING("#hl2c_giveallweps"), 5, "XBowBolt");
+		ChaosSpawnWeapon("weapon_frag", MAKE_STRING("#hl2c_giveallweps"), 5, "grenade");
+		ChaosSpawnWeapon("weapon_rpg", MAKE_STRING("#hl2c_giveallweps"), 3, "rpg_round");
+		ChaosSpawnWeapon("weapon_bugbait", MAKE_STRING("#hl2c_giveallweps"));
 		GlobalEntity_Add(MAKE_STRING("antlion_allied"), gpGlobals->mapname, GLOBAL_ON);//antlions become friendly
-		ChaosSpawnWeapon("weapon_slam", MAKE_STRING("Give All Weapons"), 5, "slam");
+		ChaosSpawnWeapon("weapon_slam", MAKE_STRING("#hl2c_giveallweps"), 5, "slam");
 		break;
 	case EFFECT_NADE_GUNS:
 		chaos_replace_bullets_with_grenades.SetValue(1);
@@ -6159,7 +6158,7 @@ void CChaosEffect::StartEffect()
 		chaos_npc_teleport.SetValue(1);
 		break;
 	case EFFECT_GOOD_GMAN:
-		ChaosSpawnNPC("npc_gman", MAKE_STRING("Good Man"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "gman", "weapon_rpg", CSF_SQUAD);
+		ChaosSpawnNPC("npc_gman", MAKE_STRING("#hl2c_good_gman"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "gman", "weapon_rpg", CSF_SQUAD);
 		break;
 	case EFFECT_STEAL_HEALTH:
 		chaos_steal_health.SetValue(1);
@@ -7230,27 +7229,27 @@ void CERandomWeaponGive::StartEffect()
 	for (int iWeaponAttempts = 0; iWeaponAttempts <= 30; iWeaponAttempts++)
 	{
 		nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 13) : chaos_rng1.GetInt();
-		if (nRandom == 0) if (ChaosSpawnWeapon("weapon_crowbar", MAKE_STRING("Give Crowbar"))) return;
-		if (nRandom == 1) if (ChaosSpawnWeapon("weapon_physcannon", MAKE_STRING("Give Gravity Gun"))) return;
-		if (nRandom == 2) if (ChaosSpawnWeapon("weapon_pistol", MAKE_STRING("Give Pistol"), 255, "Pistol")) return;
-		if (nRandom == 3) if (ChaosSpawnWeapon("weapon_357", MAKE_STRING("Give .357 Magnum"), 32, "357")) return;
-		if (nRandom == 4) if (ChaosSpawnWeapon("weapon_smg1", MAKE_STRING("Give SMG"), 255, "SMG1", 3, "smg1_grenade")) return;
-		if (nRandom == 5) if (ChaosSpawnWeapon("weapon_ar2", MAKE_STRING("Give AR2"), 255, "AR2", 5, "AR2AltFire")) return;
-		if (nRandom == 6) if (ChaosSpawnWeapon("weapon_shotgun", MAKE_STRING("Give Shotgun"), 255, "Buckshot")) return;
-		if (nRandom == 7) if (ChaosSpawnWeapon("weapon_crossbow", MAKE_STRING("Give Crossbow"), 16, "XBowBolt")) return;
-		if (nRandom == 8) if (ChaosSpawnWeapon("weapon_frag", MAKE_STRING("Give Grenade"), 5, "grenade")) return;
-		if (nRandom == 9) if (ChaosSpawnWeapon("weapon_rpg", MAKE_STRING("Give RPG"), 3, "rpg_round")) return;
+		if (nRandom == 0) if (ChaosSpawnWeapon("weapon_crowbar", MAKE_STRING("#hl2c_give_crowbar"))) return;
+		if (nRandom == 1) if (ChaosSpawnWeapon("weapon_physcannon", MAKE_STRING("#hl2c_give_gravgun"))) return;
+		if (nRandom == 2) if (ChaosSpawnWeapon("weapon_pistol", MAKE_STRING("#hl2c_give_pistol"), 255, "Pistol")) return;
+		if (nRandom == 3) if (ChaosSpawnWeapon("weapon_357", MAKE_STRING("#hl2c_give_357"), 32, "357")) return;
+		if (nRandom == 4) if (ChaosSpawnWeapon("weapon_smg1", MAKE_STRING("#hl2c_give_smg"), 255, "SMG1", 3, "smg1_grenade")) return;
+		if (nRandom == 5) if (ChaosSpawnWeapon("weapon_ar2", MAKE_STRING("#hl2c_give_ar2"), 255, "AR2", 5, "AR2AltFire")) return;
+		if (nRandom == 6) if (ChaosSpawnWeapon("weapon_shotgun", MAKE_STRING("#hl2c_give_shotgun"), 255, "Buckshot")) return;
+		if (nRandom == 7) if (ChaosSpawnWeapon("weapon_crossbow", MAKE_STRING("#hl2c_give_crossbow"), 16, "XBowBolt")) return;
+		if (nRandom == 8) if (ChaosSpawnWeapon("weapon_frag", MAKE_STRING("#hl2c_give_frag"), 5, "grenade")) return;
+		if (nRandom == 9) if (ChaosSpawnWeapon("weapon_rpg", MAKE_STRING("#hl2c_give_rpg"), 3, "rpg_round")) return;
 		if (nRandom == 10)
 		{
-			if (ChaosSpawnWeapon("weapon_bugbait", MAKE_STRING("Give Bugbait")))
+			if (ChaosSpawnWeapon("weapon_bugbait", MAKE_STRING("#hl2c_give_bugbait")))
 			{
 				GlobalEntity_Add(MAKE_STRING("antlion_allied"), gpGlobals->mapname, GLOBAL_ON);//antlions become friendly
 				return;
 			}
 		}
-		if (nRandom == 11) if (ChaosSpawnWeapon("weapon_slam", MAKE_STRING("Give S.L.A.M"), 5, "slam")) return;
-		if (nRandom == 12) if (ChaosSpawnWeapon("weapon_cubemap", MAKE_STRING("Give Orbs"))) return;
-		if (nRandom == 13) if (ChaosSpawnWeapon("weapon_stunstick", MAKE_STRING("Give Stunstick"))) return;
+		if (nRandom == 11) if (ChaosSpawnWeapon("weapon_slam", MAKE_STRING("#hl2c_give_slam"), 5, "slam")) return;
+		if (nRandom == 12) if (ChaosSpawnWeapon("weapon_cubemap", MAKE_STRING("#hl2c_give_cubemap"))) return;
+		if (nRandom == 13) if (ChaosSpawnWeapon("weapon_stunstick", MAKE_STRING("#hl2c_give_stunstick"))) return;
 	}
 }
 void CERandomVehicle::StartEffect()
@@ -7262,11 +7261,11 @@ void CERandomVehicle::StartEffect()
 	{
 		CBaseEntity *pJalopy;
 		if (UTIL_GetLocalPlayer()->GetModelScale() == 2)
-			pJalopy = ChaosSpawnVehicle("prop_vehicle_jeep", MAKE_STRING("Spawn Jalopy"), SPAWNTYPE_VEHICLE, "models/vehicle_2.mdl", "jalopy", "scripts/vehicles/jalopy_2.txt");
+			pJalopy = ChaosSpawnVehicle("prop_vehicle_jeep", MAKE_STRING("#hl2c_spawn_jalopy"), SPAWNTYPE_VEHICLE, "models/vehicle_2.mdl", "jalopy", "scripts/vehicles/jalopy_2.txt");
 		else if (UTIL_GetLocalPlayer()->GetModelScale() == 0.5)
-			pJalopy = ChaosSpawnVehicle("prop_vehicle_jeep", MAKE_STRING("Spawn Jalopy"), SPAWNTYPE_VEHICLE, "models/vehicle_0_5.mdl", "jalopy", "scripts/vehicles/jalopy_0_5.txt");
+			pJalopy = ChaosSpawnVehicle("prop_vehicle_jeep", MAKE_STRING("#hl2c_spawn_jalopy"), SPAWNTYPE_VEHICLE, "models/vehicle_0_5.mdl", "jalopy", "scripts/vehicles/jalopy_0_5.txt");
 		else
-			pJalopy = ChaosSpawnVehicle("prop_vehicle_jeep", MAKE_STRING("Spawn Jalopy"), SPAWNTYPE_VEHICLE, "models/vehicle.mdl", "jalopy", "scripts/vehicles/jalopy.txt");
+			pJalopy = ChaosSpawnVehicle("prop_vehicle_jeep", MAKE_STRING("#hl2c_spawn_jalopy"), SPAWNTYPE_VEHICLE, "models/vehicle.mdl", "jalopy", "scripts/vehicles/jalopy.txt");
 		pJalopy->AcceptInput("EnableRadar", pJalopy, pJalopy, sVariant, 0);
 		pJalopy->AcceptInput("EnableRadarDetectEnemies", pJalopy, pJalopy, sVariant, 0);
 		pJalopy->AcceptInput("AddBusterToCargo", pJalopy, pJalopy, sVariant, 0);
@@ -7343,44 +7342,44 @@ void CERandomVehicle::StartEffect()
 			//activate crane last so everything works correctly
 			DispatchSpawn(pVehicle);
 			pVehicle->Activate();
-			m_strHudName = MAKE_STRING("Spawn Crane");
+			m_strHudName = MAKE_STRING("#hl2c_spawn_crane");
 		}
 	}
 	if (nRandom == 0)
 	{
 		if (UTIL_GetLocalPlayer()->GetModelScale() == 2)
-			ChaosSpawnVehicle("prop_vehicle_jeep", MAKE_STRING("Spawn Buggy"), SPAWNTYPE_VEHICLE, "models/buggy_2.mdl", "jeep", "scripts/vehicles/jeep_test_2.txt");
+			ChaosSpawnVehicle("prop_vehicle_jeep", MAKE_STRING("#hl2c_spawn_buggy"), SPAWNTYPE_VEHICLE, "models/buggy_2.mdl", "jeep", "scripts/vehicles/jeep_test_2.txt");
 		else if (UTIL_GetLocalPlayer()->GetModelScale() == 0.5)
-			ChaosSpawnVehicle("prop_vehicle_jeep", MAKE_STRING("Spawn Buggy"), SPAWNTYPE_VEHICLE, "models/buggy_0_5.mdl", "jeep", "scripts/vehicles/jeep_test_0_5.txt");
+			ChaosSpawnVehicle("prop_vehicle_jeep", MAKE_STRING("#hl2c_spawn_buggy"), SPAWNTYPE_VEHICLE, "models/buggy_0_5.mdl", "jeep", "scripts/vehicles/jeep_test_0_5.txt");
 		else
-			ChaosSpawnVehicle("prop_vehicle_jeep", MAKE_STRING("Spawn Buggy"), SPAWNTYPE_VEHICLE, "models/buggy.mdl", "jeep", "scripts/vehicles/jeep_test.txt");
+			ChaosSpawnVehicle("prop_vehicle_jeep", MAKE_STRING("#hl2c_spawn_buggy"), SPAWNTYPE_VEHICLE, "models/buggy.mdl", "jeep", "scripts/vehicles/jeep_test.txt");
 	}
 	if (nRandom == 1)
 	{
 		if (UTIL_GetLocalPlayer()->GetModelScale() == 2)
-			ChaosSpawnVehicle("prop_vehicle_airboat", MAKE_STRING("Spawn Airboat"), SPAWNTYPE_VEHICLE, "models/airboat_2.mdl", "airboat", "scripts/vehicles/airboat_2.txt");
+			ChaosSpawnVehicle("prop_vehicle_airboat", MAKE_STRING("#hl2c_spawn_airboat"), SPAWNTYPE_VEHICLE, "models/airboat_2.mdl", "airboat", "scripts/vehicles/airboat_2.txt");
 		else if (UTIL_GetLocalPlayer()->GetModelScale() == 0.5)
-			ChaosSpawnVehicle("prop_vehicle_airboat", MAKE_STRING("Spawn Airboat"), SPAWNTYPE_VEHICLE, "models/airboat_0_5.mdl", "airboat", "scripts/vehicles/airboat_0_5.txt");
+			ChaosSpawnVehicle("prop_vehicle_airboat", MAKE_STRING("#hl2c_spawn_airboat"), SPAWNTYPE_VEHICLE, "models/airboat_0_5.mdl", "airboat", "scripts/vehicles/airboat_0_5.txt");
 		else
-			ChaosSpawnVehicle("prop_vehicle_airboat", MAKE_STRING("Spawn Airboat"), SPAWNTYPE_VEHICLE, "models/airboat.mdl", "airboat", "scripts/vehicles/airboat.txt");
+			ChaosSpawnVehicle("prop_vehicle_airboat", MAKE_STRING("#hl2c_spawn_airboat"), SPAWNTYPE_VEHICLE, "models/airboat.mdl", "airboat", "scripts/vehicles/airboat.txt");
 	}
 	if (nRandom == 2)
 	{
 		if (UTIL_GetLocalPlayer()->GetModelScale() == 2)
-			ChaosSpawnVehicle("prop_vehicle_prisoner_pod", MAKE_STRING("Spawn Pod"), SPAWNTYPE_EYELEVEL_SPECIAL, "models/vehicles/prisoner_pod_inner_2.mdl", "pod", "scripts/vehicles/prisoner_pod_2.txt");
+			ChaosSpawnVehicle("prop_vehicle_prisoner_pod", MAKE_STRING("#hl2c_spawn_pod"), SPAWNTYPE_EYELEVEL_SPECIAL, "models/vehicles/prisoner_pod_inner_2.mdl", "pod", "scripts/vehicles/prisoner_pod_2.txt");
 		else if (UTIL_GetLocalPlayer()->GetModelScale() == 0.5)
-			ChaosSpawnVehicle("prop_vehicle_prisoner_pod", MAKE_STRING("Spawn Pod"), SPAWNTYPE_EYELEVEL_SPECIAL, "models/vehicles/prisoner_pod_inner_0_5.mdl", "pod", "scripts/vehicles/prisoner_pod_0_5.txt");
+			ChaosSpawnVehicle("prop_vehicle_prisoner_pod", MAKE_STRING("#hl2c_spawn_pod"), SPAWNTYPE_EYELEVEL_SPECIAL, "models/vehicles/prisoner_pod_inner_0_5.mdl", "pod", "scripts/vehicles/prisoner_pod_0_5.txt");
 		else
-			ChaosSpawnVehicle("prop_vehicle_prisoner_pod", MAKE_STRING("Spawn Pod"), SPAWNTYPE_EYELEVEL_SPECIAL, "models/vehicles/prisoner_pod_inner.mdl", "pod", "scripts/vehicles/prisoner_pod.txt");
+			ChaosSpawnVehicle("prop_vehicle_prisoner_pod", MAKE_STRING("#hl2c_spawn_pod"), SPAWNTYPE_EYELEVEL_SPECIAL, "models/vehicles/prisoner_pod_inner.mdl", "pod", "scripts/vehicles/prisoner_pod.txt");
 	}
 	if (nRandom == 3)
 	{
 		if (UTIL_GetLocalPlayer()->GetModelScale() == 2)
-			ChaosSpawnVehicle("prop_vehicle_apc", MAKE_STRING("Spawn APC"), SPAWNTYPE_VEHICLE, "models/combine_apc_2.mdl", "apc", "scripts/vehicles/apc_npc_2.txt");
+			ChaosSpawnVehicle("prop_vehicle_apc", MAKE_STRING("#hl2c_spawn_apc"), SPAWNTYPE_VEHICLE, "models/combine_apc_2.mdl", "apc", "scripts/vehicles/apc_npc_2.txt");
 		else if (UTIL_GetLocalPlayer()->GetModelScale() == 0.5)
-			ChaosSpawnVehicle("prop_vehicle_apc", MAKE_STRING("Spawn APC"), SPAWNTYPE_VEHICLE, "models/combine_apc_0_5.mdl", "apc", "scripts/vehicles/apc_npc_0_5.txt");
+			ChaosSpawnVehicle("prop_vehicle_apc", MAKE_STRING("#hl2c_spawn_apc"), SPAWNTYPE_VEHICLE, "models/combine_apc_0_5.mdl", "apc", "scripts/vehicles/apc_npc_0_5.txt");
 		else
-			ChaosSpawnVehicle("prop_vehicle_apc", MAKE_STRING("Spawn APC"), SPAWNTYPE_VEHICLE, "models/combine_apc.mdl", "apc", "scripts/vehicles/apc_npc.txt");
+			ChaosSpawnVehicle("prop_vehicle_apc", MAKE_STRING("#hl2c_spawn_apc"), SPAWNTYPE_VEHICLE, "models/combine_apc.mdl", "apc", "scripts/vehicles/apc_npc.txt");
 	}
 }
 void CERandomNPC::StartEffect()
@@ -7393,72 +7392,72 @@ void CERandomNPC::StartEffect()
 	nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 46) : chaos_rng1.GetInt();
 	if (nRandom == 0)
 	{
-		m_iSavedChaosID = ChaosSpawnNPC("npc_alyx", MAKE_STRING("Spawn Alyx"), SPAWNTYPE_EYELEVEL_REGULAR, "models/alyx.mdl", "alyx", "weapon_alyxgun", CSF_SQUAD)->m_iChaosID;
+		m_iSavedChaosID = ChaosSpawnNPC("npc_alyx", MAKE_STRING("#hl2c_spawn_alyx"), SPAWNTYPE_EYELEVEL_REGULAR, "models/alyx.mdl", "alyx", "weapon_alyxgun", CSF_SQUAD)->m_iChaosID;
 		RandomizeReadiness(GetEntityWithID(m_iSavedChaosID));
 	}
-	if (nRandom == 1) m_iSavedChaosID = ChaosSpawnNPC("npc_antlion", MAKE_STRING("Spawn Antlion"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "antlion", "_")->m_iChaosID;
-	if (nRandom == 2) m_iSavedChaosID = ChaosSpawnNPC("npc_antlionguard", MAKE_STRING("Spawn Antlion Guard"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "antlionguard", "_")->m_iChaosID;
-	if (nRandom == 3) m_iSavedChaosID = ChaosSpawnNPC("npc_barnacle", MAKE_STRING("Spawn Barnacle"), SPAWNTYPE_CEILING, "_", "barnacle", "_")->m_iChaosID;
+	if (nRandom == 1) m_iSavedChaosID = ChaosSpawnNPC("npc_antlion", MAKE_STRING("#hl2c_spawn_antlion"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "antlion", "_")->m_iChaosID;
+	if (nRandom == 2) m_iSavedChaosID = ChaosSpawnNPC("npc_antlionguard", MAKE_STRING("#hl2c_spawn_antlionguard"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "antlionguard", "_")->m_iChaosID;
+	if (nRandom == 3) m_iSavedChaosID = ChaosSpawnNPC("npc_barnacle", MAKE_STRING("#hl2c_spawn_barnacle"), SPAWNTYPE_CEILING, "_", "barnacle", "_")->m_iChaosID;
 	if (nRandom == 4)
 	{
-		m_iSavedChaosID = ChaosSpawnNPC("npc_barney", MAKE_STRING("Spawn Barney"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "barney", "weapon_ar2", CSF_SQUAD)->m_iChaosID;
+		m_iSavedChaosID = ChaosSpawnNPC("npc_barney", MAKE_STRING("#hl2c_spawn_barney"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "barney", "weapon_ar2", CSF_SQUAD)->m_iChaosID;
 		RandomizeReadiness(GetEntityWithID(m_iSavedChaosID));
 	}
-	if (nRandom == 5) m_iSavedChaosID = ChaosSpawnNPC("npc_breen", MAKE_STRING("Spawn Breen"), SPAWNTYPE_EYELEVEL_REGULAR, "models/breen.mdl", "breen", "_")->m_iChaosID;
+	if (nRandom == 5) m_iSavedChaosID = ChaosSpawnNPC("npc_breen", MAKE_STRING("#hl2c_spawn_breen"), SPAWNTYPE_EYELEVEL_REGULAR, "models/breen.mdl", "breen", "_")->m_iChaosID;
 	if (nRandom == 6)
 	{
-		m_iSavedChaosID = ChaosSpawnNPC("npc_citizen", MAKE_STRING("Spawn Citizen"), SPAWNTYPE_EYELEVEL_REGULAR, "models/Humans/Group02/Male_05.mdl", "citizen", "_", CSF_SQUAD)->m_iChaosID;
+		m_iSavedChaosID = ChaosSpawnNPC("npc_citizen", MAKE_STRING("#hl2c_spawn_citizen"), SPAWNTYPE_EYELEVEL_REGULAR, "models/Humans/Group02/Male_05.mdl", "citizen", "_", CSF_SQUAD)->m_iChaosID;
 		RandomizeReadiness(GetEntityWithID(m_iSavedChaosID));
 	}
-	if (nRandom == 7) m_iSavedChaosID = ChaosSpawnNPC("npc_combine_s", MAKE_STRING("Spawn Combine Soldier"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "combine_s", "_")->m_iChaosID;
-	if (nRandom == 8) m_iSavedChaosID = ChaosSpawnNPC("npc_combinedropship", MAKE_STRING("Spawn Dropship"), SPAWNTYPE_BIGFLYER, "_", "combinedropship", "_")->m_iChaosID;
-	if (nRandom == 9) m_iSavedChaosID = ChaosSpawnNPC("npc_combinegunship", MAKE_STRING("Spawn Gunship"), SPAWNTYPE_BIGFLYER, "_", "combinegunship", "_")->m_iChaosID;
-	if (nRandom == 10) m_iSavedChaosID = ChaosSpawnNPC("npc_crow", MAKE_STRING("Spawn Crow"), SPAWNTYPE_EYELEVEL_REGULAR, "models/crow.mdl", "crow", "_")->m_iChaosID;
-	if (nRandom == 11) m_iSavedChaosID = ChaosSpawnNPC("npc_cscanner", MAKE_STRING("Spawn Scanner"), SPAWNTYPE_EYELEVEL_SPECIAL, "models/combine_scanner.mdl", "cscanner", "_")->m_iChaosID;
+	if (nRandom == 7) m_iSavedChaosID = ChaosSpawnNPC("npc_combine_s", MAKE_STRING("#hl2c_spawn_combine_s"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "combine_s", "_")->m_iChaosID;
+	if (nRandom == 8) m_iSavedChaosID = ChaosSpawnNPC("npc_combinedropship", MAKE_STRING("#hl2c_spawn_dropship"), SPAWNTYPE_BIGFLYER, "_", "combinedropship", "_")->m_iChaosID;
+	if (nRandom == 9) m_iSavedChaosID = ChaosSpawnNPC("npc_combinegunship", MAKE_STRING("#hl2c_spawn_gunship"), SPAWNTYPE_BIGFLYER, "_", "combinegunship", "_")->m_iChaosID;
+	if (nRandom == 10) m_iSavedChaosID = ChaosSpawnNPC("npc_crow", MAKE_STRING("#hl2c_spawn_crow"), SPAWNTYPE_EYELEVEL_REGULAR, "models/crow.mdl", "crow", "_")->m_iChaosID;
+	if (nRandom == 11) m_iSavedChaosID = ChaosSpawnNPC("npc_cscanner", MAKE_STRING("#hl2c_spawn_scanner"), SPAWNTYPE_EYELEVEL_SPECIAL, "models/combine_scanner.mdl", "cscanner", "_")->m_iChaosID;
 	if (nRandom == 12)
 	{
-		m_iSavedChaosID = ChaosSpawnNPC("npc_dog", MAKE_STRING("Spawn Dog"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "dog", "_")->m_iChaosID;
+		m_iSavedChaosID = ChaosSpawnNPC("npc_dog", MAKE_STRING("#hl2c_spawn_dog"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "dog", "_")->m_iChaosID;
 		GetEntityWithID(m_iSavedChaosID)->AcceptInput("StartCatchThrowBehavior", GetEntityWithID(m_iSavedChaosID), GetEntityWithID(m_iSavedChaosID), emptyVariant, 0);
 	}
-	if (nRandom == 13) m_iSavedChaosID = ChaosSpawnNPC("npc_eli", MAKE_STRING("Spawn Eli"), SPAWNTYPE_EYELEVEL_REGULAR, "models/eli.mdl", "eli", "_", CSF_SQUAD)->m_iChaosID;
-	if (nRandom == 14) m_iSavedChaosID = ChaosSpawnNPC("npc_fastzombie", MAKE_STRING("Spawn Fast Zombie"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "fastzombie", "_")->m_iChaosID;
-	if (nRandom == 15) m_iSavedChaosID = ChaosSpawnNPC("npc_gman", MAKE_STRING("Spawn Gman"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "gman", "_", CSF_SQUAD)->m_iChaosID;
-	if (nRandom == 16) m_iSavedChaosID = ChaosSpawnNPC("npc_headcrab", MAKE_STRING("Spawn Headcrab"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "headcrab", "_")->m_iChaosID;
-	if (nRandom == 17) m_iSavedChaosID = ChaosSpawnNPC("npc_headcrab_black", MAKE_STRING("Spawn Poison Headcrab"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "headcrab_black", "_")->m_iChaosID;
-	if (nRandom == 18) m_iSavedChaosID = ChaosSpawnNPC("npc_headcrab_fast", MAKE_STRING("Spawn Fast Headcrab"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "headcrab_fast", "_")->m_iChaosID;
-	if (nRandom == 19) m_iSavedChaosID = ChaosSpawnNPC("npc_helicopter", MAKE_STRING("Spawn Hunter-Chopper"), SPAWNTYPE_BIGFLYER, "_", "helicopter", "_")->m_iChaosID;
-	if (nRandom == 20) m_iSavedChaosID = ChaosSpawnNPC("npc_ichthyosaur", MAKE_STRING("Spawn Ichthyosaur"), SPAWNTYPE_EYELEVEL_SPECIAL, "_", "ichthyosaur", "_")->m_iChaosID;
-	if (nRandom == 21) m_iSavedChaosID = ChaosSpawnNPC("npc_kleiner", MAKE_STRING("Spawn Dr. Kleiner"), SPAWNTYPE_EYELEVEL_REGULAR, "models/kleiner.mdl", "kleiner", "_", CSF_SQUAD)->m_iChaosID;
-	if (nRandom == 22) m_iSavedChaosID = ChaosSpawnNPC("npc_manhack", MAKE_STRING("Spawn Manhack"), SPAWNTYPE_EYELEVEL_SPECIAL, "_", "manhack", "_")->m_iChaosID;
-	if (nRandom == 23) m_iSavedChaosID = ChaosSpawnNPC("npc_metropolice", MAKE_STRING("Spawn CP Unit"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "metropolice", "_")->m_iChaosID;
-	if (nRandom == 24) m_iSavedChaosID = ChaosSpawnNPC("npc_monk", MAKE_STRING("Spawn Father Grigori"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "monk", "weapon_annabelle", CSF_SQUAD)->m_iChaosID;
-	if (nRandom == 25) m_iSavedChaosID = ChaosSpawnNPC("npc_mossman", MAKE_STRING("Spawn Dr. Mossman"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "mossman", "_", CSF_SQUAD)->m_iChaosID;
-	if (nRandom == 26) m_iSavedChaosID = ChaosSpawnNPC("npc_pigeon", MAKE_STRING("Spawn Pigeon"), SPAWNTYPE_EYELEVEL_REGULAR, "models/pigeon.mdl", "pigeon", "_")->m_iChaosID;
-	if (nRandom == 27) m_iSavedChaosID = ChaosSpawnNPC("npc_poisonzombie", MAKE_STRING("Spawn Poison Zombie"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "poisonzombie", "_")->m_iChaosID;
-	if (nRandom == 28) m_iSavedChaosID = ChaosSpawnNPC("npc_rollermine", MAKE_STRING("Spawn Rollermine"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "rollermine", "_")->m_iChaosID;
-	if (nRandom == 29) m_iSavedChaosID = ChaosSpawnNPC("npc_seagull", MAKE_STRING("Spawn Seagull"), SPAWNTYPE_EYELEVEL_REGULAR, "models/seagull.mdl", "seagull", "_")->m_iChaosID;
-	if (nRandom == 30) m_iSavedChaosID = ChaosSpawnNPC("npc_sniper", MAKE_STRING("Spawn Sniper"), SPAWNTYPE_EYELEVEL_SPECIAL, "_", "sniper", "_")->m_iChaosID;
-	if (nRandom == 31) m_iSavedChaosID = ChaosSpawnNPC("npc_stalker", MAKE_STRING("Spawn Stalker"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "stalker", "_")->m_iChaosID;
-	if (nRandom == 32) m_iSavedChaosID = ChaosSpawnNPC("npc_strider", MAKE_STRING("Spawn Strider"), SPAWNTYPE_STRIDER, "models/combine_strider.mdl", "strider", "_")->m_iChaosID;
-	if (nRandom == 33) m_iSavedChaosID = ChaosSpawnNPC("npc_turret_ceiling", MAKE_STRING("Spawn Ceiling Turret"), SPAWNTYPE_CEILING, "_", "turret_ceiling", "_")->m_iChaosID;
-	if (nRandom == 34) m_iSavedChaosID = ChaosSpawnNPC("npc_turret_floor", MAKE_STRING("Spawn Turret"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "turret_floor", "_")->m_iChaosID;
-	if (nRandom == 35) m_iSavedChaosID = ChaosSpawnNPC("npc_turret_ground", MAKE_STRING("Spawn Ground Turret"), SPAWNTYPE_ONGROUND, "_", "turret_ground", "_")->m_iChaosID;
+	if (nRandom == 13) m_iSavedChaosID = ChaosSpawnNPC("npc_eli", MAKE_STRING("#hl2c_spawn_eli"), SPAWNTYPE_EYELEVEL_REGULAR, "models/eli.mdl", "eli", "_", CSF_SQUAD)->m_iChaosID;
+	if (nRandom == 14) m_iSavedChaosID = ChaosSpawnNPC("npc_fastzombie", MAKE_STRING("#hl2c_spawn_fastzombie"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "fastzombie", "_")->m_iChaosID;
+	if (nRandom == 15) m_iSavedChaosID = ChaosSpawnNPC("npc_gman", MAKE_STRING("#hl2c_spawn_gman"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "gman", "_", CSF_SQUAD)->m_iChaosID;
+	if (nRandom == 16) m_iSavedChaosID = ChaosSpawnNPC("npc_headcrab", MAKE_STRING("#hl2c_spawn_headcrab"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "headcrab", "_")->m_iChaosID;
+	if (nRandom == 17) m_iSavedChaosID = ChaosSpawnNPC("npc_headcrab_black", MAKE_STRING("#hl2c_spawn_headcrab_p"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "headcrab_black", "_")->m_iChaosID;
+	if (nRandom == 18) m_iSavedChaosID = ChaosSpawnNPC("npc_headcrab_fast", MAKE_STRING("#hl2c_spawn_headcrab_f"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "headcrab_fast", "_")->m_iChaosID;
+	if (nRandom == 19) m_iSavedChaosID = ChaosSpawnNPC("npc_helicopter", MAKE_STRING("#hl2c_spawn_heli"), SPAWNTYPE_BIGFLYER, "_", "helicopter", "_")->m_iChaosID;
+	if (nRandom == 20) m_iSavedChaosID = ChaosSpawnNPC("npc_ichthyosaur", MAKE_STRING("#hl2c_spawn_ich"), SPAWNTYPE_EYELEVEL_SPECIAL, "_", "ichthyosaur", "_")->m_iChaosID;
+	if (nRandom == 21) m_iSavedChaosID = ChaosSpawnNPC("npc_kleiner", MAKE_STRING("#hl2c_spawn_dr_k"), SPAWNTYPE_EYELEVEL_REGULAR, "models/kleiner.mdl", "kleiner", "_", CSF_SQUAD)->m_iChaosID;
+	if (nRandom == 22) m_iSavedChaosID = ChaosSpawnNPC("npc_manhack", MAKE_STRING("#hl2c_spawn_manhack"), SPAWNTYPE_EYELEVEL_SPECIAL, "_", "manhack", "_")->m_iChaosID;
+	if (nRandom == 23) m_iSavedChaosID = ChaosSpawnNPC("npc_metropolice", MAKE_STRING("#hl2c_spawn_metrocop"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "metropolice", "_")->m_iChaosID;
+	if (nRandom == 24) m_iSavedChaosID = ChaosSpawnNPC("npc_monk", MAKE_STRING("#hl2c_spawn_grigori"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "monk", "weapon_annabelle", CSF_SQUAD)->m_iChaosID;
+	if (nRandom == 25) m_iSavedChaosID = ChaosSpawnNPC("npc_mossman", MAKE_STRING("#hl2c_spawn_mossman"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "mossman", "_", CSF_SQUAD)->m_iChaosID;
+	if (nRandom == 26) m_iSavedChaosID = ChaosSpawnNPC("npc_pigeon", MAKE_STRING("#hl2c_spawn_pigeon"), SPAWNTYPE_EYELEVEL_REGULAR, "models/pigeon.mdl", "pigeon", "_")->m_iChaosID;
+	if (nRandom == 27) m_iSavedChaosID = ChaosSpawnNPC("npc_poisonzombie", MAKE_STRING("#hl2c_spawn_poison_z"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "poisonzombie", "_")->m_iChaosID;
+	if (nRandom == 28) m_iSavedChaosID = ChaosSpawnNPC("npc_rollermine", MAKE_STRING("#hl2c_spawn_rollermine"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "rollermine", "_")->m_iChaosID;
+	if (nRandom == 29) m_iSavedChaosID = ChaosSpawnNPC("npc_seagull", MAKE_STRING("#hl2c_spawn_seagull"), SPAWNTYPE_EYELEVEL_REGULAR, "models/seagull.mdl", "seagull", "_")->m_iChaosID;
+	if (nRandom == 30) m_iSavedChaosID = ChaosSpawnNPC("npc_sniper", MAKE_STRING("#hl2c_spawn_sniper"), SPAWNTYPE_EYELEVEL_SPECIAL, "_", "sniper", "_")->m_iChaosID;
+	if (nRandom == 31) m_iSavedChaosID = ChaosSpawnNPC("npc_stalker", MAKE_STRING("#hl2c_spawn_stalker"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "stalker", "_")->m_iChaosID;
+	if (nRandom == 32) m_iSavedChaosID = ChaosSpawnNPC("npc_strider", MAKE_STRING("#hl2c_spawn_strider"), SPAWNTYPE_STRIDER, "models/combine_strider.mdl", "strider", "_")->m_iChaosID;
+	if (nRandom == 33) m_iSavedChaosID = ChaosSpawnNPC("npc_turret_ceiling", MAKE_STRING("#hl2c_spawn_turret_c"), SPAWNTYPE_CEILING, "_", "turret_ceiling", "_")->m_iChaosID;
+	if (nRandom == 34) m_iSavedChaosID = ChaosSpawnNPC("npc_turret_floor", MAKE_STRING("#hl2c_spawn_turret_f"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "turret_floor", "_")->m_iChaosID;
+	if (nRandom == 35) m_iSavedChaosID = ChaosSpawnNPC("npc_turret_ground", MAKE_STRING("#hl2c_spawn_turret_g"), SPAWNTYPE_ONGROUND, "_", "turret_ground", "_")->m_iChaosID;
 	if (nRandom == 36)
 	{
-		m_iSavedChaosID = ChaosSpawnNPC("npc_vortigaunt", MAKE_STRING("Spawn Vortigaunt"), SPAWNTYPE_EYELEVEL_REGULAR, "models/vortigaunt.mdl", "vortigaunt", "_", CSF_SQUAD)->m_iChaosID;
+		m_iSavedChaosID = ChaosSpawnNPC("npc_vortigaunt", MAKE_STRING("#hl2c_spawn_vortigaunt"), SPAWNTYPE_EYELEVEL_REGULAR, "models/vortigaunt.mdl", "vortigaunt", "_", CSF_SQUAD)->m_iChaosID;
 		RandomizeReadiness(GetEntityWithID(m_iSavedChaosID));
 	}
-	if (nRandom == 37) m_iSavedChaosID = ChaosSpawnNPC("npc_zombie", MAKE_STRING("Spawn Zombie"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "zombie", "_")->m_iChaosID;
-	if (nRandom == 38) m_iSavedChaosID = ChaosSpawnNPC("npc_zombie_torso", MAKE_STRING("Spawn Zombie Torso"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "zombie_torso", "_")->m_iChaosID;
+	if (nRandom == 37) m_iSavedChaosID = ChaosSpawnNPC("npc_zombie", MAKE_STRING("#hl2c_spawn_zombie"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "zombie", "_")->m_iChaosID;
+	if (nRandom == 38) m_iSavedChaosID = ChaosSpawnNPC("npc_zombie_torso", MAKE_STRING("#hl2c_spawn_zombie_t"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "zombie_torso", "_")->m_iChaosID;
 	if (nRandom == 39)
 	{
-		m_iSavedChaosID = ChaosSpawnNPC("npc_fisherman", MAKE_STRING("Spawn Fisherman"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "fisherman", "weapon_oldmanharpoon", CSF_SQUAD)->m_iChaosID;
+		m_iSavedChaosID = ChaosSpawnNPC("npc_fisherman", MAKE_STRING("#hl2c_spawn_fisherman"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "fisherman", "weapon_oldmanharpoon", CSF_SQUAD)->m_iChaosID;
 		RandomizeReadiness(GetEntityWithID(m_iSavedChaosID));
 	}
 	if (nRandom == 40)
 	{
-		ChaosSpawnVehicle("prop_vehicle_apc", MAKE_STRING("Spawn APC (!)"), SPAWNTYPE_VEHICLE, "models/combine_apc.mdl", "apc", "scripts/vehicles/apc_npc.txt");
-		m_iSavedChaosID = ChaosSpawnNPC("npc_apcdriver", MAKE_STRING("Spawn APC (!)"), SPAWNTYPE_EYELEVEL_SPECIAL, "_", "apcdriver", "_")->m_iChaosID;
+		ChaosSpawnVehicle("prop_vehicle_apc", MAKE_STRING("#hl2c_spawn_apc_enemy"), SPAWNTYPE_VEHICLE, "models/combine_apc.mdl", "apc", "scripts/vehicles/apc_npc.txt");
+		m_iSavedChaosID = ChaosSpawnNPC("npc_apcdriver", MAKE_STRING("#hl2c_spawn_apc_enemy"), SPAWNTYPE_EYELEVEL_SPECIAL, "_", "apcdriver", "_")->m_iChaosID;
 		//make apc follow player
 
 		sVariant.SetFloat(500);
@@ -7470,13 +7469,13 @@ void CERandomNPC::StartEffect()
 		g_EventQueue.AddEvent("apcdriver", "FireUser1", sVariant, 0, NULL, NULL, 0);
 	}
 	//ep1
-	if (nRandom == 41) m_iSavedChaosID = ChaosSpawnNPC("npc_zombine", MAKE_STRING("Spawn Zombine"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "zombine", "_")->m_iChaosID;
+	if (nRandom == 41) m_iSavedChaosID = ChaosSpawnNPC("npc_zombine", MAKE_STRING("#hl2c_spawn_zombine"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "zombine", "_")->m_iChaosID;
 	//ep2
-	if (nRandom == 42) m_iSavedChaosID = ChaosSpawnNPC("npc_advisor", MAKE_STRING("Spawn Advisor"), SPAWNTYPE_EYELEVEL_SPECIAL, "models/advisor.mdl", "advisor", "_")->m_iChaosID;
-	if (nRandom == 43) m_iSavedChaosID = ChaosSpawnNPC("npc_antlion_grub", MAKE_STRING("Spawn Antlion Grub"), SPAWNTYPE_ONGROUND, "_", "antlion_grub", "_")->m_iChaosID;
-	if (nRandom == 44) m_iSavedChaosID = ChaosSpawnNPC("npc_fastzombie_torso", MAKE_STRING("Spawn Fast Zombie Torso"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "fastzombie_torso", "_")->m_iChaosID;
-	if (nRandom == 45) m_iSavedChaosID = ChaosSpawnNPC("npc_hunter", MAKE_STRING("Spawn Hunter"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "hunter", "_")->m_iChaosID;
-	if (nRandom == 46) m_iSavedChaosID = ChaosSpawnNPC("npc_magnusson", MAKE_STRING("Spawn Dr. Magnusson"), SPAWNTYPE_EYELEVEL_REGULAR, "models/magnusson.mdl", "magnusson", "_", CSF_SQUAD)->m_iChaosID;
+	if (nRandom == 42) m_iSavedChaosID = ChaosSpawnNPC("npc_advisor", MAKE_STRING("#hl2c_spawn_advisor"), SPAWNTYPE_EYELEVEL_SPECIAL, "models/advisor.mdl", "advisor", "_")->m_iChaosID;
+	if (nRandom == 43) m_iSavedChaosID = ChaosSpawnNPC("npc_antlion_grub", MAKE_STRING("#hl2c_spawn_antliongrub"), SPAWNTYPE_ONGROUND, "_", "antlion_grub", "_")->m_iChaosID;
+	if (nRandom == 44) m_iSavedChaosID = ChaosSpawnNPC("npc_fastzombie_torso", MAKE_STRING("#hl2c_spawn_fastzombie_t"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "fastzombie_torso", "_")->m_iChaosID;
+	if (nRandom == 45) m_iSavedChaosID = ChaosSpawnNPC("npc_hunter", MAKE_STRING("#hl2c_spawn_hunter"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "hunter", "_")->m_iChaosID;
+	if (nRandom == 46) m_iSavedChaosID = ChaosSpawnNPC("npc_magnusson", MAKE_STRING("#hl2c_spawn_magnusson"), SPAWNTYPE_EYELEVEL_REGULAR, "models/magnusson.mdl", "magnusson", "_", CSF_SQUAD)->m_iChaosID;
 }
 bool CERandomNPC::CheckStrike(const CTakeDamageInfo &info)
 {
@@ -7922,7 +7921,7 @@ void CEZombieSpam::MaintainEffect()
 	if (bNewWay)
 	{
 		//new way
-		m_strHudName = MAKE_STRING("Left 4 Dead 2");
+		m_strHudName = MAKE_STRING("#hl2c_zombie_spam_new");
 
 		int iZombieType, nRandMax;
 
@@ -7965,7 +7964,7 @@ void CEZombieSpam::StartEffect()
 		return;
 
 	//old way
-	m_strHudName = MAKE_STRING("Left 4 Dead");
+	m_strHudName = MAKE_STRING("#hl2c_zombie_spam");
 
 	int iZombieType, nRandMax;
 
@@ -8039,32 +8038,32 @@ void CEBottle::StartEffect()
 	pPhys->EnableDrag(false);
 	pPhys->SetMass(i * 10);
 	if (i > 40)
-		m_strHudName = MAKE_STRING("BEER I OWED YA");
+		m_strHudName = MAKE_STRING("#hl2c_beer_bottle_huge");
 }
 void CEEvilNPC::StartEffect()
 {
 	switch (m_nID)
 	{
 	case EFFECT_EVIL_ALYX:
-		m_iSavedChaosID = ChaosSpawnNPC("npc_alyx", MAKE_STRING("Annoying Alyx"), SPAWNTYPE_EYELEVEL_REGULAR, "models/alyx.mdl", "alyx", "weapon_alyxgun", CSF_EVIL)->m_iChaosID;
+		m_iSavedChaosID = ChaosSpawnNPC("npc_alyx", MAKE_STRING("#hl2c_evil_alyx"), SPAWNTYPE_EYELEVEL_REGULAR, "models/alyx.mdl", "alyx", "weapon_alyxgun", CSF_EVIL)->m_iChaosID;
 		break;
 	case EFFECT_EVIL_NORIKO:
 		EvilNoriko();
 		break;
 	case EFFECT_EVIL_BARNEY:
-		m_iSavedChaosID = ChaosSpawnNPC("npc_barney", MAKE_STRING("Bastard Barney"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "barney", "weapon_ar2", CSF_EVIL)->m_iChaosID;
+		m_iSavedChaosID = ChaosSpawnNPC("npc_barney", MAKE_STRING("#hl2c_evil_barney"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "barney", "weapon_ar2", CSF_EVIL)->m_iChaosID;
 		break;
 	case EFFECT_EVIL_KLEINER:
-		m_iSavedChaosID = ChaosSpawnNPC("npc_kleiner", MAKE_STRING("Krazy Kleiner"), SPAWNTYPE_EYELEVEL_REGULAR, "models/kleiner.mdl", "kleiner", "weapon_shotgun", CSF_EVIL)->m_iChaosID;
+		m_iSavedChaosID = ChaosSpawnNPC("npc_kleiner", MAKE_STRING("#hl2c_evil_dr_k"), SPAWNTYPE_EYELEVEL_REGULAR, "models/kleiner.mdl", "kleiner", "weapon_shotgun", CSF_EVIL)->m_iChaosID;
 		break;
 	case EFFECT_EVIL_GRIGORI:
-		m_iSavedChaosID = ChaosSpawnNPC("npc_monk", MAKE_STRING("Griefing Grigori"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "monk", "weapon_annabelle", CSF_EVIL)->m_iChaosID;
+		m_iSavedChaosID = ChaosSpawnNPC("npc_monk", MAKE_STRING("#hl2c_evil_grig"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "monk", "weapon_annabelle", CSF_EVIL)->m_iChaosID;
 		break;
 	case EFFECT_EVIL_MOSSMAN:
-		m_iSavedChaosID = ChaosSpawnNPC("npc_mossman", MAKE_STRING("Malignant Mossman"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "mossman", "weapon_crowbar", CSF_EVIL)->m_iChaosID;
+		m_iSavedChaosID = ChaosSpawnNPC("npc_mossman", MAKE_STRING("#hl2c_evil_mossman"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "mossman", "weapon_crowbar", CSF_EVIL)->m_iChaosID;
 		break;
 	case EFFECT_EVIL_VORT:
-		m_iSavedChaosID = ChaosSpawnNPC("npc_vortigaunt", MAKE_STRING("Vexing Vortigaunt"), SPAWNTYPE_EYELEVEL_REGULAR, "models/vortigaunt.mdl", "vortigaunt", "_", CSF_EVIL)->m_iChaosID;
+		m_iSavedChaosID = ChaosSpawnNPC("npc_vortigaunt", MAKE_STRING("#hl2c_evil_vort"), SPAWNTYPE_EYELEVEL_REGULAR, "models/vortigaunt.mdl", "vortigaunt", "_", CSF_EVIL)->m_iChaosID;
 		break;
 		/*
 	case EFFECT_EVIL_ELI:
@@ -9109,7 +9108,7 @@ void CEForceInOutCar::StartEffect()
 		pVehicle->SetLocked(false);
 		pPlayer->GetVehicle()->HandlePassengerExit(pPlayer);
 		pVehicle->SetLocked(bWasLocked);
-		m_strHudName = MAKE_STRING("Force Out of Vehicle");
+		m_strHudName = MAKE_STRING("#hl2c_force_out_veh");
 	}
 	else
 	{
@@ -9130,7 +9129,7 @@ void CEForceInOutCar::DoOnVehicles(CPropVehicleDriveable *pVehicle)
 		pVehicle->SetLocked(false);
 		pVehicle->GetServerVehicle()->HandlePassengerEntry(UTIL_GetLocalPlayer(), true);
 		pVehicle->SetLocked(bWasLocked);
-		m_strHudName = MAKE_STRING("Force Into Vehicle");
+		m_strHudName = MAKE_STRING("#hl2c_force_in_veh");
 		m_bFoundOne = true;
 	}
 }
@@ -9329,7 +9328,7 @@ void CESuitSwap::StartEffect()
 void CEGiveAllRPG::StartEffect()
 {
 	//player
-	ChaosSpawnWeapon("weapon_rpg", MAKE_STRING("Give Everyone RPGs"), 3, "rpg_round");
+	ChaosSpawnWeapon("weapon_rpg", MAKE_STRING("#hl2c_giveallrpgs"), 3, "rpg_round");
 	//NPCs
 	CBaseEntity *pEnt = gEntList.FindEntityByClassname(NULL, "npc*");
 	while (pEnt)

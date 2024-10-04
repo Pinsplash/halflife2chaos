@@ -30,6 +30,7 @@ struct client_textmessage_t
 	byte	boxcolor[4];
 	char const *pClearMessage; // message to clear
 	int drawtype;
+	int timertime;
 };
 
 #endif // CLIENT_TEXTMESSAGE_H

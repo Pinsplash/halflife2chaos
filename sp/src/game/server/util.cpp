@@ -1059,6 +1059,7 @@ void UTIL_HudMessage( CBasePlayer *pToPlayer, const hudtextparms_t &textparms, c
 		WRITE_FLOAT( textparms.holdTime );
 		WRITE_FLOAT(textparms.fxTime);
 		WRITE_BYTE(textparms.drawtype);
+		WRITE_BYTE(textparms.timertime);
 		WRITE_STRING( pMessage );
 	MessageEnd();
 }
