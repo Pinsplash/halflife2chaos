@@ -1759,7 +1759,7 @@ void CBaseEntity::FireBullets( const FireBulletsInfo_t &info )
 			{
 				if (random->RandomInt(g_iGrenades, 300) > 150)//hard cap at 150, but between 50 and 150, randomly omit more grenades so that NPCs don't abruptly stop firing when the limit is hit
 				{
-					Warning("WARNING: Hitting grenade limit!\n");
+					Warning("WARNING: Hitting grenade limit! count: %i\n", g_iGrenades);
 					continue;
 				}
 			}
@@ -1780,7 +1780,6 @@ void CBaseEntity::FireBullets( const FireBulletsInfo_t &info )
 			}
 			Fraggrenade_Create(info.m_vecSrc, vec3_angle, vecDir * flForce, AngularImpulse(600, random->RandomInt(-1200, 1200), 0), pAttacker, 3, false);
 			iSeed++;
-			g_iGrenades++;
 			continue;
 		}
 #endif

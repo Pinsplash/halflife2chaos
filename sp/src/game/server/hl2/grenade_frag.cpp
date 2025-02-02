@@ -22,6 +22,7 @@
 #define FRAG_GRENADE_WARN_TIME 1.5f
 
 const float GRENADE_COEFFICIENT_OF_RESTITUTION = 0.2f;
+extern int g_iGrenades;
 
 ConVar sk_plr_dmg_fraggrenade	( "sk_plr_dmg_fraggrenade","0");
 ConVar sk_npc_dmg_fraggrenade	( "sk_npc_dmg_fraggrenade","0");
@@ -451,6 +452,8 @@ CBaseGrenade *Fraggrenade_Create( const Vector &position, const QAngle &angles, 
 	pGrenade->m_takedamage = DAMAGE_EVENTS_ONLY;
 	pGrenade->SetCombineSpawned( combineSpawned );
 
+	g_iGrenades++;
+	//Msg("Made grenade %i, new count: %i\n", pGrenade->entindex(), g_iGrenades);
 	return pGrenade;
 }
 

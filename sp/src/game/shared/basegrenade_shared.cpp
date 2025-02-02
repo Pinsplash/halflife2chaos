@@ -115,7 +115,9 @@ END_PREDICTION_DATA()
 void CBaseGrenade::Explode( trace_t *pTrace, int bitsDamageType )
 {
 #if !defined( CLIENT_DLL )
+	Assert(g_iGrenades > 0);
 	g_iGrenades--;
+	//Msg("grenade %i exploded, new count: %i\n", entindex(), g_iGrenades);
 	SetModelName( NULL_STRING );//invisible
 	AddSolidFlags( FSOLID_NOT_SOLID );
 

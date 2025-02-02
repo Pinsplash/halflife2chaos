@@ -90,3 +90,4 @@ sp/src/games.sln
 *.filters
 *.vpc_crc
 sp/src/.vs/everything/v17/DocumentLayout.backup.json
+sp/src/game/client/client_episodic.vcxproj.user
