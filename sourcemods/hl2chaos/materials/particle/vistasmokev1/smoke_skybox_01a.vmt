@@ -1,0 +1,15 @@
+"SpriteCard"
+{
+	$basetexture "particle/vistaSmokeV1/smoke_skybox_01a"
+	$DUALSEQUENCE 1
+	$depthblend 1
+	$depthblendscale 128
+	$SEQUENCE_BLEND_MODE 1 
+	$MAXLUMFRAMEBLEND1 0
+	$MAXLUMFRAMEBLEND2 1
+	$ZOOMANIMATESEQ2 4
+	$depthblend 1
+	"!srgb?$overbrightfactor" "1.2"
+	$STARTFADESIZE 1
+	$ENDFADESIZE 1.4
+}

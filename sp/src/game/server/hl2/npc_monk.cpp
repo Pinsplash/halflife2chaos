@@ -266,7 +266,7 @@ void CNPC_Monk::Spawn()
 	SetModel( "models/Monk.mdl" );
 
 	SetHullType(HULL_HUMAN);
-	SetHullSizeNormal();
+	SetHullSizeNormal(true);
 
 	SetSolid( SOLID_BBOX );
 	AddSolidFlags( FSOLID_NOT_STANDABLE );

@@ -1,0 +1,7 @@
+"UnlitGeneric"
+{
+	"$basetexture"	"Effects/fog_d2_coast_01"
+	"$translucent"	1
+ 	"$nodecal" 1 
+
+}

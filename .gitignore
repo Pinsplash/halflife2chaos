@@ -89,3 +89,4 @@ sp/src/games.sln
 *.vcxproj
 *.filters
 *.vpc_crc
+sp/src/.vs/everything/v17/DocumentLayout.backup.json

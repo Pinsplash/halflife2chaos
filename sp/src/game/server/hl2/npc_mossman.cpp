@@ -100,7 +100,7 @@ void CNPC_Mossman::Spawn()
 	SetModel( "models/mossman.mdl" );
 
 	SetHullType(HULL_HUMAN);
-	SetHullSizeNormal();
+	SetHullSizeNormal(true);
 
 	SetSolid( SOLID_BBOX );
 	AddSolidFlags( FSOLID_NOT_STANDABLE );

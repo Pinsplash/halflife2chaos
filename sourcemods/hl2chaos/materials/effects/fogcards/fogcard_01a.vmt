@@ -1,0 +1,31 @@
+"Unlittwotexture"
+{
+	"$basetexture" "effects/fogcards/fogcard_01a"
+	"$texture2" "effects/fogcards/fogcard_mask_01"
+
+	"$translucent" "1"
+	"$envmap" "env_cubemap"
+	"$envmaptint" "[1 1 1]"
+	"$color" "[.60 .45 .32]"
+	
+	"$additive" 1
+	"$nodecal" 1
+
+	"Proxies"
+	{
+
+		"TextureScroll"
+		{
+			"texturescrollvar" "$texture2transform"
+			"texturescrollrate" .02
+			"texturescrollangle" -0
+		}
+		"TextureScroll"
+		{
+			"texturescrollvar" "$basetexturetransform"
+			"texturescrollrate" .015
+			"texturescrollangle" 0
+		}
+
+	}
+}

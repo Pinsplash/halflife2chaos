@@ -460,9 +460,6 @@ enum sharedtasks_e
 		TASK_ITEM_PICKUP,
 		TASK_ITEM_RUN_PATH,
 
-		// Use small hull for tight navigation
-		TASK_USE_SMALL_HULL,
-
 		// wait until you are on ground
 		TASK_FALL_TO_GROUND,
 

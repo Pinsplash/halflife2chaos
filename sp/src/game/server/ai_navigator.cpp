@@ -1924,16 +1924,6 @@ bool CAI_Navigator::OnFailedSteer( AILocalMoveGoal_t *pMoveGoal, float distClear
 		}
 	}
 
-#if 0
-	if ( pMoveGoal->directTrace.pObstruction->MyNPCPointer() &&
-		 !GetOuter()->IsUsingSmallHull() && 
-		 GetOuter()->SetHullSizeSmall() )
-	{
-		*pResult = AIMR_CHANGE_TYPE;
-		return true;
-	}
-#endif
-
 	if ( !TestingSteering() && pMoveGoal->directTrace.fStatus == AIMR_BLOCKED_NPC && pMoveGoal->directTrace.vHitNormal != vec3_origin )
 	{
 		AIMoveTrace_t moveTrace;

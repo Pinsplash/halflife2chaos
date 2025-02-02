@@ -715,6 +715,12 @@ void CC_NPC_Route( const CCommand &args )
 }
 static ConCommand npc_route("npc_route", CC_NPC_Route, "Displays the current route of the given NPC as a line on the screen.  Waypoints along the route are drawn as small cyan rectangles.  Line is color coded in the following manner:\n\tBlue	- path to a node\n\tCyan	- detour around an object (triangulation)\n\tRed	- jump\n\tMaroon - path to final target position\n\tArguments:   	{npc_name} / {npc_class_name} / no argument picks what player is looking at ", FCVAR_NONE);
 
+void CC_NPC_AIHull(const CCommand &args)
+{
+	SetDebugBits(UTIL_GetCommandClient(), args[1], OVERLAY_PROP_DEBUG);
+}
+static ConCommand npc_aihull("npc_aihull", CC_NPC_AIHull, "NPC's ai hull", FCVAR_NONE);
+
 //------------------------------------------------------------------------------
 // Purpose: Select an NPC
 //------------------------------------------------------------------------------

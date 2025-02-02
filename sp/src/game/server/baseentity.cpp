@@ -792,6 +792,7 @@ void CBaseEntity::SendDebugPivotOverlay( void )
 //------------------------------------------------------------------------------
 void CBaseEntity::EntityText( int text_offset, const char *text, float duration, int r, int g, int b, int a )
 {
+#if 0
 	Vector origin;
 	Vector vecLocalCenter;
 
@@ -808,6 +809,9 @@ void CBaseEntity::EntityText( int text_offset, const char *text, float duration,
 	}
 
 	NDebugOverlay::EntityTextAtPosition( origin, text_offset, text, duration, r, g, b, a );
+#endif
+	//not having this at the entity origin pisses me off
+	NDebugOverlay::EntityTextAtPosition(GetAbsOrigin(), text_offset, text, duration, r, g, b, a);
 }
 
 //------------------------------------------------------------------------------
@@ -1024,6 +1028,12 @@ int CBaseEntity::DrawDebugTextOverlays(void)
 		Vector vecOrigin = GetAbsOrigin();
 		Q_snprintf( tempstr, sizeof(tempstr), "Position: %0.1f, %0.1f, %0.1f\n", vecOrigin.x, vecOrigin.y, vecOrigin.z );
 		EntityText( offset, tempstr, 0 );
+		offset++;
+		CCollisionProperty *pCollide = CollisionProp();
+		Vector mins = pCollide->OBBMins();
+		Vector maxs = pCollide->OBBMaxs();
+		Q_snprintf(tempstr, sizeof(tempstr), "Mins: %0.1f, %0.1f, %0.1f Maxs: %0.1f, %0.1f, %0.1f\n", mins.x, mins.y, mins.z, maxs.x, maxs.y, maxs.z);
+		EntityText(offset, tempstr, 0);
 		offset++;
 
 		if( GetModelName() != NULL_STRING || GetBaseAnimating() )

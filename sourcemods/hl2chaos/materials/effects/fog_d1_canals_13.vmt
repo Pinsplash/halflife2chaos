@@ -1,0 +1,7 @@
+"UnlitGeneric"
+{
+	"$basetexture"	"Effects/fog_gradient"
+	"$translucent"	1
+ 	"$nodecal" 1 
+	"$color" "[ 0.84 0.61 0.37 ]"
+}

@@ -366,7 +366,7 @@ bool CAI_BaseNPC::IsScheduleValid()
 		if ( HasCondition ( COND_TASK_FAILED ) && m_failSchedule == SCHED_NONE )
 		{
 			// fail! Send a visual indicator.
-			DevWarning( 2, "Schedule: %s Failed\n", GetCurSchedule()->GetName() );
+			Warning("Schedule: %s Failed\n", GetCurSchedule()->GetName() );
 
 			Vector tmp;
 			CollisionProp()->NormalizedToWorldSpace( Vector( 0.5f, 0.5f, 1.0f ), &tmp );
@@ -3022,13 +3022,6 @@ void CAI_BaseNPC::StartTask( const Task_t *pTask )
 				}
 			}
 			SetTarget( NULL );
-			TaskComplete();
-		}
-		break;
-
-	case TASK_USE_SMALL_HULL:
-		{
-			SetHullSizeSmall();
 			TaskComplete();
 		}
 		break;

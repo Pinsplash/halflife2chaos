@@ -19,6 +19,7 @@
 namespace NDebugOverlay
 {
 	void	Box(const Vector &origin, const Vector &mins, const Vector &maxs, int r, int g, int b, int a, float flDuration);
+	void	HullTrace(const Vector& start, const Vector& end, const Vector& hitpos, const Vector &mins, const Vector &maxs, int r, int g, int b, int a, float flDuration);
 	void	BoxDirection(const Vector &origin, const Vector &mins, const Vector &maxs, const Vector &forward, int r, int g, int b, int a, float flDuration);
 	void	BoxAngles(const Vector &origin, const Vector &mins, const Vector &maxs, const QAngle &angles, int r, int g, int b, int a, float flDuration);
 	void	SweptBox(const Vector& start, const Vector& end, const Vector& mins, const Vector& maxs, const QAngle & angles, int r, int g, int b, int a, float flDuration);

@@ -1,0 +1,7 @@
+"UnlitGeneric"
+{
+	"$basetexture"	"Effects/fogcards/fogcard_07a"
+	"$translucent"	1
+ 	"$nodecal" 1 
+
+}

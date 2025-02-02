@@ -659,3 +659,11 @@ void NDebugOverlay::Sphere( const Vector &position, const QAngle &angles, float 
 	Circle( position, yAxis, zAxis, radius, r, g, b, a, bNoDepthTest, flDuration );	// yz plane
 	Circle( position, xAxis, zAxis, radius, r, g, b, a, bNoDepthTest, flDuration );	// xz plane
 }
+
+void NDebugOverlay::HullTrace(const Vector& start, const Vector& end, const Vector& hitpos, const Vector &mins, const Vector &maxs, int r, int g, int b, int a, float flDuration)
+{
+	NDebugOverlay::Box(start, mins, maxs, r, g, b, a, flDuration);
+	NDebugOverlay::Line(start, end, r, g, b, true, flDuration);
+	NDebugOverlay::Box(hitpos, mins, maxs, 0, 0, 255, a, flDuration);
+	NDebugOverlay::Box(end, mins, maxs, r, g, b, a, flDuration);
+}

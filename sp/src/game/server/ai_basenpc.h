@@ -1907,9 +1907,6 @@ public:
 public:
 	// use this to shrink the bbox temporarily
 	void				SetHullSizeNormal( bool force = false );
-	bool				SetHullSizeSmall( bool force = false );
-
-	bool				IsUsingSmallHull() const	{ return m_fIsUsingSmallHull; }
 
 	const Vector &		GetHullMins() const		{ return NAI_Hull::Mins(GetHullType()); }
 	const Vector &		GetHullMaxs() const		{ return NAI_Hull::Maxs(GetHullType()); }
@@ -1921,8 +1918,6 @@ public:
 	void				CheckPhysicsContacts();
 
 private:
-	void				TryRestoreHull( void );
-	bool				m_fIsUsingSmallHull;
 	bool				m_bCheckContacts;
 
 private:

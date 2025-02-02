@@ -1,0 +1,12 @@
+"UnlitGeneric"
+{
+	// Original shader: BaseTextureAlphaBlend
+	"$alpha" 1
+	"$translucent" 1
+	"$basetexture" "models/props_foliage/tree_deciduous_cards_01_darker"
+	"$model" 1
+	"$nocull" 1
+	"$nodecal" 1
+	"$color" "[ 0 0 0 ]"
+}
+

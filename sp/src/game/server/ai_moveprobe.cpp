@@ -29,6 +29,7 @@ ConVar	ai_moveprobe_debug( "ai_moveprobe_debug", "0" );
 ConVar	ai_moveprobe_jump_debug( "ai_moveprobe_jump_debug", "0" );
 ConVar	ai_moveprobe_usetracelist( "ai_moveprobe_usetracelist", "0" );
 
+ConVar	ai_moveprobe_debug_stand("ai_moveprobe_debug_stand", "0");
 ConVar	ai_strong_optimizations_no_checkstand( "ai_strong_optimizations_no_checkstand", "0" );
 
 #ifdef DEBUG
@@ -1188,12 +1189,20 @@ bool CAI_MoveProbe::CheckStandPosition( const Vector &vecStart, unsigned int col
 		TraceHull( vecUp, vecDown, contactMin, vHullBottomCenter, collisionMask, &trace1 );
 		if ( trace1.fraction != 1.0 && CanStandOn( trace1.m_pEnt ) )
 		{
+			if (ai_moveprobe_debug_stand.GetBool())
+				NDebugOverlay::HullTrace(vecUp, vecDown, trace1.endpos, contactMin, vHullBottomCenter, 0, 255, 0, 0, 1);
 			TraceHull( vecUp, vecDown, vHullBottomCenter, contactMax, collisionMask, &trace2 );
 			if ( trace2.fraction != 1.0 && ( trace1.m_pEnt == trace2.m_pEnt || CanStandOn( trace2.m_pEnt ) ) )
 			{
+				if (ai_moveprobe_debug_stand.GetBool())
+					NDebugOverlay::HullTrace(vecUp, vecDown, trace2.endpos, vHullBottomCenter, contactMax, 0, 255, 0, 0, 1);
 				return true;
 			}
+			else if (ai_moveprobe_debug_stand.GetBool())
+				NDebugOverlay::HullTrace(vecUp, vecDown, trace2.endpos, vHullBottomCenter, contactMax, 255, 0, 0, 0, 1);
 		}
+		else if (ai_moveprobe_debug_stand.GetBool())
+			NDebugOverlay::HullTrace(vecUp, vecDown, trace1.endpos, contactMin, vHullBottomCenter, 255, 0, 0, 0, 1);
 
 		// Okay, try the other one
 		Vector testMin;
@@ -1204,21 +1213,35 @@ bool CAI_MoveProbe::CheckStandPosition( const Vector &vecStart, unsigned int col
 		TraceHull( vecUp, vecDown, testMin, testMax, collisionMask, &trace1 );
 		if ( trace1.fraction != 1.0 && CanStandOn( trace1.m_pEnt ) )
 		{
+			if (ai_moveprobe_debug_stand.GetBool())
+				NDebugOverlay::HullTrace(vecUp, vecDown, trace1.endpos, testMin, testMax, 0, 255, 0, 0, 1);
 			testMin.Init(0, contactMin.y, vHullMins.z);
 			testMax.Init(contactMax.x, 0, vHullMins.z);
 			TraceHull( vecUp, vecDown, testMin, testMax, collisionMask, &trace2 );
 			if ( trace2.fraction != 1.0 && ( trace1.m_pEnt == trace2.m_pEnt || CanStandOn( trace2.m_pEnt ) ) )
 			{
+				if (ai_moveprobe_debug_stand.GetBool())
+					NDebugOverlay::HullTrace(vecUp, vecDown, trace1.endpos, testMin, testMax, 0, 255, 0, 0, 1);
 				return true;
 			}
+			else if (ai_moveprobe_debug_stand.GetBool())
+				NDebugOverlay::HullTrace(vecUp, vecDown, trace2.endpos, testMin, testMax, 255, 0, 0, 0, 1);
 		}
+		else if (ai_moveprobe_debug_stand.GetBool())
+			NDebugOverlay::HullTrace(vecUp, vecDown, trace1.endpos, testMin, testMax, 255, 0, 0, 0, 1);
 	}
 	else
 	{
 		AI_PROFILE_SCOPE( CAI_Motor_CheckStandPosition_Center );
 		TraceHull( vecUp, vecDown, contactMin, contactMax, collisionMask, &trace1 );
-		if ( trace1.fraction != 1.0 && CanStandOn( trace1.m_pEnt ) )
+		if (trace1.fraction != 1.0 && CanStandOn(trace1.m_pEnt))
+		{
+			if (ai_moveprobe_debug_stand.GetBool())
+				NDebugOverlay::HullTrace(vecUp, vecDown, trace1.endpos, contactMin, contactMax, 0, 255, 0, 0, 1);
 			return true;
+		}
+		else if (ai_moveprobe_debug_stand.GetBool())
+			NDebugOverlay::HullTrace(vecUp, vecDown, trace1.endpos, contactMin, contactMax, 255, 0, 0, 0, 1);
 	}
 
 	return false;

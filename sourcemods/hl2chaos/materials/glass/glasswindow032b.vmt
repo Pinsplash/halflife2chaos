@@ -1,0 +1,7 @@
+"LightmappedGeneric"
+{
+	"$basetexture" "Glass/glasswindow032b"
+	"$selfillum" 1
+	"$surfaceprop" "glass"
+	"%keywords" "c17industrial"
+}

@@ -1,0 +1,10 @@
+"WorldVertexTransition"
+{
+	"$basetexture" "concrete/concretefloor020a"
+	"$basetexture2" "plaster/plasterwall009d"
+	"$bumpmap" "concrete/concretefloor020a_normal"
+	"$blendmodulatetexture" "nature/blendrubbleash001a_blend"
+	"%tooltexture" "nature/blendrubbleash001a_tooltexture"
+	"%keywords" "c17"
+	"$surfaceprop" "dirt"
+}

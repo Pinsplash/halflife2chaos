@@ -2291,29 +2291,6 @@ CBaseGrenade* CAI_BaseNPC::IncomingGrenade(void)
 	return NULL;
 }
 
-
-//-----------------------------------------------------------------------------
-// Purpose: Check my physical state with the environment
-// Input  :
-// Output :
-//-----------------------------------------------------------------------------
-void CAI_BaseNPC::TryRestoreHull(void)
-{
-	if ( IsUsingSmallHull() && GetCurSchedule() )
-	{
-		trace_t tr;
-		Vector	vUpBit = GetAbsOrigin();
-		vUpBit.z += 1;
-
-		AI_TraceHull( GetAbsOrigin(), vUpBit, GetHullMins(),
-			GetHullMaxs(), MASK_SOLID, this, COLLISION_GROUP_NONE, &tr );
-		if ( !tr.startsolid && (tr.fraction == 1.0) )
-		{
-			SetHullSizeNormal();
-		}
-	}
-}
-
 //=========================================================
 //=========================================================
 int CAI_BaseNPC::GetSoundInterests( void )
@@ -4892,8 +4869,6 @@ void CAI_BaseNPC::RunAI( void )
 	if ( !m_bConditionsGathered )
 		m_bConditionsGathered = true; // derived class didn't call to base
 
-	TryRestoreHull();
-
 	g_AIPrescheduleThinkTimer.Start();
 
 	AI_PROFILE_SCOPE_BEGIN(CAI_RunAI_PrescheduleThink);
@@ -6739,7 +6714,7 @@ void CAI_BaseNPC::StartTouch( CBaseEntity *pOther )
 //-----------------------------------------------------------------------------
 void CAI_BaseNPC::SetHullSizeNormal( bool force )
 {
-	if ( m_fIsUsingSmallHull || force )
+	//if ( force )
 	{
 		// Find out what the height difference will be between the versions and adjust our bbox accordingly to keep us level
 		const float flScale = GetModelScale();
@@ -6748,32 +6723,11 @@ void CAI_BaseNPC::SetHullSizeNormal( bool force )
 		
 		UTIL_SetSize( this, vecMins, vecMaxs );
 
-		m_fIsUsingSmallHull = false;
 		if ( VPhysicsGetObject() )
 		{
 			SetupVPhysicsHull();
 		}
 	}
-}
-
-//-----------------------------------------------------------------------------
-// Purpose: To be called instead of UTIL_SetSize, so pathfinding hull
-//			and actual hull agree
-// Input  :
-// Output :
-//-----------------------------------------------------------------------------
-bool CAI_BaseNPC::SetHullSizeSmall( bool force )
-{
-	if ( !m_fIsUsingSmallHull || force )
-	{
-		UTIL_SetSize(this, NAI_Hull::SmallMins(GetHullType()),NAI_Hull::SmallMaxs(GetHullType()));
-		m_fIsUsingSmallHull = true;
-		if ( VPhysicsGetObject() )
-		{
-			SetupVPhysicsHull();
-		}
-	}
-	return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -8738,6 +8692,13 @@ void CAI_BaseNPC::DrawDebugGeometryOverlays(void)
 			Vector vecYaw = UTIL_YawToVector(yaw);
 			NDebugOverlay::Line(WorldSpaceCenter(),WorldSpaceCenter() + vecYaw * GetHullWidth() * .5,255,255,255,true,0.0);
 		}
+	}
+
+	//show your AI Hull (does not necessarily match regular hull)
+	if ((m_debugOverlays & OVERLAY_PROP_DEBUG))
+	{
+		NDebugOverlay::Box(GetAbsOrigin(), GetHullMins(), GetHullMaxs(), 255, 255, 0, 40, -1);
+		NDebugOverlay::Cross3D(GetAbsOrigin(), 16, 255, 255, 0, false, -1);
 	}
 
 	if (!(CAI_BaseNPC::m_nDebugBits & bits_debugDisableAI) && (IsCurSchedule(SCHED_FORCED_GO) || IsCurSchedule(SCHED_FORCED_GO_RUN)))
@@ -10753,7 +10714,6 @@ BEGIN_DATADESC( CAI_BaseNPC )
 	// Satisfy classcheck
 	// DEFINE_FIELD( m_ScheduleHistory, CUtlVector < AIScheduleChoice_t > ),
 
-	//							m_fIsUsingSmallHull			TODO -- This needs more consideration than simple save/load
 	// 							m_failText					DEBUG
 	// 							m_interruptText				DEBUG
 	// 							m_failedSchedule			DEBUG
@@ -11397,8 +11357,6 @@ CAI_BaseNPC::CAI_BaseNPC(void)
 	m_pSquad					= NULL;
 
 	m_flMoveWaitFinished		= 0;
-
-	m_fIsUsingSmallHull			= true;
 
 	m_bHintGroupNavLimiting		= false;
 

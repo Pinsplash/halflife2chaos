@@ -1,0 +1,34 @@
+"UnLitTwoTexture"
+{
+	"%tooltexture" "shadertest/cloudalpha"
+	"$basetexture" "effects/fogcards/cloudmask_01a"
+	"$texture2" "shadertest/cloudalpha"
+
+	"$additive" "1"
+	"$color" "[.67 .50 .33]"
+	"$nocull" "1"
+	"$no_fullbright" 1
+
+	"$scale" "[6 6]"
+	"$scroll" "[1 0]"
+	"Proxies"
+	{
+		"LinearRamp"
+		{
+			"resultVar" "$scroll[0]"
+			"rate" 0
+		}
+		"LinearRamp"
+		{
+			"resultVar" "$scroll[1]"
+			"rate" .02
+		}
+		"TextureTransform"
+		{
+			"scaleVar"	"$scale"
+			"translateVar"	"$scroll"
+			"resultVar"	"$basetexturetransform"
+		}
+
+	}
+}

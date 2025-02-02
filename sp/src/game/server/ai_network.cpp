@@ -21,6 +21,7 @@
 #include "tier0/memdbgon.h"
 
 ConVar ai_no_node_cache( "ai_no_node_cache", "0" );
+ConVar ai_debug_nearest_node("ai_debug_nearest_node", "0");
 
 extern float MOVE_HEIGHT_EPSILON;
 
@@ -285,8 +286,18 @@ int	CAI_Network::NearestNodeToPoint( CAI_BaseNPC *pNPC, const Vector &vecOrigin,
 
 			CTraceFilterNav traceFilter( pNPC, true, pNPC, COLLISION_GROUP_NONE );
 			AI_TraceLine ( vecOrigin, vTestLoc, MASK_NPCSOLID_BRUSHONLY, &traceFilter, &tr );
+			bool bBlocked = tr.fraction != 1.0;
+			if (ai_debug_nearest_node.GetBool())
+			{
+				if (bBlocked)
+					NDebugOverlay::Line(vecOrigin, tr.endpos, 255, 0, 0, true, 1);
+				else
+					NDebugOverlay::Line(vecOrigin, tr.endpos, 0, 255, 0, true, 1);
+				NDebugOverlay::Line(tr.endpos, vTestLoc, 255, 255, 255, true, 1);
+				NDebugOverlay::Cross3D(vecOrigin, 16, 255, 255, 255, true, 1);
+			}
 
-			if ( tr.fraction != 1.0 )
+			if (bBlocked)
 				cachedNode = NO_NODE;
 		}
 
@@ -330,12 +341,26 @@ int	CAI_Network::NearestNodeToPoint( CAI_BaseNPC *pNPC, const Vector &vecOrigin,
 		int smallest = list.ElementAtHead().nodeIndex;
 
 		// Check not already rejected above
-		if ( smallest == cachedNode )
+		if (smallest == cachedNode)
+		{
+			if (ai_debug_nearest_node.GetBool())
+			{
+				//yellow cross: already cached (and if reaching this code, rejected previously)
+				NDebugOverlay::Cross3D(m_pAInode[smallest]->GetOrigin(), 16, 255, 255, 0, true, 1);
+			}
 			continue;
+		}
 
 		// Check that this node is usable by the current hull size
-		if ( pNPC && !pNPC->GetNavigator()->CanFitAtNode(smallest))
+		if (pNPC && !pNPC->GetNavigator()->CanFitAtNode(smallest))
+		{
+			if (ai_debug_nearest_node.GetBool())
+			{
+				//orange cross: NPC can't fit
+				NDebugOverlay::Cross3D(m_pAInode[smallest]->GetOrigin(), 16, 255, 127, 0, true, 1);
+			}
 			continue;
+		}
 
 		if ( bCheckVisibility )
 		{
@@ -348,9 +373,19 @@ int	CAI_Network::NearestNodeToPoint( CAI_BaseNPC *pNPC, const Vector &vecOrigin,
 			Vector vecVisOrigin = vecOrigin + Vector(0,0,1);
 
 			CTraceFilterNav traceFilter( pNPC, true, pNPC, COLLISION_GROUP_NONE );
-			AI_TraceLine ( vecVisOrigin, vTestLoc, MASK_NPCSOLID_BRUSHONLY, &traceFilter, &tr );
+			AI_TraceLine(vecVisOrigin, vTestLoc, MASK_NPCSOLID_BRUSHONLY, &traceFilter, &tr);
+			bool bBlocked = tr.fraction != 1.0;
+			if (ai_debug_nearest_node.GetBool())
+			{
+				if (bBlocked)
+					NDebugOverlay::Line(vecOrigin, tr.endpos, 255, 0, 0, true, 1);
+				else
+					NDebugOverlay::Line(vecOrigin, tr.endpos, 0, 255, 0, true, 1);
+				NDebugOverlay::Line(tr.endpos, vTestLoc, 255, 255, 255, true, 1);
+				NDebugOverlay::Cross3D(vecOrigin, 16, 255, 255, 255, true, 1);
+			}
 
-			if ( tr.fraction != 1.0 )
+			if (bBlocked)
 				continue;
 		}
 
