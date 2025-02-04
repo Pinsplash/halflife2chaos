@@ -869,16 +869,22 @@ void CHudMessage::MsgFunc_HudMsg(bf_read &msg)
 	//maybe don't put literal 255 here...
 	if (pNetMessage->timertime != 255)
 	{
-		char szMessage[512];
 		const char *pOriginalMsg = pNetMessage->pMessage;
 		//localize right now. this is a special case because of the time display that comes after the string
 		wchar_t *pwcText = g_pVGuiLocalize->Find(pOriginalMsg);
-		char szLocalized[512];
-		g_pVGuiLocalize->ConvertUnicodeToANSI(pwcText, szLocalized, sizeof(szLocalized));
-		Q_snprintf(szMessage, sizeof(szMessage), "%s (%d)", szLocalized, pNetMessage->timertime);
-		pNetMessage->pMessage = strdup(szMessage);
+		if (pwcText)
+		{
+			char szLocalized[512];
+			g_pVGuiLocalize->ConvertUnicodeToANSI(pwcText, szLocalized, sizeof(szLocalized));
+			//TODO: This naked 64 is not proper...
+			Q_snprintf((char*)pNetMessage->pMessage, 64, "%s (%d)", szLocalized, pNetMessage->timertime);
+		}
+		else
+		{
+			Msg("null string\n");
+		}
 	}
-	Msg("%s\n", pNetMessage->pMessage);
+	//Msg("%s\n", pNetMessage->pMessage);
 	MessageAdd( pNetMessage->pName );
 }
 
