@@ -1,7 +1,7 @@
 "GameInfo"
 {
-	game 		"HL2 Chaos v0.4.0"
-	title 		"HL2 Chaos v0.4.0"
+	game 		"HL2 Chaos v0.4.1"
+	title 		"HL2 Chaos v0.4.1"
 	type		singleplayer_only
 
 	FileSystem
