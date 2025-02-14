@@ -593,6 +593,7 @@ void CKeyBoardEditorPage::PopulateList()
 		int bindings = sm->current.Count();
 		for ( j = 0; j < bindings; ++j )
 		{
+			/*
 			BoundKey_t *kbMap = &sm->current[ j ];
 			Assert( kbMap );
 
@@ -607,6 +608,7 @@ void CKeyBoardEditorPage::PopulateList()
 			AnsiText( loc, ansi, sizeof( ansi ) );
 
 			item->SetString( "Action", ansi );
+			Msg("%s\n", ansi);
 			item->SetWString( "Binding", Panel::KeyCodeModifiersToDisplayString( (KeyCode)kbMap->keycode, kbMap->modifiers ) );
 
 			// Find the binding
@@ -621,12 +623,14 @@ void CKeyBoardEditorPage::PopulateList()
 			item->SetPtr( "Item", kbMap );			
 
 			sorted.Insert( item );
+			*/
 		}
 
 		// Now try and find any "unbound" keys...
 		int mappings = m->entries.Count();
 		for ( j = 0; j < mappings; ++j )
 		{
+			/*
 			KeyBindingMap_t *kbMap = &m->entries[ j ];
 
 			// See if it's bound
@@ -647,6 +651,7 @@ void CKeyBoardEditorPage::PopulateList()
 			AnsiText( loc, ansi, sizeof( ansi ) );
 
 			item->SetString( "Action", ansi );
+			Msg("%s\n", ansi);
 			item->SetWString( "Binding", L"" );
 			if ( kbMap->helpstring )
 			{
@@ -657,6 +662,7 @@ void CKeyBoardEditorPage::PopulateList()
 			item->SetPtr( "Unbound", kbMap );						
 
 			sorted.Insert( item );
+			*/
 		}
 	}
 

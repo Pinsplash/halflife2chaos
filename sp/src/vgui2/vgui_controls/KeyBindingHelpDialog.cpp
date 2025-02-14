@@ -268,12 +268,13 @@ void CKeyBindingHelpDialog::PopulateList()
 	for ( i = 0; i < c; ++i )
 	{
 		PanelKeyBindingMap *m = maps[ i ].m_pMap;
-		Panel *pPanel = maps[i].m_pPanel;
+		//Panel *pPanel = maps[i].m_pPanel;
 		Assert( m );
 
 		int bindings = m->boundkeys.Count();
 		for ( j = 0; j < bindings; ++j )
 		{
+			/*
 			BoundKey_t *kbMap = &m->boundkeys[ j ];
 			Assert( kbMap );
 
@@ -288,6 +289,7 @@ void CKeyBindingHelpDialog::PopulateList()
 			AnsiText( loc, ansi, sizeof( ansi ) );
 
 			item->SetString( "Action", ansi );
+			Msg("%s\n", ansi);
 			item->SetWString( "Binding", Panel::KeyCodeModifiersToDisplayString( (KeyCode)kbMap->keycode, kbMap->modifiers ) );
 
 			// Find the binding
@@ -302,12 +304,14 @@ void CKeyBindingHelpDialog::PopulateList()
 			item->SetPtr( "Item", kbMap );			
 
 			sorted.Insert( item );
+			*/
 		}
 
 		// Now try and find any "unbound" keys...
 		int mappings = m->entries.Count();
 		for ( j = 0; j < mappings; ++j )
 		{
+			/*
 			KeyBindingMap_t *kbMap = &m->entries[ j ];
 
 			// See if it's bound
@@ -328,6 +332,7 @@ void CKeyBindingHelpDialog::PopulateList()
 			AnsiText( loc, ansi, sizeof( ansi ) );
 
 			item->SetString( "Action", ansi );
+			Msg("%s\n", ansi);
 			item->SetWString( "Binding", L"" );
 			if ( kbMap->helpstring )
 			{
@@ -338,6 +343,7 @@ void CKeyBindingHelpDialog::PopulateList()
 			item->SetPtr( "Unbound", kbMap );						
 
 			sorted.Insert( item );
+			*/
 		}
 	}
 

@@ -1099,7 +1099,9 @@ void ConVarRef::Init( const char *pName, bool bIgnoreMissing )
 		{
 			if ( !bIgnoreMissing )
 			{
-				Warning( "ConVarRef %s doesn't point to an existing ConVar\n", pName );
+				//there is apparently a second warning exactly like this one somewhere in engine code
+				//this one has had the word "Init" added to avoid confusion
+				Warning( "Init: ConVarRef %s doesn't point to an existing ConVar\n", pName );
 			}
 			bFirst = false;
 		}
