@@ -1549,6 +1549,7 @@ public:
 
 	bool m_bChaosSpawned;//keep track of certain things that we may want to delete when resetting chaos
 	bool m_bChaosPersist;//keep track of things that should have their state persist through saves (in the same fashion the abstract chaos effects themselves do)
+	float m_flGravityAtActivation;
 private:
 	// origin and angles to use in step calculations
 	virtual	Vector			GetStepOrigin( void ) const;

@@ -424,6 +424,8 @@ public:
 	void StopEffect() override;
 	bool CheckStrike(const CTakeDamageInfo &info) override;
 	void MaintainEffect() override;
+	void FastThink() override;
+	void FixVehicleGravity(const char* szClassname, float flTargetGravity, float flScale);
 };
 class CEPhysSpeedSet : public CChaosEffect
 {

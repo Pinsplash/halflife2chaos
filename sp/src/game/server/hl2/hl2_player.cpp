@@ -8572,95 +8572,80 @@ void CEBumpy::DoOnVehicles(CPropVehicleDriveable *pVehicle)
 void CEGravitySet::StartEffect()
 {
 	bool bNegative = g_ChaosEffects[EFFECT_INVERTG]->m_bActive;
-	//CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
-	//CHL2_Player *pHL2Player = static_cast<CHL2_Player*>(pPlayer);
-	CBaseEntity *pVehicle;
 	switch (m_nID)
 	{
 	case EFFECT_ZEROG:
 		sv_gravity.SetValue(0);
 		Msg("Setting sv_gravity to 0\n");
-		pVehicle = gEntList.FindEntityByClassname(NULL, "prop_v*");
-		/*
-		while (pVehicle)
-		{
-			IPhysicsObject *pList[VPHYSICS_MAX_OBJECT_LIST_COUNT];
-			int count = pVehicle->VPhysicsGetObjectList(pList, ARRAYSIZE(pList));
-			if (count)
-			{
-				for (int i = 0; i < count; i++)
-				{
-					pHL2Player->m_pController->AttachObject(pList[i], true);
-				}
-			}
-			pVehicle = gEntList.FindEntityByClassname(pVehicle, "prop_v*");
-		}
-		*/
 		break;
 	case EFFECT_SUPERG:
 		sv_gravity.SetValue(bNegative ? -1800 : 1800);
 		Msg("Setting sv_gravity to %i\n", bNegative ? -1800 : 1800);
-		pVehicle = gEntList.FindEntityByClassname(NULL, "prop_v*");
-		while (pVehicle)
-		{
-			pVehicle->SetGravity(3);
-			pVehicle = gEntList.FindEntityByClassname(pVehicle, "prop_v*");
-		}
 		break;
 	case EFFECT_LOWG:
 		sv_gravity.SetValue(bNegative ? -200 : 200);
 		Msg("Setting sv_gravity to %i\n", bNegative ? -200 : 200);
-		pVehicle = gEntList.FindEntityByClassname(NULL, "prop_v*");
-		while (pVehicle)
-		{
-			pVehicle->SetGravity(0.3333f);
-			pVehicle = gEntList.FindEntityByClassname(pVehicle, "prop_v*");
-		}
 		break;
 	case EFFECT_INVERTG:
 		Msg("Setting sv_gravity to %i\n", -sv_gravity.GetInt());
 		sv_gravity.SetValue(-sv_gravity.GetInt());
-		pVehicle = gEntList.FindEntityByClassname(NULL, "prop_v*");
-		while (pVehicle)
-		{
-			pVehicle->SetGravity(-pVehicle->GetGravity());
-			pVehicle = gEntList.FindEntityByClassname(pVehicle, "prop_v*");
-		}
 		break;
 	}
 	physenv->SetGravity(Vector(0, 0, -GetCurrentGravity()));
 }
-/*
-//this counteracts the force of gravity. i don't know why this number works well, it just does.
-//I decided to not do this because each vehicle needs its own gravity amount and it just seems like an entire can of worms
-ConVar gravity_counter_amount("gravity_counter_amount", "-0.4f");
-IMotionEvent::simresult_e CHL2_Player::Simulate(IPhysicsMotionController *pController, IPhysicsObject *pObject, float deltaTime, Vector &linear, AngularImpulse &angular)
+void CEGravitySet::FixVehicleGravity(const char* szClassname, float flTargetGravity, float flScale)
 {
-	if (g_ChaosEffects[EFFECT_ZEROG]->m_bActive)
+	CBaseEntity* pVehicle = gEntList.FindEntityByClassname(NULL, szClassname);
+	while (pVehicle)
 	{
-		bool bNegative = g_ChaosEffects[EFFECT_INVERTG]->m_bActive;
-		float flAmt = gravity_counter_amount.GetFloat() * (bNegative ? -600 : 600);
-		linear.z -= flAmt;
+		float flCounteract = flTargetGravity - pVehicle->m_flGravityAtActivation;
+		//Msg("TG: %f - GAA: %f = CA: %f\n", flTargetGravity, pVehicle->m_flGravityAtActivation, flCounteract);
+		if (flCounteract == 0)
+		{
+			pVehicle = gEntList.FindEntityByClassname(pVehicle, szClassname);
+			continue;
+		}
+		Vector vecAbsVelocity = vec3_origin;
+		vecAbsVelocity.z = -(flCounteract * flScale * gpGlobals->frametime);
+		pVehicle->ApplyAbsVelocityImpulse(vecAbsVelocity);
+		pVehicle = gEntList.FindEntityByClassname(pVehicle, szClassname);
 	}
-	return SIM_GLOBAL_ACCELERATION;
 }
-void CHL2_Player::UpdateOnRemove()
+//airboat scale for 0g: 0.6545f
+//jeep scale for 0g: 0.5f (ALL types)
+//real APCs, crane, pod: don't need to fix. fixing breaks them.
+void CEGravitySet::FastThink()
 {
-	if (m_pController)
+	bool bNegative = g_ChaosEffects[EFFECT_INVERTG]->m_bActive;
+	bool bOtherEffectOn = g_ChaosEffects[EFFECT_ZEROG]->m_bActive || g_ChaosEffects[EFFECT_SUPERG]->m_bActive || g_ChaosEffects[EFFECT_LOWG]->m_bActive;
+	//if i'm invert and someone else is on, they handle it
+	if (m_nID == EFFECT_INVERTG && bOtherEffectOn)
+		return;
+	//vehicles are reluctant to gravity changes
+	//artificially apply the correct force here
+	//these numbers are an amount we would add to 600 to arrive at the target gravity
+	float flTargetGravity = 0;
+	switch (m_nID)
 	{
-		physenv->DestroyMotionController(m_pController);
-		m_pController = NULL;
+	case EFFECT_ZEROG:
+		flTargetGravity = 0;
+		break;
+	case EFFECT_SUPERG:
+		flTargetGravity = bNegative ? -1800 : 1800;
+		break;
+	case EFFECT_LOWG:
+		flTargetGravity = bNegative ? -200 : 200;
+		break;
+	case EFFECT_INVERTG:
+		flTargetGravity = -600;
+		break;
 	}
-
-	BaseClass::UpdateOnRemove();
+	FixVehicleGravity("prop_vehicle_airboat", flTargetGravity, 0.6545f);
+	FixVehicleGravity("prop_vehicle_jeep", flTargetGravity, 0.5f);
 }
-*/
 void CEGravitySet::StopEffect()
 {
 	bool bNegative = g_ChaosEffects[EFFECT_INVERTG]->m_bActive;
-	//CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
-	//CHL2_Player *pHL2Player = static_cast<CHL2_Player*>(pPlayer);
-	CBaseEntity *pVehicle;
 	switch (m_nID)
 	{
 	case EFFECT_ZEROG:
@@ -8668,25 +8653,9 @@ void CEGravitySet::StopEffect()
 	case EFFECT_LOWG:
 		sv_gravity.SetValue(bNegative ? -600 : 600);
 		Msg("Unsetting sv_gravity to %i\n", bNegative ? -600 : 600);
-		pVehicle = gEntList.FindEntityByClassname(NULL, "prop_v*");
-		/*
-		while (pVehicle)
-		{
-			IPhysicsObject *pList[VPHYSICS_MAX_OBJECT_LIST_COUNT];
-			int count = pVehicle->VPhysicsGetObjectList(pList, ARRAYSIZE(pList));
-			if (count)
-			{
-				for (int i = 0; i < count; i++)
-				{
-					pHL2Player->m_pController->DetachObject(pList[i]);
-				}
-			}
-			pVehicle = gEntList.FindEntityByClassname(pVehicle, "prop_v*");
-		}
-		*/
 		break;
 	case EFFECT_INVERTG:
-		Msg("Setting sv_gravity to %i\n", -sv_gravity.GetInt());
+		Msg("Unsetting sv_gravity to %i\n", -sv_gravity.GetInt());
 		sv_gravity.SetValue(-sv_gravity.GetInt());
 		break;
 	}

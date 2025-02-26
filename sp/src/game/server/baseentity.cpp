@@ -64,6 +64,7 @@
 #include "utlhashtable.h"
 #include "ai_network.h"
 #include "ai_node.h"
+#include "movevars_shared.h"
 
 #if defined( TF_DLL )
 #include "tf_gamerules.h"
@@ -1360,6 +1361,7 @@ void CBaseEntity::Activate( void )
 #ifdef HL1_DLL
 	ValidateEntityConnections();
 #endif //HL1_DLL
+	m_flGravityAtActivation = sv_gravity.GetFloat();
 }
 
 ////////////////////////////  old CBaseEntity stuff ///////////////////////////////////
@@ -1974,6 +1976,7 @@ BEGIN_DATADESC_NO_BASE( CBaseEntity )
 
 	DEFINE_FIELD(m_bChaosSpawned, FIELD_BOOLEAN),
 	DEFINE_FIELD(m_bChaosPersist, FIELD_BOOLEAN),
+	DEFINE_FIELD(m_flGravityAtActivation, FIELD_FLOAT),
 	DEFINE_KEYFIELD(m_iChaosID, FIELD_INTEGER, "chaosid"),
 END_DATADESC()
 
