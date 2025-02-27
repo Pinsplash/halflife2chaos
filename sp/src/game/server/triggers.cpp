@@ -52,7 +52,8 @@ CUtlVector< CHandle<CTriggerMultiple> >	g_hWeaponFireTriggers;
 extern CServerGameDLL	g_ServerGameDLL;
 extern bool				g_fGameOver;
 ConVar showtriggers("showtriggers", "0", FCVAR_NONE, "Shows trigger brushes");
-
+ConVar completed_town03("completed_town03", "0");
+ConVar completed_coast08("completed_coast08", "0");
 ConVar chaos_cant_leave_map("chaos_cant_leave_map", "0");
 
 bool IsTriggerClass( CBaseEntity *pEntity );
@@ -1629,6 +1630,10 @@ void CChangeLevel::ChangeLevelNow( CBaseEntity *pActivator )
 	if ( g_debug_transitions.GetInt() == 0 )
 	{
 		engine->ChangeLevel( st_szNextMap, st_szNextSpot );
+		if (!strcmp(gpGlobals->mapname.ToCStr(), "d1_town_03") && !strcmp(m_szLandmarkName, "d1_town_03_02"))
+			completed_town03.SetValue(true);
+		if (!strcmp(gpGlobals->mapname.ToCStr(), "d2_coast_08") && GlobalEntity_GetState("bridge_gate_open") == GLOBAL_ON)
+			completed_coast08.SetValue(true);
 	}
 	else
 	{

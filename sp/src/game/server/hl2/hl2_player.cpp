@@ -99,6 +99,8 @@ extern ConVar chaos_npc_teleport;
 extern ConVar chaos_disable_ladders;
 extern ConVar ai_block_damage;
 extern ConVar chaos_steal_health;
+extern ConVar completed_town03;
+extern ConVar completed_coast08;
 //Do not touch with without seeing me, please! (sjb)
 //For consistency's sake, enemy gunfire is traced against a scaled down
 //version of the player's hull, not the hitboxes for the player's model
@@ -2169,6 +2171,35 @@ void CHL2_Player::StartGame()
 		}
 		return;
 	}
+	//start halfway through when it's from Restart Level and we already went through the detour map
+	if (g_bGoBackLevel && completed_town03.GetBool() && !Q_strcmp(pMapName, "d1_town_02"))
+	{
+		Vector vecOrigin = Vector(-3648, 0, -3419);
+		static const char* strWeapons[] = {
+			"item_suit",
+			"weapon_crowbar",
+			"weapon_physcannon",
+			"weapon_pistol",
+			"weapon_pistol",
+			"weapon_357",
+			"weapon_smg1",
+			"weapon_smg1",
+			"weapon_shotgun",
+			"weapon_frag",
+			"weapon_frag",
+			"weapon_frag"
+		};
+		for (int i = 0; i < 12; i++)
+		{
+			CBaseEntity* pItem = (CBaseEntity*)CreateEntityByName(strWeapons[i]);
+			if (pItem)
+			{
+				pItem->SetAbsOrigin(vecOrigin);
+				pItem->Spawn();
+				pItem->Activate();
+			}
+		}
+	}
 	//remove the fucky-wucky triggers so that invert gravity doesn't softlock you
 	else if (!Q_strcmp(pMapName, "d2_coast_04"))
 	{
@@ -2180,6 +2211,41 @@ void CHL2_Player::StartGame()
 			pFallTrigger = gEntList.FindEntityByName(pFallTrigger, "fall_trigger");
 		}
 		return;
+	}
+	//start halfway through when it's from Restart Level and we already went through the detour map
+	if (g_bGoBackLevel && completed_coast08.GetBool() && !Q_strcmp(pMapName, "d2_coast_07"))
+	{
+		Vector vecOrigin = Vector(3008, 5184, 1572);
+		CBaseEntity* pItem = (CBaseEntity*)CreateEntityByName("item_suit");
+		if (pItem)
+		{
+			pItem->SetAbsOrigin(vecOrigin);
+			pItem->Spawn();
+			pItem->Activate();
+		}
+		CBaseEntity* pTrigger = gEntList.FindEntityByName(NULL, "gunship_trigger_10");
+		if (pTrigger)
+		{
+			CTriggerMultiple* pTriggerMultiple = static_cast<CTriggerMultiple*>(pTrigger);
+			pTriggerMultiple->m_OnTrigger.FireOutput(this, this);
+		}
+		CBaseEntity* pDropship = gEntList.FindEntityByName(NULL, "dropship");
+		if (pDropship)
+		{
+			g_EventQueue.AddEvent(pDropship, "Activate", 0, this, this);
+		}
+		CBaseEntity* pTemplate = gEntList.FindEntityByName(NULL, "player_spawn_items_maker");
+		if (pTemplate)
+		{
+			variant_t emptyVariant;
+			pTemplate->AcceptInput("ForceSpawn", this, this, emptyVariant, 0);
+		}
+		CBaseEntity* pJeep = gEntList.FindEntityByClassname(NULL, "prop_vehicle_jeep");
+		if (pJeep)
+		{
+			Vector vecOrigin = Vector(2496, 5568, 1600);
+			pJeep->Teleport(&vecOrigin, NULL, NULL);
+		}
 	}
 	//this map has a filter that's meant to only allow the suppression device to pass, but it does this by allowing the projectile, not the tank entity.
 	//the entity that's called in the relevant code is the attacker, not the inflictor, so this should always fail.
@@ -6435,20 +6501,11 @@ bool CChaosEffect::MapIsLong(const char *pMapName)
 {
 	if (!Q_strnicmp("d", pMapName, 1))//hl2
 	{
-		if (!Q_strnicmp("d1", pMapName, 2))
-		{
-			if (!Q_strcmp(pMapName, "d1_trainstation_01") || !Q_strcmp(pMapName, "d1_trainstation_05")
-				|| !Q_strcmp(pMapName, "d1_eli_01") || !Q_strcmp(pMapName, "d1_eli_02")
-				|| !Q_strcmp(pMapName, "d1_town_02"))
-				return true;
-		}
-		else
-		{
-			if (!Q_strcmp(pMapName, "d2_coast_07") || !Q_strcmp(pMapName, "d2_coast_08")
-				|| !Q_strcmp(pMapName, "d2_prison_05") || !Q_strcmp(pMapName, "d2_prison_06") || !Q_strcmp(pMapName, "d2_prison_07") || !Q_strcmp(pMapName, "d2_prison_08")
-				|| !Q_strcmp(pMapName, "d3_c17_13") || !Q_strcmp(pMapName, "d3_citadel_02") || !Q_strcmp(pMapName, "d3_citadel_05") || !Q_strcmp(pMapName, "d3_breen_01"))
-				return true;
-		}
+		if (!Q_strcmp(pMapName, "d1_trainstation_01") || !Q_strcmp(pMapName, "d1_trainstation_05")
+			|| !Q_strcmp(pMapName, "d1_eli_01") || !Q_strcmp(pMapName, "d1_eli_02") || !Q_strcmp(pMapName, "d2_coast_08")
+			|| !Q_strcmp(pMapName, "d2_prison_05") || !Q_strcmp(pMapName, "d2_prison_06") || !Q_strcmp(pMapName, "d2_prison_07") || !Q_strcmp(pMapName, "d2_prison_08")
+			|| !Q_strcmp(pMapName, "d3_c17_13") || !Q_strcmp(pMapName, "d3_citadel_02") || !Q_strcmp(pMapName, "d3_citadel_05") || !Q_strcmp(pMapName, "d3_breen_01"))
+			return true;
 	}
 	else//ep2 or ep1 goes here
 	{
@@ -8458,8 +8515,15 @@ void CEMountedGun::StartEffect()
 void CERestartLevel::StartEffect()
 {
 	g_bGoBackLevel = true;
-	const char *pMapName = STRING(gpGlobals->mapname);
-	engine->ClientCommand(engine->PEntityOfEntIndex(1), "changelevel %s", pMapName);
+	if (completed_town03.GetBool() && !strcmp(gpGlobals->mapname.ToCStr(), "d1_town_02"))
+		engine->ClientCommand(engine->PEntityOfEntIndex(1), "map d1_town_02 setpos -3648 0 -3419 setang 0 90 0");
+	else if (completed_coast08.GetBool() && !strcmp(gpGlobals->mapname.ToCStr(), "d2_coast_07"))
+		engine->ClientCommand(engine->PEntityOfEntIndex(1), "map d2_coast_07 setpos 3008 5184 1572 setang 0 180 0");
+	else
+	{
+		const char* pMapName = STRING(gpGlobals->mapname);
+		engine->ClientCommand(engine->PEntityOfEntIndex(1), "changelevel %s", pMapName);
+	}
 }
 void CERemovePickups::StartEffect()
 {
