@@ -741,6 +741,11 @@ void CPropVehicleDriveable::Think()
 		SetNextThink( gpGlobals->curtime );
 	}
 
+	//this is here to fix a problem where the player would not follow along correctly when a vehicle teleports
+	//which would cause a lot of problems
+	if (GetDriver())
+		GetDriver()->SetLocalOrigin(vec3_origin);
+
 	// If we have an NPC Driver, tell him to drive
 	if ( m_hNPCDriver )
 	{

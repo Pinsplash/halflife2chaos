@@ -2052,7 +2052,7 @@ void CBaseEntity::FireBullets( const FireBulletsInfo_t &info )
 			else//func_tank or apc
 			{
 				//don't let func_tank teleport, it breaks it
-				if (GetMoveType() == MOVETYPE_VPHYSICS && !GetServerVehicle())
+				if (GetMoveType() == MOVETYPE_VPHYSICS)
 					bTeleport = true;
 			}
 			if (bTeleport)
