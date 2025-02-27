@@ -743,7 +743,8 @@ void CPropVehicleDriveable::Think()
 
 	//this is here to fix a problem where the player would not follow along correctly when a vehicle teleports
 	//which would cause a lot of problems
-	if (GetDriver())
+	//also need to be the player's parent to avoid setting the player to the map origin during the exit phase
+	if (GetDriver() && GetDriver()->GetParent() == this)
 		GetDriver()->SetLocalOrigin(vec3_origin);
 
 	// If we have an NPC Driver, tell him to drive
