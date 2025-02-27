@@ -1531,7 +1531,7 @@ void CWeaponPhysCannon::Spawn( void )
 	BaseClass::Spawn();
 
 	// Need to get close to pick it up
-	CollisionProp()->UseTriggerBounds( false );
+	//CollisionProp()->UseTriggerBounds( false );
 
 	m_bPhyscannonState = IsMegaPhysCannon();
 
