@@ -242,9 +242,12 @@ void CColorCorrectionVolume::LogicExplode()
 	{
 	case 0:
 		AcceptInput("Enable", this, this, variant, 0);
+		break;
 	case 1:
 		AcceptInput("Disable", this, this, variant, 0);
+		break;
 	case 2:
 		BaseClass::LogicExplode();
+		break;
 	}
 }

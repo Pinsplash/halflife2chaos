@@ -1699,7 +1699,9 @@ void CAI_LeadGoal::LogicExplode()
 	{
 	case 0:
 		AcceptInput("SetSuccess", this, this, variant, 0);
+		break;
 	case 1:
 		BaseClass::LogicExplode();
+		break;
 	}
 }

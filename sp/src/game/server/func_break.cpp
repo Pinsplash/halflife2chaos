@@ -1208,7 +1208,7 @@ void CBreakable::LogicExplode()
 	variant_t variant;
 	switch (nRandom)
 	{
-	//
+	//skipped SetMass (it's in physbox)
 	case 0:
 		AcceptInput("Break", this, this, variant, 0);
 		break;

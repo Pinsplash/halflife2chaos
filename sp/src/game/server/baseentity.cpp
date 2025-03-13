@@ -7602,15 +7602,19 @@ void CBaseEntity::LogicExplode()
 	{
 	case 0:
 		AcceptInput("Kill", this, this, variant, 0);
+		break;
 	//skipped killhierarchy
 	case 1:
 		AcceptInput("Use", this, this, variant, 0);
+		break;
 	case 2:
 		variant.SetInt(RandomInt(0, 255));
 		AcceptInput("Alpha", this, this, variant, 0);
+		break;
 	case 3:
 		variant.SetBool(RandomInt(0, 1) == 0);
 		AcceptInput("AlternativeSorting", this, this, variant, 0);
+		break;
 	case 4:
 		char szcolor[2048];
 		r = RandomInt(0, 255);
@@ -7620,11 +7624,13 @@ void CBaseEntity::LogicExplode()
 		Msg("%s\n", szcolor);
 		variant.SetString(MAKE_STRING(szcolor));
 		AcceptInput("Color", this, this, variant, 0);
+		break;
 	case 5:
 		if (gEntList.NextEnt(this))
 		{
 			SetParent(gEntList.NextEnt(this));
 		}
+		break;
 	case 6:
 	case 7:
 		if (GetParent())
@@ -7651,15 +7657,20 @@ void CBaseEntity::LogicExplode()
 				SetLocalAngles(vec3_angle);
 			}
 		}
+		break;
 	case 8:
 		AcceptInput("ClearParent", this, this, variant, 0);
+		break;
 	case 9:
 		variant.SetString(gEntList.RandomNamedEntityByClassname("fil*")->GetEntityName());
 		AcceptInput("SetDamageFilter", this, this, variant, 0);
+		break;
 	case 10:
 		AcceptInput("EnableDamageForces", this, this, variant, 0);
+		break;
 	case 11:
 		AcceptInput("DisableDamageForces", this, this, variant, 0);
+		break;
 	//skipped dispatcheffect
 	//skipped dispatchresponse
 	//skipped AddContext
@@ -7667,16 +7678,22 @@ void CBaseEntity::LogicExplode()
 	//skipped ClearContext
 	case 12:
 		AcceptInput("DisableShadow", this, this, variant, 0);
+		break;
 	case 13:
 		AcceptInput("EnableShadow", this, this, variant, 0);
+		break;
 	//skipped addoutput
 	case 14:
 		AcceptInput("FireUser1", this, this, variant, 0);
+		break;
 	case 15:
 		AcceptInput("FireUser2", this, this, variant, 0);
+		break;
 	case 16:
 		AcceptInput("FireUser3", this, this, variant, 0);
+		break;
 	case 17:
 		AcceptInput("FireUser4", this, this, variant, 0);
+		break;
 	}
 }

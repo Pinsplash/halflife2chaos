@@ -402,15 +402,20 @@ void CFuncMoveLinear::LogicExplode()
 	{
 	case 0:
 		AcceptInput("Open", this, this, variant, 0);
+		break;
 	case 1:
 		AcceptInput("Close", this, this, variant, 0);
+		break;
 	case 2:
 		variant.SetFloat(RandomFloat(0, 1));
 		AcceptInput("SetPosition", this, this, variant, 0);
+		break;
 	case 3:
 		variant.SetFloat(RandomFloat(m_flSpeed / 2, m_flSpeed * 2));
 		AcceptInput("SetSpeed", this, this, variant, 0);
+		break;
 	case 4:
 		BaseClass::LogicExplode();
+		break;
 	}
 }

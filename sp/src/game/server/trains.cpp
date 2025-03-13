@@ -3385,8 +3385,10 @@ void CFuncPlat::LogicExplode()
 		//skipped goup and godown
 	case 0:
 		AcceptInput("Toggle", this, this, variant, 0);
+		break;
 	case 1:
 		BaseClass::LogicExplode();
+		break;
 	}
 }
 void CFuncTrain::LogicExplode()
@@ -3398,7 +3400,9 @@ void CFuncTrain::LogicExplode()
 		//skipped start and stop
 	case 0:
 		AcceptInput("Toggle", this, this, variant, 0);
+		break;
 	case 1:
 		BaseClass::LogicExplode();
+		break;
 	}
 }

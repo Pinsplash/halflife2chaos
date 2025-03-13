@@ -3159,6 +3159,7 @@ void CAI_ActBusyGoal::LogicExplode()
 	case 0:
 		m_flBusySearchRange = RandomInt(m_flBusySearchRange / 2, m_flBusySearchRange * 2);
 		AcceptInput("SetBusySearchRange", this, this, variant, 0);
+		break;
 	//skipped ForceNPCToActBusy
 	case 1:
 	case 2:
@@ -3182,8 +3183,10 @@ void CAI_ActBusyGoal::LogicExplode()
 			if (iTries > 10)
 				break;
 		}
+		break;
 	case 3:
 		BaseClass::LogicExplode();
+		break;
 	}
 }
 void CAI_ActBusyQueueGoal::LogicExplode()
@@ -3195,12 +3198,16 @@ void CAI_ActBusyQueueGoal::LogicExplode()
 	case 0:
 		variant.SetInt(RandomInt(1, 20));
 		AcceptInput("PlayerStartedBlocking", this, this, variant, 0);
+		break;
 	case 1:
 		variant.SetInt(RandomInt(1, 20));
 		AcceptInput("PlayerStoppedBlocking", this, this, variant, 0);
+		break;
 	case 2:
 		AcceptInput("MoveQueueUp", this, this, variant, 0);
+		break;
 	case 3:
 		BaseClass::LogicExplode();
+		break;
 	}
 }

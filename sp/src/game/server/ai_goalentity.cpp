@@ -282,9 +282,12 @@ void CAI_GoalEntity::LogicExplode()
 	{
 	case 0:
 		AcceptInput("Activate", this, this, variant, 0);
+		break;
 	case 1:
 		AcceptInput("Deactivate", this, this, variant, 0);
+		break;
 	case 2:
 		BaseClass::LogicExplode();
+		break;
 	}
 }

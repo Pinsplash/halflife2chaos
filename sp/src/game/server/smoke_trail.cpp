@@ -651,9 +651,12 @@ void SporeExplosion::LogicExplode()
 	{
 	case 0:
 		AcceptInput("Disable", this, this, variant, 0);
+		break;
 	case 1:
 		AcceptInput("Enable", this, this, variant, 0);
+		break;
 	case 2:
 		BaseClass::LogicExplode();
+		break;
 	}
 }

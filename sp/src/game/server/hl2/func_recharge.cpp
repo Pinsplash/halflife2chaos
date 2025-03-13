@@ -783,7 +783,9 @@ void CRecharge::LogicExplode()
 	{
 	case 0:
 		AcceptInput("Recharge", this, this, variant, 0);
+		break;
 	case 1:
 		BaseClass::LogicExplode();
+		break;
 	}
 }

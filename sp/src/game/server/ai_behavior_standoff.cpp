@@ -1346,7 +1346,9 @@ void CAI_StandoffGoal::LogicExplode()
 	case 0:
 		variant.SetInt(RandomInt(0, 5));
 		AcceptInput("SetAggressiveness", this, this, variant, 0);
+		break;
 	case 1:
 		BaseClass::LogicExplode();
+		break;
 	}
 }

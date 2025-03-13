@@ -1593,16 +1593,22 @@ void CBaseButton::LogicExplode()
 	{
 	case 0:
 		AcceptInput("Lock", this, this, variant, 0);
+		break;
 	case 1:
 		AcceptInput("Unlock", this, this, variant, 0);
+		break;
 	case 2:
 		AcceptInput("Press", this, this, variant, 0);
+		break;
 	case 3:
 		AcceptInput("PressIn", this, this, variant, 0);
+		break;
 	case 4:
 		AcceptInput("PressOut", this, this, variant, 0);
+		break;
 	case 5:
 		BaseClass::LogicExplode();
+		break;
 	}
 }
 void CMomentaryRotButton::LogicExplode()
@@ -1614,8 +1620,10 @@ void CMomentaryRotButton::LogicExplode()
 	case 0:
 		variant.SetFloat(RandomFloat(0, 1));
 		AcceptInput("SetPosition", this, this, variant, 0);
+		break;
 	//skipped everything else cause they kinda sucked
 	case 1:
 		BaseClass::LogicExplode();
+		break;
 	}
 }

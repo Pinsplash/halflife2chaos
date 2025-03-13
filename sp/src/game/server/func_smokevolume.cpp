@@ -111,13 +111,17 @@ void CFuncSmokeVolume::LogicExplode()
 	case 0:
 		variant.SetFloat(RandomFloat(m_RotationSpeed / 2, m_RotationSpeed * 2));
 		AcceptInput("SetRotationSpeed", this, this, variant, 0);
+		break;
 	case 1:
 		variant.SetFloat(RandomFloat(m_MovementSpeed / 2, m_MovementSpeed * 2));
 		AcceptInput("SetMovementSpeed", this, this, variant, 0);
+		break;
 	case 2:
 		variant.SetFloat(RandomFloat(m_Density / 2, m_Density * 2));
 		AcceptInput("SetDensity", this, this, variant, 0);
+		break;
 	case 3:
 		BaseClass::LogicExplode();
+		break;
 	}
 }

@@ -1440,14 +1440,19 @@ void CBaseDoor::LogicExplode()
 	//skipped open and close
 	case 0:
 		AcceptInput("Toggle", this, this, variant, 0);
+		break;
 	case 1:
 		AcceptInput("Lock", this, this, variant, 0);
+		break;
 	case 2:
 		AcceptInput("Unlock", this, this, variant, 0);
+		break;
 	case 3:
 		variant.SetFloat(RandomFloat(m_flSpeed / 2, m_flSpeed * 2));
 		AcceptInput("SetSpeed", this, this, variant, 0);
+		break;
 	case 4:
 		BaseClass::LogicExplode();
+		break;
 	}
 }

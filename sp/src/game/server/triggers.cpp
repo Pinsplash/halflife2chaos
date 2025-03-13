@@ -4863,14 +4863,19 @@ void CBaseTrigger::LogicExplode()
 		//skipped enable and disable
 	case 0:
 		AcceptInput("Toggle", this, this, variant, 0);
+		break;
 	case 1:
 		AcceptInput("TouchTest", this, this, variant, 0);
+		break;
 	case 2:
 		AcceptInput("StartTouch", this, this, variant, 0);
+		break;
 	case 3:
 		AcceptInput("EndTouch", this, this, variant, 0);
+		break;
 	case 4:
 		BaseClass::LogicExplode();
+		break;
 	}
 }
 void CTriggerHurt::LogicExplode()
@@ -4882,8 +4887,10 @@ void CTriggerHurt::LogicExplode()
 	case 0:
 		variant.SetFloat(RandomFloat(m_flDamage / 2, m_flDamage * 2));
 		AcceptInput("SetDamage", this, this, variant, 0);
+		break;
 	case 1:
 		BaseClass::LogicExplode();
+		break;
 	}
 }
 void CTriggerLook::LogicExplode()
@@ -4895,11 +4902,14 @@ void CTriggerLook::LogicExplode()
 	case 0:
 		variant.SetFloat(RandomFloat(-1, 1));
 		AcceptInput("FieldOfView", this, this, variant, 0);
+		break;
 	case 1:
 		variant.SetFloat(RandomFloat(m_flLookTime / 2, m_flLookTime * 2));
 		AcceptInput("LookTime", this, this, variant, 0);
+		break;
 	case 2:
 		BaseClass::LogicExplode();
+		break;
 	}
 }
 void CTriggerImpact::LogicExplode()
@@ -4910,11 +4920,14 @@ void CTriggerImpact::LogicExplode()
 	{
 	case 0:
 		AcceptInput("Impact", this, this, variant, 0);
+		break;
 	case 1:
 		variant.SetFloat(RandomFloat(m_flMagnitude / 2, m_flMagnitude * 2));
 		AcceptInput("SetMagnitude", this, this, variant, 0);
+		break;
 	case 2:
 		BaseClass::LogicExplode();
+		break;
 	}
 }
 void CBaseVPhysicsTrigger::LogicExplode()
@@ -4926,8 +4939,10 @@ void CBaseVPhysicsTrigger::LogicExplode()
 		//skipped enable and disable
 	case 0:
 		AcceptInput("Toggle", this, this, variant, 0);
+		break;
 	case 1:
 		BaseClass::LogicExplode();
+		break;
 	}
 }
 void CTriggerVPhysicsMotion::LogicExplode()
@@ -4941,27 +4956,35 @@ void CTriggerVPhysicsMotion::LogicExplode()
 	case 0:
 		variant.SetFloat(RandomFloat(m_gravityScale / 2, m_gravityScale * 2));
 		AcceptInput("SetGravityScale", this, this, variant, 0);
+		break;
 	case 1:
 		variant.SetFloat(RandomFloat(m_addAirDensity / 2, m_addAirDensity * 2));
 		AcceptInput("SetAdditionalAirDensity", this, this, variant, 0);
+		break;
 	case 2:
 		variant.SetFloat(RandomFloat(m_linearLimit / 2, m_linearLimit * 2));
 		AcceptInput("SetVelocityLimit", this, this, variant, 0);
+		break;
 	case 3:
 		variant.SetFloat(RandomFloat(m_linearLimitDelta / 2, m_linearLimitDelta * 2));
 		AcceptInput("SetVelocityLimitDelta", this, this, variant, 0);
+		break;
 	case 4:
 		variant.SetFloat(RandomFloat(m_linearScale / 2, m_linearScale * 2));
 		AcceptInput("SetVelocityScale", this, this, variant, 0);
+		break;
 	case 5:
 		variant.SetFloat(RandomFloat(m_angularLimit / 2, m_angularLimit * 2));
 		AcceptInput("SetAngVelocityLimit", this, this, variant, 0);
+		break;
 	case 6:
 		variant.SetFloat(RandomFloat(m_angularScale / 2, m_angularScale * 2));
 		AcceptInput("SetAngVelocityScale", this, this, variant, 0);
+		break;
 	case 7:
 		variant.SetFloat(RandomFloat(m_linearForce / 2, m_linearForce * 2));
 		AcceptInput("SetLinearForce", this, this, variant, 0);
+		break;
 	case 8:
 		x = RandomFloat(-90, 90);
 		y = RandomFloat(-180, 180);
@@ -4969,14 +4992,17 @@ void CTriggerVPhysicsMotion::LogicExplode()
 		Q_snprintf(szangle, sizeof(szangle), "%i %i %i", x, y, z);
 		variant.SetString(MAKE_STRING(szangle));
 		AcceptInput("SetLinearForceAngles", this, this, variant, 0);
+		break;
 	case 9:
 		x = RandomFloat(m_linearLimit / 2, m_linearLimit * 2);
 		y = RandomFloat(0, 30);
 		Q_snprintf(szangle, sizeof(szangle), "%i %i", x, y);
 		variant.SetString(MAKE_STRING(szangle));
 		AcceptInput("SetVelocityLimitTime", this, this, variant, 0);
+		break;
 	case 10:
 		BaseClass::LogicExplode();
+		break;
 	}
 }
 void CTriggerWind::LogicExplode()
@@ -4988,7 +5014,9 @@ void CTriggerWind::LogicExplode()
 	case 0:
 		variant.SetInt(RandomInt(m_nSpeedBase / 2, m_nSpeedBase * 2));
 		AcceptInput("SetSpeed", this, this, variant, 0);
+		break;
 	case 1:
 		BaseClass::LogicExplode();
+		break;
 	}
 }

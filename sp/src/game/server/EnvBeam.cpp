@@ -769,9 +769,12 @@ void CEnvBeam::LogicExplode()
 	//skipped turnon and turnoff
 	case 0:
 		AcceptInput("Toggle", this, this, variant, 0);
+		break;
 	case 1:
 		AcceptInput("StrikeOnce", this, this, variant, 0);
+		break;
 	case 2:
 		BaseClass::LogicExplode();
+		break;
 	}
 }
