@@ -28,7 +28,7 @@ public:
 	CEntityFlame( void );
 
 	static CEntityFlame	*Create( CBaseEntity *pTarget, bool useHitboxes = true );
-
+	virtual void LogicExplode();
 	void	AttachToEntity( CBaseEntity *pTarget );
 	void	SetLifetime( float lifetime );
 	void	SetUseHitboxes( bool use );

@@ -333,3 +333,19 @@ void CreateEntityFlame(CBaseEntity *pEnt)
 {
 	CEntityFlame::Create( pEnt );
 }
+
+void CEntityFlame::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("Ignite", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
