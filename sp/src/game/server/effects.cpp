@@ -329,7 +329,7 @@ public:
 	void Spawn( void );
 	void Precache( void );
 	void Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value );
-
+	virtual void LogicExplode();
 	virtual CGib *CreateGib( void );
 
 protected:
@@ -635,6 +635,21 @@ void CGibShooter::ShootThink ( void )
 			SetThink ( &CGibShooter::SUB_Remove );
 			SetNextThink( gpGlobals->curtime );
 		}
+	}
+}
+void CGibShooter::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("Shoot", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
 	}
 }
 
