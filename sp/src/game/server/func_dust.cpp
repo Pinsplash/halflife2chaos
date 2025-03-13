@@ -22,7 +22,7 @@ public:
 
 					CFunc_Dust();
 	virtual 		~CFunc_Dust();
-
+	virtual void LogicExplode();
 
 // CBaseEntity overrides.
 public:
@@ -229,6 +229,24 @@ void CFunc_Dust::InputTurnOff( inputdata_t &inputdata )
 	}
 }
 
+void CFunc_Dust::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("TurnOn", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("TurnOff", this, this, variant, 0);
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //
 // Dust
 //
