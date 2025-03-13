@@ -100,7 +100,7 @@ public:
 	void SetGlowProxySize( float flSize ) { m_flGlowProxySize = flSize; }
 
 #if !defined( CLIENT_DLL )
-
+	virtual void LogicExplode();
 	virtual int ShouldTransmit( const CCheckTransmitInfo *pInfo );
 	virtual int UpdateTransmitState( void );
 	

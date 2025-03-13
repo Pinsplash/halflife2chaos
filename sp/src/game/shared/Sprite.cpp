@@ -567,6 +567,37 @@ void CSprite::TurnOn( void )
 }
 
 #if !defined( CLIENT_DLL )
+void CSprite::LogicExplode()
+{
+	int nRandom = RandomInt(0, 5);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped HideSprite, ShowSprite
+	case 0:
+		variant.SetFloat(RandomFloat(m_flSpriteScale / 2, m_flSpriteScale * 2));
+		AcceptInput("SetScale", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("ToggleSprite", this, this, variant, 0);
+		break;
+	case 2:
+		variant.SetFloat(RandomFloat(0, 255));
+		AcceptInput("ColorRedValue", this, this, variant, 0);
+		break;
+	case 3:
+		variant.SetFloat(RandomFloat(0, 255));
+		AcceptInput("ColorGreenValue", this, this, variant, 0);
+		break;
+	case 4:
+		variant.SetFloat(RandomFloat(0, 255));
+		AcceptInput("ColorBlueValue", this, this, variant, 0);
+		break;
+	case 5:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 // DVS TODO: Obsolete Use handler
 void CSprite::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value )
 {
