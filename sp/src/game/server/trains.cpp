@@ -2779,6 +2779,61 @@ int CFuncTrackTrain::OnTakeDamage( const CTakeDamageInfo &info )
 	}
 }
 
+void CFuncTrackTrain::LogicExplode()
+{
+	int nRandom = RandomInt(0, 11);
+	variant_t variant;
+	CBaseEntity* pEnt;
+	switch (nRandom)
+	{
+		//skipped SetSpeedForwardModifier
+	case 0:
+		AcceptInput("Stop", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("StartForward", this, this, variant, 0);
+		break;
+	case 2:
+		AcceptInput("StartBackward", this, this, variant, 0);
+		break;
+	case 3:
+		AcceptInput("Toggle", this, this, variant, 0);
+		break;
+	case 4:
+		AcceptInput("Resume", this, this, variant, 0);
+		break;
+	case 5:
+		AcceptInput("Reverse", this, this, variant, 0);
+		break;
+	case 6:
+		variant.SetFloat(RandomFloat());
+		AcceptInput("SetSpeed", this, this, variant, 0);
+		break;
+	case 7:
+		variant.SetFloat(RandomFloat(-1, 1));
+		AcceptInput("SetSpeedDir", this, this, variant, 0);
+		break;
+	case 8:
+		variant.SetFloat(RandomFloat(0, m_maxSpeed));
+		AcceptInput("SetSpeedReal", this, this, variant, 0);
+		break;
+	case 9:
+		variant.SetFloat(RandomFloat(-1, 1));
+		AcceptInput("SetSpeedDirAccel", this, this, variant, 0);
+		break;
+	case 10:
+		pEnt = gEntList.RandomNamedEntityByClassname("path_track");
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("TeleportToPathTrack", this, this, variant, 0);
+		}
+		break;
+	case 11:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 
 //-----------------------------------------------------------------------------

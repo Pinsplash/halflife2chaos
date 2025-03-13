@@ -68,7 +68,7 @@ public:
 	void Precache( void );
 	void UpdateOnRemove();
 	void MoveDone();
-
+	virtual void LogicExplode();
 	virtual int OnTakeDamage( const CTakeDamageInfo &info );
 
 	void Blocked( CBaseEntity *pOther );
