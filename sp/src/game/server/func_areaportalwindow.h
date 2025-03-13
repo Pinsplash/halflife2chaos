@@ -34,7 +34,7 @@ public:
 
 	virtual void	Spawn();
 	virtual void	Activate();
-
+	virtual void LogicExplode();
 
 // CFuncAreaPortalBase stuff.
 public:

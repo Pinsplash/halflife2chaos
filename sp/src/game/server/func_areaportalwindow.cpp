@@ -126,3 +126,24 @@ void CFuncAreaPortalWindow::InputSetFadeEndDistance( inputdata_t &inputdata )
 {
 	m_flFadeDist = inputdata.value.Float();
 }
+
+void CFuncAreaPortalWindow::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		variant.SetFloat(RandomFloat(m_flFadeStartDist / 2, m_flFadeStartDist * 2));
+		AcceptInput("SetFadeStartDistance", this, this, variant, 0);
+		break;
+	case 1:
+		variant.SetFloat(RandomFloat(m_flFadeDist / 2, m_flFadeDist * 2));
+		AcceptInput("SetFadeEndDistance", this, this, variant, 0);
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
+}

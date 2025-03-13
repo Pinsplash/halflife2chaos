@@ -34,7 +34,7 @@ public:
 	virtual void	Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value );
 	virtual bool	KeyValue( const char *szKeyName, const char *szValue );
 	virtual int		UpdateTransmitState();
-
+	virtual void LogicExplode();
 	// Input handlers
 	void InputOpen( inputdata_t &inputdata );
 	void InputClose( inputdata_t &inputdata );
@@ -189,3 +189,19 @@ int CAreaPortal::UpdateTransmitState()
 	return SetTransmitState( FL_EDICT_DONTSEND );
 }
 
+
+void CAreaPortal::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped open and close
+	case 0:
+		AcceptInput("Toggle", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
