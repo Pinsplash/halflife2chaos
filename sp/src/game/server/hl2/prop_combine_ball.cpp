@@ -2071,7 +2071,6 @@ void CFuncCombineBallSpawner::LogicExplode()
 {
 	int nRandom = RandomInt(0, 1);
 	variant_t variant;
-	CBaseEntity* pEnt;
 	switch (nRandom)
 	{
 		//made this a toggle

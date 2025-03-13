@@ -2411,6 +2411,59 @@ bool CFuncTank::HasLOSTo( CBaseEntity *pEntity )
 
 	return ( tr.fraction == 1.0 || tr.m_pEnt == pEntity );
 }
+void CFuncTank::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	CBaseEntity* pEnt;
+	switch (nRandom)
+	{
+		//skipped activate, deactivate, SetTargetPosition, SetTargetDir
+	case 0:
+		pEnt = gEntList.RandomNamedEntityByClassname("npc_*");
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("FindNPCToManTank", this, this, variant, 0);
+		}
+		break;
+	case 1:
+		pEnt = gEntList.RandomNamedEntity();
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("SetTargetEntityName", this, this, variant, 0);
+		}
+		break;
+	case 2:
+		variant.SetFloat(RandomFloat(m_fireRate / 2, m_fireRate * 2));
+		AcceptInput("SetFireRate", this, this, variant, 0);
+		break;
+	case 3:
+		variant.SetFloat(RandomFloat(m_iBulletDamage / 2, m_iBulletDamage * 2));
+		AcceptInput("SetDamage", this, this, variant, 0);
+		break;
+	case 4:
+		AcceptInput("ClearTargetEntity", this, this, variant, 0);
+		break;
+	case 5:
+		AcceptInput("StartFindingNPCs", this, this, variant, 0);
+		break;
+	case 6:
+		AcceptInput("StopFindingNPCs", this, this, variant, 0);
+		break;
+	case 7:
+		AcceptInput("ForceNPCOff", this, this, variant, 0);
+		break;
+	case 8:
+		variant.SetFloat(RandomFloat(m_maxRange / 2, m_maxRange * 2));
+		AcceptInput("SetMaxRange", this, this, variant, 0);
+		break;
+	case 9:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 // #############################################################################
 //   CFuncTankGun
@@ -3762,7 +3815,7 @@ public:
 	void ShootGun(void);
 	void Spawn();
 	void SetNextAttack( float flWait );
-	
+	virtual void LogicExplode();
 	// Input handlers.
 	void InputShootGun( inputdata_t &inputdata );
 	void InputFireAtWill( inputdata_t &inputdata );
@@ -3967,6 +4020,24 @@ void CFuncTankMortar::Fire( int bulletCount, const Vector &barrelEnd, const Vect
 
 	CMortarShell::Create(barrelEnd, tr.endpos, vecFinalDir, m_fireDelay, m_flWarningTime, m_incomingSound, pOwner);
 	BaseClass::Fire( bulletCount, barrelEnd, vecForward, this, bIgnoreSpread );
+}
+void CFuncTankMortar::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("ShootGun", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("FireAtWill", this, this, variant, 0);
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
 }
 
 //-----------------------------------------------------------------------------
