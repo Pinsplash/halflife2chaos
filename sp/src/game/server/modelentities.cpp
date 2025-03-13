@@ -205,20 +205,11 @@ void CFuncBrush::LogicExplode()
 	{
 		//skipped enable and disable
 	case 0:
-		pEnt = gEntList.FindEntityByClassname(this, "npc_*");
+		pEnt = gEntList.RandomEntityByClassname("npc_*");
 		if (pEnt)
 		{
 			variant.SetString(MAKE_STRING(pEnt->GetClassname()));
 			AcceptInput("SetExcluded", this, this, variant, 0);
-		}
-		else
-		{
-			pEnt = gEntList.FindEntityByClassname(NULL, "npc_*");
-			if (pEnt)
-			{
-				variant.SetString(MAKE_STRING(pEnt->GetClassname()));
-				AcceptInput("SetExcluded", this, this, variant, 0);
-			}
 		}
 		break;
 	case 1:

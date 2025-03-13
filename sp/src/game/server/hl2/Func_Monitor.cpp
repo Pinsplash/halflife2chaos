@@ -117,20 +117,11 @@ void CFuncMonitor::LogicExplode()
 	{
 		//
 	case 0:
-		pEnt = gEntList.FindEntityByClassname(this, "point_camera");
+		pEnt = gEntList.RandomEntityByClassname("point_camera");
 		if (pEnt)
 		{
 			variant.SetString(pEnt->GetEntityName());
 			AcceptInput("SetCamera", this, this, variant, 0);
-		}
-		else
-		{
-			pEnt = gEntList.FindEntityByClassname(NULL, "point_camera");
-			if (pEnt)
-			{
-				variant.SetString(pEnt->GetEntityName());
-				AcceptInput("SetCamera", this, this, variant, 0);
-			}
 		}
 		break;
 	case 1:
