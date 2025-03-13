@@ -265,7 +265,7 @@ public:
 	DECLARE_CLASS( CGameText, CRulePointEntity );
 
 	bool	KeyValue( const char *szKeyName, const char *szValue );
-
+	virtual void LogicExplode();
 	DECLARE_DATADESC();
 
 	inline	bool	MessageToAll( void ) { return (m_spawnflags & SF_ENVTEXT_ALLPLAYERS); }
@@ -369,6 +369,21 @@ void CGameText::Display( CBaseEntity *pActivator )
 	}
 }
 
+void CGameText::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("Display", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 /* TODO: Replace with an entity I/O version
 //
