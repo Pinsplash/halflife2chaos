@@ -202,7 +202,7 @@ class CFuncCombineBallSpawner : public CBaseEntity
 
 public:
 	CFuncCombineBallSpawner();
-
+	virtual void LogicExplode();
 	virtual void Spawn();
 	virtual void Precache();
 

@@ -21,7 +21,7 @@ class CFuncMonitor : public CFuncBrush
 public:
 	virtual void Activate();
 	virtual void UpdateOnRemove();
-
+	virtual void LogicExplode();
 private:
 	void InputSetCamera(inputdata_t &inputdata);
 	void SetCameraByName(const char *szName);
@@ -106,4 +106,35 @@ void CFuncMonitor::SetCameraByName(const char *szName)
 void CFuncMonitor::InputSetCamera(inputdata_t &inputdata)
 {
 	SetCameraByName( inputdata.value.String() );
+}
+
+void CFuncMonitor::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	CBaseEntity* pEnt;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		pEnt = gEntList.FindEntityByClassname(this, "point_camera");
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("SetCamera", this, this, variant, 0);
+		}
+		else
+		{
+			pEnt = gEntList.FindEntityByClassname(NULL, "point_camera");
+			if (pEnt)
+			{
+				variant.SetString(pEnt->GetEntityName());
+				AcceptInput("SetCamera", this, this, variant, 0);
+			}
+		}
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
 }

@@ -2067,6 +2067,25 @@ void CFuncCombineBallSpawner::BallThink()
 	// There are no more to respawn
 	SetNextThink( gpGlobals->curtime + 0.1f );
 }
+void CFuncCombineBallSpawner::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	CBaseEntity* pEnt;
+	switch (nRandom)
+	{
+		//made this a toggle
+	case 0:
+		if (m_bEnabled)
+			AcceptInput("Disable", this, this, variant, 0);
+		else
+			AcceptInput("Enable", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 BEGIN_DATADESC( CPointCombineBallLauncher )
 	DEFINE_KEYFIELD( m_flConeDegrees, FIELD_FLOAT, "launchconenoise" ),

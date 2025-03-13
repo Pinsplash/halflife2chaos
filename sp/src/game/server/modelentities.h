@@ -27,7 +27,7 @@ public:
 
 	virtual void Spawn( void );
 	bool CreateVPhysics( void );
-
+	virtual void LogicExplode();
 	virtual int	ObjectCaps( void ) { return HasSpawnFlags(SF_IGNORE_PLAYERUSE) ? BaseClass::ObjectCaps() : BaseClass::ObjectCaps() | FCAP_IMPULSE_USE; }
 
 	virtual int DrawDebugTextOverlays( void );

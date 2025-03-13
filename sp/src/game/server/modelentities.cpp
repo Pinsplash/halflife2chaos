@@ -196,6 +196,43 @@ bool CFuncBrush::IsOn( void )
 	return !IsEffectActive( EF_NODRAW );
 }
 
+void CFuncBrush::LogicExplode()
+{
+	int nRandom = RandomInt(0, 3);
+	variant_t variant;
+	CBaseEntity* pEnt;
+	switch (nRandom)
+	{
+		//skipped enable and disable
+	case 0:
+		pEnt = gEntList.FindEntityByClassname(this, "npc_*");
+		if (pEnt)
+		{
+			variant.SetString(MAKE_STRING(pEnt->GetClassname()));
+			AcceptInput("SetExcluded", this, this, variant, 0);
+		}
+		else
+		{
+			pEnt = gEntList.FindEntityByClassname(NULL, "npc_*");
+			if (pEnt)
+			{
+				variant.SetString(MAKE_STRING(pEnt->GetClassname()));
+				AcceptInput("SetExcluded", this, this, variant, 0);
+			}
+		}
+		break;
+	case 1:
+		variant.SetBool(!m_bInvertExclusion);
+		AcceptInput("SetInvert", this, this, variant, 0);
+		break;
+	case 2:
+		AcceptInput("Toggle", this, this, variant, 0);
+		break;
+	case 3:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 //-----------------------------------------------------------------------------
 // Purpose: Invisible field that activates when touched
