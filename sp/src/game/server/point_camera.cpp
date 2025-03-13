@@ -210,6 +210,24 @@ void CPointCamera::InputSetOff( inputdata_t &inputdata )
 	m_bIsOn = false;
 	SetActive( false );
 }
+void CPointCamera::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	char buf[2048];
+	switch (nRandom)
+	{
+		//skipped SetOnAndTurnOthersOff, SetOn, SetOff
+	case 0:
+		Q_snprintf(buf, sizeof(buf), "%f %f", RandomFloat(m_FOV / 2, m_FOV * 2), RandomFloat(1, 20));
+		variant.SetString(MAKE_STRING(buf));
+		AcceptInput("ChangeFOV", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 BEGIN_DATADESC( CPointCamera )
 

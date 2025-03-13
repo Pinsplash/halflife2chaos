@@ -24,7 +24,7 @@ public:
 	DECLARE_DATADESC();
 	CPointCamera();
 	~CPointCamera();
-
+	virtual void LogicExplode();
 	void Spawn( void );
 
 	// Tell the client that this camera needs to be rendered
