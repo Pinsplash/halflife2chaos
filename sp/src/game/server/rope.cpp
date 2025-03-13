@@ -761,6 +761,25 @@ int CRopeKeyframe::UpdateTransmitState()
 	return SetTransmitState( FL_EDICT_ALWAYS );
 }
 
+void CRopeKeyframe::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		variant.SetVector3D(Vector(RandomFloat(-100, 100), RandomFloat(-100, 100), RandomFloat(-100, 100)));
+		AcceptInput("SetForce", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("Break", this, this, variant, 0);
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 
 		

@@ -25,7 +25,7 @@ public:
 
 					CRopeKeyframe();
 	virtual			~CRopeKeyframe();
-
+	virtual void LogicExplode();
 	// Create a rope and attach it to two entities.
 	// Attachment points on the entities are optional.
 	static CRopeKeyframe* Create(
