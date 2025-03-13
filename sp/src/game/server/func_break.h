@@ -46,7 +46,7 @@ public:
 	virtual void Precache( void );
 	virtual bool KeyValue( const char *szKeyName, const char *szValue );
 	virtual void VPhysicsCollision( int index, gamevcollisionevent_t *pEvent );
-
+	virtual void LogicExplode();
 	void BreakTouch( CBaseEntity *pOther );
 	void DamageSound( void );
 	void Break( CBaseEntity *pBreaker );

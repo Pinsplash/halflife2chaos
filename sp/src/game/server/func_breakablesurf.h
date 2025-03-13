@@ -67,7 +67,7 @@ public:
 
 	void			SurfaceTouch( CBaseEntity *pOther );
 	void			PanePos(const Vector &vPos, float *flWidth, float *flHeight);
-
+	virtual void LogicExplode();
 	bool			IsBroken(int nWidth, int nHeight);
 	void			SetSupport(int w, int h, float support);
 

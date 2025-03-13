@@ -1295,3 +1295,22 @@ void CBreakableSurface::VPhysicsCollision( int index, gamevcollisionevent_t *pEv
 	BaseClass::VPhysicsCollision( index, pEvent );
 }
 
+
+void CBreakableSurface::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	char buf[2048];
+	switch (nRandom)
+	{
+		//
+	case 0:
+		Q_snprintf(buf, sizeof(buf), "%f %f %f", RandomFloat(0, 1), RandomFloat(0, 1), RandomFloat(50, 100));
+		variant.SetString(MAKE_STRING(buf));
+		AcceptInput("Shatter", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}

@@ -849,6 +849,45 @@ bool CPhysBox::HasPreferredCarryAnglesForPlayer( CBasePlayer *pPlayer )
 	return HasSpawnFlags( SF_PHYSBOX_USEPREFERRED );
 }
 
+void CPhysBox::LogicExplode()
+{
+	int nRandom = RandomInt(0, 7);
+	variant_t variant;
+	IPhysicsObject* vPhys;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		vPhys = VPhysicsGetObject();
+		if (vPhys)
+		{
+			variant.SetFloat(RandomFloat(vPhys->GetMass() / 2, vPhys->GetMass() * 2));
+			AcceptInput("SetMass", this, this, variant, 0);
+		}
+		break;
+	case 1:
+		AcceptInput("Sleep", this, this, variant, 0);
+		break;
+	case 2:
+		AcceptInput("Wake", this, this, variant, 0);
+		break;
+	case 3:
+		AcceptInput("DisableMotion", this, this, variant, 0);
+		break;
+	case 4:
+		AcceptInput("EnableMotion", this, this, variant, 0);
+		break;
+	case 5:
+		AcceptInput("DisableFloating", this, this, variant, 0);
+		break;
+	case 6:
+		AcceptInput("ForceDrop", this, this, variant, 0);
+		break;
+	case 7:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 // ---------------------------------------------------------------------
 //

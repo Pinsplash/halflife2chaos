@@ -52,7 +52,7 @@ public:
 	void	Move( const Vector &force );
 	virtual int ObjectCaps();
 	virtual void Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value );
-	
+	virtual void LogicExplode();
 	virtual int DrawDebugTextOverlays(void);
 
 	virtual void VPhysicsUpdate( IPhysicsObject *pPhysics );

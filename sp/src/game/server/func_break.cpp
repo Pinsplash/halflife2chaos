@@ -1202,7 +1202,30 @@ CBasePlayer *CBreakable::HasPhysicsAttacker( float dt )
 	}
 	return NULL;
 }
-
+void CBreakable::LogicExplode()
+{
+	int nRandom = RandomInt(0, 4);
+	variant_t variant;
+	switch (nRandom)
+	{
+	//
+	case 0:
+		AcceptInput("Break", this, this, variant, 0);
+		break;
+	case 1:
+		m_iHealth = RandomInt(m_iHealth / 2, m_iHealth * 2);
+		break;
+	case 2:
+		m_iHealth += RandomInt(30, 100);
+		break;
+	case 3:
+		m_iHealth -= RandomInt(30, 100);
+		break;
+	case 4:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 //=============================================================================================================================
 // PUSHABLE
