@@ -1374,7 +1374,7 @@ public:
 	void Spawn();
 	void Activate();
 	bool CreateVPhysics( void );
-
+	virtual void LogicExplode();
 	bool EntityPassesFilter( CBaseEntity *pOther );
 	bool ForceVPhysicsCollide( CBaseEntity *pEntity );
 
@@ -1462,4 +1462,23 @@ void CFuncVPhysicsClip::InputDisable( inputdata_t &inputdata )
 {
 	VPhysicsGetObject()->EnableCollisions(false);
 	m_bDisabled = true;
+}
+
+void CFuncVPhysicsClip::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//made it a toggle
+	case 0:
+		if (m_bDisabled)
+			AcceptInput("Enable", this, this, variant, 0);
+		else
+			AcceptInput("Disable", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
 }
