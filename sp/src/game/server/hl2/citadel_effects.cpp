@@ -156,3 +156,27 @@ int CCitadelEnergyCore::ShouldTransmit( const CCheckTransmitInfo *pInfo )
 
 	return BaseClass::ShouldTransmit( pInfo );
 }
+
+void CCitadelEnergyCore::LogicExplode()
+{
+	int nRandom = RandomInt(0, 3);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		variant.SetFloat(RandomFloat(0, 20));
+		AcceptInput("StartCharge", this, this, variant, 0);
+		break;
+	case 1:
+		variant.SetFloat(RandomFloat(0, 20));
+		AcceptInput("Stop", this, this, variant, 0);
+		break;
+	case 2:
+		AcceptInput("StartDischarge", this, this, variant, 0);
+		break;
+	case 3:
+		BaseClass::LogicExplode();
+		break;
+	}
+}

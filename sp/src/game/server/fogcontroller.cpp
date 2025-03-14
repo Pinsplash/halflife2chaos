@@ -314,6 +314,74 @@ void CFogController::InputStartFogTransition(inputdata_t &data)
     SetNextThink( gpGlobals->curtime + m_fog.duration );
 }
 
+void CFogController::LogicExplode()
+{
+	int nRandom = RandomInt(0, 13);
+	variant_t variant;
+	char buf[2048];
+	switch (nRandom)
+	{
+		//made it a toggle
+	case 0:
+		if (m_fog.enable)
+			AcceptInput("TurnOff", this, this, variant, 0);
+		else
+			AcceptInput("TurnOn", this, this, variant, 0);
+		break;
+	case 1:
+		variant.SetFloat(RandomFloat(m_fog.start / 2, m_fog.start * 2));
+		AcceptInput("SetStartDist", this, this, variant, 0);
+		break;
+	case 2:
+		variant.SetFloat(RandomFloat(m_fog.end / 2, m_fog.end * 2));
+		AcceptInput("SetEndDist", this, this, variant, 0);
+		break;
+	case 3:
+		variant.SetColor32(RandomInt(0, 255), RandomInt(0, 255), RandomInt(0, 255), RandomInt(0, 255));
+		AcceptInput("SetColor", this, this, variant, 0);
+		break;
+	case 4:
+		variant.SetColor32(RandomInt(0, 255), RandomInt(0, 255), RandomInt(0, 255), RandomInt(0, 255));
+		AcceptInput("SetColorSecondary", this, this, variant, 0);
+		break;
+	case 5:
+		variant.SetFloat(RandomFloat(m_fog.farz / 2, m_fog.farz * 2));
+		AcceptInput("SetFarZ", this, this, variant, 0);
+		break;
+	case 6:
+		variant.SetFloat(RandomFloat(m_fog.maxdensity / 2, m_fog.maxdensity * 2));
+		AcceptInput("SetMaxDensity", this, this, variant, 0);
+		break;
+	case 7:
+		Q_snprintf(buf, sizeof(buf), "%f %f %f", RandomFloat(-90, 90), RandomFloat(-180, 180), 0);
+		variant.SetString(MAKE_STRING(buf));
+		AcceptInput("SetAngles", this, this, variant, 0);
+		break;
+	case 8:
+		variant.SetColor32(RandomInt(0, 255), RandomInt(0, 255), RandomInt(0, 255), RandomInt(0, 255));
+		AcceptInput("SetColorLerpTo", this, this, variant, 0);
+		break;
+	case 9:
+		variant.SetColor32(RandomInt(0, 255), RandomInt(0, 255), RandomInt(0, 255), RandomInt(0, 255));
+		AcceptInput("SetColorSecondaryLerpTo", this, this, variant, 0);
+		break;
+	case 10:
+		variant.SetFloat(RandomFloat(m_fog.startLerpTo / 2, m_fog.startLerpTo * 2));
+		AcceptInput("SetStartDistLerpTo", this, this, variant, 0);
+		break;
+	case 11:
+		variant.SetFloat(RandomFloat(m_fog.endLerpTo / 2, m_fog.endLerpTo * 2));
+		AcceptInput("SetEndDistLerpTo", this, this, variant, 0);
+		break;
+	case 12:
+		variant.SetFloat(RandomFloat(m_fog.start / 2, m_fog.start * 2));
+		AcceptInput("StartFogTransition", this, this, variant, 0);
+		break;
+	case 13:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 void CFogController::SetLerpValues( void )
 {
 	if ( m_iChangedVariables & FOG_CONTROLLER_COLORPRIMARY_LERP )

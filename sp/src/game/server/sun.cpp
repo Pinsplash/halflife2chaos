@@ -29,7 +29,7 @@ public:
 	void InputTurnOn( inputdata_t &inputdata );
 	void InputTurnOff( inputdata_t &inputdata );
 	void InputSetColor( inputdata_t &inputdata );
-
+	virtual void LogicExplode();
 	virtual int UpdateTransmitState();
 
 public:
@@ -200,4 +200,25 @@ int CSun::UpdateTransmitState()
 	return SetTransmitState( FL_EDICT_ALWAYS );
 }
 
-
+void CSun::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//made it a toggle
+	case 0:
+		if (m_bOn)
+			AcceptInput("TurnOff", this, this, variant, 0);
+		else
+			AcceptInput("TurnOn", this, this, variant, 0);
+		break;
+	case 1:
+		variant.SetColor32(RandomInt(0, 255), RandomInt(0, 255), RandomInt(0, 255), RandomInt(0, 255));
+		AcceptInput("SetColor", this, this, variant, 0);
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
+}

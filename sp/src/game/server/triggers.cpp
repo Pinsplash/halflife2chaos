@@ -2619,7 +2619,7 @@ class CAI_ChangeTarget : public CBaseEntity
 {
 public:
 	DECLARE_CLASS( CAI_ChangeTarget, CBaseEntity );
-
+	virtual void LogicExplode();
 	// Input handlers.
 	void InputActivate( inputdata_t &inputdata );
 
@@ -2657,6 +2657,21 @@ void CAI_ChangeTarget::InputActivate( inputdata_t &inputdata )
 	}
 }
 
+void CAI_ChangeTarget::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("Activate", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 
 
@@ -2673,7 +2688,7 @@ public:
 	DECLARE_CLASS( CAI_ChangeHintGroup, CBaseEntity );
 
 	int ObjectCaps( void ) { return BaseClass::ObjectCaps() & ~FCAP_ACROSS_TRANSITION; }
-
+	virtual void LogicExplode();
 	// Input handlers.
 	void InputActivate( inputdata_t &inputdata );
 
@@ -2755,6 +2770,21 @@ void CAI_ChangeHintGroup::InputActivate( inputdata_t &inputdata )
 	}
 }
 
+void CAI_ChangeHintGroup::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("Activate", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 
 

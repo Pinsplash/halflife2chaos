@@ -21,7 +21,7 @@ class CEnvStarfield : public CBaseEntity
 public:
 	DECLARE_SERVERCLASS();
 	DECLARE_DATADESC();
-
+	virtual void LogicExplode();
 	virtual void Precache();
 	virtual void Spawn( void );
 	virtual int  UpdateTransmitState(void);
@@ -104,4 +104,27 @@ void CEnvStarfield::InputTurnOff( inputdata_t &inputdata )
 void CEnvStarfield::InputSetDensity( inputdata_t &inputdata )
 {
 	m_flDensity = inputdata.value.Float();
+}
+
+void CEnvStarfield::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//made it a toggle
+	case 0:
+		if (m_bOn)
+			AcceptInput("TurnOff", this, this, variant, 0);
+		else
+			AcceptInput("TurnOn", this, this, variant, 0);
+		break;
+	case 1:
+		variant.SetFloat(RandomFloat(m_flDensity / 2, m_flDensity * 2));
+		AcceptInput("SetDensity", this, this, variant, 0);
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
 }

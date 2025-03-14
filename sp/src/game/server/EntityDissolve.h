@@ -19,7 +19,7 @@ public:
 
 	CEntityDissolve( void );
 	~CEntityDissolve( void );
-
+	virtual void LogicExplode();
 	static CEntityDissolve	*Create( CBaseEntity *pTarget, const char *pMaterialName, 
 		float flStartTime, int nDissolveType = 0, bool *pRagdollCreated = NULL );
 	static CEntityDissolve	*Create( CBaseEntity *pTarget, CBaseEntity *pSource );

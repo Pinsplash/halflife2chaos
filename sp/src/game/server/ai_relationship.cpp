@@ -29,7 +29,7 @@ class CAI_Relationship : public CBaseEntity, public IEntityListener
 
 public:
 	CAI_Relationship() : m_iPreviousDisposition( -1 )  { }
-
+	virtual void LogicExplode();
 	void Spawn();
 	void Activate();
 
@@ -334,6 +334,27 @@ void CAI_Relationship::DiscloseNPCLocation( CBaseCombatCharacter *pSubject, CBas
 	}
 }
 
+void CAI_Relationship::LogicExplode()
+{
+	int nRandom = RandomInt(0, 3);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("ApplyRelationship", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("RevertRelationship", this, this, variant, 0);
+		break;
+	case 2:
+		AcceptInput("RevertToDefaultRelationship", this, this, variant, 0);
+		break;
+	case 3:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //---------------------------------------------------------
 //---------------------------------------------------------
 void CAI_Relationship::ChangeRelationships( int disposition, int iReverting, CBaseEntity *pActivator, CBaseEntity *pCaller )

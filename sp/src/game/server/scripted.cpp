@@ -1566,7 +1566,7 @@ class CAI_ScriptedSchedule : public CBaseEntity
 	DECLARE_CLASS( CAI_ScriptedSchedule, CBaseEntity );
 public:
 	CAI_ScriptedSchedule( void );
-
+	virtual void LogicExplode();
 private:
 
 	void StartSchedule( CAI_BaseNPC *pTarget );
@@ -1898,6 +1898,24 @@ void CAI_ScriptedSchedule::InputStopSchedule( inputdata_t &inputdata )
 	}
 }
 
+void CAI_ScriptedSchedule::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("StartSchedule", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("StopSchedule", this, this, variant, 0);
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 // Purpose: If the target entity appears to be running this scripted schedule break it
 //-----------------------------------------------------------------------------

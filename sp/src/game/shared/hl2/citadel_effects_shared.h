@@ -39,7 +39,7 @@ public:
 	void	InputStartDischarge( inputdata_t &inputdata );
 	void	InputStop( inputdata_t &inputdata );
 	void	SetScale( float flScale ) { m_flScale = flScale; }
-
+	virtual void LogicExplode();
 	void	StartCharge( float flWarmUpTime );
 	void	StartDischarge();
 	void	StopDischarge( float flCoolDownTime );

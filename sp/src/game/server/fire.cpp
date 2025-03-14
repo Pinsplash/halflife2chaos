@@ -81,7 +81,7 @@ public:
 	DECLARE_CLASS( CFire, CBaseEntity );
 	
 	int DrawDebugTextOverlays(void);
-
+	virtual void LogicExplode();
 	CFire( void );
 	
 	virtual void UpdateOnRemove( void );
@@ -1185,6 +1185,25 @@ void CFire::Extinguish( float heat )
 	}
 }
 
+void CFire::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("StartFire", this, this, variant, 0);
+		break;
+	case 1:
+		variant.SetFloat(RandomFloat(0, 20));
+		AcceptInput("ExtinguishTemporary", this, this, variant, 0);
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 bool CFire::GoOut()
 {
 	//Signal death
@@ -1227,7 +1246,7 @@ public:
 	void TurnOff();
 	void InputEnable( inputdata_t &inputdata );
 	void InputDisable( inputdata_t &inputdata );
-
+	virtual void LogicExplode();
 	DECLARE_DATADESC();
 
 private:
@@ -1303,6 +1322,24 @@ void CEnvFireSource::InputDisable( inputdata_t &inputdata )
 	TurnOff();
 }
 
+void CEnvFireSource::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//made it a toggle
+	case 0:
+		if (m_bEnabled)
+			AcceptInput("Disable", this, this, variant, 0);
+		else
+			AcceptInput("Enable", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //==================================================
 // CEnvFireSensor detects changes in heat
 //==================================================
@@ -1318,7 +1355,7 @@ public:
 	void TurnOff();
 	void InputEnable( inputdata_t &inputdata );
 	void InputDisable( inputdata_t &inputdata );
-
+	virtual void LogicExplode();
 	DECLARE_DATADESC();
 
 private:
@@ -1442,6 +1479,24 @@ void CEnvFireSensor::InputDisable( inputdata_t &inputdata )
 	TurnOff();
 }
 
+void CEnvFireSensor::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//made it a toggle
+	case 0:
+		if (m_bEnabled)
+			AcceptInput("Disable", this, this, variant, 0);
+		else
+			AcceptInput("Enable", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 // Purpose: Draw any debug text overlays
 // Output : Current text offset from the top

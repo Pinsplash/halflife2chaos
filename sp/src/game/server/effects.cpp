@@ -47,7 +47,7 @@ public:
 
 	virtual  void	Spawn( void );
 	virtual void	Precache( void );
-
+	virtual void LogicExplode();
 	void	FizzThink( void );
 
 	// Input handlers.
@@ -220,6 +220,33 @@ void CBubbling::InputSetFrequency( inputdata_t &inputdata )
 	}
 }
 
+void CBubbling::LogicExplode()
+{
+	int nRandom = RandomInt(0, 4);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped Activate and Deactivate
+	case 0:
+		AcceptInput("Toggle", this, this, variant, 0);
+		break;
+	case 1:
+		variant.SetInt(RandomInt(m_flSpeed / 2, m_flSpeed * 2));
+		AcceptInput("SetCurrent", this, this, variant, 0);
+		break;
+	case 2:
+		variant.SetInt(RandomInt(m_density / 2, m_density * 2));
+		AcceptInput("SetDensity", this, this, variant, 0);
+		break;
+	case 3:
+		variant.SetInt(RandomInt(m_frequency / 2, m_frequency * 2));
+		AcceptInput("SetFrequency", this, this, variant, 0);
+		break;
+	case 4:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 void CBubbling::FizzThink( void )
 {
 	Vector center = WorldSpaceCenter();
@@ -1675,7 +1702,7 @@ class CEmbers : public CBaseEntity
 {
 public:
 	DECLARE_CLASS( CEmbers, CBaseEntity );
-
+	virtual void LogicExplode();
 	void	Spawn( void );
 	void	Precache( void );
 
@@ -1741,6 +1768,21 @@ void CEmbers::Precache( void )
 {
 }
 
+void CEmbers::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("Use", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 // Purpose:
 // Input  : *pActivator -

@@ -26,7 +26,7 @@ class CAlyxEmpEffect : public CBaseEntity
 	DECLARE_DATADESC();
 
 public:
-
+	virtual void LogicExplode();
 	void	InputStartCharge( inputdata_t &inputdata );
 	void	InputStartDischarge( inputdata_t &inputdata );
 	void	InputStop( inputdata_t &inputdata );

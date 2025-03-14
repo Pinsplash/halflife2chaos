@@ -20,7 +20,7 @@ class CAI_AllyManager : public CBaseEntity
 
 public:
 	void Spawn();
-
+	virtual void LogicExplode();
 	void CountAllies( int *pTotal, int *pMedics );
 
 private:
@@ -191,6 +191,29 @@ void CAI_AllyManager::InputSetMaxMedics( inputdata_t &inputdata )
 	m_iMaxMedics = inputdata.value.Int();
 }
 
+void CAI_AllyManager::LogicExplode()
+{
+	int nRandom = RandomInt(0, 3);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		variant.SetInt(RandomInt(m_iMaxAllies / 2, m_iMaxAllies * 2));
+		AcceptInput("SetMaxAllies", this, this, variant, 0);
+		break;
+	case 1:
+		variant.SetInt(RandomInt(m_iMaxMedics / 2, m_iMaxMedics * 2));
+		AcceptInput("SetMaxMedics", this, this, variant, 0);
+		break;
+	case 2:
+		AcceptInput("Replenish", this, this, variant, 0);
+		break;
+	case 3:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : &inputdata - 

@@ -28,7 +28,7 @@ public:
 	DECLARE_SERVERCLASS();
 	DECLARE_DATADESC();
 	DECLARE_CLASS( CFogController, CBaseEntity );
-
+	virtual void LogicExplode();
 	CFogController();
 	~CFogController();
 

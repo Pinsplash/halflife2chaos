@@ -270,3 +270,32 @@ void CAlyxEmpEffect::InputSetTargetEnt( inputdata_t &inputdata )
 {
 	SetTargetEntity( inputdata.value.String() );
 }
+
+void CAlyxEmpEffect::LogicExplode()
+{
+	int nRandom = RandomInt(0, 3);
+	variant_t variant;
+	CBaseEntity* pEnt;
+	switch (nRandom)
+	{
+		//skipped Stop
+	case 0:
+		variant.SetFloat(RandomFloat(0, 20));
+		AcceptInput("StartCharge", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("StartDischarge", this, this, variant, 0);
+		break;
+	case 2:
+		pEnt = gEntList.RandomNamedEntity();
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("SetTargetEnt", this, this, variant, 0);
+		}
+		break;
+	case 3:
+		BaseClass::LogicExplode();
+		break;
+	}
+}

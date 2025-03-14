@@ -31,7 +31,7 @@ class CColorCorrection : public CBaseEntity
 public:
 	DECLARE_SERVERCLASS();
 	DECLARE_DATADESC();
-
+	virtual void LogicExplode();
 	CColorCorrection();
 
 	void Spawn( void );
@@ -311,4 +311,23 @@ void CColorCorrection::InputSetFadeInDuration( inputdata_t& inputdata )
 void CColorCorrection::InputSetFadeOutDuration( inputdata_t& inputdata )
 {
 	m_flFadeOutDuration = inputdata.value.Float();
+}
+
+void CColorCorrection::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//made it a toggle
+	case 0:
+		if (m_bEnabled)
+			AcceptInput("Disable", this, this, variant, 0);
+		else
+			AcceptInput("Enable", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
 }
