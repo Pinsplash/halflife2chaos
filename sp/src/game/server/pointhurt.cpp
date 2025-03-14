@@ -24,7 +24,7 @@ public:
 	void	Spawn( void );
 	void	Precache( void );
 	void	HurtThink( void );
-
+	virtual void LogicExplode();
 	// Input handlers
 	void InputTurnOn(inputdata_t &inputdata);
 	void InputTurnOff(inputdata_t &inputdata);
@@ -180,3 +180,21 @@ void CPointHurt::InputHurt( inputdata_t &data )
 	HurtThink();
 }
 
+void CPointHurt::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped TurnOn and TurnOff
+	case 0:
+		AcceptInput("Hurt", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("Toggle", this, this, variant, 0);
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
+}

@@ -115,7 +115,7 @@ class CPhysExplosion : public CPointEntity
 {
 public:
 	DECLARE_CLASS( CPhysExplosion, CPointEntity );
-
+	virtual void LogicExplode();
 	void	Spawn ( void );
 	void	Explode( CBaseEntity *pActivator, CBaseEntity *pCaller );
 
@@ -149,7 +149,7 @@ class CPhysImpact : public CPointEntity
 {
 public:
 	DECLARE_CLASS( CPhysImpact, CPointEntity );
-
+	virtual void LogicExplode();
 	void		Spawn( void );
 	//void		Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value );
 	void		Activate( void );

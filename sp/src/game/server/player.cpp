@@ -7571,7 +7571,7 @@ class CStripWeapons : public CPointEntity
 public:
 	void InputStripWeapons(inputdata_t &data);
 	void InputStripWeaponsAndSuit(inputdata_t &data);
-
+	virtual void LogicExplode();
 	void StripWeapons(inputdata_t &data, bool stripSuit);
 	DECLARE_DATADESC();
 };
@@ -7594,6 +7594,24 @@ void CStripWeapons::InputStripWeaponsAndSuit(inputdata_t &data)
 	StripWeapons(data, true);
 }
 
+void CStripWeapons::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("Strip", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("StripWeaponsAndSuit", this, this, variant, 0);
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 void CStripWeapons::StripWeapons(inputdata_t &data, bool stripSuit)
 {
 	CBasePlayer *pPlayer = NULL;
@@ -7778,7 +7796,7 @@ class CMovementSpeedMod : public CPointEntity
 	DECLARE_CLASS( CMovementSpeedMod, CPointEntity );
 public:
 	void InputSpeedMod(inputdata_t &data);
-
+	virtual void LogicExplode();
 private:
 	int GetDisabledButtonMask( void );
 
@@ -7828,6 +7846,22 @@ int CMovementSpeedMod::GetDisabledButtonMask( void )
 	return nMask;
 }
 
+void CMovementSpeedMod::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		variant.SetFloat(RandomFloat(0.5, 2));
+		AcceptInput("ModifySpeed", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 void CMovementSpeedMod::InputSpeedMod(inputdata_t &data)
 {
 	CBasePlayer *pPlayer = NULL;

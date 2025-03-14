@@ -3366,7 +3366,7 @@ class CFleshEffectTarget : public CPointEntity
 
 public:
 	void InputSetRadius( inputdata_t &inputData );
-
+	virtual void LogicExplode();
 	virtual void Spawn( void )
 	{
 		BaseClass::Spawn();
@@ -3408,4 +3408,20 @@ void CFleshEffectTarget::InputSetRadius( inputdata_t &inputData )
 	m_flScaleTime = vecRadius.y;
 }
 
+void CFleshEffectTarget::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		variant.SetVector3D(Vector(RandomFloat(m_flRadius / 2, m_flRadius * 2), RandomFloat(m_flScaleTime / 2, m_flScaleTime * 2), 0));
+		AcceptInput("SetRadius", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 #endif // HL2_EPISODIC

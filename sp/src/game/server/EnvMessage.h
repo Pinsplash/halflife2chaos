@@ -22,7 +22,7 @@ class CMessage : public CPointEntity
 {
 public:
 	DECLARE_CLASS( CMessage, CPointEntity );
-
+	virtual void LogicExplode();
 	void	Spawn( void );
 	void	Precache( void );
 

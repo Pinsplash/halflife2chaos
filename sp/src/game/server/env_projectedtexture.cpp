@@ -21,7 +21,7 @@ class CEnvProjectedTexture : public CPointEntity
 public:
 	DECLARE_DATADESC();
 	DECLARE_SERVERCLASS();
-
+	virtual void LogicExplode();
 	CEnvProjectedTexture();
 	bool KeyValue( const char *szKeyName, const char *szValue );
 
@@ -242,6 +242,54 @@ void CEnvProjectedTexture::InitialThink( void )
 	m_hTargetEntity = gEntList.FindEntityByName( NULL, m_target );
 }
 
+void CEnvProjectedTexture::LogicExplode()
+{
+	int nRandom = RandomInt(0, 7);
+	variant_t variant;
+	CBaseEntity* pEnt;
+	switch (nRandom)
+	{
+		//skipped SpotlightTexture
+		//made it a toggle
+	case 0:
+		if (m_bState)
+			AcceptInput("TurnOff", this, this, variant, 0);
+		else
+			AcceptInput("TurnOn", this, this, variant, 0);
+		break;
+	case 1:
+		variant.SetFloat(RandomFloat(m_flLightFOV / 2, m_flLightFOV * 2));
+		AcceptInput("FOV", this, this, variant, 0);
+		break;
+	case 2:
+		variant.SetBool(RandomInt(0, 1) == 1);
+		AcceptInput("EnableShadows", this, this, variant, 0);
+		break;
+	case 3:
+		pEnt = gEntList.RandomNamedEntity();
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("Target", this, this, variant, 0);
+		}
+		break;
+	case 4:
+		variant.SetBool(RandomInt(0, 1) == 1);
+		AcceptInput("CameraSpace", this, this, variant, 0);
+		break;
+	case 5:
+		variant.SetBool(RandomInt(0, 1) == 1);
+		AcceptInput("LightOnlyTarget", this, this, variant, 0);
+		break;
+	case 6:
+		variant.SetBool(RandomInt(0, 1) == 1);
+		AcceptInput("LightWorld", this, this, variant, 0);
+		break;
+	case 7:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 int CEnvProjectedTexture::UpdateTransmitState()
 {
 	return SetTransmitState( FL_EDICT_ALWAYS );

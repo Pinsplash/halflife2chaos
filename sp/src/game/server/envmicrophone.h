@@ -39,7 +39,7 @@ class CEnvMicrophone : public CPointEntity
 
 public:
 	~CEnvMicrophone();
-
+	virtual void LogicExplode();
 	void Spawn(void);
 	void Activate(void);
 	void OnRestore( void );

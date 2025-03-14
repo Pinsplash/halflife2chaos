@@ -4467,6 +4467,24 @@ void CAntlionRepellant::OnRestore( void )
 	}
 }
 
+void CAntlionRepellant::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//made it a toggle
+	case 0:
+		if (m_bEnabled)
+			AcceptInput("Disable", this, this, variant, 0);
+		else
+			AcceptInput("Enable", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 bool CAntlionRepellant::IsPositionRepellantFree( Vector vDesiredPos )
 {
 	for ( int i = 0; i < m_hRepellantList.Count(); i++ )

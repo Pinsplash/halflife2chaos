@@ -21,7 +21,7 @@ class CEnvPlayerSurfaceTrigger : public CPointEntity
 	DECLARE_CLASS( CEnvPlayerSurfaceTrigger, CPointEntity );
 public:
 	DECLARE_DATADESC();
-
+	virtual void LogicExplode();
 	~CEnvPlayerSurfaceTrigger( void );
 	void	Spawn( void );
 	void	OnRestore( void );

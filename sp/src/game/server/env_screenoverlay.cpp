@@ -19,7 +19,7 @@ class CEnvScreenOverlay : public CPointEntity
 public:
 	DECLARE_DATADESC();
 	DECLARE_SERVERCLASS();
-
+	virtual void LogicExplode();
 	CEnvScreenOverlay();
 
 	// Always transmit to clients
@@ -175,6 +175,21 @@ void CEnvScreenOverlay::InputSwitchOverlay( inputdata_t &inputdata )
 	m_flStartTime = gpGlobals->curtime;
 }
 
+void CEnvScreenOverlay::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped StopOverlays and SwitchOverlay
+	case 0:
+		AcceptInput("StartOverlays", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 void CEnvScreenOverlay::InputStopOverlay( inputdata_t &inputdata )
 {
 	if ( m_iszOverlayNames[0] == NULL_STRING )
@@ -199,7 +214,7 @@ class CEnvScreenEffect : public CPointEntity
 public:
 	DECLARE_DATADESC();
 	DECLARE_SERVERCLASS();
-
+	virtual void LogicExplode();
 	// We always want to be sent to the client
 	CEnvScreenEffect( void ) { 	AddEFlags( EFL_FORCE_CHECK_TRANSMIT ); }
 	virtual int UpdateTransmitState( void )	{ return SetTransmitState( FL_EDICT_ALWAYS ); }
@@ -266,4 +281,21 @@ void CEnvScreenEffect::InputStopEffect( inputdata_t &inputdata )
 	EntityMessageBegin( this );
 		WRITE_BYTE( 1 );
 	MessageEnd();
+}
+
+void CEnvScreenEffect::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped StopEffect
+	case 0:
+		variant.SetFloat(RandomFloat(0, 20));
+		AcceptInput("StartEffect", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
 }

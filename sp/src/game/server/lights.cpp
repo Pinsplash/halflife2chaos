@@ -192,6 +192,21 @@ void CLight::InputFadeToPattern( inputdata_t &inputdata )
 	CLEARBITS(m_spawnflags, SF_LIGHT_START_OFF);
 }
 
+void CLight::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped turnon, turnoff, SetPattern
+	case 0:
+		AcceptInput("Toggle", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 //------------------------------------------------------------------------------
 // Purpose : Fade light to new starting pattern value then stop thinking

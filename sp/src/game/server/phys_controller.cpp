@@ -861,7 +861,7 @@ class CKeepUpright : public CPointEntity, public IMotionEvent
 	DECLARE_CLASS( CKeepUpright, CPointEntity );
 public:
 	DECLARE_DATADESC();
-
+	virtual void LogicExplode();
 	CKeepUpright();
 	~CKeepUpright();
 	void Spawn();
@@ -927,6 +927,28 @@ CKeepUpright::CKeepUpright()
 	m_bDampAllRotation = false;
 }
 
+void CKeepUpright::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//made it a toggle
+	case 0:
+		if (m_bActive)
+			AcceptInput("TurnOff", this, this, variant, 0);
+		else
+			AcceptInput("TurnOn", this, this, variant, 0);
+		break;
+	case 1:
+		variant.SetFloat(RandomFloat(m_angularLimit / 2, m_angularLimit * 2));
+		AcceptInput("SetAngularLimit", this, this, variant, 0);
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 CKeepUpright::~CKeepUpright()
 {
 	if ( m_pController )

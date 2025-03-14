@@ -54,7 +54,7 @@ class CRadarTarget : public CPointEntity
 
 public:
 	void	Spawn();
-
+	virtual void LogicExplode();
 	bool	IsDisabled()	{ return m_bDisabled; }
 	int		GetType()		{ return m_iType; }
 	int		GetMode()		{ return m_iMode; }
@@ -119,6 +119,24 @@ int CRadarTarget::ObjectCaps()
 	return BaseClass::ObjectCaps() | FCAP_ACROSS_TRANSITION;
 }
 
+void CRadarTarget::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//made it a toggle
+	case 0:
+		if (m_bDisabled)
+			AcceptInput("Enable", this, this, variant, 0);
+		else
+			AcceptInput("Disable", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 
 
@@ -288,7 +306,7 @@ public:
 
 	void Enable( void ) { m_bDisabled = false; }
 	void Disable( void ) { m_bDisabled = true; }
-
+	virtual void LogicExplode();
 	bool IsDisabled( void ) const { return m_bDisabled; }
 
 private:
@@ -310,6 +328,24 @@ END_DATADESC();
 
 LINK_ENTITY_TO_CLASS( info_target_vehicle_transition, CInfoTargetVehicleTransition );
 
+void CInfoTargetVehicleTransition::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//made it a toggle
+	case 0:
+		if (m_bDisabled)
+			AcceptInput("Enable", this, this, variant, 0);
+		else
+			AcceptInput("Disable", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //
 //	CPropJeepEpisodic
 //

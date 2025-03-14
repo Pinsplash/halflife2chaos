@@ -26,7 +26,7 @@ class CEnvZoom : public CPointEntity
 {
 public:
 	DECLARE_CLASS( CEnvZoom, CPointEntity );
-
+	virtual void LogicExplode();
 	void	InputZoom( inputdata_t &inputdata );
 	void	InputUnZoom( inputdata_t &inputdata );
 
@@ -120,3 +120,18 @@ void CEnvZoom::InputUnZoom( inputdata_t &inputdata )
 	}
 }
 
+void CEnvZoom::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped unzoom
+	case 0:
+		AcceptInput("Zoom", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}

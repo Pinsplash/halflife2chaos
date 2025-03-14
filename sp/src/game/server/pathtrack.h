@@ -45,7 +45,7 @@ class CPathTrack : public CPointEntity
 
 public:
 	CPathTrack();
-
+	virtual void LogicExplode();
 	void		Spawn( void );
 	void		Activate( void );
 	void		DrawDebugGeometryOverlays();

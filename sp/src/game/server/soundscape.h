@@ -27,7 +27,7 @@ class CEnvSoundscape : public CPointEntity
 public:
 	DECLARE_CLASS( CEnvSoundscape, CPointEntity );
 	DECLARE_DATADESC();
-
+	virtual void LogicExplode();
 	CEnvSoundscape();
 	~CEnvSoundscape();
 

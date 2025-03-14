@@ -26,7 +26,7 @@ class CEnvTonemapController : public CPointEntity
 public:
 	DECLARE_DATADESC();
 	DECLARE_SERVERCLASS();
-
+	virtual void LogicExplode();
 	void	Spawn( void );
 	int		UpdateTransmitState( void );
 	void	UpdateTonemapScaleBlend( void );
@@ -246,4 +246,39 @@ void CEnvTonemapController::InputSetBloomScale( inputdata_t &inputdata )
 void CEnvTonemapController::InputUseDefaultBloomScale( inputdata_t &inputdata )
 {
 	m_bUseCustomBloomScale = false;
+}
+
+void CEnvTonemapController::LogicExplode()
+{
+	int nRandom = RandomInt(0, 6);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		variant.SetFloat(RandomFloat(m_flCustomAutoExposureMin / 2, m_flCustomAutoExposureMin * 2));
+		AcceptInput("SetAutoExposureMin", this, this, variant, 0);
+		break;
+	case 1:
+		variant.SetFloat(RandomFloat(m_flCustomAutoExposureMax / 2, m_flCustomAutoExposureMax * 2));
+		AcceptInput("SetAutoExposureMax", this, this, variant, 0);
+		break;
+	case 2:
+		variant.SetFloat(RandomFloat(m_flCustomBloomScale / 2, m_flCustomBloomScale * 2));
+		AcceptInput("SetBloomScale", this, this, variant, 0);
+		break;
+	case 3:
+		variant.SetFloat(RandomFloat());
+		AcceptInput("SetTonemapRate", this, this, variant, 0);
+		break;
+	case 4:
+		AcceptInput("UseDefaultAutoExposure", this, this, variant, 0);
+		break;
+	case 5:
+		AcceptInput("UseDefaultBloomScale", this, this, variant, 0);
+		break;
+	case 6:
+		BaseClass::LogicExplode();
+		break;
+	}
 }

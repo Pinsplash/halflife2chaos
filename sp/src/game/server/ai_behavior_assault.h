@@ -133,7 +133,7 @@ public:
 		// default value, for legacy maps. (sjb)
 		m_flAssaultPointTolerance = CUE_POINT_TOLERANCE;
 	}
-
+	virtual void LogicExplode();
 	void 			InputSetClearOnContact( inputdata_t &inputdata )
 	{
 		m_bClearOnContact = inputdata.value.Bool();

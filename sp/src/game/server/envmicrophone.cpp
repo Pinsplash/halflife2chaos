@@ -512,6 +512,34 @@ MicrophoneResult_t CEnvMicrophone::SoundPlayed( int entindex, const char *soundn
 	return MicrophoneResult_Ok;
 }
 
+void CEnvMicrophone::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	CBaseEntity* pEnt;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		pEnt = gEntList.RandomNamedEntity();
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("SetSpeakerName", this, this, variant, 0);
+		}
+		break;
+		//made it a toggle
+	case 1:
+		if (m_bDisabled)
+			AcceptInput("Enable", this, this, variant, 0);
+		else
+			AcceptInput("Disable", this, this, variant, 0);
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 //-----------------------------------------------------------------------------
 // Purpose: Called by the sound system whenever a sound is played so that

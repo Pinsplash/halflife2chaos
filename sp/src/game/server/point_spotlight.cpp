@@ -30,7 +30,7 @@ public:
 	void	Precache(void);
 	void	Spawn(void);
 	virtual void Activate();
-
+	virtual void LogicExplode();
 	virtual void OnEntityEvent( EntityEvent_t event, void *pEventData );
 
 private:
@@ -507,5 +507,24 @@ void CPointSpotlight::InputLightOff( inputdata_t &inputdata )
 		{
 			SpotlightDestroy();
 		}
+	}
+}
+
+void CPointSpotlight::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//made it a toggle
+	case 0:
+		if (m_bSpotlightOn)
+			AcceptInput("LightOff", this, this, variant, 0);
+		else
+			AcceptInput("LightOn", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
 	}
 }

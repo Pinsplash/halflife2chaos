@@ -192,4 +192,21 @@ void CEnvSpark::InputToggleSpark( inputdata_t &inputdata )
 	}
 }
 
-
+void CEnvSpark::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped StartSpark and StopSpark
+	case 0:
+		AcceptInput("ToggleSpark", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("SparkOnce", this, this, variant, 0);
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
+}

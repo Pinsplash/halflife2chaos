@@ -77,7 +77,7 @@ class CItem_DynamicResupply : public CPointEntity
 	DECLARE_CLASS( CItem_DynamicResupply, CPointEntity );
 public:
 	DECLARE_DATADESC();
-
+	virtual void LogicExplode();
 	CItem_DynamicResupply();
 
 	void Spawn( void );
@@ -566,6 +566,24 @@ bool CItem_DynamicResupply::SpawnItemFromRatio( int nCount, DynamicResupplyItems
 	return true;
 }
 
+void CItem_DynamicResupply::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("BecomeMaster", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("CalculateType", this, this, variant, 0);
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 	
 //-----------------------------------------------------------------------------
 // Purpose: 

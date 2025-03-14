@@ -25,7 +25,7 @@ class CPointAngleSensor : public CPointEntity
 {
 	DECLARE_CLASS(CPointAngleSensor, CPointEntity);
 public:
-
+	virtual void LogicExplode();
 	bool KeyValue(const char *szKeyName, const char *szValue);
 	void Activate(void);
 	void Spawn(void);
@@ -359,6 +359,33 @@ void CPointAngleSensor::Disable()
 	SetNextThink(TICK_NEVER_THINK);
 }
 
+void CPointAngleSensor::LogicExplode()
+{
+	int nRandom = RandomInt(0, 3);
+	variant_t variant;
+	CBaseEntity* pEnt;
+	switch (nRandom)
+	{
+		//skipped enable and disable
+	case 0:
+		AcceptInput("Test", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("Toggle", this, this, variant, 0);
+		break;
+	case 2:
+		pEnt = gEntList.RandomNamedEntity();
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("SetTargetEntity", this, this, variant, 0);
+		}
+		break;
+	case 3:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 //-----------------------------------------------------------------------------
 // Purpose: 

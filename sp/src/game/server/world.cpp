@@ -47,7 +47,7 @@ class CDecal : public CPointEntity
 {
 public:
 	DECLARE_CLASS( CDecal, CPointEntity );
-
+	virtual void LogicExplode();
 	void	Spawn( void );
 	bool	KeyValue( const char *szKeyName, const char *szValue );
 
@@ -216,6 +216,21 @@ void CDecal::StaticDecal( void )
 	SUB_Remove();
 }
 
+void CDecal::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("Activate", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 bool CDecal::KeyValue( const char *szKeyName, const char *szValue )
 {
@@ -244,7 +259,7 @@ class CProjectedDecal : public CPointEntity
 {
 public:
 	DECLARE_CLASS( CProjectedDecal, CPointEntity );
-
+	virtual void LogicExplode();
 	void	Spawn( void );
 	bool	KeyValue( const char *szKeyName, const char *szValue );
 
@@ -342,6 +357,21 @@ void CProjectedDecal::StaticDecal( void )
 	SUB_Remove();
 }
 
+void CProjectedDecal::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("Activate", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 bool CProjectedDecal::KeyValue( const char *szKeyName, const char *szValue )
 {

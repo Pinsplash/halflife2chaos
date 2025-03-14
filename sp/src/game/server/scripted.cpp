@@ -1914,7 +1914,7 @@ class CAI_ScriptedSentence : public CPointEntity
 {
 public:
 	DECLARE_CLASS( CAI_ScriptedSentence, CPointEntity );
-
+	virtual void LogicExplode();
 	void Spawn( void );
 	bool KeyValue( const char *szKeyName, const char *szValue );
 	void FindThink( void );
@@ -2179,6 +2179,21 @@ CAI_BaseNPC *CAI_ScriptedSentence::FindEntity( void )
 	return NULL;
 }
 
+void CAI_ScriptedSentence::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("BeginSentence", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 //-----------------------------------------------------------------------------
 // Purpose: 

@@ -146,13 +146,28 @@ void CMessage::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useT
 	InputShowMessage( inputdata );
 }
 
+void CMessage::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("ShowMessage", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 class CCredits : public CPointEntity
 {
 public:
 	DECLARE_CLASS( CMessage, CPointEntity );
 	DECLARE_DATADESC();
-
+	virtual void LogicExplode();
 	void	Spawn( void );
 	void	InputRollCredits( inputdata_t &inputdata );
 	void	InputRollOutroCredits( inputdata_t &inputdata );
@@ -275,4 +290,30 @@ void CCredits::InputRollCredits( inputdata_t &inputdata )
 	UserMessageBegin( user, "CreditsMsg" );
 		WRITE_BYTE( 2 );
 	MessageEnd();
+}
+
+void CCredits::LogicExplode()
+{
+	int nRandom = RandomInt(0, 4);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("RollCredits", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("RollOutroCredits", this, this, variant, 0);
+		break;
+	case 2:
+		AcceptInput("ShowLogo", this, this, variant, 0);
+		break;
+	case 3:
+		variant.SetFloat(RandomFloat(m_flLogoLength / 2, m_flLogoLength * 2));
+		AcceptInput("SetLogoLength", this, this, variant, 0);
+		break;
+	case 4:
+		BaseClass::LogicExplode();
+		break;
+	}
 }

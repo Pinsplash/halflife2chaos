@@ -1034,7 +1034,7 @@ class CBlood : public CPointEntity
 {
 public:
 	DECLARE_CLASS( CBlood, CPointEntity );
-
+	virtual void LogicExplode();
 	void	Spawn( void );
 	bool	KeyValue( const char *szKeyName, const char *szValue );
 
@@ -1177,6 +1177,21 @@ void UTIL_BloodSpray( const Vector &pos, const Vector &dir, int color, int amoun
 	DispatchEffect( "bloodspray", data );
 }
 
+void CBlood::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("EmitBlood", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 // Purpose: Input handler for triggering the blood effect.
 //-----------------------------------------------------------------------------
@@ -1880,7 +1895,7 @@ class CEnvMuzzleFlash : public CPointEntity
 
 public:
 	virtual void Spawn();
-
+	virtual void LogicExplode();
 	// Input handlers
 	void	InputFire( inputdata_t &inputdata );
 
@@ -1921,6 +1936,21 @@ void CEnvMuzzleFlash::Spawn()
 	}
 }
 
+void CEnvMuzzleFlash::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("Fire", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 //-----------------------------------------------------------------------------
 // Purpose:
@@ -1944,7 +1974,7 @@ class CEnvSplash : public CPointEntity
 public:
 	// Input handlers
 	void	InputSplash( inputdata_t &inputdata );
-
+	virtual void LogicExplode();
 protected:
 
 	float	m_flScale;
@@ -1960,6 +1990,21 @@ END_DATADESC()
 
 LINK_ENTITY_TO_CLASS( env_splash, CEnvSplash );
 
+void CEnvSplash::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("Splash", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 // Purpose:
 // Input  : &inputdata -
@@ -2031,7 +2076,7 @@ class CEnvGunfire : public CPointEntity
 {
 public:
 	DECLARE_CLASS( CEnvGunfire, CPointEntity );
-
+	virtual void LogicExplode();
 	CEnvGunfire()
 	{
 		// !!!HACKHACK
@@ -2272,6 +2317,24 @@ void CEnvGunfire::InputDisable( inputdata_t &inputdata )
 	SetThink( NULL );
 }
 
+void CEnvGunfire::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//made it a toggle
+	case 0:
+		if (m_bDisabled)
+			AcceptInput("Enable", this, this, variant, 0);
+		else
+			AcceptInput("Disable", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 // Quadratic spline beam effect
 //-----------------------------------------------------------------------------
@@ -2332,7 +2395,7 @@ class CEnvViewPunch : public CPointEntity
 public:
 
 	DECLARE_CLASS( CEnvViewPunch, CPointEntity );
-
+	virtual void LogicExplode();
 	virtual void Spawn();
 
 	// Input handlers
@@ -2391,4 +2454,20 @@ void CEnvViewPunch::DoViewPunch()
 void CEnvViewPunch::InputViewPunch( inputdata_t &inputdata )
 {
 	DoViewPunch();
+}
+
+void CEnvViewPunch::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("ViewPunch", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
 }

@@ -16,7 +16,7 @@ class CPathCorner : public CPointEntity
 {
 	DECLARE_CLASS( CPathCorner, CPointEntity );
 public:
-
+	virtual void LogicExplode();
 	void	Spawn( );
 	float	GetDelay( void ) { return m_flWait; }
 	int		DrawDebugTextOverlays(void);
@@ -139,4 +139,26 @@ void CPathCorner::DrawDebugGeometryOverlays(void)
 		}
 	}
 	BaseClass::DrawDebugGeometryOverlays();
+}
+
+void CPathCorner::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	CBaseEntity* pEnt;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		pEnt = gEntList.RandomNamedEntityByClassname("path_corner");
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("SetNextPathCorner", this, this, variant, 0);
+		}
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
 }

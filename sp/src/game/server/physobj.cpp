@@ -1116,6 +1116,21 @@ void CPhysExplosion::Explode( CBaseEntity *pActivator, CBaseEntity *pCaller )
 	}
 }
 
+void CPhysExplosion::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("Explode", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 // Purpose: Draw any debug text overlays
 // Output : Current text offset from the top
@@ -1204,6 +1219,21 @@ void CPhysImpact::PointAtEntity( void )
 	UTIL_PointAtNamedEntity( this, m_directionEntityName );
 }
 
+void CPhysImpact::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("Impact", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : *pActivator - 
@@ -2015,7 +2045,7 @@ public:
 
 	virtual void Activate( void );
 	void PushThink( void );
-	
+	virtual void LogicExplode();
 	void	InputEnable( inputdata_t &inputdata );
 	void	InputDisable( inputdata_t &inputdata );
 
@@ -2222,4 +2252,23 @@ void CPointPush::InputDisable( inputdata_t &inputdata )
 	m_bEnabled = false;
 	SetThink( NULL );
 	SetNextThink( gpGlobals->curtime );
+}
+
+void CPointPush::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//made it a toggle
+	case 0:
+		if (m_bEnabled)
+			AcceptInput("Disable", this, this, variant, 0);
+		else
+			AcceptInput("Enable", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
 }

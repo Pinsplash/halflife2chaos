@@ -169,8 +169,8 @@ class CTargetGunshipCrash : public CPointEntity
 {
 	DECLARE_CLASS( CTargetGunshipCrash, CPointEntity );
 public:
-	DECLARE_DATADESC();	
-
+	DECLARE_DATADESC();
+	virtual void LogicExplode();
 	void	InputEnable( inputdata_t &inputdata )
 	{
 		m_bDisabled = false;
@@ -207,6 +207,24 @@ BEGIN_DATADESC( CTargetGunshipCrash )
 	DEFINE_OUTPUT( m_OnCrashed,			"OnCrashed" ),
 END_DATADESC()
 
+void CTargetGunshipCrash::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//made it a toggle
+	case 0:
+		if (m_bDisabled)
+			AcceptInput("Enable", this, this, variant, 0);
+		else
+			AcceptInput("Disable", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 //===================================================================
 // Gunship - the combine dugongic like attack vehicle.

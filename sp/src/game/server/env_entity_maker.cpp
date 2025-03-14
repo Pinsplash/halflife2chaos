@@ -30,7 +30,7 @@ class CEnvEntityMaker : public CPointEntity
 	DECLARE_CLASS( CEnvEntityMaker, CPointEntity );
 public:
 	DECLARE_DATADESC();
-
+	virtual void LogicExplode();
 	virtual void Spawn( void );
 	virtual void Activate( void );
 
@@ -362,5 +362,30 @@ void CEnvEntityMaker::InputForceSpawnAtEntityOrigin( inputdata_t &inputdata )
 	if( pTargetEntity )
 	{
 		SpawnEntity( pTargetEntity->GetAbsOrigin(), pTargetEntity->GetAbsAngles() );
+	}
+}
+
+void CEnvEntityMaker::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	CBaseEntity* pEnt;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("ForceSpawn", this, this, variant, 0);
+		break;
+	case 1:
+		pEnt = gEntList.RandomNamedEntity();
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("ForceSpawnAtEntityOrigin", this, this, variant, 0);
+		}
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
 	}
 }

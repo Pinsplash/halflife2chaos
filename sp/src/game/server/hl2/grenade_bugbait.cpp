@@ -42,6 +42,21 @@ CBugBaitSensor::~CBugBaitSensor( void )
 	g_BugBaitSensorList.Remove( this );
 }
 
+void CBugBaitSensor::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped enable and disable
+	case 0:
+		AcceptInput("Toggle", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 BEGIN_DATADESC( CBugBaitSensor )
 
 	// This is re-set up in the constructor

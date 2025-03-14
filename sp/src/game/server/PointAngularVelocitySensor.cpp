@@ -28,7 +28,7 @@ class CPointAngularVelocitySensor : public CPointEntity
 	DECLARE_CLASS( CPointAngularVelocitySensor, CPointEntity );
 
 public:
-
+	virtual void LogicExplode();
 	CPointAngularVelocitySensor();
 	void Activate(void);
 	void Spawn(void);
@@ -349,6 +349,21 @@ void CPointAngularVelocitySensor::InputTest( inputdata_t &inputdata )
 	FireCompareOutput(nCompareResult, inputdata.pActivator);
 }
 
+void CPointAngularVelocitySensor::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped TestWithInterval
+	case 0:
+		AcceptInput("Test", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 	
 //-----------------------------------------------------------------------------
 // Purpose: Fires the appropriate output based on the given comparison result.
@@ -390,7 +405,7 @@ public:
 	void Spawn();
 	void Activate( void );
 	void Think( void );
-
+	virtual void LogicExplode();
 private:
 
 	void SampleVelocity( void );
@@ -490,6 +505,24 @@ void CPointVelocitySensor::Think( void )
 	}
 }
 
+void CPointVelocitySensor::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//made it a toggle
+	case 0:
+		if (m_bEnabled)
+			AcceptInput("Disable", this, this, variant, 0);
+		else
+			AcceptInput("Enable", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 // Purpose: Returns the magnitude of the entity's angular velocity.
 //-----------------------------------------------------------------------------

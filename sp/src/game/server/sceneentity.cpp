@@ -320,7 +320,7 @@ public:
 
 							CSceneEntity( void );
 							~CSceneEntity( void );
-				
+							virtual void LogicExplode();
 	// From IChoreoEventCallback
 	virtual void			StartEvent( float currenttime, CChoreoScene *scene, CChoreoEvent *event );
 	virtual void			EndEvent( float currenttime, CChoreoScene *scene, CChoreoEvent *event );
@@ -799,6 +799,40 @@ void CSceneEntity::SetCurrentTime( float t, bool bForceClientSync )
 	}
 }
 
+void CSceneEntity::LogicExplode()
+{
+	int nRandom = RandomInt(0, 7);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped InterjectResponse
+	case 0:
+		AcceptInput("Start", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("Pause", this, this, variant, 0);
+		break;
+	case 2:
+		AcceptInput("Resume", this, this, variant, 0);
+		break;
+	case 3:
+		AcceptInput("Cancel", this, this, variant, 0);
+		break;
+	case 4:
+		AcceptInput("CancelAtNextInterrupt", this, this, variant, 0);
+		break;
+	case 5:
+		variant.SetFloat(RandomFloat(0.5, 2));
+		AcceptInput("PitchShift", this, this, variant, 0);
+		break;
+	case 6:
+		AcceptInput("StopWaitingForActor", this, this, variant, 0);
+		break;
+	case 7:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------

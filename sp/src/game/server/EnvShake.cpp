@@ -60,7 +60,7 @@ private:
 
 public:
 	DECLARE_CLASS( CEnvShake, CPointEntity );
-
+	virtual void LogicExplode();
 			~CEnvShake( void );
 	virtual void	Spawn( void );
 	virtual void	OnRestore( void );
@@ -371,6 +371,29 @@ void CC_Shake( void )
 	}
 }
 
+void CEnvShake::LogicExplode()
+{
+	int nRandom = RandomInt(0, 3);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped StopShake
+	case 0:
+		AcceptInput("StartShake", this, this, variant, 0);
+		break;
+	case 1:
+		variant.SetFloat(RandomFloat(m_Amplitude / 2, m_Amplitude * 2));
+		AcceptInput("Amplitude", this, this, variant, 0);
+		break;
+	case 2:
+		variant.SetFloat(RandomFloat(m_Frequency / 2, m_Frequency * 2));
+		AcceptInput("Frequency", this, this, variant, 0);
+		break;
+	case 3:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 //-----------------------------------------------------------------------------
 // Purpose: Draw any debug text overlays

@@ -35,7 +35,7 @@ public:
 	DECLARE_CLASS( CBugBaitSensor, CPointEntity );
 
 	DECLARE_DATADESC();
-
+	virtual void LogicExplode();
 	CBugBaitSensor( void );
 	~CBugBaitSensor( void );
 

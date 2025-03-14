@@ -1614,6 +1614,30 @@ void CAI_AssaultGoal::InputBeginAssault( inputdata_t &inputdata )
 	}
 }
 
+void CAssaultPoint::LogicExplode()
+{
+	int nRandom = RandomInt(0, 3);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		variant.SetBool(RandomInt(0, 1) == 0);
+		AcceptInput("SetClearOnContact", this, this, variant, 0);
+		break;
+	case 1:
+		variant.SetBool(RandomInt(0, 1) == 0);
+		AcceptInput("SetAllowDiversion", this, this, variant, 0);
+		break;
+	case 2:
+		variant.SetBool(RandomInt(0, 1) == 0);
+		AcceptInput("SetForceClear", this, this, variant, 0);
+		break;
+	case 3:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 AI_BEGIN_CUSTOM_SCHEDULE_PROVIDER(CAI_AssaultBehavior)
 

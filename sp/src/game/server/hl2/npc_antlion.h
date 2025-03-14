@@ -386,7 +386,7 @@ class CAntlionRepellant : public CPointEntity
 public:
 	DECLARE_CLASS( CAntlionRepellant, CPointEntity );
 	~CAntlionRepellant();
-
+	virtual void LogicExplode();
 public:
 	void Spawn( void );
 	void InputEnable( inputdata_t &inputdata );

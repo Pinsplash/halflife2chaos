@@ -23,7 +23,7 @@ class CEnvHudHint : public CPointEntity
 {
 public:
 	DECLARE_CLASS( CEnvHudHint, CPointEntity );
-
+	virtual void LogicExplode();
 	void	Spawn( void );
 	void	Precache( void );
 
@@ -104,6 +104,24 @@ void CEnvHudHint::InputShowHudHint( inputdata_t &inputdata )
 	}
 }
 
+void CEnvHudHint::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("ShowHudHint", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("HideHudHint", this, this, variant, 0);
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 void CEnvHudHint::InputHideHudHint( inputdata_t &inputdata )

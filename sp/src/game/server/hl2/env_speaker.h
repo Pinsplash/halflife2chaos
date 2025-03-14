@@ -19,7 +19,7 @@ class CSpeaker : public CPointEntity
 {
 public:
 	DECLARE_CLASS( CSpeaker, CPointEntity );
-
+	virtual void LogicExplode();
 	void Spawn( void );
 	void Precache( void );
 	

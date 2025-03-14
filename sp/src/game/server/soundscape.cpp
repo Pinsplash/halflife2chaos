@@ -385,6 +385,21 @@ void CEnvSoundscape::Precache()
 	}
 }
 
+void CEnvSoundscape::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped enable and disable
+	case 0:
+		AcceptInput("ToggleEnabled", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 void CEnvSoundscape::DrawDebugGeometryOverlays( void )
 {
 	if ( m_debugOverlays & (OVERLAY_BBOX_BIT|OVERLAY_PIVOT_BIT|OVERLAY_ABSBOX_BIT) )

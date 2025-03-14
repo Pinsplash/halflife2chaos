@@ -94,7 +94,7 @@ class CEnvExplosion : public CPointEntity
 {
 public:
 	DECLARE_CLASS( CEnvExplosion, CPointEntity );
-
+	virtual void LogicExplode();
 	CEnvExplosion( void )
 	{
 		// Default to invalid.
@@ -495,4 +495,20 @@ int CEnvExplosion::DrawDebugTextOverlays( void )
 		text_offset++;
 	}
 	return text_offset;
+}
+
+void CEnvExplosion::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("Explode", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
 }

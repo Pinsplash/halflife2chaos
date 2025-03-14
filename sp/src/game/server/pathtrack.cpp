@@ -584,3 +584,22 @@ void CPathTrack::InputTeleport( inputdata_t &inputdata )
 {
 	m_OnTeleport.FireOutput( inputdata.pActivator, this );
 }
+
+void CPathTrack::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped EnableAlternatePath, DisableAlternatePath, EnablePath, DisablePath
+	case 0:
+		AcceptInput("ToggleAlternatePath", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("TogglePath", this, this, variant, 0);
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
+}

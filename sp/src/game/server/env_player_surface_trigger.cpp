@@ -147,3 +147,22 @@ bool CEnvPlayerSurfaceTrigger::IsTargetMaterial(char gameMaterial)
 		return true;
 	return false;
 }
+
+void CEnvPlayerSurfaceTrigger::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//made it a toggle
+	case 0:
+		if (m_bDisabled)
+			AcceptInput("Enable", this, this, variant, 0);
+		else
+			AcceptInput("Disable", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}

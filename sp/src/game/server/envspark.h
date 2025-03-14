@@ -17,7 +17,7 @@ class CEnvSpark : public CPointEntity
 
 public:
 	CEnvSpark( void );
-
+	virtual void LogicExplode();
 	void	Spawn( void );
 	void	Precache( void );
 	void	SparkThink( void );

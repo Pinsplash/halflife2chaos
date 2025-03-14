@@ -61,7 +61,7 @@ public:
 	DECLARE_CLASS( CEnvAR2Explosion, CPointEntity );
 
 	void Spawn( void );
-
+	virtual void LogicExplode();
 	// Input handlers
 	void InputExplode( inputdata_t &inputdata );
 
@@ -108,5 +108,21 @@ void CEnvAR2Explosion::InputExplode( inputdata_t &inputdata )
 		{
 			pExplosion->SetMaterialName(STRING(m_iszMaterialName));
 		}
+	}
+}
+
+void CEnvAR2Explosion::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("Explode", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
 	}
 }

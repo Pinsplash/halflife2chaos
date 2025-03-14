@@ -17,7 +17,7 @@ class CLight : public CPointEntity
 {
 public:
 	DECLARE_CLASS( CLight, CPointEntity );
-
+	virtual void LogicExplode();
 	bool	KeyValue( const char *szKeyName, const char *szValue );
 	void	Spawn( void );
 	void	FadeThink( void );

@@ -312,7 +312,7 @@ class CEnvDustPuff : public CPointEntity
 public:
 	
 	DECLARE_DATADESC();
-
+	virtual void LogicExplode();
 protected:
 
 	// Input handlers
@@ -347,4 +347,20 @@ void CEnvDustPuff::InputSpawnDust( inputdata_t &inputdata )
 	VectorNormalize( dir );
 
 	g_pEffects->Dust( GetAbsOrigin(), dir, m_flScale, m_flSpeed );
+}
+
+void CEnvDustPuff::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("SpawnDust", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
 }

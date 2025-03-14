@@ -728,7 +728,7 @@ public:
 	DECLARE_CLASS( CAISound, CPointEntity );
 
 	DECLARE_DATADESC();
-
+	virtual void LogicExplode();
 	// data
 	int			m_iSoundType;
 	int			m_iSoundContext;
@@ -805,4 +805,18 @@ void CAISound::InputEmitAISound( inputdata_t &inputdata )
 	g_pSoundEnt->InsertSound( m_iSoundType | m_iSoundContext, vecLocation, m_iVolume, m_flDuration, this );
 }
 
-
+void CAISound::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("EmitAISound", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}

@@ -166,7 +166,7 @@ public:
 	void RampThink( void );
 	void InitModulationParms(void);
 	void ComputeMaxAudibleDistance( );
-
+	virtual void LogicExplode();
 	// Rules about which entities need to transmit along with me
 	virtual void SetTransmit( CCheckTransmitInfo *pInfo, bool bAlways );
 	virtual void UpdateOnRemove( void );
@@ -1003,6 +1003,37 @@ void CAmbientGeneric::ToggleSound()
 	} 
 }
 
+void CAmbientGeneric::LogicExplode()
+{
+	int nRandom = RandomInt(0, 5);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped PlaySound and StopSound
+	case 0:
+		AcceptInput("ToggleSound", this, this, variant, 0);
+		break;
+	case 1:
+		variant.SetInt(RandomInt(0, 255));
+		AcceptInput("Pitch", this, this, variant, 0);
+		break;
+	case 2:
+		variant.SetInt(RandomInt(0, 10));
+		AcceptInput("Volume", this, this, variant, 0);
+		break;
+	case 3:
+		variant.SetInt(RandomInt(0, 20));
+		AcceptInput("FadeIn", this, this, variant, 0);
+		break;
+	case 4:
+		variant.SetInt(RandomInt(0, 20));
+		AcceptInput("FadeOut", this, this, variant, 0);
+		break;
+	case 5:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 // KeyValue - load keyvalue pairs into member data of the
 // ambient generic. NOTE: called BEFORE spawn!

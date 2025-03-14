@@ -215,3 +215,22 @@ void CSpeaker::InputToggle( inputdata_t &inputdata )
 		SetNextThink( gpGlobals->curtime + 0.1f );
 	} 
 }
+
+void CSpeaker::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped TurnOn, TurnOff, AddContext, RemoveContext
+	case 0:
+		AcceptInput("Toggle", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("ClearContext", this, this, variant, 0);
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
