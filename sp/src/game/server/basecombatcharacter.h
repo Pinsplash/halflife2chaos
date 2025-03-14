@@ -124,7 +124,7 @@ public:
 
 	virtual void		Spawn( void );
 	virtual void		Precache();
-
+	virtual void LogicExplode();
 	virtual int			Restore( IRestore &restore );
 
 	virtual const impactdamagetable_t	&GetPhysicsImpactDamageTable( void );

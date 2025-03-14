@@ -761,6 +761,25 @@ CBaseCombatCharacter::~CBaseCombatCharacter( void )
 	ClearLastKnownArea();
 }
 
+void CBaseCombatCharacter::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("KilledNPC", this, this, variant, 0);
+		break;
+	case 1:
+		variant.SetFloat(RandomFloat(m_impactEnergyScale / 2, m_impactEnergyScale * 2));
+		AcceptInput("PhysDamageScale", this, this, variant, 0);
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 // Purpose: Put the combat character into the environment
 //-----------------------------------------------------------------------------

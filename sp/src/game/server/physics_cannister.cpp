@@ -481,3 +481,22 @@ void CPhysicsCannister::VPhysicsUpdate( IPhysicsObject *pPhysics )
 		}
 	}
 }
+
+void CPhysicsCannister::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped Deactivate, Wake
+	case 0:
+		AcceptInput("Activate", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("Explode", this, this, variant, 0);
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
+}

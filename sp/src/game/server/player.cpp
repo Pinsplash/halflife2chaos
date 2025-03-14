@@ -9353,6 +9353,31 @@ void CBasePlayer::Event_KilledOther( CBaseEntity *pVictim, const CTakeDamageInfo
 	}
 }
 
+void CBasePlayer::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	CBaseEntity* pEnt;
+	switch (nRandom)
+	{
+		//skipped SetHealth, SetHUDVisibility, IgnoreFallDamage, HandleMapEvent, OnSquadMemberKilled, DisableFlashlight, EnableFlashlight, ForceDropPhysObjects
+	case 0:
+		pEnt = gEntList.RandomNamedEntityByClassname("env_fog_controller");
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("SetFogController", this, this, variant, 0);
+		}
+		break;
+	case 0:
+		variant.SetFloat(RandomFloat(0, 20));
+		AcceptInput("IgnoreFallDamageWithoutReset", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 void CBasePlayer::SetModel( const char *szModelName )
 {
 	BaseClass::SetModel( szModelName );

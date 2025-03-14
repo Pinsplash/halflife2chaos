@@ -45,7 +45,7 @@ class CPhysicsCannister : public CBaseCombatCharacter, public CDefaultPlayerPick
 	DECLARE_CLASS( CPhysicsCannister, CBaseCombatCharacter );
 public:
 	~CPhysicsCannister( void );
-
+	virtual void LogicExplode();
 	void Spawn( void );
 	void Precache( void );
 	virtual void OnRestore();
