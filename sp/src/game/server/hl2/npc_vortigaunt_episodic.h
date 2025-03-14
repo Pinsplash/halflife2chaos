@@ -48,7 +48,7 @@ class CNPC_Vortigaunt : public CNPC_PlayerCompanion
 
 public:
 					CNPC_Vortigaunt( void );
-
+					virtual void LogicExplode();
 	virtual void	Spawn( void );
 	virtual void	Precache( void );
 	virtual float	MaxYawSpeed( void );

@@ -2780,6 +2780,56 @@ bool CNPC_Vortigaunt::CanFlinch( void )
 	return BaseClass::CanFlinch();
 }
 
+void CNPC_Vortigaunt::LogicExplode()
+{
+	int nRandom = RandomInt(0, 7);
+	variant_t variant;
+	CBaseEntity* pEnt;
+	char modDir[MAX_PATH];
+	if (UTIL_GetModDir(modDir, sizeof(modDir)) == false)
+		return;
+	switch (nRandom)
+	{
+		//skipped EndCarryNPC, DisableArmorRecharge, DisableHealthRegeneration
+	case 0:
+		variant.SetString(MAKE_STRING("!player"));
+		AcceptInput("ChargeTarget", this, this, variant, 0);
+		break;
+	case 1:
+		pEnt = gEntList.RandomNamedEntityByClassname("prop_ragdoll");
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("ExtractBugbait", this, this, variant, 0);
+		}
+		break;
+	case 2:
+		AcceptInput("Dispel", this, this, variant, 0);
+		break;
+	case 3:
+		AcceptInput("EnableArmorRecharge", this, this, variant, 0);
+		break;
+	case 4:
+		AcceptInput("EnableHealthRegeneration", this, this, variant, 0);
+		break;
+	case 5:
+		if (!strcmp(modDir, "ep2chaos"))
+		{
+			AcceptInput("BeginCarryNPC", this, this, variant, 0);
+			break;//intentional
+		}
+	case 6:
+		if (!strcmp(modDir, "ep2chaos"))
+		{
+			variant.SetBool(true);
+			AcceptInput("TurnBlue", this, this, variant, 0);
+			break;//intentional
+		}
+	case 7:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------

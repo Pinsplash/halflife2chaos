@@ -120,7 +120,7 @@ public:
 
 	CNPC_VehicleDriver( void );
 	~CNPC_VehicleDriver( void );
-
+	virtual void LogicExplode();
 	virtual void	Spawn( void );
 	virtual void	Precache( void );
 	virtual void	Activate( void );

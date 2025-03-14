@@ -3283,6 +3283,41 @@ bool CNPC_Combine::ShouldPickADeathPose( void )
 	return !IsCrouching(); 
 }
 
+void CNPC_Combine::LogicExplode()
+{
+	int nRandom = RandomInt(0, 4);
+	variant_t variant;
+	CBaseEntity* pEnt;
+	switch (nRandom)
+	{
+		//skipped LookOff, LookOn, StopPatrolling, BeginRappel
+	case 0:
+		AcceptInput("StartPatrolling", this, this, variant, 0);
+		break;
+	case 1:
+		pEnt = gEntList.RandomNamedEntityByClassname("assault_rallypoint");
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("Assault", this, this, variant, 0);
+		}
+		break;
+	case 2:
+		AcceptInput("HitByBugbait", this, this, variant, 0);
+		break;
+	case 3:
+		pEnt = gEntList.RandomNamedEntity();
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("ThrowGrenadeAtTarget", this, this, variant, 0);
+		}
+		break;
+	case 4:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 //
 // Schedules

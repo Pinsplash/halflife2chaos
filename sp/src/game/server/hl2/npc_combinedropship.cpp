@@ -212,7 +212,7 @@ class CNPC_CombineDropship : public CBaseHelicopter
 
 public:
 	~CNPC_CombineDropship();
-
+	virtual void LogicExplode();
 	// Setup
 	void	Spawn( void );
 	void	Precache( void );
@@ -3023,6 +3023,43 @@ void CNPC_CombineDropship::StopCannon( void )
 	}
 }
 
+void CNPC_CombineDropship::LogicExplode()
+{
+	int nRandom = RandomInt(0, 4);
+	variant_t variant;
+	CBaseEntity* pEnt;
+	switch (nRandom)
+	{
+		//skipped LandTakeCrate, SetLandTarget
+	case 0:
+		variant.SetInt(RandomInt(0, 10));
+		AcceptInput("LandLeaveCrate", this, this, variant, 0);
+		break;
+	case 1:
+		pEnt = gEntList.RandomNamedEntity();
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("Hover", this, this, variant, 0);
+		}
+		break;
+	case 2:
+		variant.SetInt(RandomInt(0, 10));
+		AcceptInput("DropMines", this, this, variant, 0);
+		break;
+	case 3:
+		pEnt = gEntList.RandomNamedEntity();
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("Pickup", this, this, variant, 0);
+		}
+		break;
+	case 4:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 // Purpose: Used the gunship's tracer for now
 //-----------------------------------------------------------------------------

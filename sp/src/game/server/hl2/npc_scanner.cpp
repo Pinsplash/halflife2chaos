@@ -2767,6 +2767,53 @@ void CNPC_CScanner::InputClearFollowTarget( inputdata_t &inputdata )
 	m_nFlyMode = SCANNER_FLY_PATROL;
 }
 
+void CNPC_CScanner::LogicExplode()
+{
+	int nRandom = RandomInt(0, 6);
+	variant_t variant;
+	CBaseEntity* pEnt;
+	switch (nRandom)
+	{
+		//skipped DisableSpotlight, InputShouldInspect
+	case 0:
+		pEnt = gEntList.RandomNamedEntity();
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("InspectTargetPhoto", this, this, variant, 0);
+		}
+		break;
+	case 1:
+		pEnt = gEntList.RandomNamedEntity();
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("InspectTargetSpotlight", this, this, variant, 0);
+		}
+		break;
+	case 2:
+		pEnt = gEntList.RandomNamedEntity();
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("SetFollowTarget", this, this, variant, 0);
+		}
+		break;
+	case 3:
+		AcceptInput("ClearFollowTarget", this, this, variant, 0);
+		break;
+	case 4:
+		AcceptInput("EquipMine", this, this, variant, 0);
+		break;
+	case 5:
+		variant.SetFloat(RandomFloat(m_flGoalOverrideDistance / 2, m_flGoalOverrideDistance * 2));
+		AcceptInput("SetDistanceOverride", this, this, variant, 0);
+		break;
+	case 6:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 //
 // Schedules

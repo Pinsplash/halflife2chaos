@@ -59,7 +59,7 @@ DECLARE_SERVERCLASS();
 public:
 	CNPC_Manhack();
 	~CNPC_Manhack();
-
+	virtual void LogicExplode();
 	Class_T			Classify(void);
 
 	bool			CorpseGib( const CTakeDamageInfo &info );

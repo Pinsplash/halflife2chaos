@@ -4772,6 +4772,42 @@ void CNPC_Strider::StriderBusterAttached( CBaseEntity *pAttached )
 	g_EventQueue.AddEvent( this, "UpdateEnemyMemory", target, 1.0, this, this );
 }
 
+void CNPC_Strider::LogicExplode()
+{
+	int nRandom = RandomInt(0, 4);
+	variant_t variant;
+	CBaseEntity* pEnt;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		pEnt = gEntList.RandomNamedEntityByClassname("npc*");
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("SetCannonTarget", this, this, variant, 0);
+		}
+		break;
+	case 1:
+		pEnt = gEntList.RandomNamedEntity();
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("SetMinigunTarget", this, this, variant, 0);
+		}
+		break;
+	case 2:
+		AcceptInput("Explode", this, this, variant, 0);
+		break;
+	case 3:
+		variant.SetFloat(RandomFloat(0.5, 2));
+		AcceptInput("ScaleGroundSpeed", this, this, variant, 0);
+		break;
+	case 4:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 void CNPC_Strider::StriderBusterDetached( CBaseEntity *pAttached )
 {

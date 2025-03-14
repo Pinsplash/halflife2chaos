@@ -204,6 +204,25 @@ int CNPC_Alyx::ObjectCaps()
 	return caps;
 }
 
+void CNPC_Alyx::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped DisallowInteraction, GiveEMP, VehiclePunted
+	case 0:
+		AcceptInput("AllowInteraction", this, this, variant, 0);
+		break;
+	case 1:
+		variant.SetBool(true);
+		AcceptInput("AllowDarknessSpeech", this, this, variant, 0);
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //=========================================================
 // HandleAnimEvent - catches the NPC-specific messages
 // that occur when tagged animation frames are played.

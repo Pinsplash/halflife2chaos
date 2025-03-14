@@ -3662,6 +3662,85 @@ void CNPC_PlayerCompanion::OnPlayerKilledOther( CBaseEntity *pVictim, const CTak
 	BaseClass::OnPlayerKilledOther( pVictim, info );
 }
 
+void CNPC_PlayerCompanion::LogicExplode()
+{
+	int nRandom = RandomInt(0, 13);
+	variant_t variant;
+#ifdef HL2_EPISODIC
+	CBaseEntity* pEnt;
+#endif // HL2_EPISODIC
+	switch (nRandom)
+	{
+		//skipped GiveWeapon, EnableAlwaysTransition, DisableAlwaysTransition
+	case 0:
+		AcceptInput("OutsideTransition", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("SetReadinessLow", this, this, variant, 0);
+		break;
+	case 2:
+		AcceptInput("SetReadinessMedium", this, this, variant, 0);
+		break;
+	case 3:
+		AcceptInput("SetReadinessHigh", this, this, variant, 0);
+		break;
+	case 4:
+		AcceptInput("SetReadinessPanic", this, this, variant, 0);
+		break;
+	case 5:
+		AcceptInput("SetReadinessStealth", this, this, variant, 0);
+		break;
+	case 6:
+		variant.SetFloat(RandomFloat(0, 20));
+		AcceptInput("LockReadiness", this, this, variant, 0);
+		break;
+		//made it a toggle
+	case 7:
+		if (m_bDontPickupWeapons)
+			AcceptInput("EnableWeaponPickup", this, this, variant, 0);
+		else
+			AcceptInput("DisableWeaponPickup", this, this, variant, 0);
+		break;
+	case 8:
+#ifdef HL2_EPISODIC
+		pEnt = gEntList.RandomNamedEntityByClassname("prop_vehicle*");
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("EnterVehicle", this, this, variant, 0);
+		}
+		break;
+#endif // HL2_EPISODIC
+	case 9:
+#ifdef HL2_EPISODIC
+		pEnt = gEntList.RandomNamedEntityByClassname("prop_vehicle*");
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("EnterVehicleImmediately", this, this, variant, 0);
+		}
+		break;
+#endif // HL2_EPISODIC
+	case 10:
+#ifdef HL2_EPISODIC
+		AcceptInput("ExitVehicle", this, this, variant, 0);
+		break;
+#endif // HL2_EPISODIC
+	case 11:
+#ifdef HL2_EPISODIC
+		AcceptInput("CancelEnterVehicle", this, this, variant, 0);
+		break;
+#endif // HL2_EPISODIC
+	case 12:
+#ifdef HL2_EPISODIC
+		AcceptInput("ClearAllOutputs", this, this, variant, 0);
+		break;
+#endif // HL2_EPISODIC
+	case 13:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 bool CNPC_PlayerCompanion::IsNavigationUrgent( void )

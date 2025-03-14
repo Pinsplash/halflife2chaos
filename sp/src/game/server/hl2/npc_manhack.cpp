@@ -3274,6 +3274,21 @@ unsigned int CNPC_Manhack::PhysicsSolidMaskForEntity( void ) const
 	return mask;
 }
 
+void CNPC_Manhack::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("InteractivePowerDown", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Output : Returns true on success, false on failure.

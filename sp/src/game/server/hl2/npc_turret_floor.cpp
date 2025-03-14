@@ -2118,6 +2118,24 @@ void CNPC_FloorTurret::SelfDestructThink( void )
 	SetNextThink( gpGlobals->curtime + 0.05f );
 }
 
+void CNPC_FloorTurret::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("SelfDestruct", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("DepleteAmmo", this, this, variant, 0);
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 // Purpose: Make us explode
 //-----------------------------------------------------------------------------

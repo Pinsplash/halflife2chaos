@@ -1135,7 +1135,7 @@ public:
 	~CNPC_Hunter();
 
 	//---------------------------------
-
+	virtual void LogicExplode();
 	void			Precache();
 	void			Spawn();
 	void			PostNPCInit();
@@ -6590,6 +6590,27 @@ void CNPC_Hunter::RelaxAim( float flInterval )
 	SetPoseParameter( gm_nBodyYawPoseParam, clamp( newYaw, -45, 45 ) );
 }
 
+void CNPC_Hunter::LogicExplode()
+{
+	int nRandom = RandomInt(0, 3);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped FollowStrider, UseSiegeTargets, EnableShooting, EnableUnplantedShooting, DisableUnplantedShooting
+	case 0:
+		AcceptInput("Dodge", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("FlankEnemy", this, this, variant, 0);
+		break;
+	case 2:
+		AcceptInput("DisableShooting", this, this, variant, 0);
+		break;
+	case 3:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------

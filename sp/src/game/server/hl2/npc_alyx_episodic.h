@@ -26,7 +26,7 @@ public:
 
 	CNPC_Alyx( );
 	~CNPC_Alyx( );
-
+	virtual void LogicExplode();
 	static CNPC_Alyx *GetAlyx( void );
 
 	bool	CreateBehaviors();

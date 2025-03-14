@@ -81,7 +81,7 @@ class CNPC_Zombine : public CAI_BlendingHost<CNPC_BaseZombie>, public CDefaultPl
 	DECLARE_CLASS( CNPC_Zombine, CAI_BlendingHost<CNPC_BaseZombie> );
 
 public:
-
+	virtual void LogicExplode();
 	void Spawn( void );
 	void Precache( void );
 
@@ -987,6 +987,24 @@ CBaseEntity *CNPC_Zombine::OnFailedPhysGunPickup( Vector vPhysgunPos )
 	return pGrenade;
 }
 
+void CNPC_Zombine::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("StartSprint", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("PullGrenade", this, this, variant, 0);
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 //
 // Schedules

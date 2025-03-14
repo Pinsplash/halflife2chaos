@@ -75,7 +75,7 @@ ConVar	npc_citizen_dont_precache_all( "npc_citizen_dont_precache_all", "0" );
 
 
 ConVar  npc_citizen_medic_emit_sound("npc_citizen_medic_emit_sound", "1" );
-#ifdef HL2_EPISODIC
+//#ifdef HL2_EPISODIC
 // todo: bake these into pound constants (for now they're not just for tuning purposes)
 ConVar  npc_citizen_heal_chuck_medkit("npc_citizen_heal_chuck_medkit" , "1" , FCVAR_ARCHIVE, "Set to 1 to use new experimental healthkit-throwing medic.");
 ConVar npc_citizen_medic_throw_style( "npc_citizen_medic_throw_style", "1", FCVAR_ARCHIVE, "Set to 0 for a lobbier trajectory" );
@@ -85,7 +85,7 @@ ConVar	sk_citizen_heal_toss_player_delay("sk_citizen_heal_toss_player_delay", "2
 
 #define MEDIC_THROW_SPEED npc_citizen_medic_throw_speed.GetFloat()
 #define USE_EXPERIMENTAL_MEDIC_CODE() (npc_citizen_heal_chuck_medkit.GetBool() && NameMatches("griggs"))
-#endif
+//#endif
 
 ConVar player_squad_autosummon_time( "player_squad_autosummon_time", "5" );
 ConVar player_squad_autosummon_move_tolerance( "player_squad_autosummon_move_tolerance", "20" );
@@ -353,9 +353,9 @@ BEGIN_DATADESC( CNPC_Citizen )
 	DEFINE_INPUTFUNC( FIELD_VOID,	"SetAmmoResupplierOff",	InputSetAmmoResupplierOff ),
 	DEFINE_INPUTFUNC( FIELD_VOID,	"SpeakIdleResponse", InputSpeakIdleResponse ),
 
-#if HL2_EPISODIC
+//#if HL2_EPISODIC
 	DEFINE_INPUTFUNC( FIELD_VOID,   "ThrowHealthKit", InputForceHealthKitToss ),
-#endif
+//#endif
 
 	DEFINE_USEFUNC( CommanderUse ),
 	DEFINE_USEFUNC( SimpleUse ),
@@ -3655,7 +3655,7 @@ void CNPC_Citizen::Heal()
 
 
 
-#if HL2_EPISODIC
+//#if HL2_EPISODIC
 //-----------------------------------------------------------------------------
 // Like Heal(), but tosses a healthkit in front of the player rather than just juicing him up.
 //-----------------------------------------------------------------------------
@@ -3734,7 +3734,7 @@ void	CNPC_Citizen::InputForceHealthKitToss( inputdata_t &inputdata )
 	TossHealthKit( UTIL_GetLocalPlayer(), Vector(48.0f, 0.0f, 0.0f)  );
 }
 
-#endif
+//#endif
 
 
 
@@ -4265,4 +4265,38 @@ int CNPC_Citizen::DrawDebugTextOverlays( void )
 		text_offset++;
 	}
 	return text_offset;
+}
+
+void CNPC_Citizen::LogicExplode()
+{
+	int nRandom = RandomInt(0, 7);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped StopPatrolling, SetMedicOff, SetAmmoResupplierOff
+	case 0:
+		AcceptInput("RemoveFromPlayerSquad", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("StartPatrolling", this, this, variant, 0);
+		break;
+	case 2:
+		AcceptInput("SetCommandable", this, this, variant, 0);
+		break;
+	case 3:
+		AcceptInput("SetMedicOn", this, this, variant, 0);
+		break;
+	case 4:
+		AcceptInput("SetAmmoResupplierOn", this, this, variant, 0);
+		break;
+	case 5:
+		AcceptInput("SpeakIdleResponse", this, this, variant, 0);
+		break;
+	case 6:
+		AcceptInput("ThrowHealthKit", this, this, variant, 0);
+		break;
+	case 7:
+		BaseClass::LogicExplode();
+		break;
+	}
 }

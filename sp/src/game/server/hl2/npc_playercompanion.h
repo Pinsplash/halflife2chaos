@@ -101,7 +101,7 @@ public:
 	void			Precache();
 	void			Spawn();
 	virtual void	SelectModel() {};
-
+	virtual void LogicExplode();
 	virtual int		Restore( IRestore &restore );
 	virtual void	DoCustomSpeechAI( void );
 

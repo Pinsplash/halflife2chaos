@@ -57,7 +57,7 @@ class CNPC_FloorTurret : public CNPCBaseInteractive<CAI_BaseNPC>, public CDefaul
 public:
 
 	CNPC_FloorTurret( void );
-
+	virtual void LogicExplode();
 	virtual void	Precache( void );
 	virtual void	Spawn( void );
 	virtual void	Activate( void );

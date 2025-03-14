@@ -236,7 +236,7 @@ public:
 
 	CNPC_CombineGunship( void );
 	~CNPC_CombineGunship( void );
-
+	virtual void LogicExplode();
 	DECLARE_DATADESC();
 	DECLARE_SERVERCLASS();
 	DEFINE_CUSTOM_AI;
@@ -3220,6 +3220,27 @@ void CNPC_CombineGunship::InputBecomeVulnerable( inputdata_t &input )
 	m_bInvulnerable = false;
 }
 
+void CNPC_CombineGunship::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	CBaseEntity* pEnt;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		pEnt = gEntList.RandomNamedEntity();
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("DoGroundAttack", this, this, variant, 0);
+		}
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 AI_BEGIN_CUSTOM_NPC( npc_combinegunship, CNPC_CombineGunship )
 
 //	DECLARE_TASK(  )

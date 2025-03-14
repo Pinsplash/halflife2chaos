@@ -494,7 +494,7 @@ public:
 	
 	CAI_BaseNPC();
 	~CAI_BaseNPC();
-
+	virtual void LogicExplode();
 	//---------------------------------
 	
 	DECLARE_DATADESC();

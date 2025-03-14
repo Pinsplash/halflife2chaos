@@ -38,7 +38,7 @@ class CNPC_Combine : public CAI_BaseActor
 
 public:
 	CNPC_Combine();
-
+	virtual void LogicExplode();
 	// Create components
 	virtual bool	CreateComponents();
 

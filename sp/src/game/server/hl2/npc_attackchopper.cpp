@@ -361,7 +361,7 @@ public:
 	DECLARE_CLASS( CNPC_AttackHelicopter, CBaseHelicopter );
 	DECLARE_DATADESC();
 	DEFINE_CUSTOM_AI;
-
+	virtual void LogicExplode();
 	CNPC_AttackHelicopter();
 	~CNPC_AttackHelicopter();
 
@@ -4965,6 +4965,66 @@ void CNPC_AttackHelicopter::InitBoneFollowers( void )
 }
 #endif // HL2_EPISODIC
 
+void CNPC_AttackHelicopter::LogicExplode()
+{
+	int nRandom = RandomInt(0, 14);
+	variant_t variant;
+	CBaseEntity* pEnt;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("ResetIdleTime", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("StartTrailingVehicle", this, this, variant, 0);
+		break;
+	case 2:
+		AcceptInput("StartBombingVehicle", this, this, variant, 0);
+		break;
+	case 3:
+		AcceptInput("StartAlwaysLeadingVehicle", this, this, variant, 0);
+		break;
+	case 4:
+		AcceptInput("StartBullrushBehavior", this, this, variant, 0);
+		break;
+	case 5:
+		AcceptInput("DropBomb", this, this, variant, 0);
+		break;
+	case 6:
+		AcceptInput("DropBombStraightDown", this, this, variant, 0);
+		break;
+	case 7:
+		pEnt = gEntList.RandomNamedEntity();
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("DropBombAtTargetAlways", this, this, variant, 0);
+		}
+		break;
+	case 8:
+		AcceptInput("StartCarpetBombing", this, this, variant, 0);
+		break;
+	case 9:
+		AcceptInput("StartLongCycleShooting", this, this, variant, 0);
+		break;
+	case 10:
+		AcceptInput("StartContinuousShooting", this, this, variant, 0);
+		break;
+	case 11:
+		AcceptInput("StartFastShooting", this, this, variant, 0);
+		break;
+	case 12:
+		AcceptInput("StartBombExplodeOnContact", this, this, variant, 0);
+		break;
+	case 13:
+		AcceptInput("SelfDestruct", this, this, variant, 0);
+		break;
+	case 14:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 // Where are how should we avoid?
 //-----------------------------------------------------------------------------

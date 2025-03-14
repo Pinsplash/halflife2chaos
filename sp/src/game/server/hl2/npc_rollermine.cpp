@@ -180,7 +180,7 @@ public:
 
 	CNPC_RollerMine( void ) { m_bTurnedOn = true; m_bUniformSight = false; }
 	~CNPC_RollerMine( void );
-
+	virtual void LogicExplode();
 	void	Spawn( void );
 	bool	CreateVPhysics();
 	void	RunAI();
@@ -2808,6 +2808,33 @@ float CNPC_RollerMine::VehicleHeading( CBaseEntity *pVehicle )
 	return DotProduct( vecVelocity, vecToMine );
 }
 
+void CNPC_RollerMine::LogicExplode()
+{
+	int nRandom = RandomInt(0, 4);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("TurnOff", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("InteractivePowerDown", this, this, variant, 0);
+		break;
+	case 2:
+		AcceptInput("RespondToChirp", this, this, variant, 0);
+		break;
+	case 3:
+		if (GetVehicleStuckTo())
+		{
+			AcceptInput("JoltVehicle", this, this, variant, 0);
+			break;
+		}
+	case 4:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : &info - 

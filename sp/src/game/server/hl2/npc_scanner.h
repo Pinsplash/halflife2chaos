@@ -32,7 +32,7 @@ class CNPC_CScanner : public CNPC_BaseScanner
 
 public:
 	CNPC_CScanner();
-
+	virtual void LogicExplode();
 	int				GetSoundInterests( void ) { return (SOUND_WORLD|SOUND_COMBAT|SOUND_PLAYER|SOUND_DANGER); }
 	int				OnTakeDamage_Alive( const CTakeDamageInfo &info );
 

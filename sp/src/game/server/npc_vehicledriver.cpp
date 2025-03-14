@@ -1102,6 +1102,27 @@ void CNPC_VehicleDriver::InputStopFiring( inputdata_t &inputdata )
 	CapabilitiesRemove( bits_CAP_INNATE_RANGE_ATTACK2 );
 }
 
+void CNPC_VehicleDriver::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	CBaseEntity* pEnt;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		pEnt = gEntList.RandomNamedEntity();
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("GotoPathCorner", this, this, variant, 0);
+		}
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------

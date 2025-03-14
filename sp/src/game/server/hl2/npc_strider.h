@@ -86,7 +86,7 @@ class CNPC_Strider : public CAI_BlendingHost<CAI_BaseNPC>,
 public:
 	CNPC_Strider();
 	~CNPC_Strider();
-
+	virtual void LogicExplode();
 	//---------------------------------
 
 	void			Precache();

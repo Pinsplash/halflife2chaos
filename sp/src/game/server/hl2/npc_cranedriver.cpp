@@ -67,7 +67,7 @@ class CNPC_CraneDriver : public CNPC_VehicleDriver
 public:
 	DECLARE_DATADESC();
 	DEFINE_CUSTOM_AI;
-
+	virtual void LogicExplode();
 	void	Spawn( void );
 	void	Activate( void );
 	
@@ -674,6 +674,37 @@ void CNPC_CraneDriver::InputMagnetDropped(inputdata_t &inputdata)
 	m_OnDroppedObject.FireOutput(inputdata.pActivator, inputdata.pCaller);
 }
 
+void CNPC_CraneDriver::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	CBaseEntity* pEnt;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		pEnt = gEntList.RandomNamedEntityByClassname("prop_physics*");
+		if (!pEnt)
+			pEnt = gEntList.RandomNamedEntityByClassname("prop_vehicle*");
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("ForcePickup", this, this, variant, 0);
+		}
+		break;
+	case 1:
+		pEnt = gEntList.RandomNamedEntity();
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("ForceDrop", this, this, variant, 0);
+		}
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 //
 // Schedules

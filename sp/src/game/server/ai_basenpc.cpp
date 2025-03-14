@@ -10858,6 +10858,64 @@ void CAI_BaseNPC::PostConstructor( const char *szClassname )
 	CreateComponents();
 }
 
+void CAI_BaseNPC::LogicExplode()
+{
+	int nRandom = RandomInt(0, 8);
+	variant_t variant;
+	CBaseEntity* pEnt;
+	switch (nRandom)
+	{
+		//skipped SetRelationship, SetHealth, SetSquad, Break, StartScripting, ExitScripting, GagEnable, GagDisable, InsideTransition, HolsterWeapon, UnholsterWeapon, ForceInteractionWithNPC, AddContext, RemoveContext
+	case 0:
+		pEnt = gEntList.RandomNamedEntityByClassname("fil*");
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("SetEnemyFilter", this, this, variant, 0);
+		}
+		break;
+	case 1:
+		pEnt = gEntList.RandomNamedEntityByClassname("fil*");
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("SetEnemyFilter", this, this, variant, 0);
+		}
+		break;
+	case 2:
+		AcceptInput("Wake", this, this, variant, 0);
+		break;
+	case 3:
+		pEnt = gEntList.RandomNamedEntityByClassname("npc*");
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("UpdateEnemyMemory", this, this, variant, 0);
+		}
+		break;
+	case 4:
+		pEnt = gEntList.RandomNamedEntityByClassname("npc*");
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("ForgetEntity", this, this, variant, 0);
+		}
+		break;
+	case 5:
+		variant.SetFloat(RandomFloat(0, 20));
+		AcceptInput("IgnoreDangerSounds", this, this, variant, 0);
+		break;
+	case 6:
+		AcceptInput("HolsterAndDestroyWeapon", this, this, variant, 0);
+		break;
+	case 7:
+		AcceptInput("ClearContext", this, this, variant, 0);
+		break;
+	case 8:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------

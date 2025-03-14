@@ -29,7 +29,7 @@ public:
 	void Precache( void );
 	void RunTask( const Task_t *pTask );
 	void StartTask( const Task_t *pTask );
-
+	virtual void LogicExplode();
 	void OnChangeActivity( Activity NewActivity );
 
 	bool IsFirmlyOnGround();

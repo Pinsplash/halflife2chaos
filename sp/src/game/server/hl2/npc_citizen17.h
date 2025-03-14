@@ -71,7 +71,7 @@ public:
 	 :	m_iHead( -1 )
 	{
 	}
-
+	virtual void LogicExplode();
 	//---------------------------------
 	bool			CreateBehaviors();
 	void			Precache();
@@ -223,10 +223,10 @@ public:
 
 	bool			ShouldLookForHealthItem();
 
-#if HL2_EPISODIC
+//#if HL2_EPISODIC
 	void			TossHealthKit( CBaseCombatCharacter *pThrowAt, const Vector &offset ); // create a healthkit and throw it at someone
 	void			InputForceHealthKitToss( inputdata_t &inputdata );
-#endif
+//#endif
 	
 	//---------------------------------
 	// Inputs

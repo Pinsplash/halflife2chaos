@@ -102,7 +102,7 @@ public:
 	//
 	virtual void Spawn( void );
 	virtual void Precache( void );
-
+	virtual void LogicExplode();
 	virtual Vector BodyTarget( bool bNoisy/* = true */);
 
 	virtual int DrawDebugTextOverlays( void );

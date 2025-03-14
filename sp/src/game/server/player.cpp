@@ -9355,7 +9355,7 @@ void CBasePlayer::Event_KilledOther( CBaseEntity *pVictim, const CTakeDamageInfo
 
 void CBasePlayer::LogicExplode()
 {
-	int nRandom = RandomInt(0, 1);
+	int nRandom = RandomInt(0, 2);
 	variant_t variant;
 	CBaseEntity* pEnt;
 	switch (nRandom)
@@ -9369,11 +9369,11 @@ void CBasePlayer::LogicExplode()
 			AcceptInput("SetFogController", this, this, variant, 0);
 		}
 		break;
-	case 0:
+	case 1:
 		variant.SetFloat(RandomFloat(0, 20));
 		AcceptInput("IgnoreFallDamageWithoutReset", this, this, variant, 0);
 		break;
-	case 1:
+	case 2:
 		BaseClass::LogicExplode();
 		break;
 	}

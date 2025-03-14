@@ -1389,6 +1389,27 @@ int CNPC_Crow::DrawDebugTextOverlays( void )
 	return nOffset;
 }
 
+void CNPC_Crow::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	CBaseEntity* pEnt;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		pEnt = gEntList.RandomNamedEntity();
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("FlyAway", this, this, variant, 0);
+		}
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 //-----------------------------------------------------------------------------
 // Purpose: Determines which sounds the crow cares about.
