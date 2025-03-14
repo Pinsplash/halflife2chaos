@@ -429,6 +429,22 @@ int CBaseCombatWeapon::WeaponMeleeAttack1Condition( float flDot, float flDist )
 	return COND_NONE;
 }
 
+void CBaseCombatWeapon::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("HideWeapon", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: Base class always returns not bits
 //-----------------------------------------------------------------------------

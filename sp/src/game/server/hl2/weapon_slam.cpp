@@ -604,6 +604,21 @@ void CSatchelCharge::BounceSound(void)
 	}
 }
 
+void CSatchelCharge::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("Explode", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
 // Input  :

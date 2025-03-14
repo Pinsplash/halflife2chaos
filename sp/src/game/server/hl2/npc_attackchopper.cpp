@@ -213,7 +213,6 @@ class CGrenadeHelicopter : public CBaseGrenade
 
 public:
 	DECLARE_CLASS( CGrenadeHelicopter, CBaseGrenade );
-
 	virtual void Precache( );
 	virtual void Spawn( );
 	virtual void UpdateOnRemove();
@@ -231,6 +230,7 @@ public:
 	float GetBombLifetime();
 
 #ifdef HL2_EPISODIC
+	virtual void LogicExplode();
 	virtual void OnPhysGunPickup(CBasePlayer *pPhysGunUser, PhysGunPickup_t reason );
 	virtual void OnPhysGunDrop( CBasePlayer *pPhysGunUser, PhysGunDrop_t reason );
 	virtual Class_T Classify( void ) {	return CLASS_MISSILE; }
@@ -5236,6 +5236,22 @@ void CGrenadeHelicopter::InputExplodeIn( inputdata_t &inputdata )
 
 	m_bActivated = false;
 	BecomeActive();
+}
+void CGrenadeHelicopter::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		variant.SetFloat(RandomFloat(0, 20));
+		AcceptInput("ExplodeIn", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
 }
 #endif
 

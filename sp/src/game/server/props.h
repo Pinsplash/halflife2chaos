@@ -49,7 +49,7 @@ class CBreakableProp : public CBaseProp, public IBreakableWithPropData, public C
 {
 public:
 	CBreakableProp();
-
+	virtual void LogicExplode();
 	DECLARE_CLASS( CBreakableProp, CBaseProp );
 	DECLARE_SERVERCLASS();
 	DECLARE_DATADESC();
@@ -265,7 +265,7 @@ public:
 	DECLARE_DATADESC();
 
 	CDynamicProp();
-
+	virtual void LogicExplode();
 	void	Spawn( void );
 	bool	CreateVPhysics( void );
 	void	CreateBoneFollowers();
@@ -337,7 +337,7 @@ public:
 	CPhysicsProp( void ) 
 	{
 	}
-
+	virtual void LogicExplode();
 	void Spawn( void );
 	void Precache();
 	bool CreateVPhysics( void );

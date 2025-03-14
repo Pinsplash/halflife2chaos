@@ -87,7 +87,7 @@ public:
 	~CPropVehiclePrisonerPod( void )
 	{
 	}
-
+	virtual void LogicExplode();
 	// CBaseEntity
 	virtual void	Precache( void );
 	void			Spawn( void );
@@ -654,6 +654,39 @@ void CPropVehiclePrisonerPod::InputExitVehicle( inputdata_t &inputdata )
 	m_bForcedExit = true;
 }
 
+void CPropVehiclePrisonerPod::LogicExplode()
+{
+	int nRandom = RandomInt(0, 7);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("Lock", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("Unlock", this, this, variant, 0);
+		break;
+	case 2:
+		AcceptInput("EnterVehicle", this, this, variant, 0);
+		break;
+	case 3:
+		AcceptInput("EnterVehicleImmediate", this, this, variant, 0);
+		break;
+	case 4:
+		AcceptInput("ExitVehicle", this, this, variant, 0);
+		break;
+	case 5:
+		AcceptInput("Open", this, this, variant, 0);
+		break;
+	case 6:
+		AcceptInput("Close", this, this, variant, 0);
+		break;
+	case 7:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 //========================================================================================================================================
 // CRANE VEHICLE SERVER VEHICLE

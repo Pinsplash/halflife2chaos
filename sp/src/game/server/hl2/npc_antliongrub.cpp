@@ -84,7 +84,7 @@ class CAntlionGrub : public CBaseAnimating
 {
 public:
 	DECLARE_CLASS( CAntlionGrub, CBaseAnimating );
-
+	virtual void LogicExplode();
 	virtual void	Activate( void );
 	virtual void	Spawn( void );
 	virtual void	Precache( void );
@@ -822,6 +822,25 @@ void CAntlionGrub::TraceAttack( const CTakeDamageInfo &info, const Vector &vecDi
 	BaseClass::TraceAttack( info, vecDir, ptr );
 }
 
+void CAntlionGrub::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("Squash", this, this, variant, 0);
+		break;
+	case 1:
+		variant.SetFloat(RandomFloat(0, 20));
+		AcceptInput("Agitate", this, this, variant, 0);
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 // Purpose: Make the grub angry!
 //-----------------------------------------------------------------------------

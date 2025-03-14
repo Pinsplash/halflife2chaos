@@ -34,7 +34,7 @@ class CPropThumper : public CBaseAnimating
 public:
 	DECLARE_CLASS( CPropThumper, CBaseAnimating );
 	DECLARE_DATADESC();
-
+	virtual void LogicExplode();
 	virtual void Spawn( void );
 	virtual void Precache( void );
 	virtual void Think ( void );
@@ -279,5 +279,24 @@ void CPropThumper::InputEnable( inputdata_t &inputdata )
 	{
 		variant_t emptyVariant;
 		m_hRepellantEnt->AcceptInput( "Enable", this, this, emptyVariant, 0 );
+	}
+}
+
+void CPropThumper::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//made it a toggle
+	case 0:
+		if (m_bEnabled)
+			AcceptInput("Disable", this, this, variant, 0);
+		else
+			AcceptInput("Enable", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
 	}
 }

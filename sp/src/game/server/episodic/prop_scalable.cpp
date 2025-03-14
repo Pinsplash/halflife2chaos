@@ -15,7 +15,7 @@ public:
 	DECLARE_CLASS( CPropScalable, CBaseAnimating );
 	DECLARE_DATADESC();
 	DECLARE_SERVERCLASS();
-
+	virtual void LogicExplode();
 	CPropScalable();
 
 	virtual void Spawn( void );
@@ -147,4 +147,29 @@ void CPropScalable::InputSetScaleZ( inputdata_t &inputdata )
 	m_flScaleZ = vecScale.x;
 	m_flLerpTimeZ = vecScale.y;
 	m_flGoalTimeZ = gpGlobals->curtime;
+}
+
+void CPropScalable::LogicExplode()
+{
+	int nRandom = RandomInt(0, 3);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		variant.SetVector3D(Vector(RandomFloat(m_flScaleX / 2, m_flScaleX * 2), RandomFloat(m_flLerpTimeX / 2, m_flLerpTimeX * 2), 0));
+		AcceptInput("SetScaleX", this, this, variant, 0);
+		break;
+	case 1:
+		variant.SetVector3D(Vector(RandomFloat(m_flScaleY / 2, m_flScaleY * 2), RandomFloat(m_flLerpTimeY / 2, m_flLerpTimeY * 2), 0));
+		AcceptInput("SetScaleY", this, this, variant, 0);
+		break;
+	case 2:
+		variant.SetVector3D(Vector(RandomFloat(m_flScaleZ / 2, m_flScaleZ * 2), RandomFloat(m_flLerpTimeZ / 2, m_flLerpTimeZ * 2), 0));
+		AcceptInput("SetScaleZ", this, this, variant, 0);
+		break;
+	case 3:
+		BaseClass::LogicExplode();
+		break;
+	}
 }

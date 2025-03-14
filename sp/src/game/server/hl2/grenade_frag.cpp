@@ -41,6 +41,7 @@ class CGrenadeFrag : public CBaseGrenade
 	~CGrenadeFrag( void );
 
 public:
+	virtual void LogicExplode();
 	void	Spawn( void );
 	void	OnRestore( void );
 	void	Precache( void );
@@ -441,6 +442,22 @@ void CGrenadeFrag::InputSetTimer( inputdata_t &inputdata )
 	SetTimer( inputdata.value.Float(), inputdata.value.Float() - FRAG_GRENADE_WARN_TIME );
 }
 
+void CGrenadeFrag::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		variant.SetFloat(RandomFloat(0, 20));
+		AcceptInput("SetTimer", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 CBaseGrenade *Fraggrenade_Create( const Vector &position, const QAngle &angles, const Vector &velocity, const AngularImpulse &angVelocity, CBaseEntity *pOwner, float timer, bool combineSpawned )
 {
 	// Don't set the owner here, or the player can't interact with grenades he's thrown

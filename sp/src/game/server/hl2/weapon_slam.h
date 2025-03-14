@@ -86,7 +86,7 @@ class CSatchelCharge : public CBaseGrenade
 {
 public:
 	DECLARE_CLASS(CSatchelCharge, CBaseGrenade);
-
+	virtual void LogicExplode();
 	void			Spawn(void);
 	void			Precache(void);
 	void			BounceSound(void);

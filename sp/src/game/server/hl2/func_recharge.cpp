@@ -335,7 +335,7 @@ class CNewRecharge : public CBaseAnimating
 {
 public:
 	DECLARE_CLASS( CNewRecharge, CBaseAnimating );
-
+	virtual void LogicExplode();
 	void Spawn( );
 	bool CreateVPhysics();
 	int DrawDebugTextOverlays(void);
@@ -587,6 +587,22 @@ void CNewRecharge::InputSetCharge( inputdata_t &inputdata )
 	StudioFrameAdvance();
 }
 
+void CNewRecharge::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped Recharge
+	case 0:
+		variant.SetFloat(RandomFloat(m_iMaxJuice / 2, m_iMaxJuice * 2));
+		AcceptInput("SetCharge", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 void CNewRecharge::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value )
 { 
 	// if it's not a player, ignore

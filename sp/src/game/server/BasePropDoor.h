@@ -40,7 +40,7 @@ public:
 	DECLARE_SERVERCLASS();
 
 	CBasePropDoor( void );
-
+	virtual void LogicExplode();
 	void Spawn();
 	void Precache();
 	void Activate();

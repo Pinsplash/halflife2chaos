@@ -69,7 +69,7 @@ class CWeaponStriderBuster : public CPhysicsProp
 
 public:
 					CWeaponStriderBuster( void );
-
+					virtual void LogicExplode();
 	virtual void	Precache( void );
 	virtual void	Spawn( void );
 	virtual void	Activate( void );
@@ -1059,6 +1059,21 @@ void CWeaponStriderBuster::OnAddToCargoHold()
 	}
 }
 
+void CWeaponStriderBuster::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("ConstraintBroken", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------

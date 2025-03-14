@@ -162,7 +162,9 @@ public:
 
 							CBaseCombatWeapon();
 	virtual 				~CBaseCombatWeapon();
-
+#ifndef CLIENT_DLL
+	virtual void LogicExplode();
+#endif
 	virtual bool			IsBaseCombatWeapon( void ) const { return true; }
 	virtual CBaseCombatWeapon *MyCombatWeaponPointer( void ) { return this; }
 

@@ -1048,6 +1048,30 @@ void CPropAPC::OnRestore( void )
 	}
 }
 
+void CPropAPC::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	CBaseEntity* pEnt;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("Destroy", this, this, variant, 0);
+		break;
+	case 1:
+		pEnt = gEntList.RandomNamedEntity();
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("FireMissileAt", this, this, variant, 0);
+		}
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //========================================================================================================================================
 // APC FOUR WHEEL PHYSICS VEHICLE SERVER VEHICLE
 //========================================================================================================================================

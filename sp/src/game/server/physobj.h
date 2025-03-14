@@ -188,7 +188,7 @@ public:
 
 	CPhysMagnet();
 	~CPhysMagnet();
-
+	virtual void LogicExplode();
 	void	Spawn( void );
 	void	Precache( void );
 	void	Touch( CBaseEntity *pOther );

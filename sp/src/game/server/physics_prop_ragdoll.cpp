@@ -1704,6 +1704,38 @@ void CRagdollProp::InputFadeAndRemove( inputdata_t &inputdata )
 	FadeOut( 0.0f, flFadeDuration );
 }
 
+void CRagdollProp::LogicExplode()
+{
+	int nRandom = RandomInt(0, 5);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("StartRagdollBoogie", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("EnableMotion", this, this, variant, 0);
+		break;
+	case 2:
+		AcceptInput("DisableMotion", this, this, variant, 0);
+		break;
+		//made it a toggle
+	case 3:
+		if (IsEffectActive(EF_NODRAW))
+			AcceptInput("Enable", this, this, variant, 0);
+		else
+			AcceptInput("Disable", this, this, variant, 0);
+		break;
+	case 4:
+		variant.SetFloat(RandomFloat(0, 20));
+		AcceptInput("FadeAndRemove", this, this, variant, 0);
+		break;
+	case 5:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 void Ragdoll_GetAngleOverrideString( char *pOut, int size, CBaseEntity *pEntity )
 {
 	CRagdollProp *pRagdoll = dynamic_cast<CRagdollProp *>(pEntity);

@@ -1597,6 +1597,40 @@ IPhysicsObject *CBreakableProp::GetRootPhysicsObjectForBreak()
 	return VPhysicsGetObject();
 }
 
+void CBreakableProp::LogicExplode()
+{
+	int nRandom = RandomInt(0, 6);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped EnablePhyscannonPickup, EnablePuntSound, DisablePuntSound
+	case 0:
+		variant.SetFloat(RandomFloat(m_impactEnergyScale / 2, m_impactEnergyScale * 2));
+		AcceptInput("physdamagescale", this, this, variant, 0);
+		break;
+	case 1:
+		variant.SetFloat(RandomFloat(m_iHealth / 2, m_iHealth * 2));
+		AcceptInput("SetHealth", this, this, variant, 0);
+		break;
+	case 2:
+		variant.SetFloat(RandomFloat(m_iHealth / 2, m_iHealth * 2));
+		AcceptInput("AddHealth", this, this, variant, 0);
+		break;
+	case 3:
+		variant.SetFloat(RandomFloat(0, m_iHealth));
+		AcceptInput("RemoveHealth", this, this, variant, 0);
+		break;
+	case 4:
+		AcceptInput("Break", this, this, variant, 0);
+		break;
+	case 5:
+		AcceptInput("DisablePhyscannonPickup", this, this, variant, 0);
+		break;
+	case 6:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 void CBreakableProp::Break( CBaseEntity *pBreaker, const CTakeDamageInfo &info )
 {
 	const char *pModelName = STRING( GetModelName() );
@@ -2323,6 +2357,36 @@ void CDynamicProp::InputEnableCollision( inputdata_t &inputdata )
 	RemoveSolidFlags( FSOLID_NOT_SOLID );
 }
 
+void CDynamicProp::LogicExplode()
+{
+	int nRandom = RandomInt(0, 3);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped SetAnimation, SetDefaultAnimation
+		//made it a toggle
+	case 0:
+		if (IsEffectActive(EF_NODRAW))
+			AcceptInput("TurnOn", this, this, variant, 0);
+		else
+			AcceptInput("TurnOff", this, this, variant, 0);
+		break;
+		//made it a toggle
+	case 1:
+		if (IsSolidFlagSet(FSOLID_NOT_SOLID))
+			AcceptInput("EnableCollision", this, this, variant, 0);
+		else
+			AcceptInput("DisableCollision", this, this, variant, 0);
+		break;
+	case 2:
+		variant.SetFloat(RandomFloat(m_flPlaybackRate / 2, m_flPlaybackRate * 2));
+		AcceptInput("SetPlaybackRate", this, this, variant, 0);
+		break;
+	case 3:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 // Purpose: Ornamental prop that follows a studio
 //-----------------------------------------------------------------------------
@@ -3174,6 +3238,33 @@ void CPhysicsProp::GetMassCenter( Vector *pMassCenter )
 	VectorTransform( vecLocal, EntityToWorldTransform(), *pMassCenter );
 }
 
+void CPhysicsProp::LogicExplode()
+{
+	int nRandom = RandomInt(0, 5);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("Sleep", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("Wake", this, this, variant, 0);
+		break;
+	case 2:
+		AcceptInput("DisableMotion", this, this, variant, 0);
+		break;
+	case 3:
+		AcceptInput("EnableMotion", this, this, variant, 0);
+		break;
+	case 4:
+		AcceptInput("DisableFloating", this, this, variant, 0);
+		break;
+	case 5:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 float CPhysicsProp::GetMass() const
 {
 	return VPhysicsGetObject() ? VPhysicsGetObject()->GetMass() : 1.0f;
@@ -3588,6 +3679,27 @@ CBasePropDoor::CBasePropDoor( void )
 	m_hMaster = NULL;
 }
 
+void CBasePropDoor::LogicExplode()
+{
+	int nRandom = RandomInt(0, 3);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped Open, OpenAwayFrom, Close
+	case 0:
+		AcceptInput("Toggle", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("Lock", this, this, variant, 0);
+		break;
+	case 2:
+		AcceptInput("Unlock", this, this, variant, 0);
+		break;
+	case 3:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -4682,7 +4794,7 @@ class CPropDoorRotating : public CBasePropDoor
 public:
 
 	~CPropDoorRotating();
-
+	virtual void LogicExplode();
 	int		DrawDebugTextOverlays(void);
 
 	void	Spawn( void );
@@ -5454,6 +5566,26 @@ public:
 	}
 };
 
+void CPropDoorRotating::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		variant.SetFloat(RandomFloat(m_flDistance / 2, m_flDistance * 2));
+		AcceptInput("SetRotationDistance", this, this, variant, 0);
+		break;
+	case 1:
+		variant.SetFloat(RandomFloat(m_flSpeed / 2, m_flSpeed * 2));
+		AcceptInput("SetSpeed", this, this, variant, 0);
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 void CPropDoorRotating::InputSetSpeed(inputdata_t &inputdata)
 {
 	AssertMsg1(inputdata.value.Float() > 0.0f, "InputSetSpeed on %s called with negative parameter!", GetDebugName() );

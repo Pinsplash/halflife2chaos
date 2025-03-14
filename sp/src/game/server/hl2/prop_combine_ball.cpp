@@ -1558,6 +1558,24 @@ bool CPropCombineBall::IsHittableEntity( CBaseEntity *pHitEntity )
 	return true;
 }
 
+void CPropCombineBall::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("Explode", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("FadeAndRespawn", this, this, variant, 0);
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 //-----------------------------------------------------------------------------
 // Purpose: 

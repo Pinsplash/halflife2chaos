@@ -45,6 +45,7 @@ class CPropAPC : public CPropVehicleDriveable
 public:
 	// CBaseEntity
 	virtual void Precache( void );
+	virtual void LogicExplode();
 	void	Think( void );
 	virtual void Spawn(void);
 	virtual void Activate();

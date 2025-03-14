@@ -26,7 +26,7 @@ class CRagdollProp : public CBaseAnimating, public CDefaultPlayerPickupVPhysics
 public:
 	CRagdollProp( void );
 	~CRagdollProp( void );
-
+	virtual void LogicExplode();
 	virtual void UpdateOnRemove( void );
 
 	void DrawDebugGeometryOverlays();

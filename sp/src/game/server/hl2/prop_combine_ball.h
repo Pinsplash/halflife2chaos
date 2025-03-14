@@ -31,7 +31,7 @@ public:
 	DECLARE_CLASS( CPropCombineBall, CBaseAnimating );
 	DECLARE_DATADESC();
 	DECLARE_SERVERCLASS();
-
+	virtual void LogicExplode();
 	virtual void Precache();
 	virtual void Spawn();
 	virtual void UpdateOnRemove();
