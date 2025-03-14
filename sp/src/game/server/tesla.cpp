@@ -178,3 +178,25 @@ void CTesla::InputTurnOff( inputdata_t &inputdata )
 	SetupForNextArc();
 }
 
+void CTesla::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("DoSpark", this, this, variant, 0);
+		break;
+		//made it a toggle
+	case 1:
+		if (m_bOn)
+			AcceptInput("TurnOff", this, this, variant, 0);
+		else
+			AcceptInput("TurnOn", this, this, variant, 0);
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
+}

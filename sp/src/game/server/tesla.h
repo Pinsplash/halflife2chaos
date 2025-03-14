@@ -26,7 +26,7 @@ public:
 	virtual void Spawn();
 	virtual void Activate();
 	virtual void Precache();
-
+	virtual void LogicExplode();
 	void InputTurnOn( inputdata_t &inputdata );
 	void InputTurnOff( inputdata_t &inputdata );
 	void InputDoSpark( inputdata_t &inputdata );

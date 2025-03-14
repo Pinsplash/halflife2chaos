@@ -36,7 +36,7 @@ public:
 	DECLARE_CLASS( CPoseController, CBaseEntity );
 	DECLARE_SERVERCLASS();
 	DECLARE_DATADESC();
-
+	virtual void LogicExplode();
 	virtual void Spawn( void );
 
 	void Think( void );

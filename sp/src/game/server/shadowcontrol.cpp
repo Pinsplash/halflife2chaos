@@ -24,7 +24,7 @@ public:
 	DECLARE_CLASS( CShadowControl, CBaseEntity );
 
 	CShadowControl();
-
+	virtual void LogicExplode();
 	void Spawn( void );
 	bool KeyValue( const char *szKeyName, const char *szValue );
 	int  UpdateTransmitState();
@@ -149,4 +149,21 @@ void CShadowControl::InputSetAngles( inputdata_t &inputdata )
 	Vector vTemp;
 	AngleVectors( angles, &vTemp );
 	m_shadowDirection = vTemp;
+}
+
+void CShadowControl::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		variant.SetFloat(RandomFloat(0, m_flShadowMaxDist));
+		AcceptInput("SetDistance", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
 }

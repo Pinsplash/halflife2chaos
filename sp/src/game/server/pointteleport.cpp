@@ -22,7 +22,7 @@ class CPointTeleport : public CBaseEntity
 	DECLARE_CLASS( CPointTeleport, CBaseEntity );
 public:
 	void	Activate( void );
-
+	virtual void LogicExplode();
 	void InputTeleport( inputdata_t &inputdata );
 
 private:
@@ -107,6 +107,21 @@ void CPointTeleport::Activate( void )
 	BaseClass::Activate();
 }
 
+void CPointTeleport::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("Teleport", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //------------------------------------------------------------------------------
 // Purpose:
 //------------------------------------------------------------------------------

@@ -1443,6 +1443,30 @@ void CAI_ScriptedSequence::Activate( void )
 		m_iszNextScript = NULL_STRING;
 	}
 }
+void CAI_ScriptedSequence::LogicExplode()
+{
+	int nRandom = RandomInt(0, 4);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("MoveToPosition", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("BeginSequence", this, this, variant, 0);
+		break;
+	case 2:
+		AcceptInput("CancelSequence", this, this, variant, 0);
+		break;
+	case 3:
+		AcceptInput("ScriptPlayerDeath", this, this, variant, 0);
+		break;
+	case 4:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 //-----------------------------------------------------------------------------
 // Purpose: 

@@ -24,7 +24,7 @@ public:
 	DECLARE_CLASS( CWaterLODControl, CBaseEntity );
 
 	CWaterLODControl();
-
+	virtual void LogicExplode();
 	void Spawn( void );
 	bool KeyValue( const char *szKeyName, const char *szValue );
 	int  UpdateTransmitState();
@@ -115,4 +115,25 @@ void CWaterLODControl::SetCheapWaterStartDistance( inputdata_t &inputdata )
 void CWaterLODControl::SetCheapWaterEndDistance( inputdata_t &inputdata )
 {
 	m_flCheapWaterEndDistance = atof( inputdata.value.String() );
+}
+
+void CWaterLODControl::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		variant.SetFloat(RandomFloat(m_flCheapWaterStartDistance / 2, m_flCheapWaterStartDistance * 2));
+		AcceptInput("SetCheapWaterStartDistance", this, this, variant, 0);
+		break;
+	case 1:
+		variant.SetFloat(RandomFloat(m_flCheapWaterEndDistance / 2, m_flCheapWaterEndDistance * 2));
+		AcceptInput("SetCheapWaterEndDistance", this, this, variant, 0);
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
 }

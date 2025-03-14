@@ -23,7 +23,7 @@ class CScriptIntro : public CBaseEntity
 public:
 	DECLARE_DATADESC();
 	DECLARE_SERVERCLASS();
-
+	virtual void LogicExplode();
 	virtual void	Spawn( void );
 	virtual void	Precache();
 	virtual void	Activate( void );

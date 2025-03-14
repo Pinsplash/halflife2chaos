@@ -326,6 +326,50 @@ void CPoseController::InputGetFMod( inputdata_t &inputdata )
 			m_fFModAmplitude.Get() );
 }
 
+void CPoseController::LogicExplode()
+{
+	int nRandom = RandomInt(0, 8);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		variant.SetFloat(RandomFloat());
+		AcceptInput("SetPoseValue", this, this, variant, 0);
+		break;
+	case 1:
+		variant.SetFloat(RandomFloat(0, 10));
+		AcceptInput("SetInterpolationTime", this, this, variant, 0);
+		break;
+	case 2:
+		variant.SetFloat(RandomFloat(-10, 10));
+		AcceptInput("SetCycleFrequency", this, this, variant, 0);
+		break;
+	case 3:
+		variant.SetFloat(RandomInt(0, 5));
+		AcceptInput("SetFModType", this, this, variant, 0);
+		break;
+	case 4:
+		variant.SetFloat(RandomInt(-1, 1));
+		AcceptInput("SetFModTimeOffset", this, this, variant, 0);
+		break;
+	case 5:
+		variant.SetFloat(RandomInt(-10, 10));
+		AcceptInput("SetFModRate", this, this, variant, 0);
+		break;
+	case 6:
+		variant.SetFloat(RandomInt(0, 10));
+		AcceptInput("SetFModAmplitude", this, this, variant, 0);
+		break;
+	case 7:
+		variant.SetFloat(1);
+		AcceptInput("RandomizeFMod", this, this, variant, 0);
+		break;
+	case 8:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 #else //#ifndef CLIENT_DLL
 //-----------------------------------------------------------------------------

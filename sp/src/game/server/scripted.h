@@ -86,7 +86,7 @@ public:
 	void StartThink();
 	void ScriptThink( void );
 	void StopThink();
-
+	virtual void LogicExplode();
 	DECLARE_DATADESC();
 
 	void Pain( void );
