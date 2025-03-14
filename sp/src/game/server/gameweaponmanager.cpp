@@ -27,6 +27,7 @@ class CGameWeaponManager : public CBaseEntity
 
 public:
 	void Spawn();
+	virtual void LogicExplode();
 	CGameWeaponManager()
 	{
 		m_flAmmoMod = 1.0f;
@@ -154,6 +155,26 @@ void CGameWeaponManager::Spawn()
 	}
 }
 
+void CGameWeaponManager::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		variant.SetInt(RandomInt(m_iMaxPieces / 2, m_iMaxPieces * 2));
+		AcceptInput("SetMaxPieces", this, this, variant, 0);
+		break;
+	case 1:
+		variant.SetInt(RandomInt(m_flAmmoMod / 2, m_flAmmoMod * 2));
+		AcceptInput("SetAmmoModifier", this, this, variant, 0);
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //---------------------------------------------------------
 // Count of all the weapons in the world of my type and
 // see if we have a surplus. If there is a surplus, try

@@ -735,7 +735,7 @@ class CGameGibManager : public CBaseEntity
 	DECLARE_DATADESC();
 
 public:
-
+	virtual void LogicExplode();
 	CGameGibManager() : m_iCurrentMaxPieces(-1), m_iMaxPieces(-1), m_iMaxPiecesDX8(-1) {}
 
 	void Activate( void );
@@ -828,6 +828,22 @@ bool CGameGibManager::AllowedToSpawnGib( void )
 	return true;
 }
 
+void CGameGibManager::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		variant.SetInt(RandomInt(m_iMaxPieces / 2, m_iMaxPieces * 2));
+		AcceptInput("SetMaxPieces", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 void CGameGibManager::InputSetMaxPieces( inputdata_t &inputdata )
 {
 	m_iMaxPieces = inputdata.value.Int();

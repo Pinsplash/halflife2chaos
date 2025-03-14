@@ -21,7 +21,7 @@ class CParticleSystem : public CBaseEntity
 public:
 	DECLARE_SERVERCLASS();
 	DECLARE_DATADESC();
-
+	virtual void LogicExplode();
 	CParticleSystem();
 
 	virtual void Precache( void );

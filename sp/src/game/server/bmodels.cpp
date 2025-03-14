@@ -188,7 +188,7 @@ class CFuncVehicleClip : public CBaseEntity
 public:
 	DECLARE_CLASS( CFuncVehicleClip, CBaseEntity );
 	DECLARE_DATADESC();
-
+	virtual void LogicExplode();
 	void Spawn();
 	bool CreateVPhysics( void );
 
@@ -252,6 +252,24 @@ void CFuncVehicleClip::InputDisable( inputdata_t &data )
 	AddSolidFlags( FSOLID_NOT_SOLID );
 }
 
+void CFuncVehicleClip::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//made it a toggle
+	case 0:
+		if (IsSolidFlagSet(FSOLID_NOT_SOLID))
+			AcceptInput("Enable", this, this, variant, 0);
+		else
+			AcceptInput("Disable", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //============================= FUNC_CONVEYOR =======================================
 
 #define SF_CONVEYOR_VISUAL		0x0001

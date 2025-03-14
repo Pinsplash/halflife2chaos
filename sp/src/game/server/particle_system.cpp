@@ -251,3 +251,22 @@ void CParticleSystem::ReadControlPointEnts( void )
 		m_hControlPointEnts.Set( i, pPointEnt );
 	}
 }
+
+void CParticleSystem::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//made it a toggle
+	case 0:
+		if (m_bActive)
+			AcceptInput("Stop", this, this, variant, 0);
+		else
+			AcceptInput("Start", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}

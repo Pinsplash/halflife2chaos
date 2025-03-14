@@ -22,7 +22,7 @@ public:
 	DECLARE_DATADESC();
 
 	CRagdollManager();
-
+	virtual void LogicExplode();
 	virtual void	Activate();
 	virtual int		UpdateTransmitState();
 
@@ -116,6 +116,22 @@ void CRagdollManager::UpdateCurrentMaxRagDollCount()
 	s_RagdollLRU.SetMaxRagdollCount( m_iCurrentMaxRagdollCount );
 }
 
+void CRagdollManager::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		variant.SetInt(RandomInt(m_iMaxRagdollCount / 2, m_iMaxRagdollCount * 2));
+		AcceptInput("SetMaxRagdollCount", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 void CRagdollManager::InputSetMaxRagdollCount(inputdata_t &inputdata)
