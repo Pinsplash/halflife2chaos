@@ -85,7 +85,7 @@ public:
 	DECLARE_DATADESC();
 
 	virtual void Activate( void );
-
+	virtual void LogicExplode();
 	void		 ShutdownList( void );
 	void		 SceneStarted( CBaseEntity *pSceneOrManager );
 	void		 AddListManager( CSceneListManager *pManager );
@@ -5603,6 +5603,21 @@ void CSceneListManager::RemoveScene( int iIndex )
 	}
 }
 
+void CSceneListManager::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("Shutdown", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 void ReloadSceneFromDisk( CBaseEntity *ent )
 {
 	CSceneEntity *scene = dynamic_cast< CSceneEntity * >( ent );

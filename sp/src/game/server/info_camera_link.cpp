@@ -25,7 +25,7 @@ class CInfoCameraLink : public CLogicalEntity
 public:
 	CInfoCameraLink();
 	~CInfoCameraLink();
-
+	virtual void LogicExplode();
 	virtual void Activate();
 
 private:
@@ -123,6 +123,27 @@ void CInfoCameraLink::InputSetCamera(inputdata_t &inputdata)
 	SetCameraByName( inputdata.value.String() );
 }
 
+void CInfoCameraLink::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	CBaseEntity* pEnt;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		pEnt = gEntList.RandomNamedEntityByClassname("point_camera");
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("SetCamera", this, this, variant, 0);
+		}
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 //-----------------------------------------------------------------------------
 // Purpose: 

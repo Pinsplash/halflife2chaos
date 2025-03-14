@@ -269,7 +269,7 @@ class CAI_Hint : public CServerOnlyEntity
 public:
 	CAI_Hint( void );
 	~CAI_Hint( void );
-
+	virtual void LogicExplode();
 	// Interface for specific nodes
 	bool				Lock( CBaseEntity *pNPC );			// Makes unavailable for hints
 	void				Unlock( float delay = 0.0 );		// Makes available for hints after delay

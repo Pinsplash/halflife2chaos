@@ -27,7 +27,7 @@ class CLogicNavigation : public CLogicalEntity,
 
 	bool KeyValue( const char *szKeyName, const char *szValue );
 	void Activate( void );
-
+	virtual void LogicExplode();
 private:
 	void UpdateOnRemove();
 
@@ -181,3 +181,18 @@ void CLogicNavigation::TurnOff()
 	UpdateProperty();
 }
 
+void CLogicNavigation::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped turnon and turnoff
+	case 0:
+		AcceptInput("Toggle", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}

@@ -160,3 +160,27 @@ void CLogicRelay::InputTrigger( inputdata_t &inputdata )
 	}
 }
 
+void CLogicRelay::LogicExplode()
+{
+	int nRandom = RandomInt(0, 4);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped enable and disable
+	case 0:
+		AcceptInput("Trigger", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("CancelPending", this, this, variant, 0);
+		break;
+	case 2:
+		AcceptInput("EnableRefire", this, this, variant, 0);
+		break;
+	case 3:
+		AcceptInput("Toggle", this, this, variant, 0);
+		break;
+	case 4:
+		BaseClass::LogicExplode();
+		break;
+	}
+}

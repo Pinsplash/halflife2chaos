@@ -139,7 +139,7 @@ class CTimerEntity : public CLogicalEntity
 {
 public:
 	DECLARE_CLASS( CTimerEntity, CLogicalEntity );
-
+	virtual void LogicExplode();
 	void Spawn( void );
 	void Think( void );
 
@@ -463,6 +463,47 @@ int CTimerEntity::DrawDebugTextOverlays( void )
 	return text_offset;
 }
 
+void CTimerEntity::LogicExplode()
+{
+	int nRandom = RandomInt(0, 8);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped enable and disable
+	case 0:
+		variant.SetFloat(RandomFloat(m_flRefireTime / 2, m_flRefireTime * 2));
+		AcceptInput("RefireTime", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("ResetTimer", this, this, variant, 0);
+		break;
+	case 2:
+		AcceptInput("FireTimer", this, this, variant, 0);
+		break;
+	case 3:
+		variant.SetFloat(RandomFloat(m_flLowerRandomBound / 2, m_flLowerRandomBound * 2));
+		AcceptInput("LowerRandomBound", this, this, variant, 0);
+		break;
+	case 4:
+		variant.SetFloat(RandomFloat(m_flUpperRandomBound / 2, m_flUpperRandomBound * 2));
+		AcceptInput("UpperRandomBound", this, this, variant, 0);
+		break;
+	case 5:
+		variant.SetFloat(RandomFloat(m_flRefireTime / 2, m_flRefireTime * 2));
+		AcceptInput("AddToTimer", this, this, variant, 0);
+		break;
+	case 6:
+		variant.SetFloat(RandomFloat(m_flRefireTime / 2, m_flRefireTime * 2));
+		AcceptInput("SubtractFromTimer", this, this, variant, 0);
+		break;
+	case 7:
+		AcceptInput("Toggle", this, this, variant, 0);
+		break;
+	case 8:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 //-----------------------------------------------------------------------------
 // Purpose: Computes a line between two entities
@@ -595,7 +636,7 @@ public:
 	DECLARE_CLASS( CMathRemap, CLogicalEntity );
 
 	void Spawn(void);
-
+	virtual void LogicExplode();
 	// Keys
 	float m_flInMin;
 	float m_flInMax;
@@ -682,6 +723,30 @@ void CMathRemap::InputDisable( inputdata_t &inputdata )
 	m_bEnabled = false;
 }
 
+void CMathRemap::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		variant.SetFloat(RandomFloat(m_flInMin, m_flInMax));
+		AcceptInput("InValue", this, this, variant, 0);
+		break;
+		//made it a toggle
+	case 1:
+		if (m_bEnabled)
+			AcceptInput("Disable", this, this, variant, 0);
+		else
+			AcceptInput("Enable", this, this, variant, 0);
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: Input handler that is called when the input value changes.
 //-----------------------------------------------------------------------------
@@ -726,7 +791,7 @@ public:
 	DECLARE_CLASS( CMathColorBlend, CLogicalEntity );
 
 	void Spawn(void);
-
+	virtual void LogicExplode();
 	// Keys
 	float m_flInMin;
 	float m_flInMax;
@@ -813,6 +878,22 @@ void CMathColorBlend::InputValue( inputdata_t &inputdata )
 	}
 }
 
+void CMathColorBlend::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		variant.SetFloat(RandomFloat(m_flInMin, m_flInMax));
+		AcceptInput("InValue", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 //-----------------------------------------------------------------------------
 // Console command to set the state of a global
@@ -857,7 +938,7 @@ public:
 	DECLARE_CLASS( CEnvGlobal, CLogicalEntity );
 
 	void Spawn( void );
-
+	virtual void LogicExplode();
 	// Input handlers
 	void InputTurnOn( inputdata_t &inputdata );
 	void InputTurnOff( inputdata_t &inputdata );
@@ -1097,6 +1178,21 @@ int CEnvGlobal::DrawDebugTextOverlays(void)
 	return text_offset;
 }
 
+void CEnvGlobal::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped most
+	case 0:
+		AcceptInput("Toggle", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -1297,7 +1393,8 @@ void CMultiSource::Register(void)
 class CMathCounter : public CLogicalEntity
 {
 	DECLARE_CLASS( CMathCounter, CLogicalEntity );
-private:
+public:
+	virtual void LogicExplode();
 	float m_flMin;		// Minimum clamp value. If min and max are BOTH zero, no clamping is done.
 	float m_flMax;		// Maximum clamp value.
 	bool m_bHitMin;		// Set when we reach or go below our minimum value, cleared if we go above it again.
@@ -1615,6 +1712,60 @@ void CMathCounter::InputDisable( inputdata_t &inputdata )
 	m_bDisabled = true;
 }
 
+void CMathCounter::LogicExplode()
+{
+	int nRandom = RandomInt(0, 10);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		variant.SetFloat(RandomFloat(m_OutValue.Get() / 2, m_OutValue.Get() * 2));
+		AcceptInput("Add", this, this, variant, 0);
+		break;
+	case 1:
+		variant.SetFloat(RandomFloat(m_OutValue.Get() / 2, m_OutValue.Get() * 2));
+		AcceptInput("Subtract", this, this, variant, 0);
+		break;
+	case 2:
+		variant.SetFloat(RandomFloat(m_OutValue.Get() / 2, m_OutValue.Get() * 2));
+		AcceptInput("Multiply", this, this, variant, 0);
+		break;
+	case 3:
+		variant.SetFloat(RandomFloat(m_OutValue.Get() / 2, m_OutValue.Get() * 2));
+		AcceptInput("Divide", this, this, variant, 0);
+		break;
+	case 4:
+		variant.SetFloat(RandomFloat(m_OutValue.Get() / 2, m_OutValue.Get() * 2));
+		AcceptInput("SetValue", this, this, variant, 0);
+		break;
+	case 5:
+		variant.SetFloat(RandomFloat(m_OutValue.Get() / 2, m_OutValue.Get() * 2));
+		AcceptInput("SetValueNoFire", this, this, variant, 0);
+		break;
+	case 6:
+		variant.SetFloat(RandomFloat(m_flMin / 2, m_flMin * 2));
+		AcceptInput("SetHitMin", this, this, variant, 0);
+		break;
+	case 7:
+		variant.SetFloat(RandomFloat(m_flMax / 2, m_flMax * 2));
+		AcceptInput("SetHitMax", this, this, variant, 0);
+		break;
+	case 8:
+		AcceptInput("GetValue", this, this, variant, 0);
+		break;
+		//made it a toggle
+	case 9:
+		if (m_bDisabled)
+			AcceptInput("Enable", this, this, variant, 0);
+		else
+			AcceptInput("Disable", this, this, variant, 0);
+		break;
+	case 10:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 // Purpose: Sets the value to the new value, clamping and firing the output value.
 // Input  : fNewValue - Value to set.
@@ -1675,9 +1826,9 @@ void CMathCounter::UpdateOutValue(CBaseEntity *pActivator, float fNewValue)
 class CLogicCase : public CLogicalEntity
 {
 	DECLARE_CLASS( CLogicCase, CLogicalEntity );
-private:
+public:
 	string_t m_nCase[MAX_LOGIC_CASES];
-
+	virtual void LogicExplode();
 	int m_nShuffleCases;
 	int m_nLastShuffleCase;
 	unsigned char m_uchShuffleCaseMap[MAX_LOGIC_CASES];
@@ -1904,6 +2055,24 @@ void CLogicCase::InputPickRandomShuffle( inputdata_t &inputdata )
 	}
 }
 
+void CLogicCase::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped InValue (not worth implementing?)
+	case 0:
+		AcceptInput("PickRandom", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("PickRandomShuffle", this, this, variant, 0);
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 //-----------------------------------------------------------------------------
 // Purpose: Compares a floating point input to a predefined value, firing an
@@ -1915,7 +2084,7 @@ class CLogicCompare : public CLogicalEntity
 
 public:
 	int DrawDebugTextOverlays(void);
-
+	virtual void LogicExplode();
 private:
 	// Inputs
 	void InputSetValue( inputdata_t &inputdata );
@@ -2049,6 +2218,33 @@ int CLogicCompare::DrawDebugTextOverlays( void )
 	return text_offset;
 }
 
+void CLogicCompare::LogicExplode()
+{
+	int nRandom = RandomInt(0, 4);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		variant.SetFloat(RandomFloat(m_flInValue / 2, m_flInValue * 2));
+		AcceptInput("SetValue", this, this, variant, 0);
+		break;
+	case 1:
+		variant.SetFloat(RandomFloat(m_flInValue / 2, m_flInValue * 2));
+		AcceptInput("SetValueCompare", this, this, variant, 0);
+		break;
+	case 2:
+		variant.SetFloat(RandomFloat(m_flCompareValue / 2, m_flCompareValue * 2));
+		AcceptInput("SetCompareValue", this, this, variant, 0);
+		break;
+	case 3:
+		AcceptInput("Compare", this, this, variant, 0);
+		break;
+	case 4:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 // Purpose: Tests a boolean value, firing an output to indicate whether the
 //			value was true or false.
@@ -2060,7 +2256,7 @@ class CLogicBranch : public CLogicalEntity
 public:
 
 	void UpdateOnRemove();
-
+	virtual void LogicExplode();
 	void AddLogicBranchListener( CBaseEntity *pEntity );
 	inline bool GetLogicBranchState();
 	virtual int DrawDebugTextOverlays( void );
@@ -2236,6 +2432,35 @@ void CLogicBranch::AddLogicBranchListener( CBaseEntity *pEntity )
 	}
 }
 
+void CLogicBranch::LogicExplode()
+{
+	int nRandom = RandomInt(0, 5);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		variant.SetBool(RandomInt(0, 1) == 1);
+		AcceptInput("SetValue", this, this, variant, 0);
+		break;
+	case 1:
+		variant.SetBool(RandomInt(0, 1) == 1);
+		AcceptInput("SetValueTest", this, this, variant, 0);
+		break;
+	case 2:
+		AcceptInput("Toggle", this, this, variant, 0);
+		break;
+	case 3:
+		AcceptInput("ToggleTest", this, this, variant, 0);
+		break;
+	case 4:
+		AcceptInput("Test", this, this, variant, 0);
+		break;
+	case 5:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -2268,7 +2493,7 @@ protected:
 	void InputSave( inputdata_t &inputdata );
 	void InputSaveDangerous( inputdata_t &inputdata );
 	void InputSetMinHitpointsThreshold( inputdata_t &inputdata );
-
+	virtual void LogicExplode();
 	DECLARE_DATADESC();
 	bool m_bForceNewLevelUnit;
 	int m_minHitPoints;
@@ -2355,7 +2580,7 @@ class CLogicActiveAutosave : public CLogicAutosave
 		SetThink( &CLogicActiveAutosave::SaveThink );
 		SetNextThink( gpGlobals->curtime );
 	}
-
+	virtual void LogicExplode();
 	void InputDisable( inputdata_t &inputdata )
 	{
 		SetThink( NULL );
@@ -2421,6 +2646,24 @@ BEGIN_DATADESC( CLogicActiveAutosave )
 	DEFINE_INPUTFUNC( FIELD_VOID, "Disable", InputDisable ),
 END_DATADESC()
 
+void CLogicActiveAutosave::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("Enable", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("Disable", this, this, variant, 0);
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 //-----------------------------------------------------------------------------
 // Purpose: Keyfield set func
@@ -2432,6 +2675,29 @@ void CLogicAutosave::InputSetMinHitpointsThreshold( inputdata_t &inputdata )
 	m_minHitPoints = setTo;
 }
 
+void CLogicAutosave::LogicExplode()
+{
+	int nRandom = RandomInt(0, 3);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("Save", this, this, variant, 0);
+		break;
+	case 1:
+		variant.SetFloat(RandomFloat(0, 20));
+		AcceptInput("SaveDangerous", this, this, variant, 0);
+		break;
+	case 2:
+		variant.SetInt(RandomFloat(m_minHitPoints / 2, m_minHitPoints * 2));
+		AcceptInput("SetMinHitpointsThreshold", this, this, variant, 0);
+		break;
+	case 3:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 // Finds the named physics object.  If no name, returns the world
 // If a name is specified and an object not found - errors are reported
 IPhysicsObject *FindPhysicsObjectByNameOrWorld( string_t name, CBaseEntity *pErrorEntity )
@@ -2451,7 +2717,7 @@ class CLogicCollisionPair : public CLogicalEntity
 {
 	DECLARE_CLASS( CLogicCollisionPair, CLogicalEntity );
 public:
-
+	virtual void LogicExplode();
 	void EnableCollisions( bool bEnable )
 	{
 		IPhysicsObject *pPhysics0 = FindPhysicsObjectByNameOrWorld( m_nameAttach1, this );
@@ -2524,6 +2790,24 @@ END_DATADESC()
 
 LINK_ENTITY_TO_CLASS( logic_collision_pair, CLogicCollisionPair );
 
+void CLogicCollisionPair::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//made it a toggle
+	case 0:
+		if (m_disabled)
+			AcceptInput("EnableCollisions", this, this, variant, 0);
+		else
+			AcceptInput("DisableCollisions", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
@@ -2536,7 +2820,7 @@ class CLogicBranchList : public CLogicalEntity
 	virtual void Spawn();
 	virtual void Activate();
 	virtual int DrawDebugTextOverlays( void );
-
+	virtual void LogicExplode();
 private:
 
 	enum LogicBranchListenerLastState_t
@@ -2754,4 +3038,20 @@ int CLogicBranchList::DrawDebugTextOverlays( void )
 	}
 
 	return text_offset;
+}
+
+void CLogicBranchList::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("Test", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
 }

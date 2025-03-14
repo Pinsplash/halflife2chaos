@@ -81,7 +81,7 @@ public:
 	DECLARE_CLASS( CLogicAchievement, CLogicalEntity );
 
 	CLogicAchievement();
-
+	virtual void LogicExplode();
 protected:
 
 	// Inputs
@@ -179,4 +179,23 @@ void CLogicAchievement::InputDisable( inputdata_t &inputdata )
 void CLogicAchievement::InputToggle( inputdata_t &inputdata )
 { 
 	m_bDisabled = !m_bDisabled;
+}
+
+void CLogicAchievement::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped enable and disable
+	case 0:
+		AcceptInput("FireEvent", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("Toggle", this, this, variant, 0);
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
 }

@@ -19,7 +19,7 @@ public:
 	DECLARE_CLASS( CLogicRelay, CLogicalEntity );
 
 	CLogicRelay();
-
+	virtual void LogicExplode();
 	void Activate();
 	void Think();
 

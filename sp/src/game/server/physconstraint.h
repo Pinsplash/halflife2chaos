@@ -38,7 +38,7 @@ public:
 
 	CPhysConstraint();
 	~CPhysConstraint();
-
+	virtual void LogicExplode();
 	DECLARE_DATADESC();
 
 	void Spawn( void );

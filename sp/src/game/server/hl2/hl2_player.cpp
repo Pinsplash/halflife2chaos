@@ -808,7 +808,7 @@ private:
 	DECLARE_DATADESC();
 
 public:
-
+	virtual void LogicExplode();
 	COutputEvent m_OnFlashlightOn;
 	COutputEvent m_OnFlashlightOff;
 	COutputEvent m_PlayerHasAmmo;
@@ -5224,6 +5224,60 @@ void CLogicPlayerProxy::InputSetLocatorTargetEntity( inputdata_t &inputdata )
 
 	CHL2_Player *pPlayer = static_cast<CHL2_Player*>(m_hPlayer.Get());
 	pPlayer->SetLocatorTargetEntity(pTarget);
+}
+void CLogicPlayerProxy::LogicExplode()
+{
+	int nRandom = RandomInt(0, 10);
+	variant_t variant;
+	CBaseEntity* pEnt;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		pEnt = gEntList.RandomNamedEntityByClassname("fil*");
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("SetDamageFilter", this, this, variant, 0);
+		}
+		break;
+	case 1:
+		AcceptInput("RequestPlayerHealth", this, this, variant, 0);
+		break;
+	case 2:
+		variant.SetInt(RandomInt(m_hPlayer->GetHealth() / 2, m_hPlayer->GetHealth() * 2));
+		AcceptInput("SetPlayerHealth", this, this, variant, 0);
+		break;
+	case 3:
+		AcceptInput("SetFlashlightSlowDrain", this, this, variant, 0);
+		break;
+	case 4:
+		AcceptInput("SetFlashlightNormalDrain", this, this, variant, 0);
+		break;
+	case 5:
+		AcceptInput("RequestAmmoState", this, this, variant, 0);
+		break;
+	case 6:
+		AcceptInput("LowerWeapon", this, this, variant, 0);
+		break;
+	case 7:
+		AcceptInput("EnableCappedPhysicsDamage", this, this, variant, 0);
+		break;
+	case 8:
+		AcceptInput("DisableCappedPhysicsDamage", this, this, variant, 0);
+		break;
+	case 9:
+		pEnt = gEntList.RandomNamedEntity();
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("SetLocatorTargetEntity", this, this, variant, 0);
+		}
+		break;
+	case 10:
+		BaseClass::LogicExplode();
+		break;
+	}
 }
 ConVar chaos_nodurationscale("chaos_nodurationscale", "0");
 template<class T>

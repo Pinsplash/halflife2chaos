@@ -31,6 +31,21 @@ BEGIN_DATADESC( CBaseFilter )
 
 END_DATADESC()
 
+void CBaseFilter::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("TestActivator", gEntList.RandomNamedEntity(), this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 
 bool CBaseFilter::PassesFilterImpl( CBaseEntity *pCaller, CBaseEntity *pEntity )

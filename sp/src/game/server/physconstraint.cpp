@@ -699,12 +699,34 @@ void CPhysConstraint::NotifySystemEvent( CBaseEntity *pNotify, notify_system_eve
 	PhysTeleportConstrainedEntity( pNotify, m_pConstraint->GetReferenceObject(), m_pConstraint->GetAttachedObject(), params.pTeleport->prevOrigin, params.pTeleport->prevAngles, params.pTeleport->physicsRotate );
 }
 
+void CPhysConstraint::LogicExplode()
+{
+	int nRandom = RandomInt(0, 3);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("TurnOff", this, this, variant, 0);
+		break;
+	case 1:
+		AcceptInput("TurnOn", this, this, variant, 0);
+		break;
+	case 2:
+		AcceptInput("Break", this, this, variant, 0);
+		break;
+	case 3:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 class CPhysHinge : public CPhysConstraint, public IVPhysicsWatcher
 {
 	DECLARE_CLASS( CPhysHinge, CPhysConstraint );
 
 public:
 	void Spawn( void );
+	virtual void LogicExplode();
 	IPhysicsConstraint *CreateConstraint( IPhysicsConstraintGroup *pGroup, const hl_constraint_info_t &info )
 	{
 		if ( m_hinge.worldAxisDirection == vec3_origin )
@@ -1000,6 +1022,26 @@ bool CPhysHinge::IsWorldHinge( const hl_constraint_info_t &info, int *pAxisOut )
 	return false;
 }
 
+void CPhysHinge::LogicExplode()
+{
+	int nRandom = RandomInt(0, 2);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		variant.SetFloat(RandomFloat(-360, 360));
+		AcceptInput("SetAngularVelocity", this, this, variant, 0);
+		break;
+	case 1:
+		variant.SetFloat(RandomFloat(m_hingeFriction / 2, m_hingeFriction * 2));
+		AcceptInput("SetHingeFriction", this, this, variant, 0);
+		break;
+	case 2:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 #if HINGE_NOTIFY
 void CPhysHinge::SoundThink( void )
@@ -1055,6 +1097,7 @@ public:
 
 	DECLARE_DATADESC();
 	IPhysicsConstraint *CreateConstraint( IPhysicsConstraintGroup *pGroup, const hl_constraint_info_t &info );
+	virtual void LogicExplode();
 	void InputSetVelocity( inputdata_t &inputdata )
 	{
 		if ( !m_pConstraint || !m_pConstraint->GetReferenceObject() || !m_pConstraint->GetAttachedObject() )
@@ -1240,6 +1283,22 @@ IPhysicsConstraint *CPhysSlideConstraint::CreateConstraint( IPhysicsConstraintGr
 	return physenv->CreateSlidingConstraint( info.pObjects[0], info.pObjects[1], pGroup, sliding );
 }
 
+void CPhysSlideConstraint::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		variant.SetFloat(RandomFloat(-500, 500));
+		AcceptInput("SetVelocity", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 
 #if HINGE_NOTIFY
 void CPhysSlideConstraint::SoundThink( void )

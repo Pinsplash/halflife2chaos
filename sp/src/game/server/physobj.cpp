@@ -1414,8 +1414,8 @@ class CPhysConvert : public CLogicalEntity
 
 public:
 	CPhysConvert( void ) : m_flMassOverride( 0.0f ) {};
-	COutputEvent m_OnConvert;	
-
+	COutputEvent m_OnConvert;
+	virtual void LogicExplode();
 	// Input handlers
 	void InputConvertTarget( inputdata_t &inputdata );
 
@@ -1443,6 +1443,21 @@ END_DATADESC()
 
 
 
+void CPhysConvert::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("ConvertTarget", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 // Purpose: Input handler that converts our target to a physics object.
 //-----------------------------------------------------------------------------

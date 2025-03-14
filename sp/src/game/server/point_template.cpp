@@ -407,3 +407,19 @@ void CPointTemplate::InputForceSpawn( inputdata_t &inputdata )
 	// Fire our output
 	m_pOutputOnSpawned.FireOutput( this, this );
 }
+
+void CPointTemplate::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("ForceSpawn", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}

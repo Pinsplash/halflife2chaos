@@ -589,7 +589,7 @@ public:
 	void Spawn( void );
 	void Activate( void );
 	void Think( void );
-
+	virtual void LogicExplode();
 	void TurnOn( void );
 	void TargetSpeedChanged( void );
 	void OnRestore();
@@ -822,6 +822,22 @@ void CPhysMotor::OnRestore()
 	}
 }
 
+void CPhysMotor::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//skipped turnon and turnoff
+	case 0:
+		variant.SetFloat(RandomFloat(m_flSpeed / 2, m_flSpeed * 2));
+		AcceptInput("SetSpeed", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 void CPhysMotor::Think( void )
 {
 	// angular acceleration is always positive - it should be treated as a magnitude - the controller 

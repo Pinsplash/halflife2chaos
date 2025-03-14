@@ -38,7 +38,7 @@ class CBaseFilter : public CLogicalEntity
 public:
 
 	DECLARE_DATADESC();
-
+	virtual void LogicExplode();
 	bool PassesFilter( CBaseEntity *pCaller, CBaseEntity *pEntity );
 	bool PassesDamageFilter( const CTakeDamageInfo &info );
 

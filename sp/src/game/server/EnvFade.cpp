@@ -26,7 +26,7 @@ public:
 	DECLARE_CLASS( CEnvFade, CLogicalEntity );
 
 	virtual void Spawn( void );
-
+	virtual void LogicExplode();
 	inline float Duration( void ) { return m_Duration; }
 	inline float HoldTime( void ) { return m_HoldTime; }
 
@@ -197,4 +197,20 @@ int CEnvFade::DrawDebugTextOverlays( void )
 		text_offset++;
 	}
 	return text_offset;
+}
+
+void CEnvFade::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		AcceptInput("Fade", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
 }

@@ -37,7 +37,7 @@ public:
 	static void					ResetDynamicLinks(void);
 	static void					PurgeDynamicLinks(void);
 	static void 				GenerateControllerLinks();
-
+	virtual void LogicExplode();
 	static bool					gm_bInitialized;
 
 	static CAI_DynamicLink*		GetDynamicLink(int nSrcID, int nDstID);
@@ -84,7 +84,7 @@ class CAI_DynamicLinkController : public CServerOnlyEntity
 	DECLARE_CLASS( CAI_DynamicLinkController, CServerOnlyEntity );
 public:
 	void GenerateLinksFromVolume();
-
+	virtual void LogicExplode();
 	// ----------------
 	//	Inputs
 	// ----------------

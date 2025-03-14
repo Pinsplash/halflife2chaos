@@ -22,7 +22,7 @@ class CLogicMeasureMovement : public CLogicalEntity
 
 public:
 	virtual void Activate();
-
+	virtual void LogicExplode();
 private:
 	void SetMeasureTarget( const char *pName );
 	void SetMeasureReference( const char *pName );
@@ -254,4 +254,54 @@ void CLogicMeasureMovement::InputSetTargetReference( inputdata_t &inputdata )
 void CLogicMeasureMovement::InputSetTargetScale( inputdata_t &inputdata )
 {
 	m_flScale = inputdata.value.Float();
+}
+
+void CLogicMeasureMovement::LogicExplode()
+{
+	int nRandom = RandomInt(0, 5);
+	variant_t variant;
+	CBaseEntity* pEnt;
+	switch (nRandom)
+	{
+		//
+	case 0:
+		pEnt = gEntList.RandomNamedEntity();
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("SetMeasureTarget", this, this, variant, 0);
+		}
+		break;
+	case 1:
+		pEnt = gEntList.RandomNamedEntity();
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("SetMeasureReference", this, this, variant, 0);
+		}
+		break;
+	case 2:
+		pEnt = gEntList.RandomNamedEntity();
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("SetTargetReference", this, this, variant, 0);
+		}
+		break;
+	case 3:
+		pEnt = gEntList.RandomNamedEntity();
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("SetTarget", this, this, variant, 0);
+		}
+		break;
+	case 4:
+		variant.SetFloat(RandomFloat(m_flScale / 2, m_flScale * 2));
+		AcceptInput("SetTargetScale", this, this, variant, 0);
+		break;
+	case 5:
+		BaseClass::LogicExplode();
+		break;
+	}
 }

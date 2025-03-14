@@ -169,6 +169,37 @@ void CAI_DynamicLinkController::InputSetInvert( inputdata_t &inputdata )
 	}
 }
 
+void CAI_DynamicLinkController::LogicExplode()
+{
+	int nRandom = RandomInt(0, 3);
+	variant_t variant;
+	CBaseEntity* pEnt;
+	switch (nRandom)
+	{
+		//made it a toggle
+	case 0:
+		if (m_nLinkState == LINK_OFF)
+			AcceptInput("TurnOn", this, this, variant, 0);
+		else
+			AcceptInput("TurnOff", this, this, variant, 0);
+		break;
+	case 1:
+		pEnt = gEntList.RandomEntityByClassname("npc_*");
+		if (pEnt)
+		{
+			variant.SetString(MAKE_STRING(pEnt->GetClassname()));
+			AcceptInput("SetAllowed", this, this, variant, 0);
+		}
+		break;
+	case 2:
+		variant.SetBool(!m_bInvertAllow);
+		AcceptInput("SetInvert", this, this, variant, 0);
+		break;
+	case 3:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 
 LINK_ENTITY_TO_CLASS(info_node_link, CAI_DynamicLink);
@@ -192,6 +223,24 @@ DEFINE_INPUTFUNC( FIELD_VOID, "TurnOff", InputTurnOff ),
 
 END_DATADESC()
 
+void CAI_DynamicLink::LogicExplode()
+{
+	int nRandom = RandomInt(0, 1);
+	variant_t variant;
+	switch (nRandom)
+	{
+		//made it a toggle
+	case 0:
+		if (m_nLinkState == LINK_OFF)
+			AcceptInput("TurnOn", this, this, variant, 0);
+		else
+			AcceptInput("TurnOff", this, this, variant, 0);
+		break;
+	case 1:
+		BaseClass::LogicExplode();
+		break;
+	}
+}
 //-----------------------------------------------------------------------------
 // Init static variables
 //-----------------------------------------------------------------------------

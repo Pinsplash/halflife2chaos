@@ -28,7 +28,7 @@ class CPointTemplate : public CLogicalEntity
 	DECLARE_CLASS( CPointTemplate, CLogicalEntity );
 public:
 	DECLARE_DATADESC();
-
+	virtual void LogicExplode();
 	virtual void	Spawn( void );
 	virtual void	Precache();
 
