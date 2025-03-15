@@ -100,6 +100,7 @@ enum Effect_T
 	EFFECT_GIVE_ALL_RPG,
 	EFFECT_GRASS_HEAL,
 	EFFECT_CHANGE_PITCH,
+	EFFECT_LOGIC_EXPLODE,
 	//EFFECT_EVIL_ELI,
 	//EFFECT_EVIL_BREEN,
 
@@ -586,5 +587,10 @@ class CEChangePitch : public CChaosEffect
 public:
 	void MaintainEffect() override;
 	void StopEffect() override;
+};
+class CELogicExplode : public CChaosEffect
+{
+public:
+	void StartEffect() override;
 };
 #endif
