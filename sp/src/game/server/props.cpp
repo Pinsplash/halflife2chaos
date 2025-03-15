@@ -2363,7 +2363,7 @@ void CDynamicProp::LogicExplode()
 	variant_t variant;
 	switch (nRandom)
 	{
-		//skipped SetAnimation, SetDefaultAnimation
+		//skipped SetAnimation, SetDefaultAnimation, EnableCollision
 		//made it a toggle
 	case 0:
 		if (IsEffectActive(EF_NODRAW))
@@ -2373,10 +2373,7 @@ void CDynamicProp::LogicExplode()
 		break;
 		//made it a toggle
 	case 1:
-		if (IsSolidFlagSet(FSOLID_NOT_SOLID))
-			AcceptInput("EnableCollision", this, this, variant, 0);
-		else
-			AcceptInput("DisableCollision", this, this, variant, 0);
+		AcceptInput("DisableCollision", this, this, variant, 0);
 		break;
 	case 2:
 		variant.SetFloat(RandomFloat(m_flPlaybackRate / 2, m_flPlaybackRate * 2));

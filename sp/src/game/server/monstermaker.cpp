@@ -1119,6 +1119,7 @@ void CTemplateNPCMaker::LogicExplode()
 {
 	int nRandom = RandomInt(0, 5);
 	variant_t variant;
+	CBaseEntity* pEnt;
 	switch (nRandom)
 	{
 	case 0:
@@ -1132,8 +1133,12 @@ void CTemplateNPCMaker::LogicExplode()
 		AcceptInput("SpawnMultiple", this, this, variant, 0);
 		break;
 	case 3:
-		variant.SetString(gEntList.RandomNamedEntityByClassname("info_npc_spawn_destination")->GetEntityName());
-		AcceptInput("ChangeDestinationGroup", this, this, variant, 0);
+		pEnt = gEntList.RandomNamedEntityByClassname("info_npc_spawn_destination");
+		if (pEnt)
+		{
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("ChangeDestinationGroup", this, this, variant, 0);
+		}
 		break;
 	case 4:
 		variant.SetInt(RandomInt(m_iMinSpawnDistance / 2, m_iMinSpawnDistance * 2));

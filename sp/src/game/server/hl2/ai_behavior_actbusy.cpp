@@ -352,7 +352,8 @@ void CAI_ActBusyBehavior::Disable( void )
 //-----------------------------------------------------------------------------
 void CAI_ActBusyBehavior::ForceActBusy( CAI_ActBusyGoal *pGoal, CAI_Hint *pHintNode, float flMaxTime, bool bVisibleOnly, bool bTeleportToBusy, bool bUseNearestBusy, CBaseEntity *pSeeEntity, Activity activity )
 {
-	Assert( !m_bLeaving );
+	//assert is unreasonable?
+	//Assert( !m_bLeaving );
 
 	if ( m_bNeedsToPlayExitAnim )
 	{

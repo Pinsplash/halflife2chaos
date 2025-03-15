@@ -589,6 +589,8 @@ bool CAI_PassengerBehavior::GetExitPoint( int nSequence, Vector *vecExitPoint, Q
 //-----------------------------------------------------------------------------
 bool CAI_PassengerBehavior::ReserveEntryPoint( VehicleSeatQuery_e eSeatSearchType )
 {
+	if (!m_hVehicle)
+		return false;
 	// FIXME: Move all this logic into the NPC_EnterVehicle function?
 	// Find any seat to get into
 	int nSeatID = m_hVehicle->GetServerVehicle()->NPC_GetAvailableSeat( GetOuter(), GetRoleName(), eSeatSearchType );

@@ -258,12 +258,9 @@ void CFuncVehicleClip::LogicExplode()
 	variant_t variant;
 	switch (nRandom)
 	{
-		//made it a toggle
+		//skipped enable
 	case 0:
-		if (IsSolidFlagSet(FSOLID_NOT_SOLID))
-			AcceptInput("Enable", this, this, variant, 0);
-		else
-			AcceptInput("Disable", this, this, variant, 0);
+		AcceptInput("Disable", this, this, variant, 0);
 		break;
 	case 1:
 		BaseClass::LogicExplode();
@@ -1457,6 +1454,10 @@ bool CFuncVPhysicsClip::EntityPassesFilter( CBaseEntity *pOther )
 
 	if ( pFilter )
 		return pFilter->PassesFilter( this, pOther );
+
+	//apparently this can happen if an entity is spawned inside a clip
+	if (!pOther->VPhysicsGetObject())
+		return false;
 
 	if ( pOther->GetMoveType() == MOVETYPE_VPHYSICS && pOther->VPhysicsGetObject()->IsMoveable() )
 		return true;

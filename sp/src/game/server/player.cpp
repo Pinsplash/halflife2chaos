@@ -7848,6 +7848,8 @@ int CMovementSpeedMod::GetDisabledButtonMask( void )
 
 void CMovementSpeedMod::LogicExplode()
 {
+	BaseClass::LogicExplode();
+	/*
 	int nRandom = RandomInt(0, 1);
 	variant_t variant;
 	switch (nRandom)
@@ -7860,7 +7862,7 @@ void CMovementSpeedMod::LogicExplode()
 	case 1:
 		BaseClass::LogicExplode();
 		break;
-	}
+	}*/
 }
 void CMovementSpeedMod::InputSpeedMod(inputdata_t &data)
 {

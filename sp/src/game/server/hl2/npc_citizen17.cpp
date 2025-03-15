@@ -2718,7 +2718,7 @@ void CNPC_Citizen::OnMoveToCommandGoalFailed()
 //-----------------------------------------------------------------------------
 void CNPC_Citizen::AddToPlayerSquad()
 {
-	Assert( !IsInPlayerSquad() );
+	//Assert( !IsInPlayerSquad() );
 
 	AddToSquad( AllocPooledString(PLAYER_SQUADNAME) );
 	m_hSavedFollowGoalEnt = m_FollowBehavior.GetFollowGoal();
@@ -2733,7 +2733,7 @@ void CNPC_Citizen::AddToPlayerSquad()
 //-----------------------------------------------------------------------------
 void CNPC_Citizen::RemoveFromPlayerSquad()
 {
-	Assert( IsInPlayerSquad() );
+	//Assert( IsInPlayerSquad() );
 
 	ClearFollowTarget();
 	ClearCommandGoal();

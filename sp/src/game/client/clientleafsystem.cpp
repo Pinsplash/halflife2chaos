@@ -33,7 +33,7 @@ static ConVar cl_drawleaf("cl_drawleaf", "-1", FCVAR_NONE);
 static ConVar r_PortalTestEnts("r_PortalTestEnts", "1", FCVAR_NONE, "Clip entities against portal frustums.");
 static ConVar r_portalsopenall("r_portalsopenall", "0", FCVAR_NONE, "Open all portals");
 static ConVar cl_threaded_client_leaf_system("cl_threaded_client_leaf_system", "0"  );
-
+static ConVar r_shadows("r_shadows", "1"); // hook into engine's cvars..
 
 DEFINE_FIXEDSIZE_ALLOCATOR( CClientRenderablesList, 1, CUtlMemoryPool::GROW_SLOW );
 
@@ -983,6 +983,8 @@ void CClientLeafSystem::RemoveShadowFromRenderables( ClientLeafShadowHandle_t ha
 //-----------------------------------------------------------------------------
 void CClientLeafSystem::AddShadowToLeaf( int leaf, ClientLeafShadowHandle_t shadow )
 {
+	if (!r_shadows.GetBool())
+		return;
 	m_ShadowsInLeaf.AddElementToBucket( leaf, shadow ); 
 
 	// Add the shadow exactly once to all renderables in the leaf

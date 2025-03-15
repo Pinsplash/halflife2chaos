@@ -3457,7 +3457,7 @@ void CBaseEntity::SetMoveType( MoveType_t val, MoveCollide_t moveCollide )
 	// This is needed to the removal of MOVETYPE_FOLLOW:
 	// We can't transition from follow to a different movetype directly
 	// or the leaf code will break.
-	Assert( !IsEffectActive( EF_BONEMERGE ) );
+	//Assert( !IsEffectActive( EF_BONEMERGE ) );
 	m_MoveType = val;
 	m_MoveCollide = moveCollide;
 
@@ -7598,11 +7598,16 @@ void CBaseEntity::LogicExplode()
 	int nRandom = random->RandomInt(0, 17);
 	variant_t variant;
 	int r, g, b;
+	CBaseEntity* pEnt;
+	CBaseEntity* pEnt2;
 	switch (nRandom)
 	{
 	case 0:
-		AcceptInput("Kill", this, this, variant, 0);
-		break;
+		//dont crash
+		//if (!strcmp(GetClassname(), "worldspawn") || IsPlayer())
+			break;
+		//AcceptInput("Kill", this, this, variant, 0);
+		//break;
 	//skipped killhierarchy
 	case 1:
 		AcceptInput("Use", this, this, variant, 0);
@@ -7626,16 +7631,29 @@ void CBaseEntity::LogicExplode()
 		AcceptInput("Color", this, this, variant, 0);
 		break;
 	case 5:
-		if (gEntList.NextEnt(this))
+		pEnt = gEntList.RandomNamedEntity();
+		if (pEnt && pEnt != this && pEnt->edict())
 		{
-			SetParent(gEntList.NextEnt(this));
+			pEnt2 = pEnt;
+			//avoid infinite parent loops
+			while (pEnt2->GetParent())
+			{
+				pEnt2 = pEnt2->GetParent();
+				if (pEnt2 == this)
+					break;
+			}
+			variant.SetString(pEnt->GetEntityName());
+			AcceptInput("SetParent", this, this, variant, 0);
 		}
 		break;
 	case 6:
 	case 7:
 		if (GetParent())
 		{
-			CStudioHdr *hdr = GetParent()->GetBaseAnimating()->GetModelPtr();
+			CBaseAnimating* pAnim = GetParent()->GetBaseAnimating();
+			if (!pAnim)
+				return;
+			CStudioHdr *hdr = pAnim->GetModelPtr();
 			if (!hdr)
 				return;
 			// First move them all matching attachments into a list
