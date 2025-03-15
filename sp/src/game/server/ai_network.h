@@ -109,6 +109,12 @@ public:
 	int				NumNodes() const 	{ return m_iNumNodes; }
 	CAI_Node*		GetNode( int id, bool bHandleError = true )
 	{ 
+		if (!m_pAInode)
+		{
+			Warning("!!ERROR!! lost list of nodes\n");
+			return NULL;
+		}
+
 		if ( id >= 0 && 
 			 id < m_iNumNodes ) 
 		{

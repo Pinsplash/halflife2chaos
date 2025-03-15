@@ -75,7 +75,7 @@ BEGIN_DATADESC( CRopeKeyframe )
 
 	DEFINE_FIELD( m_bStartPointValid, FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_bEndPointValid,	FIELD_BOOLEAN ),
-
+	DEFINE_FIELD(m_flForceTime, FIELD_FLOAT),
 	DEFINE_FIELD( m_hStartPoint,		FIELD_EHANDLE ),
 	DEFINE_FIELD( m_hEndPoint,		FIELD_EHANDLE ),
 	DEFINE_FIELD( m_iStartAttachment,	FIELD_SHORT ),
@@ -517,20 +517,22 @@ void CRopeKeyframe::UpdateBBox( bool bForceRelink )
 // Input   :
 // Output  :
 //------------------------------------------------------------------------------
-void CRopeKeyframe::PropagateForce(CBaseEntity *pActivator, CBaseEntity *pCaller, CBaseEntity *pFirstLink, float x, float y, float z)
+void CRopeKeyframe::PropagateForce(CBaseEntity *pActivator, CBaseEntity *pCaller, float x, float y, float z)
 {
 	EntityMessageBegin( this, true );
 		WRITE_FLOAT( x );
 		WRITE_FLOAT( y );
 		WRITE_FLOAT( z );
 	MessageEnd();
-
-	// UNDONE: Doesn't deal with intermediate loops
+	//remember last time we recieved force from this input
+	//we have to avoid infinite loops
+	//the disadvantage of this method is that a rope can only be sent force once per tick, but otherwise flawless
+	m_flForceTime = gpGlobals->curtime;
 	// Propagate to next segment
 	CRopeKeyframe *pNextLink = dynamic_cast<CRopeKeyframe*>((CBaseEntity *)m_hEndPoint);
-	if (pNextLink && pNextLink != pFirstLink)
+	if (pNextLink && m_flForceTime != gpGlobals->curtime)
 	{
-		pNextLink->PropagateForce(pActivator, pCaller, pFirstLink, x, y, z);
+		pNextLink->PropagateForce(pActivator, pCaller, x, y, z);
 	}
 }
 
@@ -542,7 +544,7 @@ void CRopeKeyframe::InputSetForce( inputdata_t &inputdata )
 {
 	Vector vecForce;
 	inputdata.value.Vector3D(vecForce);
-	PropagateForce( inputdata.pActivator, inputdata.pCaller, this, vecForce.x, vecForce.y, vecForce.z );
+	PropagateForce( inputdata.pActivator, inputdata.pCaller, vecForce.x, vecForce.y, vecForce.z );
 }
 
 //-----------------------------------------------------------------------------

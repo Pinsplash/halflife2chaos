@@ -71,7 +71,7 @@ public:
 	virtual int		OnTakeDamage( const CTakeDamageInfo &info );
 	virtual bool	KeyValue( const char *szKeyName, const char *szValue );
 
-	void			PropagateForce(CBaseEntity *pActivator, CBaseEntity *pCaller, CBaseEntity *pFirstLink, float x, float y, float z);
+	void			PropagateForce(CBaseEntity *pActivator, CBaseEntity *pCaller, float x, float y, float z);
 
 	// Once-off length recalculation
 	void			RecalculateLength( void );
@@ -166,7 +166,7 @@ private:
 	// Used to detect changes.
 	bool		m_bStartPointValid;
 	bool		m_bEndPointValid;
-	
+	float		m_flForceTime;
 	CNetworkHandle( CBaseEntity, m_hStartPoint );		// StartPoint/EndPoint are entities
 	CNetworkHandle( CBaseEntity, m_hEndPoint );
 	CNetworkVar( short, m_iStartAttachment );	// StartAttachment/EndAttachment are attachment points.

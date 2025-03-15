@@ -166,7 +166,7 @@ private:
 
 	void TeleportToPathTrack( CPathTrack *pTeleport );
 
-
+	bool		m_bStarting;
 	Vector		m_controlMins;
 	Vector		m_controlMaxs;
 	Vector		m_lastBlockPos;				// These are used to build a heuristic decision about being temporarily blocked by physics objects

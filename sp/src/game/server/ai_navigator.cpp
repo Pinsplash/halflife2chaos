@@ -2676,7 +2676,9 @@ void CAI_Navigator::AdvancePath()
 		if ( pEntity )
 		{
 			variant_t emptyVariant;
-			pEntity->AcceptInput( "InPass", GetOuter(), pEntity, emptyVariant, 0 );
+			//improper caller. changing this to avoid a problem with d2_prison_06 trains
+			//pEntity->AcceptInput( "InPass", GetOuter(), pEntity, emptyVariant, 0 );
+			pEntity->AcceptInput("InPass", GetOuter(), GetOuter(), emptyVariant, 0);
 		}
 	}
 

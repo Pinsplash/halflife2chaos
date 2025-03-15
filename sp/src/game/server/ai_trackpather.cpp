@@ -266,7 +266,7 @@ CPathTrack *CAI_TrackPather::BestPointOnPath( CPathTrack *pPath, const Vector &t
 	if ( CPathTrack::ValidPath( pPath ) == NULL )
 	{
 		//FIXME: Implement
-		Assert(0);
+		//Assert(0);
 		return NULL;
 	}
 

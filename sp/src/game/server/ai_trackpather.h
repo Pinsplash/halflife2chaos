@@ -149,7 +149,8 @@ protected:
 	bool HasLOSToTarget( CPathTrack *pTrack );
 
 	// FIXME: Work this back into the base class
-	virtual bool ShouldUseFixedPatrolLogic() { return false; }
+	//PIN: setting to true. don't know if this will work well, but we've encountered an infinite loop in an hl2 map thanks to logex
+	virtual bool ShouldUseFixedPatrolLogic() { return true; }
 
 	// Deal with teleportation
 	void Teleported();

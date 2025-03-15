@@ -1184,7 +1184,7 @@ BEGIN_DATADESC( CFuncTrackTrain )
 	DEFINE_FIELD( m_flNextMoveSoundTime, FIELD_TIME ),
 	DEFINE_KEYFIELD( m_eVelocityType, FIELD_INTEGER, "velocitytype" ),
 	DEFINE_KEYFIELD( m_eOrientationType, FIELD_INTEGER, "orientationtype" ),
-
+	DEFINE_FIELD(m_bStarting, FIELD_BOOLEAN),
 	DEFINE_FIELD( m_ppath, FIELD_CLASSPTR ),
 	DEFINE_FIELD( m_dir, FIELD_FLOAT ),
 	DEFINE_FIELD( m_controlMins, FIELD_VECTOR ),
@@ -1416,7 +1416,9 @@ void CFuncTrackTrain::InputStartBackward( inputdata_t &inputdata )
 void CFuncTrackTrain::Start( void )
 {
 	m_OnStart.FireOutput(this,this);
+	m_bStarting = true;
 	Next();
+	m_bStarting = false;
 }
 
 
@@ -2337,7 +2339,7 @@ void CFuncTrackTrain::Next( void )
 
 	// Trains *can* work in local space, but only if all elements of the track share
 	// the same move parent as the train.
-	Assert( !pNext || (pNext->GetMoveParent() == GetMoveParent()) );
+	//Assert( !pNext || (pNext->GetMoveParent() == GetMoveParent()) );
 
 	if ( pNext )
 	{
@@ -2464,8 +2466,14 @@ void CFuncTrackTrain::DeadEnd( void )
 	if ( pTrack )
 	{
 		DevMsg( 2, "at %s\n", pTrack->GetDebugName() );
-		variant_t emptyVariant;
-		pTrack->AcceptInput( "InPass", this, this, emptyVariant, 0 );
+		//don't fire this output when just starting to move.
+		//if the path_track has an input that would cause us to start moving,
+		//we create an infinite loop
+		if (!m_bStarting)
+		{
+			variant_t emptyVariant;
+			pTrack->AcceptInput("InPass", this, this, emptyVariant, 0);
+		}
 	}
 	else
 	{

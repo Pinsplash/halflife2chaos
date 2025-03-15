@@ -1047,6 +1047,8 @@ bool CTemplateNPCMaker::PlaceNPCInRadius( CAI_BaseNPC *pNPC )
 //-----------------------------------------------------------------------------
 void CTemplateNPCMaker::MakeMultipleNPCS( int nNPCs )
 {
+	if (nNPCs <= 0)
+		return;
 	bool bInRadius = ( m_iszDestinationGroup == NULL_STRING && m_flRadius > 0.1 );
 	while ( nNPCs-- )
 	{

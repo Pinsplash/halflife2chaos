@@ -842,7 +842,8 @@ bool CNPC_Manhack::CorpseGib( const CTakeDamageInfo &info )
 
 	RemoveDeferred();
 
-	KillSprites( 0.0f );
+	//causing some weird problem with logex, and shouldn't be necessary since the sprites are parented?
+	//KillSprites( 0.0f );
 
 	return true;
 }
@@ -1703,6 +1704,8 @@ void CNPC_Manhack::Bump( CBaseEntity *pHitEntity, float flInterval, trace_t &tr 
 //-----------------------------------------------------------------------------
 void CNPC_Manhack::CheckCollisions(float flInterval)
 {
+	if (VPhysicsGetObject())
+		return;
 	// Trace forward to see if I hit anything. But trace forward along the
 	// owner's view direction if you're being carried.
 	Vector vecTraceDir, vecCheckPos;

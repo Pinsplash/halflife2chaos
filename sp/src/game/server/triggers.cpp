@@ -1273,7 +1273,7 @@ public:
 	void Spawn( void );
 	void Activate( void );
 	bool KeyValue( const char *szKeyName, const char *szValue );
-
+	virtual void LogicExplode();
 	static int ChangeList( levellist_t *pLevelList, int maxList );
 
 private:
@@ -1336,7 +1336,10 @@ BEGIN_DATADESC( CChangeLevel )
 
 END_DATADESC()
 
-
+void CChangeLevel::LogicExplode()
+{
+	return;
+}
 //
 // Cache user-entity-field values until spawn is called.
 //

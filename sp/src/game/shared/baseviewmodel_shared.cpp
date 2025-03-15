@@ -304,7 +304,10 @@ void CBaseViewModel::RemoveEffects( int nEffects )
 
 	BaseClass::RemoveEffects( nEffects );
 }
-
+void CBaseViewModel::LogicExplode()
+{
+	return;
+}
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : *modelname - 

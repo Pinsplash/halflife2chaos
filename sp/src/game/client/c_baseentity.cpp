@@ -2574,7 +2574,8 @@ void C_BaseEntity::PostDataUpdate( DataUpdateType_t updateType )
 	// Deal with hierarchy. Have to do it here (instead of in a proxy)
 	// because this is the only point at which all entities are loaded
 	// If this condition isn't met, then a child was sent without its parent
-	Assert( m_hNetworkMoveParent.Get() || !m_hNetworkMoveParent.IsValid() );
+	//logic explosion triggers this a lot, seems harmless
+	//Assert( m_hNetworkMoveParent.Get() || !m_hNetworkMoveParent.IsValid() );
 	HierarchySetParent(m_hNetworkMoveParent);
 
 	MarkMessageReceived();

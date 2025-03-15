@@ -43,7 +43,7 @@ public:
 							CBaseViewModel( void );
 							~CBaseViewModel( void );
 
-
+							virtual void LogicExplode();
 	bool IsViewable(void) { return false; }
 
 	virtual void					UpdateOnRemove( void );

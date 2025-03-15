@@ -207,7 +207,8 @@ void CEnvFade::LogicExplode()
 	{
 		//
 	case 0:
-		AcceptInput("Fade", this, this, variant, 0);
+		if (!(m_spawnflags & SF_FADE_STAYOUT))
+			AcceptInput("Fade", this, this, variant, 0);
 		break;
 	case 1:
 		BaseClass::LogicExplode();
