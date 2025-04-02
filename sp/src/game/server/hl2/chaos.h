@@ -101,6 +101,7 @@ enum Effect_T
 	EFFECT_GRASS_HEAL,
 	EFFECT_CHANGE_PITCH,
 	EFFECT_LOGIC_EXPLODE,
+	EFFECT_CAMERA_TEXTURES,
 	//EFFECT_EVIL_ELI,
 	//EFFECT_EVIL_BREEN,
 
@@ -592,5 +593,12 @@ class CELogicExplode : public CChaosEffect
 {
 public:
 	void StartEffect() override;
+};
+class CECameraTextures : public CChaosEffect
+{
+public:
+	void StartEffect() override;
+	void TransitionEffect() override;
+	void StopEffect() override;
 };
 #endif

@@ -73,6 +73,9 @@
 #include "npc_PoisonZombie.h"
 #include "physics_saverestore.h"
 #include "npc_playercompanion.h"
+#include "materialsystem/imaterial.h"
+#include "materialsystem/imaterialvar.h"
+#include "istudiorender.h"
 
 #ifdef HL2_EPISODIC
 #include "npc_alyx_episodic.h"
@@ -5375,6 +5378,7 @@ ConVar chaos_time_zombiespam("chaos_time_zombiespam", "1");
 ConVar chaos_time_normalvision("chaos_time_normalvision", "1");
 ConVar chaos_time_grass_heal("chaos_time_grass_heal", "1");
 ConVar chaos_time_change_pitch("chaos_time_change_pitch", "1");
+ConVar chaos_time_camera_textures("chaos_time_camera_textures", "1");
 
 ConVar chaos_prob_zerog("chaos_prob_zerog", "100");
 ConVar chaos_prob_superg("chaos_prob_superg", "100");
@@ -5462,6 +5466,7 @@ ConVar chaos_prob_giveallrpg("chaos_prob_giveallrpg", "100");
 ConVar chaos_prob_grass_heal("chaos_prob_grass_heal", "100");
 ConVar chaos_prob_change_pitch("chaos_prob_change_pitch", "100");
 ConVar chaos_prob_logic_explode("chaos_prob_logic_explode", "100");
+ConVar chaos_prob_camera_textures("chaos_prob_camera_textures", "100");
 //ConVar chaos_prob_evil_eli("chaos_prob_evil_eli", "100");
 //ConVar chaos_prob_evil_breen("chaos_prob_evil_breen", "100");
 #define ERROR_WEIGHT 1
@@ -5554,6 +5559,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CEFloorEffect>(EFFECT_GRASS_HEAL,			MAKE_STRING("#hl2c_grass_heal"),		EC_NONE,									chaos_time_grass_heal.GetFloat(),			chaos_prob_grass_heal.GetInt());
 	CreateEffect<CEChangePitch>(EFFECT_CHANGE_PITCH,		MAKE_STRING("#hl2c_change_pitch"),		EC_NONE,									chaos_time_change_pitch.GetFloat(),			chaos_prob_change_pitch.GetInt());
 	CreateEffect<CELogicExplode>(EFFECT_LOGIC_EXPLODE,		MAKE_STRING("#hl2c_logic_explode"),		EC_NONE,									-1,											chaos_prob_logic_explode.GetInt());
+	CreateEffect<CECameraTextures>(EFFECT_CAMERA_TEXTURES,	MAKE_STRING("#hl2c_camera_textures"),	EC_NONE,									chaos_time_camera_textures.GetFloat(),		chaos_prob_camera_textures.GetInt());
 	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_ELI,				MAKE_STRING("Evil Eli"),					EC_HAS_WEAPON,								-1,											chaos_prob_evil_eli.GetInt());
 	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_BREEN,			MAKE_STRING("Hands-on Dr. Breen"),			EC_HAS_WEAPON,								-1,											chaos_prob_evil_breen.GetInt());
 }
@@ -9365,4 +9371,67 @@ void CELogicExplode::StartEffect()
 		pEnt->LogicExplode();
 		pEnt = gEntList.NextEnt(pEnt);
 	}
+}
+void CECameraTextures::StartEffect()
+{
+	//entities (studio only for now)
+	CBaseEntity* pEnt = gEntList.FirstEnt();
+	while (pEnt)
+	{
+		model_t* pModel = pEnt->GetModel();
+		CBaseAnimating* pAnimating = pEnt->GetBaseAnimating();
+		if (pModel && modelinfo->GetModelType(pModel) == mod_studio && pAnimating)
+		{
+			IMaterial* pMaterials[128];
+			int materialCount = g_pStudioRender->GetMaterialListFromBodyAndSkin(modelinfo->GetCacheHandle(pModel), pAnimating->m_nSkin, pAnimating->m_nBody, ARRAYSIZE(pMaterials), pMaterials);
+			for (int i = 0; i < materialCount; i++)
+			{
+				if (pMaterials[i] != NULL)
+				{
+					bool foundVar;
+					IMaterialVar* pTexName = pMaterials[i]->FindVar("$basetexture", &foundVar, false);
+					if (foundVar)
+					{
+						ITexture* pSrc = materials->FindTexture("_rt_FullFrameFB", TEXTURE_GROUP_RENDER_TARGET);
+						pTexName->SetTextureValue(pSrc);
+					}
+				}
+			}
+		}
+		pEnt = gEntList.NextEnt(pEnt);
+	}
+	//static props
+	ICollideable* pCollideable = staticpropmgr->GetStaticPropByIndex(0);
+	for (int i = 1; pCollideable; i++)
+	{
+		const model_t* pModel = pCollideable->GetCollisionModel();
+		if (pModel)
+		{
+			IMaterial* pMaterials[128];
+			int materialCount = g_pStudioRender->GetMaterialListFromBodyAndSkin(modelinfo->GetCacheHandle(pModel), 0, 0, ARRAYSIZE(pMaterials), pMaterials);
+			for (int i = 0; i < materialCount; i++)
+			{
+				if (pMaterials[i] != NULL)
+				{
+					bool foundVar;
+					IMaterialVar* pTexName = pMaterials[i]->FindVar("$basetexture", &foundVar, false);
+					if (foundVar)
+					{
+						ITexture* pSrc = materials->FindTexture("_rt_FullFrameFB", TEXTURE_GROUP_RENDER_TARGET);
+						pTexName->SetTextureValue(pSrc);
+					}
+				}
+			}
+		}
+
+		pCollideable = staticpropmgr->GetStaticPropByIndex(i);
+	}
+}
+void CECameraTextures::TransitionEffect()
+{
+	StartEffect();
+}
+void CECameraTextures::StopEffect()
+{
+	engine->ClientCommand(engine->PEntityOfEntIndex(1), "mat_reloadallmaterials");
 }
