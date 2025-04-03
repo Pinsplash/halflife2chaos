@@ -102,6 +102,7 @@ enum Effect_T
 	EFFECT_CHANGE_PITCH,
 	EFFECT_LOGIC_EXPLODE,
 	EFFECT_CAMERA_TEXTURES,
+	EFFECT_CAMERA_GRAVITY,
 	//EFFECT_EVIL_ELI,
 	//EFFECT_EVIL_BREEN,
 
@@ -599,6 +600,12 @@ class CECameraTextures : public CChaosEffect
 public:
 	void StartEffect() override;
 	void TransitionEffect() override;
+	void StopEffect() override;
+};
+class CECameraGravity : public CChaosEffect
+{
+public:
+	void FastThink() override;
 	void StopEffect() override;
 };
 #endif

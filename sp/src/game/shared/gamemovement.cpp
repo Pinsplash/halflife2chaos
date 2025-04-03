@@ -1255,10 +1255,12 @@ void CGameMovement::StartGravity( void )
 		ent_gravity = player->GetGravity();
 	else
 		ent_gravity = 1.0;
-
+	Vector vecGravity;
+	physenv->GetGravity(&vecGravity);
 	// Add gravity so they'll be in the correct position during movement
 	// yes, this 0.5 looks wrong, but it's not.  
-	mv->m_vecVelocity[2] -= (ent_gravity * GetCurrentGravity() * 0.5 * gpGlobals->frametime );
+	//mv->m_vecVelocity[2] -= (ent_gravity * GetCurrentGravity() * 0.5 * gpGlobals->frametime );
+	mv->m_vecVelocity += ent_gravity * vecGravity * 0.5 * gpGlobals->frametime;
 	mv->m_vecVelocity[2] += player->GetBaseVelocity()[2] * gpGlobals->frametime;
 
 	Vector temp = player->GetBaseVelocity();
@@ -1695,8 +1697,10 @@ void CGameMovement::FinishGravity( void )
 	else
 		ent_gravity = 1.0;
 
-	// Get the correct velocity for the end of the dt 
-  	mv->m_vecVelocity[2] -= (ent_gravity * GetCurrentGravity() * gpGlobals->frametime * 0.5);
+	Vector vecGravity;
+	physenv->GetGravity(&vecGravity);
+  	//mv->m_vecVelocity[2] -= (ent_gravity * GetCurrentGravity() * gpGlobals->frametime * 0.5);
+	mv->m_vecVelocity += ent_gravity * vecGravity * 0.5 * gpGlobals->frametime;
 
 	CheckVelocity();
 }

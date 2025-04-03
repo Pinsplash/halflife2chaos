@@ -5314,6 +5314,7 @@ void CHL2_Player::CreateEffect(int nEffect, string_t strHudName, int nContext, f
 //effect consideration checklist:
 //probably make a class
 //add convar/s to autoexec.cfg
+//add localized strings to resource folders
 //possibly add groups in groups.cfg
 //test starting effect
 //test ending effect
@@ -5379,6 +5380,7 @@ ConVar chaos_time_normalvision("chaos_time_normalvision", "1");
 ConVar chaos_time_grass_heal("chaos_time_grass_heal", "1");
 ConVar chaos_time_change_pitch("chaos_time_change_pitch", "1");
 ConVar chaos_time_camera_textures("chaos_time_camera_textures", "1");
+ConVar chaos_time_camera_gravity("chaos_time_camera_gravity", "1");
 
 ConVar chaos_prob_zerog("chaos_prob_zerog", "100");
 ConVar chaos_prob_superg("chaos_prob_superg", "100");
@@ -5467,6 +5469,7 @@ ConVar chaos_prob_grass_heal("chaos_prob_grass_heal", "100");
 ConVar chaos_prob_change_pitch("chaos_prob_change_pitch", "100");
 ConVar chaos_prob_logic_explode("chaos_prob_logic_explode", "100");
 ConVar chaos_prob_camera_textures("chaos_prob_camera_textures", "100");
+ConVar chaos_prob_camera_gravity("chaos_prob_camera_gravity", "100");
 //ConVar chaos_prob_evil_eli("chaos_prob_evil_eli", "100");
 //ConVar chaos_prob_evil_breen("chaos_prob_evil_breen", "100");
 #define ERROR_WEIGHT 1
@@ -5560,6 +5563,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CEChangePitch>(EFFECT_CHANGE_PITCH,		MAKE_STRING("#hl2c_change_pitch"),		EC_NONE,									chaos_time_change_pitch.GetFloat(),			chaos_prob_change_pitch.GetInt());
 	CreateEffect<CELogicExplode>(EFFECT_LOGIC_EXPLODE,		MAKE_STRING("#hl2c_logic_explode"),		EC_NONE,									-1,											chaos_prob_logic_explode.GetInt());
 	CreateEffect<CECameraTextures>(EFFECT_CAMERA_TEXTURES,	MAKE_STRING("#hl2c_camera_textures"),	EC_NONE,									chaos_time_camera_textures.GetFloat(),		chaos_prob_camera_textures.GetInt());
+	CreateEffect<CECameraGravity>(EFFECT_CAMERA_GRAVITY,	MAKE_STRING("#hl2c_camera_gravity"),	EC_NONE,									chaos_time_camera_gravity.GetFloat(),		chaos_prob_camera_gravity.GetInt());
 	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_ELI,				MAKE_STRING("Evil Eli"),					EC_HAS_WEAPON,								-1,											chaos_prob_evil_eli.GetInt());
 	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_BREEN,			MAKE_STRING("Hands-on Dr. Breen"),			EC_HAS_WEAPON,								-1,											chaos_prob_evil_breen.GetInt());
 }
@@ -9434,4 +9438,16 @@ void CECameraTextures::TransitionEffect()
 void CECameraTextures::StopEffect()
 {
 	engine->ClientCommand(engine->PEntityOfEntIndex(1), "mat_reloadallmaterials");
+}
+void CECameraGravity::FastThink()
+{
+	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+	Vector vecAngles;
+	QAngle angleCamera = pPlayer->GetAbsAngles();
+	AngleVectors(angleCamera, &vecAngles);
+	physenv->SetGravity(vecAngles * GetCurrentGravity());
+}
+void CECameraGravity::StopEffect()
+{
+	physenv->SetGravity(Vector(0, 0, -GetCurrentGravity()));
 }
