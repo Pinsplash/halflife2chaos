@@ -78,7 +78,7 @@ public:
 //=============================================================================
 // >> HL2_PLAYER
 //=============================================================================
-class CHL2_Player : public CBasePlayer
+class CHL2_Player : public CBasePlayer, public IEntityListener
 {
 public:
 	DECLARE_CLASS(CHL2_Player, CBasePlayer);
@@ -108,6 +108,7 @@ public:
 	void		SpawnStoredEnts();
 	int			FindWeightSum();
 	void		ClearEffectContextCache();
+	void		OnEntitySpawned(CBaseEntity* pEntity);
 	CHL2_Player();
 	~CHL2_Player( void );
 	

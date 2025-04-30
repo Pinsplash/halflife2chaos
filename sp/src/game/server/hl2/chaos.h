@@ -103,6 +103,7 @@ enum Effect_T
 	EFFECT_LOGIC_EXPLODE,
 	EFFECT_CAMERA_TEXTURES,
 	EFFECT_CAMERA_GRAVITY,
+	EFFECT_HL1_PHYSICS,
 	//EFFECT_EVIL_ELI,
 	//EFFECT_EVIL_BREEN,
 
@@ -198,6 +199,7 @@ public:
 	bool CombatBreaksScene(const char *pMapName);
 	bool NeedPhysgun(const char *pMapName);
 	bool DontTeleportPlayer(const char *pMapName);
+	virtual void OnEntitySpawned(CBaseEntity* pEntity){};
 };
 //this is our macabre method of remembering persist entities. it's a holdover from when data was being stored in a txt file instead of global variables
 //preferably this will be replaced with whatever point_template does
@@ -326,7 +328,9 @@ class CEColors : public CChaosEffect
 {
 public:
 	void StartEffect() override;
-	void MaintainEffect() override;
+	void TransitionEffect() override;
+	void OnEntitySpawned(CBaseEntity* pEntity) override;
+	void ChangeEntity(CBaseEntity* pEntity);
 };
 class CEPushFromPlayer : public CChaosEffect
 {
@@ -607,5 +611,15 @@ class CECameraGravity : public CChaosEffect
 public:
 	void FastThink() override;
 	void StopEffect() override;
+};
+class CEHL1Phys : public CChaosEffect
+{
+public:
+	void StartEffect() override;
+	void OnEntitySpawned(CBaseEntity* pEntity) override;
+	void ChangeEntity(CBaseEntity* pEntity);
+	void RevertEntity(CBaseEntity* pEntity);
+	void StopEffect() override;
+	void TransitionEffect() override;
 };
 #endif

@@ -2164,6 +2164,7 @@ void CHL2_Player::PlayerRunCommand(CUserCmd *ucmd, IMoveHelper *moveHelper)
 }
 void CHL2_Player::StartGame()
 {
+	gEntList.AddListenerEntity(this);
 	const char *pMapName = STRING(gpGlobals->mapname);
 	//scripting of canals 11 requires an airboat to be present, give player a new one if they came here without one
 	if (!Q_strcmp(pMapName, "d1_canals_11"))
@@ -2678,6 +2679,7 @@ void CHL2_Player::InitVCollision( const Vector &vecAbsOrigin, const Vector &vecA
 
 CHL2_Player::~CHL2_Player( void )
 {
+	gEntList.RemoveListenerEntity(this);
 }
 
 //-----------------------------------------------------------------------------
@@ -5078,6 +5080,16 @@ void CHL2_Player::FirePlayerProxyOutput( const char *pszOutputName, variant_t va
 	GetPlayerProxy()->FireNamedOutput( pszOutputName, variant, pActivator, pCaller );
 }
 
+void CHL2_Player::OnEntitySpawned(CBaseEntity* pEntity)
+{
+	for (int i = 1; i < NUM_EFFECTS; i++)
+	{
+		CChaosEffect* pEffect = g_ChaosEffects[i];
+		if (pEffect->m_bActive)
+			pEffect->OnEntitySpawned(pEntity);
+	}
+}
+
 LINK_ENTITY_TO_CLASS( logic_playerproxy, CLogicPlayerProxy);
 
 BEGIN_DATADESC( CLogicPlayerProxy )
@@ -5381,6 +5393,7 @@ ConVar chaos_time_grass_heal("chaos_time_grass_heal", "1");
 ConVar chaos_time_change_pitch("chaos_time_change_pitch", "1");
 ConVar chaos_time_camera_textures("chaos_time_camera_textures", "1");
 ConVar chaos_time_camera_gravity("chaos_time_camera_gravity", "1");
+ConVar chaos_time_hl1_physics("chaos_time_hl1_physics", "1");
 
 ConVar chaos_prob_zerog("chaos_prob_zerog", "100");
 ConVar chaos_prob_superg("chaos_prob_superg", "100");
@@ -5470,6 +5483,7 @@ ConVar chaos_prob_change_pitch("chaos_prob_change_pitch", "100");
 ConVar chaos_prob_logic_explode("chaos_prob_logic_explode", "100");
 ConVar chaos_prob_camera_textures("chaos_prob_camera_textures", "100");
 ConVar chaos_prob_camera_gravity("chaos_prob_camera_gravity", "100");
+ConVar chaos_prob_hl1_physics("chaos_prob_hl1_physics", "100");
 //ConVar chaos_prob_evil_eli("chaos_prob_evil_eli", "100");
 //ConVar chaos_prob_evil_breen("chaos_prob_evil_breen", "100");
 #define ERROR_WEIGHT 1
@@ -5564,6 +5578,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CELogicExplode>(EFFECT_LOGIC_EXPLODE,		MAKE_STRING("#hl2c_logic_explode"),		EC_NONE,									-1,											chaos_prob_logic_explode.GetInt());
 	CreateEffect<CECameraTextures>(EFFECT_CAMERA_TEXTURES,	MAKE_STRING("#hl2c_camera_textures"),	EC_NONE,									chaos_time_camera_textures.GetFloat(),		chaos_prob_camera_textures.GetInt());
 	CreateEffect<CECameraGravity>(EFFECT_CAMERA_GRAVITY,	MAKE_STRING("#hl2c_camera_gravity"),	EC_NONE,									chaos_time_camera_gravity.GetFloat(),		chaos_prob_camera_gravity.GetInt());
+	CreateEffect<CEHL1Phys>(EFFECT_HL1_PHYSICS,				MAKE_STRING("#hl2c_hl1_physics"),		EC_NONE,									chaos_time_hl1_physics.GetFloat(),			chaos_prob_hl1_physics.GetInt());
 	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_ELI,				MAKE_STRING("Evil Eli"),					EC_HAS_WEAPON,								-1,											chaos_prob_evil_eli.GetInt());
 	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_BREEN,			MAKE_STRING("Hands-on Dr. Breen"),			EC_HAS_WEAPON,								-1,											chaos_prob_evil_breen.GetInt());
 }
@@ -7765,10 +7780,13 @@ void CEPushFromPlayer::MaintainEffect()
 		StartEffect();
 	}
 }
+void CEColors::TransitionEffect()
+{
+	StartEffect();
+}
 void CEColors::StartEffect()
 {
-	CBaseEntity *pEnt = gEntList.FirstEnt();
-	while (pEnt)
+	for (CBaseEntity* pEnt = gEntList.FirstEnt(); pEnt; pEnt = gEntList.NextEnt(pEnt))
 	{
 		if (pEnt->ClassMatches("env_fo*"))
 		{
@@ -7779,41 +7797,25 @@ void CEColors::StartEffect()
 			colorVariant.SetColor32(RandomInt(0, 255), RandomInt(0, 255), RandomInt(0, 255), pEnt->GetRenderColor().a);
 			pEnt->AcceptInput("SetColorSecondary", pEnt, pEnt, colorVariant, 0);
 		}
-		//doing it the input way allows us to hit beams and other things that have their own coloring process
-		char szcolor[2048];
-		variant_t colorVariant;
-		int r = RandomInt(0, 255);
-		int g = RandomInt(0, 255);
-		int b = RandomInt(0, 255);
-		Q_snprintf(szcolor, sizeof(szcolor), "%i %i %i", r, g, b);
-		Msg("%s\n", szcolor);
-		colorVariant.SetString(MAKE_STRING(szcolor));
-		pEnt->AcceptInput("Color", UTIL_GetLocalPlayer(), UTIL_GetLocalPlayer(), colorVariant, 0);
-		pEnt = gEntList.NextEnt(pEnt);
+		ChangeEntity(pEnt);
 	}
 }
-void CEColors::MaintainEffect()
+void CEColors::ChangeEntity(CBaseEntity* pEntity)
 {
-	CBaseEntity *pEnt = gEntList.FirstEnt();
-	while (pEnt)
-	{
-		//make sure we don't recolor things that we already colored. this aint a rave.
-		if (255 == pEnt->GetRenderColor().r == pEnt->GetRenderColor().g == pEnt->GetRenderColor().b)
-		{
-			//doing it the input way allows us to hit beams and other things that have their own coloring process
-			char szcolor[2048];
-			variant_t colorVariant;
-			int r = RandomInt(0, 255);
-			int g = RandomInt(0, 255);
-			int b = RandomInt(0, 255);
-			Q_snprintf(szcolor, sizeof(szcolor), "%i %i %i", r, g, b);
-			colorVariant.SetString(MAKE_STRING(szcolor));
-			pEnt->AcceptInput("Color", UTIL_GetLocalPlayer(), UTIL_GetLocalPlayer(), colorVariant, 0);
-		}
-		pEnt = gEntList.NextEnt(pEnt);
-	}
+	char szcolor[2048];
+	variant_t colorVariant;
+	int r = RandomInt(0, 255);
+	int g = RandomInt(0, 255);
+	int b = RandomInt(0, 255);
+	Q_snprintf(szcolor, sizeof(szcolor), "%i %i %i", r, g, b);
+	Msg("%s\n", szcolor);
+	colorVariant.SetString(MAKE_STRING(szcolor));
+	pEntity->AcceptInput("Color", UTIL_GetLocalPlayer(), UTIL_GetLocalPlayer(), colorVariant, 0);
 }
-
+void CEColors::OnEntitySpawned(CBaseEntity* pEntity)
+{
+	ChangeEntity(pEntity);
+}
 //is the given character one that the game will force you to keep alive
 bool IsPlayerAlly(CBaseCombatCharacter *pCharacter)
 {
@@ -9450,4 +9452,54 @@ void CECameraGravity::FastThink()
 void CECameraGravity::StopEffect()
 {
 	physenv->SetGravity(Vector(0, 0, -GetCurrentGravity()));
+}
+void CEHL1Phys::ChangeEntity(CBaseEntity* pEntity)
+{
+	if (pEntity->VPhysicsGetObject() && pEntity->VPhysicsGetObject()->IsMotionEnabled())
+	{
+		float speeddamping;
+		float rotdamping;
+		pEntity->VPhysicsGetObject()->GetDamping(&speeddamping, &rotdamping);
+		Vector inertia = pEntity->VPhysicsGetObject()->GetInertia();
+		
+		//print for debugging
+		//Msg("speed damp: %f rot damp: %f inertia: %0.1f %0.1f %0.1f\n", speeddamping, rotdamping, inertia.x, inertia.y, inertia.z);
+
+		rotdamping = FLT_MAX;
+
+		pEntity->VPhysicsGetObject()->SetDamping(&speeddamping, &rotdamping);
+		pEntity->VPhysicsGetObject()->SetInertia(Vector(1e30, 1e30, 1e30));
+	}
+}
+void CEHL1Phys::RevertEntity(CBaseEntity* pEntity)
+{
+	//haven't been able to make this work right. don't know what to set the values back to
+	//if (pEntity->VPhysicsGetObject() && pEntity->VPhysicsGetObject()->IsMotionEnabled())
+	{
+		//pEntity->VPhysicsGetObject()->SetInertia(Vector(1, 1, 1));
+		//pEntity->VPhysicsGetObject()->SetDamping(0, 0);
+	}
+}
+void CEHL1Phys::StartEffect()
+{
+	for (CBaseEntity* pEnt = gEntList.FirstEnt(); pEnt; pEnt = gEntList.NextEnt(pEnt))
+	{
+		ChangeEntity(pEnt);
+	}
+}
+void CEHL1Phys::OnEntitySpawned(CBaseEntity* pEntity)
+{
+	ChangeEntity(pEntity);
+}
+void CEHL1Phys::StopEffect()
+{
+	//haven't been able to make this work right. don't know what to set the values back to
+	//for (CBaseEntity* pEnt = gEntList.FirstEnt(); pEnt; pEnt = gEntList.NextEnt(pEnt))
+	{
+		//RevertEntity(pEnt);
+	}
+}
+void CEHL1Phys::TransitionEffect()
+{
+	StartEffect();
 }
