@@ -214,14 +214,13 @@ void CHudCrosshair::GetDrawPosition ( float *pX, float *pY, bool *pbBehindCamera
 		Vector forward;
 		Vector point, screen;
 
-		// this code is wrong
 		angles = curViewAngles + angleCrosshairOffset;
 		AngleVectors( angles, &forward );
 		VectorAdd( curViewOrigin, forward, point );
 		ScreenTransform( point, screen );
 
 		x += 0.5f * screen[0] * screenWidth + 0.5f;
-		y += 0.5f * screen[1] * screenHeight + 0.5f;
+		y -= 0.5f * screen[1] * screenHeight + 0.5f;
 	}
 
 	*pX = x;
@@ -244,7 +243,7 @@ void CHudCrosshair::Paint( void )
 
 	float x, y;
 	bool bBehindCamera;
-	GetDrawPosition ( &x, &y, &bBehindCamera, m_vecCrossHairOffsetAngle );
+	GetDrawPosition ( &x, &y, &bBehindCamera, pPlayer->m_vOffsetedCrosshairDir);
 
 	if( bBehindCamera )
 		return;
@@ -279,7 +278,18 @@ void CHudCrosshair::Paint( void )
 		iWidth, iHeight,
 		clr );
 }
-
+CON_COMMAND(set_crosshair_ang, "s")
+{
+	if (args.ArgC() > 1)
+	{
+		CHudCrosshair* crosshair = GET_HUDELEMENT(CHudCrosshair);
+		if (crosshair)
+		{
+			crosshair->SetCrosshairAngle(QAngle(atof(args[1]), atof(args[2]), atof(args[3])));
+		}
+	}
+	
+}
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------

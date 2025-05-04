@@ -79,6 +79,7 @@ public:
 	C_BasePlayer();
 	virtual			~C_BasePlayer();
 	bool m_bSwimInAir;
+	QAngle				m_vOffsetedCrosshairDir;
 	virtual void	Spawn( void );
 	virtual void	SharedSpawn(); // Shared between client and server.
 	virtual bool	GetSteamID( CSteamID *pID );

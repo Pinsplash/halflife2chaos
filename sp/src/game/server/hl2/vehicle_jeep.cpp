@@ -757,6 +757,8 @@ void CPropJeep::Think( void )
 		Vector vecEyeDir, vecEyePos;
 		m_hPlayer->EyePositionAndVectors( &vecEyePos, &vecEyeDir, NULL, NULL );
 
+		AngleVectors(pPlayer->m_vOffsetedCrosshairDir + pPlayer->m_vecVehicleViewAngles, &vecEyeDir);
+
 		if( g_pGameRules->GetAutoAimMode() == AUTOAIM_ON_CONSOLE )
 		{
 			autoaim_params_t params;
@@ -1163,6 +1165,8 @@ void CPropJeep::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE use
 	// Find out if the player's looking at our ammocrate hitbox 
 	Vector vecForward;
 	pPlayer->EyeVectors( &vecForward, NULL, NULL );
+
+	AngleVectors(pPlayer->m_vOffsetedCrosshairDir, &vecForward);
 
 	trace_t tr;
 	Vector vecStart = pPlayer->EyePosition();

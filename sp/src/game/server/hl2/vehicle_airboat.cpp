@@ -1069,6 +1069,7 @@ void CPropAirboat::ComputeAimPoint( Vector *pVecAimPoint )
 	else
 	{
 		m_hPlayer->EyeVectors( &vecEyeDirection, NULL, NULL );
+		AngleVectors(m_hPlayer->EyeAngles() + m_hPlayer->m_vOffsetedCrosshairDir, &vecEyeDirection);
 	}
 
 	Vector vecEndPos;
@@ -1678,6 +1679,7 @@ void CPropAirboat::FireGun( )
 		vecEyePosition = vecGunPosition;
 		vecEyeDirection = vecRay;
 	}
+	AngleVectors(m_hPlayer->EyeAngles() + m_hPlayer->m_vOffsetedCrosshairDir, &vecEyeDirection);
 
 	CAPCMissile *pEnt = FindAPCMissileInCone( vecEyePosition, vecEyeDirection, 2.5f );
 	if ( pEnt && (pEnt->GetHealth() > 0) )

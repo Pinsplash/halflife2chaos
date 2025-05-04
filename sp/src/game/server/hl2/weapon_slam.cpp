@@ -936,7 +936,7 @@ void CWeapon_SLAM::StartSatchelDetonate()
 //-----------------------------------------------------------------------------
 void CWeapon_SLAM::TripmineAttach( void )
 {
-	CBaseCombatCharacter *pOwner  = GetOwner();
+	CBasePlayer* pOwner = ToBasePlayer(GetOwner());
 	if (!pOwner)
 	{
 		return;
@@ -946,7 +946,7 @@ void CWeapon_SLAM::TripmineAttach( void )
 
 	Vector vecSrc = pOwner->Weapon_ShootPosition();
 	Vector vecAiming = pOwner->EyeDirection3D();
-
+	AngleVectors(pOwner->EyeAngles() + pOwner->m_vOffsetedCrosshairDir, &vecAiming);
 	trace_t tr;
 
 	UTIL_TraceLine( vecSrc, vecSrc + (vecAiming * 128), MASK_SOLID, pOwner, COLLISION_GROUP_NONE, &tr );
@@ -988,7 +988,7 @@ void CWeapon_SLAM::StartTripmineAttach( void )
 
 	Vector vecSrc	 = pPlayer->Weapon_ShootPosition();
 	Vector vecAiming = pPlayer->BodyDirection3D( );
-
+	AngleVectors(pPlayer->EyeAngles() + pPlayer->m_vOffsetedCrosshairDir, &vecAiming);
 	trace_t tr;
 
 	UTIL_TraceLine( vecSrc, vecSrc + (vecAiming * 128), MASK_SOLID, pPlayer, COLLISION_GROUP_NONE, &tr );
@@ -1036,6 +1036,7 @@ void CWeapon_SLAM::SatchelThrow( void )
 
 	Vector vecSrc	 = pPlayer->WorldSpaceCenter();
 	Vector vecFacing = pPlayer->BodyDirection3D( );
+	AngleVectors(pPlayer->EyeAngles() + pPlayer->m_vOffsetedCrosshairDir, &vecFacing);
 	vecSrc = vecSrc + vecFacing * 18.0;
 	// BUGBUG: is this because vecSrc is not from Weapon_ShootPosition()???
 	vecSrc.z += 24.0f;

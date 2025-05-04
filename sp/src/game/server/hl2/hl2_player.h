@@ -109,6 +109,7 @@ public:
 	int			FindWeightSum();
 	void		ClearEffectContextCache();
 	void		OnEntitySpawned(CBaseEntity* pEntity);
+	void		CrosshairBounceMotion();
 	CHL2_Player();
 	~CHL2_Player( void );
 	

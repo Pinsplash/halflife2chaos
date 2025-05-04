@@ -390,6 +390,7 @@ void CWeaponFrag::ThrowGrenade( CBasePlayer *pPlayer )
 	Vector	vForward, vRight;
 
 	pPlayer->EyeVectors( &vForward, &vRight, NULL );
+	AngleVectors(pPlayer->EyeAngles() + pPlayer->m_vOffsetedCrosshairDir, &vForward);
 	Vector vecSrc = vecEye + vForward * 18.0f + vRight * 8.0f;
 	CheckThrowPosition( pPlayer, vecEye, vecSrc );
 //	vForward[0] += 0.1f;
@@ -418,6 +419,7 @@ void CWeaponFrag::LobGrenade( CBasePlayer *pPlayer )
 	Vector	vForward, vRight;
 
 	pPlayer->EyeVectors( &vForward, &vRight, NULL );
+	AngleVectors(pPlayer->EyeAngles() + pPlayer->m_vOffsetedCrosshairDir, &vForward);
 	Vector vecSrc = vecEye + vForward * 18.0f + vRight * 8.0f + Vector( 0, 0, -8 );
 	CheckThrowPosition( pPlayer, vecEye, vecSrc );
 	
@@ -446,6 +448,7 @@ void CWeaponFrag::RollGrenade( CBasePlayer *pPlayer )
 	vecSrc.z += GRENADE_RADIUS;
 
 	Vector vecFacing = pPlayer->BodyDirection2D( );
+	AngleVectors(pPlayer->EyeAngles() + pPlayer->m_vOffsetedCrosshairDir, &vecFacing);
 	// no up/down direction
 	vecFacing.z = 0;
 	VectorNormalize( vecFacing );
@@ -465,7 +468,7 @@ void CWeaponFrag::RollGrenade( CBasePlayer *pPlayer )
 	pPlayer->GetVelocity( &vecThrow, NULL );
 	vecThrow += vecFacing * 700;
 	// put it on its side
-	QAngle orientation(0,pPlayer->GetLocalAngles().y,-90);
+	QAngle orientation(0,pPlayer->GetLocalAngles().y + pPlayer->m_vOffsetedCrosshairDir[1], -90);
 	// roll it
 	AngularImpulse rotSpeed(0,0,720);
 	Fraggrenade_Create( vecSrc, orientation, vecThrow, rotSpeed, pPlayer, GRENADE_TIMER, false );

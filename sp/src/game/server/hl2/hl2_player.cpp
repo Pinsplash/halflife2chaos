@@ -1274,7 +1274,72 @@ int GetVoteWinnerEffect()
 	}
 	return bestEffect;
 }
+ConVar dvdcross_forcetocorner("dvdcross_forcetocorner", "0");
+ConVar dvdcross("dvdcross", "0");
+void CHL2_Player::CrosshairBounceMotion()
+{
+	//DVD Crosshair
+	if (dvdcross_forcetocorner.GetBool())
+	{
+		m_CrosshairOffset.x = -1;
+		m_CrosshairOffset.y = -0.75;
+	}
+	else if (dvdcross.GetBool())
+	{
+		if (m_CrosshairOffset.x < -1)
+			m_bCrosshairMoveX = false;
+		if (m_CrosshairOffset.x > 1)
+			m_bCrosshairMoveX = true;
+		if (m_CrosshairOffset.y < -0.75)
+			m_bCrosshairMoveY = false;
+		if (m_CrosshairOffset.y > 0.75)
+			m_bCrosshairMoveY = true;
 
+		if (m_bCrosshairMoveX)
+			m_CrosshairOffset.x -= .01;
+		else
+			m_CrosshairOffset.x += .01;
+
+		if (m_bCrosshairMoveY)
+			m_CrosshairOffset.y -= .01;
+		else
+			m_CrosshairOffset.y += .01;
+	}
+	if (dvdcross.GetBool())
+	{
+		Vector forward, right, up, vecpitchbound, vecyawbound;
+		AngleVectors(EyeAngles() + m_Local.m_vecPunchAngle, &forward);
+		QAngle angpitchbound = QAngle((float)(m_iDefaultFOV * 0.75f), 0, 0);
+		AngleVectors(angpitchbound, &vecpitchbound);
+		QAngle angyawbound = QAngle(0, (float)(m_iDefaultFOV), 0);
+		AngleVectors(angyawbound, &vecyawbound);
+		VectorVectors(forward, right, up);
+		//Msg("offset %0.1f %0.1f vecpitchbound %f %f %f L %f vecyawbound %f %f %f L %f\n", m_CrosshairOffset.x, m_CrosshairOffset.y, vecpitchbound.x, vecpitchbound.y, vecpitchbound.z, vecpitchbound.Length(), vecyawbound.x, vecyawbound.y, vecyawbound.z, vecyawbound.Length());
+		//i don't know what i'm doing in here, but a cubic function fixes a problem where the offset doesn't scale correctly to the FOV. works best between 80 and 135 fov
+		float flScale = 0.00000799327 * (float)m_iDefaultFOV * (float)m_iDefaultFOV * (float)m_iDefaultFOV - 0.00213912 * (float)m_iDefaultFOV * (float)m_iDefaultFOV + 0.205545 * (float)m_iDefaultFOV - 5.9739;
+		Vector term1 = (m_CrosshairOffset.x * vecyawbound.Length2D() * right);
+		term1 *= flScale;
+		Vector term2 = (m_CrosshairOffset.y * vecpitchbound.z * up);
+		term2 *= flScale;
+		Vector vCrosshairDir = forward + term1 + term2;
+		QAngle ang;
+		VectorAngles(vCrosshairDir, ang);
+		if (ang.y > 180)
+			ang.y -= 360;
+		if (ang.y < -180)
+			ang.y += 360;
+		m_vOffsetedCrosshairDir = ang - (EyeAngles() + m_Local.m_vecPunchAngle);
+		//Msg("TERM 1: %f * %f * (%f %f %f) = (%f %f %f)\n", m_CrosshairOffset.x, vecyawbound.Length2D(), right.x, right.y, right.z, term1.x, term1.y, term1.z);
+		//Msg("(%f %f %f) + (%f %f %f) + (%f %f %f) = (%f %f %f)\n", forward.x, forward.y, forward.z, term1.x, term1.y, term1.z, term2.x, term2.y, term2.z, offsetCrosshairDirection.x, offsetCrosshairDirection.y, offsetCrosshairDirection.z);
+		//NDebugOverlay::Cross3D(EyePosition() + vCrosshairDir * 60, 1, 255, 255, 255, true, 1);
+		//NDebugOverlay::Line(EyePosition(), EyePosition() + vCrosshairDir * 60, 255, 255, 255, true, 1);
+	}
+	else
+	{
+		m_vOffsetedCrosshairDir = vec3_angle;
+		m_CrosshairOffset = vec3_origin;
+	}
+}
 //-----------------------------------------------------------------------------
 //Purpose: Allow pre-frame adjustments on the player
 //-----------------------------------------------------------------------------
@@ -1363,6 +1428,7 @@ void CHL2_Player::PreThink(void)
 				pEnt = gEntList.NextEnt(pEnt);
 			}
 		}
+		CrosshairBounceMotion();
 		float flTimeScale = cvar->FindVar("host_timescale")->GetFloat();
 		if (!pl.deadflag)
 		{
@@ -5394,6 +5460,7 @@ ConVar chaos_time_change_pitch("chaos_time_change_pitch", "1");
 ConVar chaos_time_camera_textures("chaos_time_camera_textures", "1");
 ConVar chaos_time_camera_gravity("chaos_time_camera_gravity", "1");
 ConVar chaos_time_hl1_physics("chaos_time_hl1_physics", "1");
+ConVar chaos_time_dvd_crosshair("chaos_time_dvd_crosshair", "1");
 
 ConVar chaos_prob_zerog("chaos_prob_zerog", "100");
 ConVar chaos_prob_superg("chaos_prob_superg", "100");
@@ -5484,6 +5551,7 @@ ConVar chaos_prob_logic_explode("chaos_prob_logic_explode", "100");
 ConVar chaos_prob_camera_textures("chaos_prob_camera_textures", "100");
 ConVar chaos_prob_camera_gravity("chaos_prob_camera_gravity", "100");
 ConVar chaos_prob_hl1_physics("chaos_prob_hl1_physics", "100");
+ConVar chaos_prob_dvd_crosshair("chaos_prob_dvd_crosshair", "100");
 //ConVar chaos_prob_evil_eli("chaos_prob_evil_eli", "100");
 //ConVar chaos_prob_evil_breen("chaos_prob_evil_breen", "100");
 #define ERROR_WEIGHT 1
@@ -5579,6 +5647,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CECameraTextures>(EFFECT_CAMERA_TEXTURES,	MAKE_STRING("#hl2c_camera_textures"),	EC_NONE,									chaos_time_camera_textures.GetFloat(),		chaos_prob_camera_textures.GetInt());
 	CreateEffect<CECameraGravity>(EFFECT_CAMERA_GRAVITY,	MAKE_STRING("#hl2c_camera_gravity"),	EC_NONE,									chaos_time_camera_gravity.GetFloat(),		chaos_prob_camera_gravity.GetInt());
 	CreateEffect<CEHL1Phys>(EFFECT_HL1_PHYSICS,				MAKE_STRING("#hl2c_hl1_physics"),		EC_NONE,									chaos_time_hl1_physics.GetFloat(),			chaos_prob_hl1_physics.GetInt());
+	CreateEffect<CEDVDCrosshair>(EFFECT_DVD_CROSSHAIR,		MAKE_STRING("#hl2c_dvd_crosshair"),		EC_NONE,									chaos_time_dvd_crosshair.GetFloat(),		chaos_prob_dvd_crosshair.GetInt());
 	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_ELI,				MAKE_STRING("Evil Eli"),					EC_HAS_WEAPON,								-1,											chaos_prob_evil_eli.GetInt());
 	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_BREEN,			MAKE_STRING("Hands-on Dr. Breen"),			EC_HAS_WEAPON,								-1,											chaos_prob_evil_breen.GetInt());
 }
@@ -9502,4 +9571,12 @@ void CEHL1Phys::StopEffect()
 void CEHL1Phys::TransitionEffect()
 {
 	StartEffect();
+}
+void CEDVDCrosshair::StartEffect()
+{
+	dvdcross.SetValue(true);
+}
+void CEDVDCrosshair::StopEffect()
+{
+	dvdcross.SetValue(false);
 }

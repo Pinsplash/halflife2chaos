@@ -349,7 +349,7 @@ void CWeaponSMG1::SecondaryAttack( void )
 	Vector vecSrc = pPlayer->Weapon_ShootPosition();
 	Vector	vecThrow;
 	// Don't autoaim on grenade tosses
-	AngleVectors( pPlayer->EyeAngles() + pPlayer->GetPunchAngle(), &vecThrow );
+	AngleVectors( pPlayer->EyeAngles() + pPlayer->GetPunchAngle() + pPlayer->m_vOffsetedCrosshairDir, &vecThrow );
 	VectorScale( vecThrow, 1000.0f, vecThrow );
 	
 	//Create the grenade

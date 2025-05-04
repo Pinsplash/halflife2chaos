@@ -244,6 +244,7 @@ END_RECV_TABLE()
 
 		RecvPropInt			( RECVINFO( m_nWaterLevel ) ),
 		RecvPropFloat		( RECVINFO( m_flLaggedMovementValue )),
+		RecvPropQAngles(RECVINFO(m_vOffsetedCrosshairDir)),
 
 	END_RECV_TABLE()
 

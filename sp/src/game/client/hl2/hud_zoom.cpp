@@ -186,7 +186,7 @@ void CHudZoom::Paint( void )
 	// draw zoom circles
 	float fX, fY;
 	bool bBehindCamera = false;
-	CHudCrosshair::GetDrawPosition( &fX, &fY, &bBehindCamera );
+	CHudCrosshair::GetDrawPosition( &fX, &fY, &bBehindCamera, pPlayer->m_vOffsetedCrosshairDir);
 	if( bBehindCamera )
 		return;
 	int xCrosshair = (int)fX;

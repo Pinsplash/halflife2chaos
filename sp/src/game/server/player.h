@@ -247,6 +247,10 @@ public:
 	DECLARE_SERVERCLASS();
 	CNetworkVar(bool, m_bSwimInAir);
 	bool m_bSuperGrab;
+	Vector				m_CrosshairOffset = vec3_origin;
+	CNetworkQAngle(m_vOffsetedCrosshairDir);
+	bool				m_bCrosshairMoveX = true;
+	bool				m_bCrosshairMoveY = true;
 	
 	CBasePlayer();
 	~CBasePlayer();
@@ -1157,7 +1161,6 @@ protected:
 	Vector m_vNewVPhysicsVelocity;
 	
 	Vector	m_vecVehicleViewOrigin;		// Used to store the calculated view of the player while riding in a vehicle
-	QAngle	m_vecVehicleViewAngles;		// Vehicle angles
 	float	m_flVehicleViewFOV;			// FOV of the vehicle driver
 	int		m_nVehicleViewSavedFrame;	// Used to mark which frame was the last one the view was calculated for
 
@@ -1177,7 +1180,7 @@ protected:
 	bool			m_bSinglePlayerGameEnding;
 
 public:
-
+	QAngle	m_vecVehicleViewAngles;		// Vehicle angles
 	char			m_chTextureType;
 	char			m_chPreviousTextureType;	// Separate from m_chTextureType. This is cleared if the player's not on the ground.
 	float  GetLaggedMovementValue( void ){ return m_flLaggedMovementValue;	}

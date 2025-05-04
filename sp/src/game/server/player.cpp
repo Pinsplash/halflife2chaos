@@ -164,7 +164,6 @@ int MapTextureTypeStepType(char chTextureType);
 extern void	SpawnBlood(Vector vecSpot, const Vector &vecDir, int bloodColor, float flDamage);
 extern void AddMultiDamage( const CTakeDamageInfo &info, CBaseEntity *pEntity );
 
-
 #define CMD_MOSTRECENT 0
 
 //#define	FLASH_DRAIN_TIME	 1.2 //100 units/3 minutes
@@ -6889,7 +6888,7 @@ void CBasePlayer::CheckTrainUpdate( void )
 		m_iTrain &= ~TRAIN_NEW;
 	}
 }
-
+extern ConVar dvdcross;
 //-----------------------------------------------------------------------------
 // Purpose: Returns whether the player should autoaim or not
 // Output : Returns true on success, false on failure.
@@ -6898,6 +6897,9 @@ bool CBasePlayer::ShouldAutoaim( void )
 {
 	// cannot be in multiplayer
 	if ( gpGlobals->maxClients > 1 )
+		return false;
+
+	if (dvdcross.GetBool())
 		return false;
 
 	// autoaiming is only for easy and medium skill
@@ -6940,7 +6942,7 @@ void CBasePlayer::GetAutoaimVector( autoaim_params_t &params )
 	if ( ( ShouldAutoaim() == false ) || ( params.m_fScale == AUTOAIM_SCALE_DIRECT_ONLY ) )
 	{
 		Vector	forward;
-		AngleVectors( EyeAngles() + m_Local.m_vecPunchAngle, &forward );
+		AngleVectors( EyeAngles() + m_Local.m_vecPunchAngle + m_vOffsetedCrosshairDir, &forward );
 
 		params.m_vecAutoAimDir = forward;
 		params.m_hAutoAimEntity.Set(NULL);
@@ -8000,7 +8002,7 @@ void SendProxy_CropFlagsToPlayerFlagBitsLength( const SendProp *pProp, const voi
 
 		SendPropInt			( SENDINFO( m_nWaterLevel ), 2, SPROP_UNSIGNED ),
 		SendPropFloat		( SENDINFO( m_flLaggedMovementValue ), 0, SPROP_NOSCALE ),
-
+		SendPropQAngles(SENDINFO(m_vOffsetedCrosshairDir), 13, SPROP_CHANGES_OFTEN),
 	END_SEND_TABLE()
 
 

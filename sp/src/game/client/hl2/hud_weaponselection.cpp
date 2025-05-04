@@ -590,7 +590,7 @@ void CHudWeaponSelection::Paint()
 		{
 			float fCenterX, fCenterY;
 			bool bBehindCamera = false;
-			CHudCrosshair::GetDrawPosition( &fCenterX, &fCenterY, &bBehindCamera );
+			CHudCrosshair::GetDrawPosition( &fCenterX, &fCenterY, &bBehindCamera, pPlayer->m_vOffsetedCrosshairDir);
 
 			// if the crosshair is behind the camera, don't draw it
 			if( bBehindCamera )

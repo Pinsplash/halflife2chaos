@@ -1688,15 +1688,8 @@ void CFuncTank::CalcPlayerCrosshairTarget( Vector *pVecTarget )
 	
 	vecStart = pPlayer->EyePosition();
 
-	if ( !IsX360() )
-	{
-		vecDir = pPlayer->EyeDirection3D();
-	}
-	else
-	{
-		// Use autoaim as the eye dir.
-		vecDir = pPlayer->GetAutoaimVector( AUTOAIM_SCALE_DEFAULT );
-	}
+	vecDir = pPlayer->EyeDirection3D();
+	AngleVectors(pPlayer->EyeAngles() + pPlayer->m_vOffsetedCrosshairDir, &vecDir);
 	
 	// Make sure to start the trace outside of the player's bbox!
 	UTIL_TraceLine( vecStart + vecDir * 80, vecStart + vecDir * 8192, MASK_BLOCKLOS_AND_NPCS, this, COLLISION_GROUP_NONE, &tr );

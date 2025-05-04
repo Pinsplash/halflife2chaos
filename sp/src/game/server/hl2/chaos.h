@@ -104,6 +104,7 @@ enum Effect_T
 	EFFECT_CAMERA_TEXTURES,
 	EFFECT_CAMERA_GRAVITY,
 	EFFECT_HL1_PHYSICS,
+	EFFECT_DVD_CROSSHAIR,
 	//EFFECT_EVIL_ELI,
 	//EFFECT_EVIL_BREEN,
 
@@ -621,5 +622,11 @@ public:
 	void RevertEntity(CBaseEntity* pEntity);
 	void StopEffect() override;
 	void TransitionEffect() override;
+};
+class CEDVDCrosshair : public CChaosEffect
+{
+public:
+	void StartEffect() override;
+	void StopEffect() override;
 };
 #endif

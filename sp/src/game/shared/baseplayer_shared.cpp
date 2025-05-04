@@ -1071,6 +1071,8 @@ CBaseEntity *CBasePlayer::FindUseEntity()
 	Vector forward, up;
 	EyeVectors( &forward, NULL, &up );
 
+	AngleVectors(EyeAngles() + m_vOffsetedCrosshairDir, &forward);
+
 	trace_t tr;
 	// Search for objects in a sphere (tests for entities that are not solid, yet still useable)
 	Vector searchCenter = EyePosition();
@@ -1297,6 +1299,8 @@ void CBasePlayer::PlayerUse ( void )
 	{
 		Vector forward, up;
 		EyeVectors( &forward, NULL, &up );
+
+		AngleVectors(EyeAngles() + m_vOffsetedCrosshairDir, &forward);
 
 		trace_t tr;
 		// Search for objects in a sphere (tests for entities that are not solid, yet still useable)

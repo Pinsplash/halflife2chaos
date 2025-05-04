@@ -249,7 +249,7 @@ void CHUDQuickInfo::Paint()
 
 	float fX, fY;
 	bool bBehindCamera = false;
-	CHudCrosshair::GetDrawPosition( &fX, &fY, &bBehindCamera );
+	CHudCrosshair::GetDrawPosition( &fX, &fY, &bBehindCamera, player->m_vOffsetedCrosshairDir);
 
 	// if the crosshair is behind the camera, don't draw it
 	if( bBehindCamera )
