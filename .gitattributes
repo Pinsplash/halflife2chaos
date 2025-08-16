@@ -1,3 +1,1 @@
-# Auto detect text files and perform LF normalization
-* text=auto
-*.txt diff
+*.txt text

@@ -878,6 +878,8 @@ void CHudMessage::MsgFunc_HudMsg(bf_read &msg)
 	{
 		const char *pOriginalMsg = pNetMessage->pMessage;
 		//localize right now. this is a special case because of the time display that comes after the string
+		Q_snprintf((char*)pNetMessage->pMessage, 64, "%s (%d)", pOriginalMsg, pNetMessage->timertime);
+		/*
 		wchar_t *pwcText = g_pVGuiLocalize->Find(pOriginalMsg);
 		if (pwcText)
 		{
@@ -888,8 +890,9 @@ void CHudMessage::MsgFunc_HudMsg(bf_read &msg)
 		}
 		else
 		{
-			Msg("null string\n");
+			//Msg("null string\n");
 		}
+		*/
 	}
 	//Msg("%s\n", pNetMessage->pMessage);
 	MessageAdd( pNetMessage->pName );
