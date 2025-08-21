@@ -1024,7 +1024,6 @@ CHL2_Player::CHL2_Player()
 	m_nNumMissPositions	= 0;
 	m_pPlayerAISquad = 0;
 	m_bSprintEnabled = true;
-	PopulateEffects();
 	m_flArmorReductionTime = 0.0f;
 	m_iArmorReductionFrom = 0;
 }
@@ -2449,6 +2448,7 @@ void CHL2_Player::Spawn(void)
 			g_EventQueue.AddEvent(pAutosave, "Save", 1.0, NULL, NULL);
 			g_EventQueue.AddEvent(pAutosave, "Kill", 1.1, NULL, NULL);
 		}
+		PopulateEffects();
 		//must be done after PopulateEffects()
 		if (!g_bGroupsMade)
 		{
