@@ -6780,7 +6780,7 @@ bool CChaosEffect::PhysConvertSoftlock(const char *pMapName)
 		}
 		else
 		{
-			if (!Q_strcmp(pMapName, "d3_c17_07") || !Q_strcmp(pMapName, "d3_c17_08")
+			if (!Q_strcmp(pMapName, "d2_prison_08") || !Q_strcmp(pMapName, "d3_c17_07") || !Q_strcmp(pMapName, "d3_c17_08")
 				|| !Q_strcmp(pMapName, "d3_citadel_01") || !Q_strcmp(pMapName, "d3_citadel_02") || !Q_strcmp(pMapName, "d3_citadel_05") || !Q_strcmp(pMapName, "d3_breen_01"))
 				return true;//bad map
 		}
