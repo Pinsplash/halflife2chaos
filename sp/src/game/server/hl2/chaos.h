@@ -274,7 +274,6 @@ int							g_iVoteNumber = 0; // acts as a unique number for the external client
 CChaosStoredEnt *StoreEnt(CBaseEntity *pEnt);
 CBaseEntity *RetrieveStoredEnt(CChaosStoredEnt *pStoredEnt, bool bPersist);
 bool						g_bGoBackLevel = false;
-bool						g_bGroupsMade = false;
 
 class CEBumpy : public CChaosEffect
 {

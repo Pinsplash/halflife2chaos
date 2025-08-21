@@ -2449,12 +2449,7 @@ void CHL2_Player::Spawn(void)
 			g_EventQueue.AddEvent(pAutosave, "Kill", 1.1, NULL, NULL);
 		}
 		PopulateEffects();
-		//must be done after PopulateEffects()
-		if (!g_bGroupsMade)
-		{
-			engine->ClientCommand(engine->PEntityOfEntIndex(1), "exec groups\n");
-			g_bGroupsMade = true;
-		}
+		engine->ClientCommand(engine->PEntityOfEntIndex(1), "exec groups\n");
 	}
 #ifndef HL2MP
 #ifndef PORTAL
