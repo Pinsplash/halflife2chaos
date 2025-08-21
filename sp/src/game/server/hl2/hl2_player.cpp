@@ -5913,8 +5913,8 @@ bool CChaosEffect::CheckEffectContext()
 
 	//Pause Physics can cause serious issues on these maps
 	if (m_nID == EFFECT_PHYS_PAUSE)
-		if (!Q_strcmp(pMapName, "d3_citadel_01")		|| !Q_strcmp(pMapName, "d3_citadel_02")		|| !Q_strcmp(pMapName, "d3_citadel_05")		|| !Q_strcmp(pMapName, "d3_breen_01")
-			|| !Q_strcmp(pMapName, "ep2_outland_01")	|| !Q_strcmp(pMapName, "ep2_outland_03")	|| !Q_strcmp(pMapName, "ep2_outland_04")	|| !Q_strcmp(pMapName, "ep2_outland_11") || !Q_strcmp(pMapName, "ep2_outland_11b"))
+		if (!Q_strcmp(pMapName, "d2_coast_11")			|| !Q_strcmp(pMapName, "d3_citadel_01")		|| !Q_strcmp(pMapName, "d3_citadel_02")		|| !Q_strcmp(pMapName, "d3_citadel_05")		|| !Q_strcmp(pMapName, "d3_breen_01")
+			|| !Q_strcmp(pMapName, "ep2_outland_01")	|| !Q_strcmp(pMapName, "ep2_outland_03")	|| !Q_strcmp(pMapName, "ep2_outland_04")	|| !Q_strcmp(pMapName, "ep2_outland_11")	|| !Q_strcmp(pMapName, "ep2_outland_11b"))
 			return false;//bad map
 
 	//Ran Out Of Glue can cause serious issues on these maps
