@@ -6805,7 +6805,7 @@ bool CChaosEffect::CombatBreaksScene(const char *pMapName)
 	if (!Q_strnicmp("d", pMapName, 1))//hl2
 	{
 		if (!Q_strcmp(pMapName, "d1_trainstation_01") || !Q_strcmp(pMapName, "d1_trainstation_04") || !Q_strcmp(pMapName, "d1_canals_03") || !Q_strcmp(pMapName, "d1_eli_01")
-			|| !Q_strcmp(pMapName, "d2_coast_10") || !Q_strcmp(pMapName, "d3_breen_01"))
+			|| !Q_strcmp(pMapName, "d2_coast_10") || !Q_strcmp(pMapName, "d2_coast_11") || !Q_strcmp(pMapName, "d3_breen_01"))
 			return true;//bad map
 	}
 	else
