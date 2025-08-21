@@ -5927,10 +5927,9 @@ bool CChaosEffect::CheckEffectContext()
 		if (!Q_strcmp(pMapName, "d3_citadel_01"))
 			return false;
 
-	//on this map, zombies could spawn at just the right time that alyx will be scripted to stand in the control room,
-	//while the player is unable to reach it in a reasonable time to save alyx as she is scripted to stand in the room
+	//on some maps, alyx is unreachable by the player, but reachable by zombies, meaning there's no way to save her
 	if (m_nID == EFFECT_ZOMBIE_SPAM)
-		if (!Q_strcmp(pMapName, "ep1_citadel_03"))
+		if (!Q_strcmp(pMapName, "d2_prison_06") || !Q_strcmp(pMapName, "ep1_citadel_03"))
 			return false;
 
 	//d1_trainstation_05 is a bad map to be introduced to No Climbing on
