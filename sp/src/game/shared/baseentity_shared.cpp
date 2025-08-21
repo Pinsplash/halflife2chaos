@@ -2087,16 +2087,10 @@ bool CBaseEntity::GetUnstuck(float flMaxDist, int flags)
 	if (IsPlayer())
 	{
 		CBasePlayer *pPlayer = static_cast<CBasePlayer*>(this);
+		flModelScale = GetBaseAnimating()->GetModelScale();
 		//quickclip can interfere with UTIL_TraceEntity, possibly leading to us getting permastuck because it thinks we aren't colliding with the thing we're stuck in
 		SetCollisionGroup(COLLISION_GROUP_PLAYER);
-		flModelScale = GetBaseAnimating()->GetModelScale();
-		if (bNoDuck && !(pPlayer->m_nButtons & IN_DUCK))
-		{
-			pPlayer->m_Local.m_bDucked = false;
-			RemoveFlag(FL_DUCKING);
-			SetCollisionBounds(VEC_HULL_MIN_SCALED(pPlayer), VEC_HULL_MAX_SCALED(pPlayer));
-		}
-		UTIL_TraceHull(vecGoodSpot, vecGoodSpot, pPlayer->GetPlayerMins(), pPlayer->GetPlayerMaxs(), MASK_PLAYERSOLID, this, COLLISION_GROUP_NONE, &trace);
+		pPlayer->GetIntersectingEntity(vecGoodSpot, bNoDuck, trace);
 	}
 	else
 	{

@@ -7664,42 +7664,59 @@ void CESuperMovement::StopEffect()
 }
 void CESolidTriggers::StartEffect()
 {
-	CBaseEntity *pEnt = gEntList.FirstEnt();
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
-	while (pEnt)
 	{
-		CBaseTrigger *pBaseTrigger = dynamic_cast<CBaseTrigger *>(pEnt);
-		CTriggerVPhysicsMotion *pTriggerVPhysicsMotion = dynamic_cast<CTriggerVPhysicsMotion *>(pEnt);
-		bool bBool = (pBaseTrigger != NULL) || (pTriggerVPhysicsMotion != NULL);
-		if (bBool && ((pBaseTrigger != NULL) ? !pBaseTrigger->m_bDisabled : !pTriggerVPhysicsMotion->m_bDisabled))
+		CBaseEntity* pEnt = gEntList.FirstEnt();
+		while (pEnt)
 		{
-			pEnt->RemoveEffects(EF_NODRAW);
-			if (pEnt->VPhysicsGetObject())
+			CBaseTrigger* pBaseTrigger = dynamic_cast<CBaseTrigger*>(pEnt);
+			CTriggerVPhysicsMotion* pTriggerVPhysicsMotion = dynamic_cast<CTriggerVPhysicsMotion*>(pEnt);
+			bool bIsTrigger = (pBaseTrigger != NULL) || (pTriggerVPhysicsMotion != NULL);
+			if (bIsTrigger && ((pBaseTrigger != NULL) ? !pBaseTrigger->m_bDisabled : !pTriggerVPhysicsMotion->m_bDisabled))
 			{
-				pEnt->VPhysicsGetObject()->EnableCollisions(true);
+				pEnt->RemoveEffects(EF_NODRAW);
+				if (pEnt->VPhysicsGetObject())
+				{
+					pEnt->VPhysicsGetObject()->EnableCollisions(true);
+				}
+				pEnt->RemoveSolidFlags(FSOLID_TRIGGER);
+				pEnt->RemoveSolidFlags(FSOLID_NOT_SOLID);
+				pEnt->PhysicsTouchTriggers();
 			}
-			pEnt->RemoveSolidFlags(FSOLID_TRIGGER);
-			pEnt->RemoveSolidFlags(FSOLID_NOT_SOLID);
-			pEnt->PhysicsTouchTriggers();
+			pEnt = gEntList.NextEnt(pEnt);
 		}
-		pEnt = gEntList.NextEnt(pEnt);
 	}
 	//if we're still stuck, then we're probably in some HUGE triggers. just make them unsolid again
 	//500 is as far as i feel comfortable teleporting the player. HUGE triggers could make us teleport outside of entire buildings and such
 	while (!pPlayer->GetUnstuck(500, UF_NO_NODE_TELEPORT))
 	{
 		trace_t	trace;
-		UTIL_TraceEntity(pPlayer, pPlayer->GetAbsOrigin(), pPlayer->GetAbsOrigin(), MASK_PLAYERSOLID, &trace);
-		trace.m_pEnt->AddEffects(EF_NODRAW);
-		if (trace.m_pEnt->VPhysicsGetObject())
+		Vector vecGoodSpot = pPlayer->GetAbsOrigin() + Vector(0, 0, 1);
+		int iOldCollisionGroup = pPlayer->GetCollisionGroup();
+		pPlayer->SetCollisionGroup(COLLISION_GROUP_PLAYER);
+		pPlayer->GetIntersectingEntity(vecGoodSpot, false, trace);
+		pPlayer->SetCollisionGroup(iOldCollisionGroup);
+
+		//make sure we're really stuck in a trigger and not some other thing we should actually move out of
+		//otherwise, we get into an infinite loop on d2_prison_01 because somehow we think we're stuck in the world!
+		CBaseTrigger* pBaseTrigger = dynamic_cast<CBaseTrigger*>(trace.m_pEnt);
+		CTriggerVPhysicsMotion* pTriggerVPhysicsMotion = dynamic_cast<CTriggerVPhysicsMotion*>(trace.m_pEnt);
+		bool bIsTrigger = (pBaseTrigger != NULL) || (pTriggerVPhysicsMotion != NULL);
+		if (bIsTrigger)
 		{
-			trace.m_pEnt->VPhysicsGetObject()->EnableCollisions(true);
+			trace.m_pEnt->AddEffects(EF_NODRAW);
+			if (trace.m_pEnt->VPhysicsGetObject())
+			{
+				trace.m_pEnt->VPhysicsGetObject()->EnableCollisions(true);
+			}
+			CTriggerVPhysicsMotion* pTriggerVPhysicsMotion = dynamic_cast<CTriggerVPhysicsMotion*>(trace.m_pEnt);
+			if (!pTriggerVPhysicsMotion)//trigger_vphysics_motion doesn't use this according to a comment in CBaseVPhysicsTrigger::Spawn()
+				trace.m_pEnt->AddSolidFlags(FSOLID_TRIGGER);
+			trace.m_pEnt->AddSolidFlags(FSOLID_NOT_SOLID);
+			trace.m_pEnt->PhysicsTouchTriggers();
 		}
-		CTriggerVPhysicsMotion *pTriggerVPhysicsMotion = dynamic_cast<CTriggerVPhysicsMotion *>(trace.m_pEnt);
-		if (!pTriggerVPhysicsMotion)//trigger_vphysics_motion doesn't use this according to a comment in CBaseVPhysicsTrigger::Spawn()
-			trace.m_pEnt->AddSolidFlags(FSOLID_TRIGGER);
-		trace.m_pEnt->AddSolidFlags(FSOLID_NOT_SOLID);
-		trace.m_pEnt->PhysicsTouchTriggers();
+		else
+			break;
 	}
 }
 void CESolidTriggers::StopEffect()

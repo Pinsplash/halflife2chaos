@@ -2162,8 +2162,6 @@ void CWeaponPhysCannon::PrimaryAttack( void )
 
 	trace_t tr;
 	UTIL_PhyscannonTraceHull( start, end, -Vector(8,8,8), Vector(8,8,8), pOwner, &tr );
-	NDebugOverlay::Line(start, tr.endpos, 255, 255, 255, true, 10);
-	NDebugOverlay::Cross3D(tr.endpos, 10, 255, 255, 255, true, 10);
 	bool bValid = true;
 	CBaseEntity *pEntity = tr.m_pEnt;
 	if ( tr.fraction == 1 || !tr.m_pEnt || tr.m_pEnt->IsEFlagSet( EFL_NO_PHYSCANNON_INTERACTION ) )

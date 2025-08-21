@@ -265,6 +265,7 @@ public:
 	//virtual void			Event_PreSaveGameLoaded(char const *pSaveName, bool bInGame);
 
 	virtual void			UpdateOnRemove( void );
+	void					GetIntersectingEntity(Vector vecGoodSpot, bool bNoDuck, trace_t& trace);
 
 	static CBasePlayer		*CreatePlayer( const char *className, edict_t *ed );
 
