@@ -22,6 +22,7 @@
 #include "beam_shared.h"
 #include "props.h"
 #include "particle_parse.h"
+#include "weapon_rpg.h"
 
 #ifdef PORTAL
 	#include "prop_portal_shared.h"
@@ -1132,36 +1133,87 @@ void CNPC_FloorTurret::AutoSearchThink( void )
 //-----------------------------------------------------------------------------
 void CNPC_FloorTurret::Shoot( const Vector &vecSrc, const Vector &vecDirToEnemy, bool bStrict )
 {
-	FireBulletsInfo_t info;
-
-	if ( !bStrict && GetEnemy() != NULL )
+	//assume weapon is rpg
+	if (GetActiveWeapon())
 	{
-		Vector vecDir = GetActualShootTrajectory( vecSrc );
+		CWeaponRPG* pRPG = dynamic_cast<CWeaponRPG*>(GetActiveWeapon());
+		if (pRPG->GetMissile() != NULL)
+			return;
 
-		info.m_vecSrc = vecSrc;
-		info.m_vecDirShooting = vecDir;
-		info.m_iTracerFreq = 1;
-		info.m_iShots = 1;
-		info.m_pAttacker = this;
-		info.m_vecSpread = VECTOR_CONE_PRECALCULATED;
-		info.m_flDistance = MAX_COORD_RANGE;
-		info.m_iAmmoType = m_iAmmoType;
+		Vector	muzzlePoint;
+		QAngle	vecAngles;
+
+		muzzlePoint = Weapon_ShootPosition();
+
+		Vector vecShootDir = GetActualShootTrajectory(muzzlePoint);
+
+		// look for a better launch location
+		Vector altLaunchPoint;
+		if (GetAttachment("missile", altLaunchPoint))
+		{
+			// check to see if it's relativly free
+			trace_t tr;
+			AI_TraceHull(altLaunchPoint, altLaunchPoint + vecShootDir * (10.0f * 12.0f), Vector(-24, -24, -24), Vector(24, 24, 24), MASK_NPCSOLID, NULL, &tr);
+
+			if (tr.fraction == 1.0)
+			{
+				muzzlePoint = altLaunchPoint;
+			}
+		}
+
+		VectorAngles(vecShootDir, vecAngles);
+
+		pRPG->SetMissile(CMissile::Create(muzzlePoint, vecAngles, edict()));
+		pRPG->GetMissile()->m_hOwner = pRPG;
+
+		// NPCs always get a grace period
+		pRPG->GetMissile()->SetGracePeriod(0.5);
+
+		DoMuzzleFlash();
+
+		pRPG->WeaponSound(SINGLE_NPC);
+
+		// Make sure our laserdot is off
+		pRPG->m_bGuiding = false;
+
+		if (pRPG->GetLaserDot())
+		{
+			pRPG->GetLaserDot()->TurnOff();
+		}
 	}
 	else
 	{
-		info.m_vecSrc = vecSrc;
-		info.m_vecDirShooting = vecDirToEnemy;
-		info.m_iTracerFreq = 1;
-		info.m_iShots = 1;
-		info.m_pAttacker = this;
-		info.m_vecSpread = GetAttackSpread( NULL, GetEnemy() );
-		info.m_flDistance = MAX_COORD_RANGE;
-		info.m_iAmmoType = m_iAmmoType;
-	}
+		FireBulletsInfo_t info;
 
-	FireBullets( info );
-	EmitSound( "NPC_FloorTurret.ShotSounds", m_ShotSounds );
-	DoMuzzleFlash();
+		if (!bStrict && GetEnemy() != NULL)
+		{
+			Vector vecDir = GetActualShootTrajectory(vecSrc);
+
+			info.m_vecSrc = vecSrc;
+			info.m_vecDirShooting = vecDir;
+			info.m_iTracerFreq = 1;
+			info.m_iShots = 1;
+			info.m_pAttacker = this;
+			info.m_vecSpread = VECTOR_CONE_PRECALCULATED;
+			info.m_flDistance = MAX_COORD_RANGE;
+			info.m_iAmmoType = m_iAmmoType;
+		}
+		else
+		{
+			info.m_vecSrc = vecSrc;
+			info.m_vecDirShooting = vecDirToEnemy;
+			info.m_iTracerFreq = 1;
+			info.m_iShots = 1;
+			info.m_pAttacker = this;
+			info.m_vecSpread = GetAttackSpread(NULL, GetEnemy());
+			info.m_flDistance = MAX_COORD_RANGE;
+			info.m_iAmmoType = m_iAmmoType;
+		}
+
+		FireBullets(info);
+		EmitSound("NPC_FloorTurret.ShotSounds", m_ShotSounds);
+		DoMuzzleFlash();
+	}
 }
 
 //-----------------------------------------------------------------------------

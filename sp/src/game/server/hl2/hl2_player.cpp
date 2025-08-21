@@ -9431,7 +9431,10 @@ void CEGiveAllRPG::StartEffect()
 	{
 		CAI_BaseNPC *pNPC = dynamic_cast<CAI_BaseNPC*>(pEnt);
 		if (pNPC)
+		{
 			pNPC->GiveWeapon(MAKE_STRING("weapon_rpg"));
+			pNPC->CapabilitiesAdd(bits_CAP_WEAPON_RANGE_ATTACK1);
+		}
 		pEnt = gEntList.FindEntityByClassname(pEnt, "npc*");
 	}
 }

@@ -161,6 +161,47 @@ private:
 
 
 //-----------------------------------------------------------------------------
+// Laser Dot
+//-----------------------------------------------------------------------------
+class CLaserDot : public CSprite
+{
+	DECLARE_CLASS(CLaserDot, CSprite);
+public:
+
+	CLaserDot(void);
+	~CLaserDot(void);
+
+	static CLaserDot* Create(const Vector& origin, CBaseEntity* pOwner = NULL, bool bVisibleDot = true);
+
+	void	SetTargetEntity(CBaseEntity* pTarget) { m_hTargetEnt = pTarget; }
+	CBaseEntity* GetTargetEntity(void) { return m_hTargetEnt; }
+
+	void	SetLaserPosition(const Vector& origin, const Vector& normal);
+	Vector	GetChasePosition();
+	void	TurnOn(void);
+	void	TurnOff(void);
+	bool	IsOn() const { return m_bIsOn; }
+
+	void	Toggle(void);
+
+	void	LaserThink(void);
+
+	int		ObjectCaps() { return (BaseClass::ObjectCaps() & ~FCAP_ACROSS_TRANSITION) | FCAP_DONT_SAVE; }
+
+	void	MakeInvisible(void);
+
+protected:
+	Vector				m_vecSurfaceNormal;
+	EHANDLE				m_hTargetEnt;
+	bool				m_bVisibleLaserDot;
+	bool				m_bIsOn;
+
+	DECLARE_DATADESC();
+public:
+	CLaserDot* m_pNext;
+};
+
+//-----------------------------------------------------------------------------
 // Finds apc missiles in cone
 //-----------------------------------------------------------------------------
 CAPCMissile *FindAPCMissileInCone( const Vector &vecOrigin, const Vector &vecDirection, float flAngle );
@@ -236,7 +277,11 @@ public:
 		return cone;
 	}
 	
-	CBaseEntity *GetMissile( void ) { return m_hMissile; }
+	CMissile* GetMissile( void ) { return m_hMissile; }
+	void SetMissile(CMissile* pEnt) { m_hMissile = pEnt; }
+	CLaserDot* GetLaserDot(void) { return m_hLaserDot; }
+	void SetLaserDot(CLaserDot* pEnt) { m_hLaserDot = pEnt; }
+	bool				m_bGuiding;
 
 	DECLARE_ACTTABLE();
 	DECLARE_DATADESC();
@@ -244,7 +289,6 @@ public:
 protected:
 
 	bool				m_bInitialStateUpdate;
-	bool				m_bGuiding;
 	bool				m_bHideGuiding;		//User to override the player's wish to guide under certain circumstances
 	Vector				m_vecNPCLaserDot;
 	CHandle<CLaserDot>	m_hLaserDot;

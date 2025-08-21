@@ -48,47 +48,6 @@ ConVar rpg_missle_use_custom_detonators( "rpg_missle_use_custom_detonators", "1"
 
 const char *g_pLaserDotThink = "LaserThinkContext";
 
-//-----------------------------------------------------------------------------
-// Laser Dot
-//-----------------------------------------------------------------------------
-class CLaserDot : public CSprite 
-{
-	DECLARE_CLASS( CLaserDot, CSprite );
-public:
-
-	CLaserDot( void );
-	~CLaserDot( void );
-
-	static CLaserDot *Create( const Vector &origin, CBaseEntity *pOwner = NULL, bool bVisibleDot = true );
-
-	void	SetTargetEntity( CBaseEntity *pTarget ) { m_hTargetEnt = pTarget; }
-	CBaseEntity *GetTargetEntity( void ) { return m_hTargetEnt; }
-
-	void	SetLaserPosition( const Vector &origin, const Vector &normal );
-	Vector	GetChasePosition();
-	void	TurnOn( void );
-	void	TurnOff( void );
-	bool	IsOn() const { return m_bIsOn; }
-
-	void	Toggle( void );
-
-	void	LaserThink( void );
-
-	int		ObjectCaps() { return (BaseClass::ObjectCaps() & ~FCAP_ACROSS_TRANSITION) | FCAP_DONT_SAVE; }
-
-	void	MakeInvisible( void );
-
-protected:
-	Vector				m_vecSurfaceNormal;
-	EHANDLE				m_hTargetEnt;
-	bool				m_bVisibleLaserDot;
-	bool				m_bIsOn;
-
-	DECLARE_DATADESC();
-public:
-	CLaserDot			*m_pNext;
-};
-
 // a list of laser dots to search quickly
 CEntityClassList<CLaserDot> g_LaserDotList;
 template <>  CLaserDot *CEntityClassList<CLaserDot>::m_pClassList = NULL;
