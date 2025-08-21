@@ -5552,97 +5552,97 @@ ConVar chaos_prob_dvd_crosshair("chaos_prob_dvd_crosshair", "100");
 #define ERROR_WEIGHT 1
 void CHL2_Player::PopulateEffects()
 {
-	CreateEffect<>(EFFECT_ERROR,							MAKE_STRING("(Error)"),		EC_NONE,									-1,											ERROR_WEIGHT);
+	CreateEffect<>(EFFECT_ERROR,							MAKE_STRING("(Error)"),					EC_NONE,									-1,											ERROR_WEIGHT);
 	CreateEffect<CEGravitySet>(EFFECT_ZEROG,				MAKE_STRING("Zero Gravity"),			EC_NONE,									chaos_time_zerog.GetFloat(),				chaos_prob_zerog.GetInt());
 	CreateEffect<CEGravitySet>(EFFECT_SUPERG,				MAKE_STRING("Super Gravity"),			EC_NONE,									chaos_time_superg.GetFloat(),				chaos_prob_superg.GetInt());
 	CreateEffect<CEGravitySet>(EFFECT_LOWG,					MAKE_STRING("Low Gravity"),				EC_NONE,									chaos_time_lowg.GetFloat(),					chaos_prob_lowg.GetInt());
 	CreateEffect<CEGravitySet>(EFFECT_INVERTG,				MAKE_STRING("Invert Gravity"),			EC_NONE,									chaos_time_invertg.GetFloat(),				chaos_prob_invertg.GetInt());
-	CreateEffect<CEPhysSpeedSet>(EFFECT_PHYS_PAUSE,			MAKE_STRING("Pause Physics"),		EC_NO_VEHICLE,								chaos_time_phys_pause.GetFloat(),			chaos_prob_phys_pause.GetInt());
+	CreateEffect<CEPhysSpeedSet>(EFFECT_PHYS_PAUSE,			MAKE_STRING("Pause Physics"),			EC_NO_VEHICLE,								chaos_time_phys_pause.GetFloat(),			chaos_prob_phys_pause.GetInt());
 	CreateEffect<CEPhysSpeedSet>(EFFECT_PHYS_FAST,			MAKE_STRING("Fast Physics"),			EC_NONE,									chaos_time_phys_fast.GetFloat(),			chaos_prob_phys_fast.GetInt());
 	CreateEffect<CEPhysSpeedSet>(EFFECT_PHYS_SLOW,			MAKE_STRING("Slow Physics"),			EC_NONE,									chaos_time_phys_slow.GetFloat(),			chaos_prob_phys_slow.GetInt());
-	CreateEffect<CEPullToPlayer>(EFFECT_PULL_TO_PLAYER,		MAKE_STRING("Black Hole"),			EC_NONE,									chaos_time_pull_to_player.GetFloat(),		chaos_prob_pull_to_player.GetInt());
-	CreateEffect<CEPushFromPlayer>(EFFECT_PUSH_FROM_PLAYER,	MAKE_STRING("Repulsive"),		EC_NONE,									chaos_time_push_from_player.GetFloat(),		chaos_prob_push_from_player.GetInt());
-	CreateEffect<CEStop>(EFFECT_NO_MOVEMENT,				MAKE_STRING("Stop"),				EC_NONE,									chaos_time_no_movement.GetFloat(),			chaos_prob_no_movement.GetInt());
-	CreateEffect<CESuperMovement>(EFFECT_SUPER_MOVEMENT,	MAKE_STRING("Super Speed"),		EC_NONE,									chaos_time_super_movement.GetFloat(),		chaos_prob_super_movement.GetInt());
+	CreateEffect<CEPullToPlayer>(EFFECT_PULL_TO_PLAYER,		MAKE_STRING("Black Hole"),				EC_NONE,									chaos_time_pull_to_player.GetFloat(),		chaos_prob_pull_to_player.GetInt());
+	CreateEffect<CEPushFromPlayer>(EFFECT_PUSH_FROM_PLAYER,	MAKE_STRING("Repulsive"),				EC_NONE,									chaos_time_push_from_player.GetFloat(),		chaos_prob_push_from_player.GetInt());
+	CreateEffect<CEStop>(EFFECT_NO_MOVEMENT,				MAKE_STRING("Stop"),					EC_NONE,									chaos_time_no_movement.GetFloat(),			chaos_prob_no_movement.GetInt());
+	CreateEffect<CESuperMovement>(EFFECT_SUPER_MOVEMENT,	MAKE_STRING("Super Speed"),				EC_NONE,									chaos_time_super_movement.GetFloat(),		chaos_prob_super_movement.GetInt());
 	CreateEffect<CELockVehicles>(EFFECT_LOCK_VEHICLE,		MAKE_STRING("Lock Vehicles"),			EC_BOAT | EC_BUGGY,							chaos_time_lock_vehicle.GetFloat(),			chaos_prob_lock_vehicle.GetInt());
 	CreateEffect<CENPCRels>(EFFECT_NPC_HATE,				MAKE_STRING("World of Hate"),			EC_NONE,									chaos_time_npc_hate.GetFloat(),				chaos_prob_npc_hate.GetInt());
 	CreateEffect<CENPCRels>(EFFECT_NPC_LIKE,				MAKE_STRING("World of Love"),			EC_NONE,									chaos_time_npc_like.GetFloat(),				chaos_prob_npc_like.GetInt());
-	CreateEffect<CENPCRels>(EFFECT_NPC_NEUTRAL,				MAKE_STRING("World of Apathy"),		EC_NONE,									chaos_time_npc_neutral.GetFloat(),			chaos_prob_npc_neutral.GetInt());
+	CreateEffect<CENPCRels>(EFFECT_NPC_NEUTRAL,				MAKE_STRING("World of Apathy"),			EC_NONE,									chaos_time_npc_neutral.GetFloat(),			chaos_prob_npc_neutral.GetInt());
 	CreateEffect<CENPCRels>(EFFECT_NPC_FEAR,				MAKE_STRING("World of Fear"),			EC_NONE,									chaos_time_npc_fear.GetFloat(),				chaos_prob_npc_fear.GetInt());
-	CreateEffect<>(EFFECT_TELEPORT_RANDOM,					MAKE_STRING("Teleport to Random Place"),		EC_PLAYER_TELEPORT,							-1,											chaos_prob_teleport_random.GetInt());//
-	CreateEffect<CERandomVehicle>(EFFECT_SPAWN_VEHICLE,		MAKE_STRING("Spawn Random Vehicle"),			EC_NONE,									-1,											chaos_prob_spawn_vehicle.GetInt());
-	CreateEffect<CERandomNPC>(EFFECT_SPAWN_NPC,				MAKE_STRING("Spawn Random NPC"),			EC_NONE,									-1,											chaos_prob_spawn_npc.GetInt());
-	CreateEffect<CESwimInAir>(EFFECT_SWIM_IN_AIR,			MAKE_STRING("Water World"),			EC_PICKUPS,									chaos_time_swim_in_air.GetFloat(),			chaos_prob_swim_in_air.GetInt());
-	CreateEffect<>(EFFECT_ONLY_DRAW_WORLD,					MAKE_STRING("Where Are The Objects?"),		EC_NONE,									chaos_time_only_draw_world.GetFloat(),		chaos_prob_only_draw_world.GetInt());
+	CreateEffect<>(EFFECT_TELEPORT_RANDOM,					MAKE_STRING("Teleport to Random Place"),EC_PLAYER_TELEPORT,							-1,											chaos_prob_teleport_random.GetInt());//
+	CreateEffect<CERandomVehicle>(EFFECT_SPAWN_VEHICLE,		MAKE_STRING("Spawn Random Vehicle"),	EC_NONE,									-1,											chaos_prob_spawn_vehicle.GetInt());
+	CreateEffect<CERandomNPC>(EFFECT_SPAWN_NPC,				MAKE_STRING("Spawn Random NPC"),		EC_NONE,									-1,											chaos_prob_spawn_npc.GetInt());
+	CreateEffect<CESwimInAir>(EFFECT_SWIM_IN_AIR,			MAKE_STRING("Water World"),				EC_PICKUPS,									chaos_time_swim_in_air.GetFloat(),			chaos_prob_swim_in_air.GetInt());
+	CreateEffect<>(EFFECT_ONLY_DRAW_WORLD,					MAKE_STRING("Where Are The Objects?"),	EC_NONE,									chaos_time_only_draw_world.GetFloat(),		chaos_prob_only_draw_world.GetInt());
 	CreateEffect<>(EFFECT_LOW_DETAIL,						MAKE_STRING("Ultra Low Detail"),		EC_NONE,									chaos_time_low_detail.GetFloat(),			chaos_prob_low_detail.GetInt());
 	CreateEffect<CEPlayerBig>(EFFECT_PLAYER_BIG,			MAKE_STRING("Player is Huge"),			EC_NONE,									chaos_time_player_big.GetFloat(),			chaos_prob_player_big.GetInt());
 	CreateEffect<CEPlayerSmall>(EFFECT_PLAYER_SMALL,		MAKE_STRING("Player is Tiny"),			EC_NONE,									chaos_time_player_small.GetFloat(),			chaos_prob_player_small.GetInt());
-	CreateEffect<>(EFFECT_NO_MOUSE_HORIZONTAL,				MAKE_STRING("No Looking Left/Right"),		EC_NONE,									chaos_time_no_mouse_horizontal.GetFloat(),	chaos_prob_no_mouse_horizontal.GetInt());
+	CreateEffect<>(EFFECT_NO_MOUSE_HORIZONTAL,				MAKE_STRING("No Looking Left/Right"),	EC_NONE,									chaos_time_no_mouse_horizontal.GetFloat(),	chaos_prob_no_mouse_horizontal.GetInt());
 	CreateEffect<>(EFFECT_NO_MOUSE_VERTICAL,				MAKE_STRING("No Looking Up/Down"),		EC_NONE,									chaos_time_no_mouse_vertical.GetFloat(),	chaos_prob_no_mouse_vertical.GetInt());
 	CreateEffect<CESuperGrab>(EFFECT_SUPER_GRAB,			MAKE_STRING("Didn't Skip Arm Day"),		EC_NONE,									chaos_time_super_grab.GetFloat(),			chaos_prob_super_grab.GetInt());
-	CreateEffect<CERandomWeaponGive>(EFFECT_GIVE_WEAPON,	MAKE_STRING("Give Random Weapon"),			EC_NONE,									-1,											chaos_prob_give_weapon.GetInt());
+	CreateEffect<CERandomWeaponGive>(EFFECT_GIVE_WEAPON,	MAKE_STRING("Give Random Weapon"),		EC_NONE,									-1,											chaos_prob_give_weapon.GetInt());
 	CreateEffect<>(EFFECT_GIVE_ALL_WEAPONS,					MAKE_STRING("Give All Weapons"),		EC_NONE,									-1,											chaos_prob_give_all_weapons.GetInt());
 	CreateEffect<CEWeaponsDrop>(EFFECT_DROP_WEAPONS,		MAKE_STRING("Drop Weapons"),			EC_HAS_WEAPON | EC_NEED_PHYSGUN,			-1,											chaos_prob_drop_weapons.GetInt());
 	CreateEffect<>(EFFECT_NADE_GUNS,						MAKE_STRING("Grenade Guns"),			EC_NO_INVULN,								chaos_time_nade_guns.GetFloat(),			chaos_prob_nade_guns.GetFloat());
-	CreateEffect<CEEarthquake>(EFFECT_EARTHQUAKE,			MAKE_STRING("Wobbly"),			EC_NONE,									chaos_time_earthquake.GetFloat(),			chaos_prob_earthquake.GetInt());
-	CreateEffect<CE420Joke>(EFFECT_420_JOKE,				MAKE_STRING("Funny Number"),		EC_NO_INVULN,								-1,											chaos_prob_420_joke.GetInt());
-	CreateEffect<CEZombieSpam>(EFFECT_ZOMBIE_SPAM,			MAKE_STRING("Left 4 Dead"),		EC_HAS_WEAPON,								chaos_time_zombiespam.GetFloat(),			chaos_prob_zombie_spam.GetInt());
+	CreateEffect<CEEarthquake>(EFFECT_EARTHQUAKE,			MAKE_STRING("Wobbly"),					EC_NONE,									chaos_time_earthquake.GetFloat(),			chaos_prob_earthquake.GetInt());
+	CreateEffect<CE420Joke>(EFFECT_420_JOKE,				MAKE_STRING("Funny Number"),			EC_NO_INVULN,								-1,											chaos_prob_420_joke.GetInt());
+	CreateEffect<CEZombieSpam>(EFFECT_ZOMBIE_SPAM,			MAKE_STRING("Left 4 Dead"),				EC_HAS_WEAPON,								chaos_time_zombiespam.GetFloat(),			chaos_prob_zombie_spam.GetInt());
 	CreateEffect<>(EFFECT_EXPLODE_ON_DEATH,					MAKE_STRING("NPCs Explode on Death"),	EC_NONE,									chaos_time_explode_on_death.GetFloat(),		chaos_prob_explode_on_death.GetInt());
 	CreateEffect<>(EFFECT_BULLET_TELEPORT,					MAKE_STRING("Teleporter Bullets"),		EC_NONE,									chaos_time_bullet_teleport.GetFloat(),		chaos_prob_bullet_teleport.GetInt());
-	CreateEffect<CECredits>(EFFECT_CREDITS,					MAKE_STRING("Credits"),			EC_NONE,									-1,											chaos_prob_credits.GetInt());
-	CreateEffect<CESuperhot>(EFFECT_SUPERHOT,				MAKE_STRING("Superhot"),			EC_NONE,									chaos_time_superhot.GetFloat(),				chaos_prob_superhot.GetInt());
-	CreateEffect<CESupercold>(EFFECT_SUPERCOLD,				MAKE_STRING("Supercold"),			EC_NONE,									chaos_time_supercold.GetFloat(),			chaos_prob_supercold.GetInt());
+	CreateEffect<CECredits>(EFFECT_CREDITS,					MAKE_STRING("Credits"),					EC_NONE,									-1,											chaos_prob_credits.GetInt());
+	CreateEffect<CESuperhot>(EFFECT_SUPERHOT,				MAKE_STRING("Superhot"),				EC_NONE,									chaos_time_superhot.GetFloat(),				chaos_prob_superhot.GetInt());
+	CreateEffect<CESupercold>(EFFECT_SUPERCOLD,				MAKE_STRING("Supercold"),				EC_NONE,									chaos_time_supercold.GetFloat(),			chaos_prob_supercold.GetInt());
 	CreateEffect<CEBarrelShotgun>(EFFECT_BARREL_SHOTGUN,	MAKE_STRING("Double Barrel Shotgun"),	EC_NONE,									chaos_time_barrel_shotgun.GetFloat(),		chaos_prob_barrel_shotgun.GetInt());
 	CreateEffect<CEQuickclip>(EFFECT_QUICKCLIP_ON,			MAKE_STRING("Enable Quickclip"),		EC_QC_OFF,									chaos_time_quickclip_on.GetFloat(),			chaos_prob_quickclip_on.GetInt());
 	CreateEffect<CEQuickclip>(EFFECT_QUICKCLIP_OFF,			MAKE_STRING("Disable Quickclip"),		EC_NONE,									chaos_time_quickclip_off.GetFloat(),		chaos_prob_quickclip_off.GetInt());
-	CreateEffect<CESolidTriggers>(EFFECT_SOLID_TRIGGERS,	MAKE_STRING("Solid Triggers"),	EC_NONE,									chaos_time_solid_triggers.GetFloat(),		chaos_prob_solid_triggers.GetInt());
+	CreateEffect<CESolidTriggers>(EFFECT_SOLID_TRIGGERS,	MAKE_STRING("Solid Triggers"),			EC_NONE,									chaos_time_solid_triggers.GetFloat(),		chaos_prob_solid_triggers.GetInt());
 	CreateEffect<CEColors>(EFFECT_RANDOM_COLORS,			MAKE_STRING("Pretty Colors"),			EC_NONE,									chaos_time_random_colors.GetFloat(),		chaos_prob_random_colors.GetInt());
-	CreateEffect<CEBottle>(EFFECT_BEER_BOTTLE,				MAKE_STRING("Beer I owed ya"),		EC_NONE,									-1,											chaos_prob_beer_bottle.GetInt());
+	CreateEffect<CEBottle>(EFFECT_BEER_BOTTLE,				MAKE_STRING("Beer I owed ya"),			EC_NONE,									-1,											chaos_prob_beer_bottle.GetInt());
 	CreateEffect<CEEvilNPC>(EFFECT_EVIL_ALYX,				MAKE_STRING("Annoying Alyx"),			EC_HAS_WEAPON,								-1,											chaos_prob_evil_alyx.GetInt());
-	CreateEffect<CEEvilNPC>(EFFECT_EVIL_NORIKO,				MAKE_STRING("Noriko, No!"),		EC_NONE,									-1,											chaos_prob_evil_noriko.GetInt());
-	CreateEffect<>(EFFECT_CANT_LEAVE_MAP,					MAKE_STRING("Why So Rushed?"),		EC_NONE,									chaos_time_cant_leave_map.GetFloat(),		chaos_prob_cant_leave_map.GetInt());
-	CreateEffect<CEFloorEffect>(EFFECT_FLOOR_IS_LAVA,		MAKE_STRING("Floor Is Lava"),		EC_NO_INVULN | EC_QC_OFF,					chaos_time_floor_is_lava.GetFloat(),		chaos_prob_floor_is_lava.GetInt());
+	CreateEffect<CEEvilNPC>(EFFECT_EVIL_NORIKO,				MAKE_STRING("Noriko, No!"),				EC_NONE,									-1,											chaos_prob_evil_noriko.GetInt());
+	CreateEffect<>(EFFECT_CANT_LEAVE_MAP,					MAKE_STRING("Why So Rushed?"),			EC_NONE,									chaos_time_cant_leave_map.GetFloat(),		chaos_prob_cant_leave_map.GetInt());
+	CreateEffect<CEFloorEffect>(EFFECT_FLOOR_IS_LAVA,		MAKE_STRING("Floor Is Lava"),			EC_NO_INVULN | EC_QC_OFF,					chaos_time_floor_is_lava.GetFloat(),		chaos_prob_floor_is_lava.GetInt());
 	CreateEffect<CERandomSong>(EFFECT_PLAY_MUSIC,			MAKE_STRING("Play Random Song"),		EC_NONE,									-1,											chaos_prob_play_music.GetInt());
-	CreateEffect<CEUseSpam>(EFFECT_USE_SPAM,				MAKE_STRING("Grabby"),			EC_NO_VEHICLE,								chaos_time_use_spam.GetFloat(),				chaos_prob_use_spam.GetInt());
-	CreateEffect<>(EFFECT_ORTHO_CAM,						MAKE_STRING("Orthographic Camera"),			EC_NONE,									chaos_time_ortho_cam.GetFloat(),			chaos_prob_ortho_cam.GetInt());
-	CreateEffect<CETreeSpam>(EFFECT_FOREST,					MAKE_STRING("Surprise Reforestation!"),			EC_NONE,									chaos_time_forest.GetFloat(),				chaos_prob_forest.GetInt());
+	CreateEffect<CEUseSpam>(EFFECT_USE_SPAM,				MAKE_STRING("Grabby"),					EC_NO_VEHICLE,								chaos_time_use_spam.GetFloat(),				chaos_prob_use_spam.GetInt());
+	CreateEffect<>(EFFECT_ORTHO_CAM,						MAKE_STRING("Orthographic Camera"),		EC_NONE,									chaos_time_ortho_cam.GetFloat(),			chaos_prob_ortho_cam.GetInt());
+	CreateEffect<CETreeSpam>(EFFECT_FOREST,					MAKE_STRING("Surprise Reforestation!"),	EC_NONE,									chaos_time_forest.GetFloat(),				chaos_prob_forest.GetInt());
 	CreateEffect<CEMountedGun>(EFFECT_SPAWN_MOUNTED_GUN,	MAKE_STRING("Spawn Mounted Gun"),		EC_NONE,									-1,											chaos_prob_spawn_mounted_gun.GetInt());
-	CreateEffect<CERestartLevel>(EFFECT_RESTART_LEVEL,		MAKE_STRING("Restart Level"),		EC_NONE,									-1,											chaos_prob_restart_level.GetInt());
+	CreateEffect<CERestartLevel>(EFFECT_RESTART_LEVEL,		MAKE_STRING("Restart Level"),			EC_NONE,									-1,											chaos_prob_restart_level.GetInt());
 	CreateEffect<CERemovePickups>(EFFECT_REMOVE_PICKUPS,	MAKE_STRING("Remove All Pickups"),		EC_PICKUPS|EC_NEED_PHYSGUN|EC_HAS_WEAPON,	-1,											chaos_prob_remove_pickups.GetInt());
-	CreateEffect<CECloneNPCs>(EFFECT_CLONE_NPCS,			MAKE_STRING("Suppression Field Hiccup"),		EC_NONE,									-1,											chaos_prob_clone_npcs.GetInt());
-	CreateEffect<CELockPVS>(EFFECT_LOCK_PVS,				MAKE_STRING("Vision Machine Broke"),			EC_NONE,									chaos_time_lock_pvs.GetFloat(),				chaos_prob_lock_pvs.GetInt());
-	CreateEffect<CEDejaVu>(EFFECT_RELOAD_DEJA_VU,			MAKE_STRING("Deja Vu?"),			EC_PLAYER_TELEPORT,							-1,											chaos_prob_reload_deja_vu.GetInt());
+	CreateEffect<CECloneNPCs>(EFFECT_CLONE_NPCS,			MAKE_STRING("Suppression Field Hiccup"),EC_NONE,									-1,											chaos_prob_clone_npcs.GetInt());
+	CreateEffect<CELockPVS>(EFFECT_LOCK_PVS,				MAKE_STRING("Vision Machine Broke"),	EC_NONE,									chaos_time_lock_pvs.GetFloat(),				chaos_prob_lock_pvs.GetInt());
+	CreateEffect<CEDejaVu>(EFFECT_RELOAD_DEJA_VU,			MAKE_STRING("Deja Vu?"),				EC_PLAYER_TELEPORT,							-1,											chaos_prob_reload_deja_vu.GetInt());
 	CreateEffect<CEBumpy>(EFFECT_BUMPY,						MAKE_STRING("Bumpy Road"),				EC_BUGGY,									chaos_time_bumpy.GetFloat(),				chaos_prob_bumpy.GetInt());
 	CreateEffect<CENoBrake>(EFFECT_NO_BRAKE,				MAKE_STRING("Broken Brakes"),			EC_BUGGY,									chaos_time_no_brake.GetFloat(),				chaos_prob_no_brake.GetInt());
-	CreateEffect<CEForceInOutCar>(EFFECT_FORCE_INOUT_CAR,	MAKE_STRING("Force In/Out Vehicle"),		EC_BUGGY | EC_BOAT | EC_PLAYER_TELEPORT,	-1,											chaos_prob_force_inout_car.GetInt());
-	CreateEffect<CEWeaponRemove>(EFFECT_WEAPON_REMOVE,		MAKE_STRING("Remove Random Weapon"),		EC_NEED_PHYSGUN,							-1,											chaos_prob_weapon_remove.GetInt());
-	CreateEffect<>(EFFECT_INTERP_NPCS,						MAKE_STRING("Laggy NPCs"),		EC_NONE,									chaos_time_interp_npcs.GetFloat(),			chaos_prob_interp_npcs.GetInt());
-	CreateEffect<CEPhysConvert>(EFFECT_PHYS_CONVERT,		MAKE_STRING("Ran Out Of Glue"),		EC_NONE,									-1,											chaos_prob_phys_convert.GetInt());
-	CreateEffect<CEIncline>(EFFECT_INCLINE,					MAKE_STRING("No Climbing"),			EC_NONE,									chaos_time_incline.GetFloat(),				chaos_prob_incline.GetInt());
-	CreateEffect<>(EFFECT_DISABLE_SAVE,						MAKE_STRING("No Saving"),			EC_NONE,									chaos_time_disable_save.GetFloat(),			chaos_prob_disable_save.GetInt());
-	CreateEffect<>(EFFECT_NO_RELOAD,						MAKE_STRING("No One Can Reload"),			EC_HAS_WEAPON,								chaos_time_no_reload.GetFloat(),			chaos_prob_no_reload.GetInt());
-	CreateEffect<>(EFFECT_NPC_TELEPORT,						MAKE_STRING("You Teleport?"),		EC_NONE,									chaos_time_npc_teleport.GetFloat(),			chaos_prob_npc_teleport.GetInt());
-	CreateEffect<CEDeathWater>(EFFECT_DEATH_WATER,			MAKE_STRING("Death Water"),		EC_WATER,									chaos_time_death_water.GetFloat(),			chaos_prob_death_water.GetInt());
-	CreateEffect<CERandomCC>(EFFECT_RANDOM_CC,				MAKE_STRING("Color Incorrection"),			EC_NONE,									chaos_time_random_cc.GetFloat(),			chaos_prob_random_cc.GetInt());
-	CreateEffect<CEEvilNPC>(EFFECT_EVIL_BARNEY,				MAKE_STRING("Bastard Barney"),		EC_HAS_WEAPON,								-1,											chaos_prob_evil_barney.GetInt());
-	CreateEffect<>(EFFECT_GOOD_GMAN,						MAKE_STRING("Good Man"),			EC_NONE,									-1,											chaos_prob_good_gman.GetInt());
+	CreateEffect<CEForceInOutCar>(EFFECT_FORCE_INOUT_CAR,	MAKE_STRING("Force In/Out Vehicle"),	EC_BUGGY | EC_BOAT | EC_PLAYER_TELEPORT,	-1,											chaos_prob_force_inout_car.GetInt());
+	CreateEffect<CEWeaponRemove>(EFFECT_WEAPON_REMOVE,		MAKE_STRING("Remove Random Weapon"),	EC_NEED_PHYSGUN,							-1,											chaos_prob_weapon_remove.GetInt());
+	CreateEffect<>(EFFECT_INTERP_NPCS,						MAKE_STRING("Laggy NPCs"),				EC_NONE,									chaos_time_interp_npcs.GetFloat(),			chaos_prob_interp_npcs.GetInt());
+	CreateEffect<CEPhysConvert>(EFFECT_PHYS_CONVERT,		MAKE_STRING("Ran Out Of Glue"),			EC_NONE,									-1,											chaos_prob_phys_convert.GetInt());
+	CreateEffect<CEIncline>(EFFECT_INCLINE,					MAKE_STRING("No Climbing"),				EC_NONE,									chaos_time_incline.GetFloat(),				chaos_prob_incline.GetInt());
+	CreateEffect<>(EFFECT_DISABLE_SAVE,						MAKE_STRING("No Saving"),				EC_NONE,									chaos_time_disable_save.GetFloat(),			chaos_prob_disable_save.GetInt());
+	CreateEffect<>(EFFECT_NO_RELOAD,						MAKE_STRING("No One Can Reload"),		EC_HAS_WEAPON,								chaos_time_no_reload.GetFloat(),			chaos_prob_no_reload.GetInt());
+	CreateEffect<>(EFFECT_NPC_TELEPORT,						MAKE_STRING("You Teleport?"),			EC_NONE,									chaos_time_npc_teleport.GetFloat(),			chaos_prob_npc_teleport.GetInt());
+	CreateEffect<CEDeathWater>(EFFECT_DEATH_WATER,			MAKE_STRING("Death Water"),				EC_WATER,									chaos_time_death_water.GetFloat(),			chaos_prob_death_water.GetInt());
+	CreateEffect<CERandomCC>(EFFECT_RANDOM_CC,				MAKE_STRING("Color Incorrection"),		EC_NONE,									chaos_time_random_cc.GetFloat(),			chaos_prob_random_cc.GetInt());
+	CreateEffect<CEEvilNPC>(EFFECT_EVIL_BARNEY,				MAKE_STRING("Bastard Barney"),			EC_HAS_WEAPON,								-1,											chaos_prob_evil_barney.GetInt());
+	CreateEffect<>(EFFECT_GOOD_GMAN,						MAKE_STRING("Good Man"),				EC_NONE,									-1,											chaos_prob_good_gman.GetInt());
 	CreateEffect<CEEvilNPC>(EFFECT_EVIL_KLEINER,			MAKE_STRING("Krazy Kleiner"),			EC_HAS_WEAPON,								-1,											chaos_prob_evil_kleiner.GetInt());
-	CreateEffect<CEEvilNPC>(EFFECT_EVIL_GRIGORI,			MAKE_STRING("Griefing Grigori"),			EC_HAS_WEAPON,								-1,											chaos_prob_evil_grigori.GetInt());
+	CreateEffect<CEEvilNPC>(EFFECT_EVIL_GRIGORI,			MAKE_STRING("Griefing Grigori"),		EC_HAS_WEAPON,								-1,											chaos_prob_evil_grigori.GetInt());
 	CreateEffect<CEEvilNPC>(EFFECT_EVIL_MOSSMAN,			MAKE_STRING("Malignant Mossman"),		EC_HAS_WEAPON,								-1,											chaos_prob_evil_mossman.GetInt());
-	CreateEffect<CEEvilNPC>(EFFECT_EVIL_VORT,				MAKE_STRING("Vexing Vortigaunt"),			EC_HAS_WEAPON,								-1,											chaos_prob_evil_vort.GetInt());
-	CreateEffect<CESecondarySpam>(EFFECT_SECONDARY_SPAM,	MAKE_STRING("Spam Alt Fire"),		EC_NONE,									chaos_time_secondary_spam.GetFloat(),		chaos_prob_secondary_spam.GetInt());
-	CreateEffect<>(EFFECT_STEAL_HEALTH,						MAKE_STRING("Vampires"),		EC_NONE,									chaos_time_steal_health.GetFloat(),			chaos_prob_steal_health.GetInt());
-	CreateEffect<CESuitSwap>(EFFECT_SUIT_SWAP,				MAKE_STRING("Swap Health & Suit Power"),			EC_NONE,									-1,											chaos_prob_suit_swap.GetInt());
-	CreateEffect<>(EFFECT_YAWROLL,							MAKE_STRING("Yaw Is Roll"),			EC_NONE,									chaos_time_yawroll.GetFloat(),				chaos_prob_yawroll.GetInt());
-	CreateEffect<>(EFFECT_NORMAL_VISION,					MAKE_STRING("Normal Vision"),		EC_NONE,									chaos_time_normalvision.GetFloat(),			chaos_prob_normalvision.GetInt());
+	CreateEffect<CEEvilNPC>(EFFECT_EVIL_VORT,				MAKE_STRING("Vexing Vortigaunt"),		EC_HAS_WEAPON,								-1,											chaos_prob_evil_vort.GetInt());
+	CreateEffect<CESecondarySpam>(EFFECT_SECONDARY_SPAM,	MAKE_STRING("Spam Alt Fire"),			EC_NONE,									chaos_time_secondary_spam.GetFloat(),		chaos_prob_secondary_spam.GetInt());
+	CreateEffect<>(EFFECT_STEAL_HEALTH,						MAKE_STRING("Vampires"),				EC_NONE,									chaos_time_steal_health.GetFloat(),			chaos_prob_steal_health.GetInt());
+	CreateEffect<CESuitSwap>(EFFECT_SUIT_SWAP,				MAKE_STRING("Swap Health & Suit Power"),EC_NONE,									-1,											chaos_prob_suit_swap.GetInt());
+	CreateEffect<>(EFFECT_YAWROLL,							MAKE_STRING("Yaw Is Roll"),				EC_NONE,									chaos_time_yawroll.GetFloat(),				chaos_prob_yawroll.GetInt());
+	CreateEffect<>(EFFECT_NORMAL_VISION,					MAKE_STRING("Normal Vision"),			EC_NONE,									chaos_time_normalvision.GetFloat(),			chaos_prob_normalvision.GetInt());
 	CreateEffect<CEGiveAllRPG>(EFFECT_GIVE_ALL_RPG,			MAKE_STRING("Give Everyone RPGs"),		EC_NONE,									-1,											chaos_prob_giveallrpg.GetInt());
-	CreateEffect<CEFloorEffect>(EFFECT_GRASS_HEAL,			MAKE_STRING("Touch the Grass"),		EC_NONE,									chaos_time_grass_heal.GetFloat(),			chaos_prob_grass_heal.GetInt());
-	CreateEffect<CEChangePitch>(EFFECT_CHANGE_PITCH,		MAKE_STRING("Changing Pitch"),		EC_NONE,									chaos_time_change_pitch.GetFloat(),			chaos_prob_change_pitch.GetInt());
-	CreateEffect<CELogicExplode>(EFFECT_LOGIC_EXPLODE,		MAKE_STRING("Logic Explosion"),		EC_NONE,									-1,											chaos_prob_logic_explode.GetInt());
-	CreateEffect<CECameraTextures>(EFFECT_CAMERA_TEXTURES,	MAKE_STRING("Seeing Vision"),	EC_NONE,									chaos_time_camera_textures.GetFloat(),		chaos_prob_camera_textures.GetInt());
-	CreateEffect<CECameraGravity>(EFFECT_CAMERA_GRAVITY,	MAKE_STRING("Camera Gravity"),	EC_NONE,									chaos_time_camera_gravity.GetFloat(),		chaos_prob_camera_gravity.GetInt());
-	CreateEffect<CEHL1Phys>(EFFECT_HL1_PHYSICS,				MAKE_STRING("Classic Physics"),		EC_NONE,									chaos_time_hl1_physics.GetFloat(),			chaos_prob_hl1_physics.GetInt());
-	CreateEffect<CEDVDCrosshair>(EFFECT_DVD_CROSSHAIR,		MAKE_STRING("DVD Crosshair"),		EC_NONE,									chaos_time_dvd_crosshair.GetFloat(),		chaos_prob_dvd_crosshair.GetInt());
+	CreateEffect<CEFloorEffect>(EFFECT_GRASS_HEAL,			MAKE_STRING("Touch the Grass"),			EC_NONE,									chaos_time_grass_heal.GetFloat(),			chaos_prob_grass_heal.GetInt());
+	CreateEffect<CEChangePitch>(EFFECT_CHANGE_PITCH,		MAKE_STRING("Changing Pitch"),			EC_NONE,									chaos_time_change_pitch.GetFloat(),			chaos_prob_change_pitch.GetInt());
+	CreateEffect<CELogicExplode>(EFFECT_LOGIC_EXPLODE,		MAKE_STRING("Logic Explosion"),			EC_NONE,									-1,											chaos_prob_logic_explode.GetInt());
+	CreateEffect<CECameraTextures>(EFFECT_CAMERA_TEXTURES,	MAKE_STRING("Seeing Vision"),			EC_NONE,									chaos_time_camera_textures.GetFloat(),		chaos_prob_camera_textures.GetInt());
+	CreateEffect<CECameraGravity>(EFFECT_CAMERA_GRAVITY,	MAKE_STRING("Camera Gravity"),			EC_NONE,									chaos_time_camera_gravity.GetFloat(),		chaos_prob_camera_gravity.GetInt());
+	CreateEffect<CEHL1Phys>(EFFECT_HL1_PHYSICS,				MAKE_STRING("Classic Physics"),			EC_NONE,									chaos_time_hl1_physics.GetFloat(),			chaos_prob_hl1_physics.GetInt());
+	CreateEffect<CEDVDCrosshair>(EFFECT_DVD_CROSSHAIR,		MAKE_STRING("DVD Crosshair"),			EC_NONE,									chaos_time_dvd_crosshair.GetFloat(),		chaos_prob_dvd_crosshair.GetInt());
 	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_ELI,				MAKE_STRING("Evil Eli"),					EC_HAS_WEAPON,								-1,											chaos_prob_evil_eli.GetInt());
 	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_BREEN,			MAKE_STRING("Hands-on Dr. Breen"),			EC_HAS_WEAPON,								-1,											chaos_prob_evil_breen.GetInt());
 }
@@ -5965,6 +5965,12 @@ bool CChaosEffect::CheckEffectContext()
 		if (!pWeapon2)
 			return false;//we only have one weapon
 	}
+
+	//seeing vision immediately crashes on this map
+	//something to do with monitors maybe?
+	if (m_nID == EFFECT_CAMERA_TEXTURES)
+		if (!Q_strcmp(pMapName, "d3_c17_01"))
+			return false;
 
 	if (m_nContext == EC_NONE)
 		return true;
