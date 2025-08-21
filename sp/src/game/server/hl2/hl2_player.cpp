@@ -9150,8 +9150,10 @@ void CEFloorEffect::FastThink()
 			{
 			case EFFECT_FLOOR_IS_LAVA:
 				pPlayer->TakeDamage(infoBurn);
+				break;
 			case EFFECT_GRASS_HEAL:
 				pPlayer->TakeHealth(1, DMG_GENERIC);
+				break;
 			}
 		}
 	}
