@@ -78,7 +78,7 @@ static CUtlDict< FileWeaponInfo_t*, unsigned short > m_WeaponInfoDatabase;
 
 #ifdef _DEBUG
 // used to track whether or not two weapons have been mistakenly assigned the wrong slot
-bool g_bUsedWeaponSlots[MAX_WEAPON_SLOTS][MAX_WEAPON_POSITIONS] = { 0 };
+string_t g_bUsedWeaponSlots[MAX_WEAPON_SLOTS][MAX_WEAPON_POSITIONS];
 
 #endif
 
@@ -424,9 +424,9 @@ void FileWeaponInfo_t::Parse( KeyValues *pKeyValuesData, const char *szWeaponNam
 	{
 		if (g_bUsedWeaponSlots[iSlot][iPosition])
 		{
-			Warning( "Duplicately assigned weapon slots in selection hud:  %s (%d, %d)\n", szPrintName, iSlot, iPosition );
+			Warning( "Can't put %s at slot %d position %d. Already taken by %s.\n", szPrintName, iSlot, iPosition, g_bUsedWeaponSlots[iSlot][iPosition]);
 		}
-		g_bUsedWeaponSlots[iSlot][iPosition] = true;
+		g_bUsedWeaponSlots[iSlot][iPosition] = MAKE_STRING(szPrintName);
 	}
 #endif
 
