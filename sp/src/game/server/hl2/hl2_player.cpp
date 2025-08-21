@@ -5143,7 +5143,7 @@ void CHL2_Player::FirePlayerProxyOutput( const char *pszOutputName, variant_t va
 
 void CHL2_Player::OnEntitySpawned(CBaseEntity* pEntity)
 {
-	for (int i = 1; i < NUM_EFFECTS; i++)
+	for (int i = 1; i < g_ChaosEffects.Size(); i++)
 	{
 		CChaosEffect* pEffect = g_ChaosEffects[i];
 		if (pEffect->m_bActive)
