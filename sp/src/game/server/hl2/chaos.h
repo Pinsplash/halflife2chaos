@@ -164,7 +164,9 @@ public:
 	bool WasShufflePicked();
 	bool m_bActive = false;
 	int m_nID;
+	//this name changes (i.e. 'Spawn Alyx' from Spawn Random NPC)
 	string_t m_strHudName;
+	//this name does not change (i.e. Spawn Random NPC)
 	string_t m_strGeneralName;
 	int m_iExclude[NUM_EFFECTS];
 	int m_iExcludeCount = 0;

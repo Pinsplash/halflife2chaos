@@ -451,10 +451,10 @@ CON_COMMAND(chaos_vote_internal_poll, "used by an external client. returns vote 
 {
 	ConMsg("%d;%s;%s;%s;%s",
 		g_iVoteNumber,
-		STRING(g_ChaosEffects[g_arriVoteEffects[0]]->m_strHudName),
-		STRING(g_ChaosEffects[g_arriVoteEffects[1]]->m_strHudName),
-		STRING(g_ChaosEffects[g_arriVoteEffects[2]]->m_strHudName),
-		STRING(g_ChaosEffects[g_arriVoteEffects[3]]->m_strHudName)
+		STRING(g_ChaosEffects[g_arriVoteEffects[0]]->m_strGeneralName),
+		STRING(g_ChaosEffects[g_arriVoteEffects[1]]->m_strGeneralName),
+		STRING(g_ChaosEffects[g_arriVoteEffects[2]]->m_strGeneralName),
+		STRING(g_ChaosEffects[g_arriVoteEffects[3]]->m_strGeneralName)
 	);
 
 }
@@ -482,10 +482,10 @@ CON_COMMAND(chaos_vote_debug, "prints info about the votes")
 		g_arriVotes[1],
 		g_arriVotes[2],
 		g_arriVotes[3],
-		STRING(g_ChaosEffects[g_arriVoteEffects[0]]->m_strHudName),
-		STRING(g_ChaosEffects[g_arriVoteEffects[1]]->m_strHudName),
-		STRING(g_ChaosEffects[g_arriVoteEffects[2]]->m_strHudName),
-		STRING(g_ChaosEffects[g_arriVoteEffects[3]]->m_strHudName)
+		STRING(g_ChaosEffects[g_arriVoteEffects[0]]->m_strGeneralName),
+		STRING(g_ChaosEffects[g_arriVoteEffects[1]]->m_strGeneralName),
+		STRING(g_ChaosEffects[g_arriVoteEffects[2]]->m_strGeneralName),
+		STRING(g_ChaosEffects[g_arriVoteEffects[3]]->m_strGeneralName)
 	);
 }
 void DisplayGeneratedCC()
@@ -5767,13 +5767,13 @@ int CHL2_Player::PickEffect(int iWeightSum, bool bTest, int iControl)
 					}
 					else
 					{
-						if (chaos_print_rng.GetBool()) Msg("Bad context for i %i %s\n", i, (g_ChaosEffects[i]->m_strGeneralName), nRememberRandom);
+						if (chaos_print_rng.GetBool()) Msg("Bad context for i %i %s\n", i, STRING(g_ChaosEffects[i]->m_strGeneralName), nRememberRandom);
 						candEffect->m_iContextStatusCache = C_STATUS_BAD;
 					}
 				}
 				else
 				{
-					if (chaos_print_rng.GetBool()) Msg("Bad activeness for i %i %s\n", i, (g_ChaosEffects[i]->m_strGeneralName), nRememberRandom);
+					if (chaos_print_rng.GetBool()) Msg("Bad activeness for i %i %s\n", i, STRING(g_ChaosEffects[i]->m_strGeneralName), nRememberRandom);
 				}
 				if (!bGoodActiveness || !bGoodContext)
 				{
@@ -6053,13 +6053,13 @@ bool CChaosEffect::WasShufflePicked()
 			}
 			if (g_iShufflePicked[j] == m_nID)
 			{
-				if (chaos_shuffle_debug.GetBool()) Msg("effect %i, %s skipped for being already picked\n", m_nID, (g_ChaosEffects[m_nID]->m_strGeneralName));
+				if (chaos_shuffle_debug.GetBool()) Msg("effect %i, %s skipped for being already picked\n", m_nID, STRING(g_ChaosEffects[m_nID]->m_strGeneralName));
 				return true;
 			}
-			if (chaos_shuffle_debug.GetBool()) Msg("effect in slot %i, %i, %s was not our target of %i, %s\n", j, g_iShufflePicked[j], (g_ChaosEffects[g_iShufflePicked[j]]->m_strGeneralName), m_nID, (g_ChaosEffects[m_nID]->m_strGeneralName));
+			if (chaos_shuffle_debug.GetBool()) Msg("effect in slot %i, %i, %s was not our target of %i, %s\n", j, g_iShufflePicked[j], STRING(g_ChaosEffects[g_iShufflePicked[j]]->m_strGeneralName), m_nID, STRING(g_ChaosEffects[m_nID]->m_strGeneralName));
 		}
 	}
-	if (chaos_shuffle_debug.GetBool()) Msg("effect %i, %s has not been picked\n", m_nID, (g_ChaosEffects[m_nID]->m_strGeneralName));
+	if (chaos_shuffle_debug.GetBool()) Msg("effect %i, %s has not been picked\n", m_nID, STRING(g_ChaosEffects[m_nID]->m_strGeneralName));
 	return false;
 }
 
@@ -6167,7 +6167,7 @@ void CHL2_Player::StartGivenEffect(int nID)
 {
 	Assert(nID != EFFECT_ERROR);
 	g_flNextEffectRem = chaos_effect_interval.GetFloat();
-	Msg("Effect %s\n", (g_ChaosEffects[nID]->m_strHudName));
+	Msg("Effect %s\n", STRING(g_ChaosEffects[nID]->m_strHudName));
 	g_ChaosEffects[nID]->m_bActive = true;
 	//add to list of picked effects if shuffle mode is on
 	if (chaos_shuffle_mode.GetBool())
@@ -6176,7 +6176,7 @@ void CHL2_Player::StartGivenEffect(int nID)
 		{
 			if (!g_iShufflePicked[j])
 			{
-				if (chaos_shuffle_debug.GetBool()) Msg("added effect %i, %s to picked list\n", nID, (g_ChaosEffects[nID]->m_strGeneralName));
+				if (chaos_shuffle_debug.GetBool()) Msg("added effect %i, %s to picked list\n", nID, STRING(g_ChaosEffects[nID]->m_strGeneralName));
 				g_iShufflePicked[j] = nID;
 				break;
 			}
