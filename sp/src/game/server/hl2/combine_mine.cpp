@@ -491,8 +491,9 @@ void CBounceBomb::BounceThink()
 				height = 0.1;
 		}
 
-		float time = sqrt( height / (0.5 * GetCurrentGravity()) );
-		float velocity = GetCurrentGravity() * time;
+		float flGravity = GetCurrentGravity() == 0 ? 600 : GetCurrentGravity();
+		float time = sqrt( height / (0.5 * flGravity) );
+		float velocity = flGravity * time;
 
 		// or you can just AddVelocity to the object instead of ApplyForce
 		float force = velocity * pPhysicsObject->GetMass();
@@ -553,8 +554,9 @@ void CBounceBomb::CavernBounceThink()
 				height = 0.1;
 		}
 
-		float time = sqrt( height / (0.5 * GetCurrentGravity()) );
-		float velocity = GetCurrentGravity() * time;
+		float flGravity = GetCurrentGravity() == 0 ? 600 : GetCurrentGravity();
+		float time = sqrt( height / (0.5 * flGravity) );
+		float velocity = flGravity * time;
 
 		// or you can just AddVelocity to the object instead of ApplyForce
 		float force = velocity * pPhysicsObject->GetMass();
