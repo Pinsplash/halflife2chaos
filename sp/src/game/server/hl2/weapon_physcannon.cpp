@@ -409,7 +409,7 @@ static void ComputePlayerMatrix( CBasePlayer *pPlayer, matrix3x4_t &out )
 	if ( !pPlayer )
 		return;
 
-	QAngle angles = pPlayer->EyeAngles();
+	QAngle angles = pPlayer->EyeAngles() + pPlayer->m_vOffsetedCrosshairDir;
 	Vector origin = pPlayer->EyePosition();
 	
 	// 0-360 / -180-180
@@ -697,7 +697,7 @@ QAngle CGrabController::TransformAnglesToPlayerSpace( const QAngle &anglesIn, CB
 	if ( m_bIgnoreRelativePitch )
 	{
 		matrix3x4_t test;
-		QAngle angleTest = pPlayer->EyeAngles();
+		QAngle angleTest = pPlayer->EyeAngles() + pPlayer->m_vOffsetedCrosshairDir;
 		angleTest.x = 0;
 		AngleMatrix( angleTest, test );
 		return TransformAnglesToLocalSpace( anglesIn, test );
@@ -710,7 +710,7 @@ QAngle CGrabController::TransformAnglesFromPlayerSpace( const QAngle &anglesIn, 
 	if ( m_bIgnoreRelativePitch )
 	{
 		matrix3x4_t test;
-		QAngle angleTest = pPlayer->EyeAngles();
+		QAngle angleTest = pPlayer->EyeAngles() + pPlayer->m_vOffsetedCrosshairDir;
 		angleTest.x = 0;
 		AngleMatrix( angleTest, test );
 		return TransformAnglesToWorldSpace( anglesIn, test );
@@ -1148,7 +1148,7 @@ void CPlayerPickupController::Use( CBaseEntity *pActivator, CBaseEntity *pCaller
 		{
 			Shutdown( true );
 			Vector vecLaunch;
-			m_pPlayer->EyeVectors( &vecLaunch );
+			AngleVectors(m_pPlayer->EyeAngles() + m_pPlayer->m_vOffsetedCrosshairDir, &vecLaunch);
 			// JAY: Scale this with mass because some small objects really go flying
 			float massFactor = clamp( pPhys->GetMass(), 0.5, 15 );
 			massFactor = RemapVal( massFactor, 0.5, 15, 0.5, 4 );
@@ -2121,12 +2121,12 @@ void CWeaponPhysCannon::PrimaryAttack( void )
 	if ( pOwner == NULL )
 		return;
 
+	Vector forward;
+	AngleVectors(pOwner->EyeAngles() + pOwner->m_vOffsetedCrosshairDir, &forward);
+
 	if( m_bActive )
 	{
 		// Punch the object being held!!
-		Vector forward;
-		pOwner->EyeVectors( &forward );
-
 		// Validate the item is within punt range
 		CBaseEntity *pHeld = m_grabController.GetAttached();
 		Assert( pHeld != NULL );
@@ -2153,9 +2153,6 @@ void CWeaponPhysCannon::PrimaryAttack( void )
 	// If not active, just issue a physics punch in the world.
 	m_flNextPrimaryAttack = gpGlobals->curtime + 0.5f;
 
-	Vector forward;
-	pOwner->EyeVectors( &forward );
-
 	// NOTE: Notice we're *not* using the mega tracelength here
 	// when you have the mega cannon. Punting has shorter range.
 	Vector start, end;
@@ -2165,6 +2162,8 @@ void CWeaponPhysCannon::PrimaryAttack( void )
 
 	trace_t tr;
 	UTIL_PhyscannonTraceHull( start, end, -Vector(8,8,8), Vector(8,8,8), pOwner, &tr );
+	NDebugOverlay::Line(start, tr.endpos, 255, 255, 255, true, 10);
+	NDebugOverlay::Cross3D(tr.endpos, 10, 255, 255, 255, true, 10);
 	bool bValid = true;
 	CBaseEntity *pEntity = tr.m_pEnt;
 	if ( tr.fraction == 1 || !tr.m_pEnt || tr.m_pEnt->IsEFlagSet( EFL_NO_PHYSCANNON_INTERACTION ) )
@@ -2479,7 +2478,7 @@ bool CWeaponPhysCannon::AttachObject( CBaseEntity *pObject, const Vector &vPosit
 void CWeaponPhysCannon::FindObjectTrace( CBasePlayer *pPlayer, trace_t *pTraceResult )
 {
 	Vector forward;
-	pPlayer->EyeVectors( &forward );
+	AngleVectors(pPlayer->EyeAngles() + pPlayer->m_vOffsetedCrosshairDir, &forward);
 
 	// Setup our positions
 	Vector	start = pPlayer->Weapon_ShootPosition();
@@ -2530,9 +2529,9 @@ CWeaponPhysCannon::FindObjectResult_t CWeaponPhysCannon::FindObject( void )
 			bPull = true;
 		}
 	}
-	
+
 	Vector forward;
-	pPlayer->EyeVectors( &forward );
+	AngleVectors(pPlayer->EyeAngles() + pPlayer->m_vOffsetedCrosshairDir, &forward);
 
 	// Setup our positions
 	Vector	start = pPlayer->Weapon_ShootPosition();
@@ -2757,7 +2756,7 @@ bool CGrabController::UpdateObject( CBasePlayer *pPlayer, float flError )
 		return false;
 	}
 	Vector forward, right, up;
-	QAngle playerAngles = pPlayer->EyeAngles();
+	QAngle playerAngles = pPlayer->EyeAngles() + pPlayer->m_vOffsetedCrosshairDir;
 	AngleVectors(playerAngles, &forward, &right, &up);
 	if ( HL2GameRules()->MegaPhyscannonActive() )
 	{
