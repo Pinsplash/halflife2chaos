@@ -117,3 +117,4 @@ sp/src/utils/vtfdiff/Debug/vtfdiff.exe
 sp/src/utils/vvis_launcher/Debug/vvis.exe
 /sp/src/.vs
 *.user
+server_blacklist.txt
