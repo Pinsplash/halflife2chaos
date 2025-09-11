@@ -9,8 +9,11 @@
 #include "ai_basenpc.h"
 #include "npcevent.h"
 
-#define	HARPOON_RANGE	50.0f
-#define	HARPOON_REFIRE	0.8f
+ConVar sk_harpoon_refire("sk_harpoon_refire", "0.8");
+ConVar sk_harpoon_dmg("sk_harpoon_dmg", "100");
+ConVar sk_harpoon_range("sk_harpoon_range", "50");
+ConVar sk_harpoon_attack_delay_plr("sk_harpoon_attack_delay_plr", "0.5");
+ConVar sk_harpoon_lead_time("sk_harpoon_lead_time", "0.9");
 
 //-----------------------------------------------------------------------------
 // Purpose: Old Man Harpoon - Lost Coast.
@@ -22,20 +25,25 @@ public:
 	DECLARE_SERVERCLASS();
 	DECLARE_DATADESC();	
 	DECLARE_ACTTABLE();
+	CNetworkVar(float, m_flAttackTime);
 	virtual int		CapabilitiesGet(void);
 	float		GetDamageForActivity(Activity hitActivity);
 	virtual int WeaponMeleeAttack1Condition(float flDot, float flDist);
 	void HandleAnimEventMeleeHit(animevent_t *pEvent, CBaseCombatCharacter *pOperator);
 	virtual void Operator_HandleAnimEvent(animevent_t *pEvent, CBaseCombatCharacter *pOperator);
-	virtual float		GetRange(void)		{ return	HARPOON_RANGE; }
-	virtual float		GetFireRate(void)		{ return	HARPOON_REFIRE; }
+	virtual float		GetRange(void)		{ return	sk_harpoon_range.GetFloat(); }
+	virtual float		GetFireRate(void)		{ return	sk_harpoon_refire.GetFloat(); }
+	void		PrimaryAttack(void);
 	void		SecondaryAttack(void)	{ return; }
+	bool CanHolster(void);
+	void ItemPostFrame(void);
 };
 
 IMPLEMENT_SERVERCLASS_ST( CWeaponOldManHarpoon, DT_WeaponOldManHarpoon )
 END_SEND_TABLE()
 
 BEGIN_DATADESC( CWeaponOldManHarpoon )
+DEFINE_FIELD(m_flAttackTime, FIELD_TIME),
 END_DATADESC()
 
 LINK_ENTITY_TO_CLASS( weapon_oldmanharpoon, CWeaponOldManHarpoon );
@@ -57,9 +65,32 @@ int CWeaponOldManHarpoon::CapabilitiesGet()
 }
 float CWeaponOldManHarpoon::GetDamageForActivity(Activity hitActivity)
 {
-	return 100;
+	return sk_harpoon_dmg.GetFloat();
 }
-ConVar sk_harpoon_lead_time("sk_harpoon_lead_time", "0.9");
+void CWeaponOldManHarpoon::ItemPostFrame(void)
+{
+	if (m_flAttackTime && gpGlobals->curtime > m_flAttackTime)
+	{
+		Swing(false);
+		m_flAttackTime = 0;
+	}
+	BaseClass::ItemPostFrame();
+}
+
+void CWeaponOldManHarpoon::PrimaryAttack(void)
+{
+	if (m_flAttackTime)
+		return;
+	m_flAttackTime = gpGlobals->curtime + sk_harpoon_attack_delay_plr.GetFloat();
+}
+
+bool CWeaponOldManHarpoon::CanHolster(void)
+{
+	if (m_flAttackTime)
+		return false;
+
+	return BaseClass::CanHolster();
+}
 
 int CWeaponOldManHarpoon::WeaponMeleeAttack1Condition(float flDot, float flDist)
 {
@@ -128,7 +159,7 @@ void CWeaponOldManHarpoon::HandleAnimEventMeleeHit(animevent_t *pEvent, CBaseCom
 	}
 	trace_t traceHit;
 	int iDamageType = DMG_SLASH | DMG_NEVERGIB | DMG_PREVENT_PHYSICS_FORCE;
-	CTakeDamageInfo info(GetOwner(), GetOwner(), 100, iDamageType);
+	CTakeDamageInfo info(GetOwner(), GetOwner(), sk_harpoon_dmg.GetFloat(), iDamageType);
 	Vector vecEnd;
 	VectorMA(pOperator->Weapon_ShootPosition(), GetRange(), vecDirection, vecEnd);
 	UTIL_TraceLine(pOperator->Weapon_ShootPosition(), vecEnd, MASK_SHOT_HULL, GetOwner(), COLLISION_GROUP_NONE, &traceHit);
