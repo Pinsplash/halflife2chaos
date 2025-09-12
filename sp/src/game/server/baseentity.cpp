@@ -1417,7 +1417,7 @@ int CBaseEntity::OnTakeDamage( const CTakeDamageInfo &info )
 	// figure momentum add (don't let hurt brushes or other triggers move player)
 
 	// physics objects have their own calcs for this: (don't let fire move things around!)
-	if ( !IsEFlagSet( EFL_NO_DAMAGE_FORCES ) )
+	if ( !IsEFlagSet( EFL_NO_DAMAGE_FORCES ) && (info.GetDamageType() & DMG_PREVENT_PHYSICS_FORCE) == 0)
 	{
 		if ( ( GetMoveType() == MOVETYPE_VPHYSICS ) )
 		{
@@ -4407,7 +4407,7 @@ bool CBaseEntity::IsInAnyTeam( void ) const
 //-----------------------------------------------------------------------------
 // Purpose: Returns the type of damage that this entity inflicts.
 //-----------------------------------------------------------------------------
-int CBaseEntity::GetDamageType() const
+int CBaseEntity::GetDamageType()
 {
 	return DMG_GENERIC;
 }

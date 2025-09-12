@@ -153,8 +153,8 @@ void CBaseHLBludgeonWeapon::Hit( trace_t &traceHit, Activity nHitActivity, bool 
 		Vector hitDirection;
 		pPlayer->EyeVectors( &hitDirection, NULL, NULL );
 		VectorNormalize( hitDirection );
-
-		CTakeDamageInfo info( GetOwner(), GetOwner(), GetDamageForActivity( nHitActivity ), DMG_CLUB );
+		
+		CTakeDamageInfo info( GetOwner(), GetOwner(), GetDamageForActivity( nHitActivity ), GetDamageType() );
 
 		if( pPlayer && pHitEntity->IsNPC() )
 		{
@@ -162,7 +162,7 @@ void CBaseHLBludgeonWeapon::Hit( trace_t &traceHit, Activity nHitActivity, bool 
 			info.AdjustPlayerDamageInflictedForSkillLevel();
 		}
 
-		CalculateMeleeDamageForce( &info, hitDirection, traceHit.endpos );
+		CalculateMeleeDamageForce( &info, hitDirection, traceHit.endpos, GetForceScale());
 
 		pHitEntity->DispatchTraceAttack( info, hitDirection, &traceHit ); 
 		ApplyMultiDamage();

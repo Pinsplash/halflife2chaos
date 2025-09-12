@@ -31,6 +31,7 @@ public:
 
 	void		Spawn();
 
+	virtual int GetDamageType() { return DMG_CLUB; }
 	float		GetRange( void )		{ return STUNSTICK_RANGE; }
 	float		GetFireRate( void )		{ return STUNSTICK_REFIRE; }
 

@@ -36,7 +36,7 @@ public:
 
 	float		GetRange( void )		{	return	CROWBAR_RANGE;	}
 	float		GetFireRate( void )		{	return	CROWBAR_REFIRE;	}
-
+	virtual int GetDamageType() { return DMG_CLUB; }
 	void		AddViewKick( void );
 	float		GetDamageForActivity( Activity hitActivity );
 

@@ -50,6 +50,7 @@ protected:
 	void			Swing( int bIsSecondary );
 	void			Hit( trace_t &traceHit, Activity nHitActivity, bool bIsSecondary );
 	Activity		ChooseIntersectionPointAndActivity( trace_t &hitTrace, const Vector &mins, const Vector &maxs, CBasePlayer *pOwner );
+	virtual float	GetForceScale() { return 1; }
 };
 
 #endif

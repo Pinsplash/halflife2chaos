@@ -1170,7 +1170,7 @@ public:
 	void			CollisionRulesChanged();
 
 	// Damage accessors
-	virtual int		GetDamageType() const;
+	virtual int		GetDamageType();
 	virtual float	GetDamage() { return 0; }
 	virtual void	SetDamage(float flDamage) {}
 
