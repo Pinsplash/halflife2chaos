@@ -390,8 +390,9 @@ bool CAI_Navigator::FindPath( const AI_NavGoal_t &goal, unsigned flags )
 		Assert( goal.pTarget == AIN_DEF_TARGET || goal.pTarget == pPathTarget );
 
 		// Set the goal offset
-		if ( goal.dest != AIN_NO_DEST )
-			pPath->SetTargetOffset( goal.dest );
+		//what the hell was valve doing here? this was causing ichthyosaur to try to attack player at essentially double their real height
+		//if ( goal.dest != AIN_NO_DEST )
+			//pPath->SetTargetOffset( goal.dest );
 
 		// We're not setting the goal position here because
 		// it's going to be computed + set in DoFindPath.

@@ -11,6 +11,7 @@
 #include "ai_default.h"
 #include "ai_schedule.h"
 #include "ai_hull.h"
+#include "ai_route.h"
 #include "ai_interactions.h"
 #include "ai_navigator.h"
 #include "ai_motor.h"
@@ -35,13 +36,14 @@ ConVar	sk_ichthyosaur_melee_dmg( "sk_ichthyosaur_melee_dmg", "0" );
 #define	ICHTHYOSAUR_MODEL	"models/ichthyosaur.mdl"
 
 #define	ICH_HEIGHT_PREFERENCE	16.0f
-#define	ICH_DEPTH_PREFERENCE	8.0f
+#define	ICH_DEPTH_PREFERENCE	32.0f
 
 #define	ICH_WAYPOINT_DISTANCE	64.0f
 
 #define	ICH_AE_BITE				11
 #define	ICH_AE_BITE_START		12
 
+#define	ICH_LAND_SPEED			25
 #define	ICH_SWIM_SPEED_WALK		150
 #define	ICH_SWIM_SPEED_RUN		500
 
@@ -78,7 +80,6 @@ public:
 
 	void	Precache( void );
 	void	Spawn( void );
-	void	MoveFlyExecute( CBaseEntity *pTargetEnt, const Vector & vecDir, float flDistance, float flInterval );
 	void	HandleAnimEvent( animevent_t *pEvent );
 	void	PrescheduleThink( void );
 	bool	OverrideMove( float flInterval );
@@ -180,6 +181,7 @@ enum IchSchedules
 	SCHED_ICH_DROWN_VICTIM,
 	SCHED_ICH_MELEE_ATTACK1,
 	SCHED_ICH_THRASH,
+	SCHED_ICH_BEACHED,
 };
 
 //Tasks
@@ -188,6 +190,7 @@ enum IchTasks
 	TASK_ICH_GET_PATH_TO_RANDOM_NODE = LAST_SHARED_TASK,
 	TASK_ICH_GET_PATH_TO_DROWN_NODE,
 	TASK_ICH_THRASH_PATH,
+	TASK_ICH_THRASH_BEACHED,
 };
 
 //Activities
@@ -211,11 +214,13 @@ void CNPC_Ichthyosaur::InitCustomSchedules( void )
 	ADD_CUSTOM_SCHEDULE( CNPC_Ichthyosaur,	SCHED_ICH_DROWN_VICTIM );
 	ADD_CUSTOM_SCHEDULE( CNPC_Ichthyosaur,	SCHED_ICH_MELEE_ATTACK1 );
 	ADD_CUSTOM_SCHEDULE( CNPC_Ichthyosaur,	SCHED_ICH_THRASH );
+	ADD_CUSTOM_SCHEDULE(CNPC_Ichthyosaur, SCHED_ICH_BEACHED);
 	
 	//Tasks
 	ADD_CUSTOM_TASK( CNPC_Ichthyosaur,		TASK_ICH_GET_PATH_TO_RANDOM_NODE );
 	ADD_CUSTOM_TASK( CNPC_Ichthyosaur,		TASK_ICH_GET_PATH_TO_DROWN_NODE );
 	ADD_CUSTOM_TASK( CNPC_Ichthyosaur,		TASK_ICH_THRASH_PATH );
+	ADD_CUSTOM_TASK(CNPC_Ichthyosaur, TASK_ICH_THRASH_BEACHED);
 
 	//Conditions	ADD_CUSTOM_CONDITION( CNPC_CombineGuard,	COND_ANTLIONGRUB_HEARD_SQUEAL );
 
@@ -230,6 +235,7 @@ void CNPC_Ichthyosaur::InitCustomSchedules( void )
 	AI_LOAD_SCHEDULE( CNPC_Ichthyosaur,	SCHED_ICH_DROWN_VICTIM );
 	AI_LOAD_SCHEDULE( CNPC_Ichthyosaur,	SCHED_ICH_MELEE_ATTACK1 );
 	AI_LOAD_SCHEDULE( CNPC_Ichthyosaur,	SCHED_ICH_THRASH );
+	AI_LOAD_SCHEDULE(CNPC_Ichthyosaur, SCHED_ICH_BEACHED);
 }
 
 LINK_ENTITY_TO_CLASS( npc_ichthyosaur, CNPC_Ichthyosaur );
@@ -352,15 +358,50 @@ int CNPC_Ichthyosaur::SelectSchedule( void )
 //-----------------------------------------------------------------------------
 bool CNPC_Ichthyosaur::OverrideMove( float flInterval )
 {
+	Vector moveGoal = vec3_origin;
+
+	if (GetNavigator()->GetPath()->GetCurWaypoint())
+		moveGoal = GetNavigator()->GetCurWaypointPos();
+
+	if (IsCurSchedule(SCHED_ICH_MELEE_ATTACK1, false))
+		moveGoal = GetEnemyLKP();
+
+	if (moveGoal == vec3_origin)
+		return false;
+
+	IchthyosaurMoveType_t eMoveType = (GetNavigator()->CurWaypointIsGoal()) ? ICH_MOVETYPE_ARRIVE : ICH_MOVETYPE_SEEK;
+
 	m_flGroundSpeed = GetGroundSpeed();
 
-	if ( m_bHasMoveTarget )
+	//See if we can move directly to our goal
+	if ((GetEnemy() != NULL) && (GetNavigator()->GetGoalTarget() == (CBaseEntity*)GetEnemy()))
 	{
-		DoMovement( flInterval, m_vecLastMoveTarget, ICH_MOVETYPE_ARRIVE );
+		trace_t	tr;
+		Vector vEnemyVel = GetEnemy()->GetSmoothedVelocity();
+		vEnemyVel.z = 0;
+		Vector	goalPos = GetEnemy()->GetAbsOrigin() + (vEnemyVel * 0.5f);
+
+		AI_TraceHull(GetAbsOrigin(), goalPos, GetHullMins(), GetHullMaxs(), MASK_NPCSOLID, GetEnemy(), COLLISION_GROUP_NONE, &tr);
+
+		if (tr.fraction == 1.0f)
+		{
+			moveGoal = tr.endpos;
+		}
 	}
-	else
+
+	//Move
+	DoMovement(flInterval, moveGoal, eMoveType);
+
+	AI_ProgressFlyPathParams_t params(MASK_NPCSOLID);
+	params.strictPointTolerance = GetNavigator()->GetGoalTolerance();
+	params.SetCurrent(GetEnemy(), false);
+	AI_NavPathProgress_t progress = GetNavigator()->ProgressFlyPath(params);
+
+	switch (progress)
 	{
-		DoMovement( flInterval, GetLocalOrigin(), ICH_MOVETYPE_ARRIVE );
+	case AINPP_COMPLETE:
+		TaskMovementComplete();
+		break;
 	}
 	return true;
 }
@@ -930,43 +971,6 @@ void CNPC_Ichthyosaur::ClampSteer(Vector &SteerAbs, Vector &SteerRel, Vector &fo
 
 //-----------------------------------------------------------------------------
 // Purpose: 
-// Input  : *pTargetEnt - 
-//			vecDir - 
-//			flDistance - 
-//			flInterval - 
-//-----------------------------------------------------------------------------
-void CNPC_Ichthyosaur::MoveFlyExecute( CBaseEntity *pTargetEnt, const Vector &vecDir, float flDistance, float flInterval )
-{
-	IchthyosaurMoveType_t eMoveType = ( GetNavigator()->CurWaypointIsGoal() ) ? ICH_MOVETYPE_ARRIVE : ICH_MOVETYPE_SEEK;
-
-	m_flGroundSpeed = GetGroundSpeed();
-
-	Vector	moveGoal = GetNavigator()->GetCurWaypointPos();
-
-	//See if we can move directly to our goal
-	if ( ( GetEnemy() != NULL ) && ( GetNavigator()->GetGoalTarget() == (CBaseEntity *) GetEnemy() ) )
-	{
-		trace_t	tr;
-		Vector	goalPos = GetEnemy()->GetAbsOrigin() + ( GetEnemy()->GetSmoothedVelocity() * 0.5f );
-
-		AI_TraceHull( GetAbsOrigin(), goalPos, GetHullMins(), GetHullMaxs(), MASK_NPCSOLID, GetEnemy(), COLLISION_GROUP_NONE, &tr );
-
-		if ( tr.fraction == 1.0f )
-		{
-			moveGoal = tr.endpos;
-		}
-	}
-
-	//Move
-	DoMovement( flInterval, moveGoal, eMoveType );
-
-	//Save the info from that run
-	m_vecLastMoveTarget	= moveGoal;
-	m_bHasMoveTarget	= true;
-}
-
-//-----------------------------------------------------------------------------
-// Purpose: 
 // Input  : *pEntity - 
 // Output : Returns true on success, false on failure.
 //-----------------------------------------------------------------------------
@@ -987,18 +991,25 @@ bool CNPC_Ichthyosaur::FVisible( CBaseEntity *pEntity, int traceMask, CBaseEntit
 //-----------------------------------------------------------------------------
 int CNPC_Ichthyosaur::MeleeAttack1Conditions( float flDot, float flDist )
 {
-	Vector	predictedDir	= ( (GetEnemy()->GetAbsOrigin()+(GetEnemy()->GetSmoothedVelocity())) - GetAbsOrigin() );	
-	float	flPredictedDist = VectorNormalize( predictedDir );
+	//this would try to aim ahead of the target because the attack takes time
+	//sometimes gave weird results, not too important?
+	//Vector	predictedDir	= ( (GetEnemy()->GetAbsOrigin()+(GetEnemy()->GetSmoothedVelocity())) - GetAbsOrigin() );
+	Vector	predictedDir = GetEnemy()->GetAbsOrigin() - GetAbsOrigin();
+	Vector predictedDir2D = predictedDir;
+	float	flPredictedDist = VectorNormalize(predictedDir);
 	
 	Vector	vBodyDir;
 	GetVectors( &vBodyDir, NULL, NULL );
 
-	float	flPredictedDot	= DotProduct( predictedDir, vBodyDir );
+	//NPC code appears to not have any methods for turning pitch, so i've made this operation 2d
+	predictedDir2D.z = vBodyDir.z = 0;
+
+	float	flPredictedDot	= DotProduct(predictedDir2D, vBodyDir );
 
 	if ( flPredictedDot < 0.8f )
 		return COND_NOT_FACING_ATTACK;
 
-	if ( ( flPredictedDist > ( GetAbsVelocity().Length() * 0.5f) ) && ( flDist > 128.0f ) )
+	if ( ( flPredictedDist > ( GetAbsVelocity().Length() * 0.5f) ) && ( flDist > 80 ) )
 		return COND_TOO_FAR_TO_ATTACK;
 
 	return COND_CAN_MELEE_ATTACK1;
@@ -1036,7 +1047,7 @@ void CNPC_Ichthyosaur::Bite( void )
 	CBaseEntity *pHurt;
 	
 	//FIXME: E3 HACK - Always damage bullseyes if we're scripted to hit them
-	if ( ( GetEnemy() != NULL ) && ( GetEnemy()->Classify() == CLASS_BULLSEYE ) )
+	if ((GetEnemy() &&  GetEnemy()->Classify() == CLASS_BULLSEYE) || MeleeAttack1Conditions(0, EnemyDistance(GetEnemy())) == COND_CAN_MELEE_ATTACK1)
 	{
 		pHurt = GetEnemy();
 	}
@@ -1179,17 +1190,22 @@ void CNPC_Ichthyosaur::PrescheduleThink( void )
 			
 			if ( Beached() )
 			{
-				SetSchedule( SCHED_ICH_THRASH );
+				if (!IsCurSchedule(SCHED_ICH_MELEE_ATTACK1, false))
+					SetActivity((Activity)ACT_ICH_THRASH);
 
-				Vector vecNewVelocity = GetAbsVelocity();
-				vecNewVelocity[2] = 8.0f;
-				SetAbsVelocity( vecNewVelocity );
+				RemoveFlag(FL_FLY);
+				SetNavType(NAV_GROUND);
 			}
 		}
 		else
 		{
 			//TODO: Wake effects
 		}
+	}
+	else
+	{
+		AddFlag(FL_FLY);
+		SetNavType(NAV_FLY);
 	}
 
 	//If we have a victim, update them
@@ -1283,6 +1299,9 @@ void CNPC_Ichthyosaur::ReleaseVictim( void )
 //-----------------------------------------------------------------------------
 float CNPC_Ichthyosaur::GetGroundSpeed( void )
 {
+	if (Beached())
+		return ICH_LAND_SPEED;
+
 	if ( m_flHoldTime > gpGlobals->curtime )
 		return	ICH_SWIM_SPEED_WALK/2.0f;
 
@@ -1321,6 +1340,11 @@ void CNPC_Ichthyosaur::StartTask( const Task_t *pTask )
 	{
 	case TASK_ICH_THRASH_PATH:
 		GetNavigator()->SetMovementActivity( (Activity) ACT_ICH_THRASH );
+		TaskComplete();
+		break;
+
+	case TASK_ICH_THRASH_BEACHED:
+		SetActivity((Activity)ACT_ICH_THRASH);
 		TaskComplete();
 		break;
 
@@ -1436,9 +1460,9 @@ AI_DEFINE_SCHEDULE
 
 	"	Tasks"
 	"		TASK_SET_FAIL_SCHEDULE			SCHEDULE:SCHED_ICH_PATROL_WALK"
-	"		TASK_SET_TOLERANCE_DISTANCE		64"
 	"		TASK_SET_GOAL					GOAL:ENEMY"
 	"		TASK_GET_PATH_TO_GOAL			PATH:TRAVEL"
+	"		TASK_SET_TOLERANCE_DISTANCE		80"
 	"		TASK_RUN_PATH					0"
 	"		TASK_WAIT_FOR_MOVEMENT			0"
 	""
@@ -1555,6 +1579,21 @@ AI_DEFINE_SCHEDULE
 	"		TASK_ICH_GET_PATH_TO_RANDOM_NODE	64"
 	"		TASK_ICH_THRASH_PATH				0"
 	"		TASK_WAIT_FOR_MOVEMENT				0"
+	""
+	"	Interrupts"
+);
+
+//==================================================
+// SCHED_ICH_BEACHED
+//==================================================
+
+AI_DEFINE_SCHEDULE
+(
+	SCHED_ICH_BEACHED,
+
+	"	Tasks"
+	"		TASK_SET_FAIL_SCHEDULE				SCHEDULE:SCHED_COMBAT_FACE"
+	"		TASK_ICH_THRASH_BEACHED				0"
 	""
 	"	Interrupts"
 );
