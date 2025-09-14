@@ -2229,6 +2229,8 @@ void CHL2_Player::PlayerRunCommand(CUserCmd *ucmd, IMoveHelper *moveHelper)
 }
 void CHL2_Player::StartGame()
 {
+	if (gpGlobals->eLoadType == MapLoad_NewGame || gpGlobals->eLoadType == MapLoad_Background)
+		PopulateEffects();
 	gEntList.AddListenerEntity(this);
 	const char *pMapName = STRING(gpGlobals->mapname);
 	//scripting of canals 11 requires an airboat to be present, give player a new one if they came here without one
@@ -2448,7 +2450,6 @@ void CHL2_Player::Spawn(void)
 			g_EventQueue.AddEvent(pAutosave, "Save", 1.0, NULL, NULL);
 			g_EventQueue.AddEvent(pAutosave, "Kill", 1.1, NULL, NULL);
 		}
-		PopulateEffects();
 		engine->ClientCommand(engine->PEntityOfEntIndex(1), "exec groups\n");
 	}
 #ifndef HL2MP
