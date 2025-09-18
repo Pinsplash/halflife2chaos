@@ -120,3 +120,5 @@ Only English strings are available. Contributions for other languages are welcom
 * ntrf
 * metalisai
 * Owlrazum
+
+Anything from Half-Life 2 Chaos is free to use in other mods. That's what open source is for!
