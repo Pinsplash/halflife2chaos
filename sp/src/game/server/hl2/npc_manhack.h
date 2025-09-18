@@ -147,10 +147,10 @@ public:
 	void			InputUnpack( inputdata_t &inputdata );
 
 	// 	CDefaultPlayerPickupVPhysics
-	virtual void	OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason );
+	virtual void	OnPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason );
 	virtual void	OnPhysGunDrop( CBasePlayer *pPhysGunUser, PhysGunDrop_t Reason );
 
-	CBasePlayer *HasPhysicsAttacker( float dt );
+	CBaseCombatCharacter* HasPhysicsAttacker( float dt );
 
 	float GetMaxEnginePower();
 
@@ -194,7 +194,7 @@ private:
 	void ComputeSliceBounceVelocity( CBaseEntity *pHitEntity, trace_t &tr );
 
 	// Take damage from being thrown by a physcannon 
-	void TakeDamageFromPhyscannon( CBasePlayer *pPlayer );
+	void TakeDamageFromPhyscannon(CBaseCombatCharacter* pPlayer );
 
 	// Take damage from a vehicle: 
 	void TakeDamageFromVehicle( int index, gamevcollisionevent_t *pEvent );
@@ -235,7 +235,7 @@ private:
 	int				m_nLastSpinSound;
 
 	// physics influence
-	CHandle<CBasePlayer>	m_hPhysicsAttacker;
+	CHandle<CBaseCombatCharacter>	m_hPhysicsAttacker;
 	float					m_flLastPhysicsInfluenceTime;
 
 	// Death

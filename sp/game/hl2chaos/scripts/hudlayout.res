@@ -321,8 +321,8 @@
 		"fieldName" "HudPredictionDump"
 		"visible" "1"
 		"enabled" "1"
-		"wide"	 "640"
-		"tall"	 "480"
+		"wide"	 "f0"
+		"tall"	 "f0"
 	}
 	HudHintDisplay
 	{

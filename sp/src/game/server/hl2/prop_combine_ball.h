@@ -37,7 +37,7 @@ public:
 	virtual void UpdateOnRemove();
 	void StopLoopingSounds();
 
-	virtual void OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason );
+	virtual void OnPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason );
 	virtual void OnPhysGunDrop( CBasePlayer *pPhysGunUser, PhysGunDrop_t Reason );
 	virtual void VPhysicsCollision( int index, gamevcollisionevent_t *pEvent );
 
@@ -117,7 +117,7 @@ public:
 
 private:
 
-	void SetPlayerLaunched( CBasePlayer *pOwner );
+	void SetPlayerLaunched(CBaseCombatCharacter* pOwner );
 
 	float GetBallHoldDissolveTime();
 	float GetBallHoldSoundRampTime();

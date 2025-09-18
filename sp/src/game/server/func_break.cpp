@@ -1182,7 +1182,7 @@ int CBreakable::DrawDebugTextOverlays(void)
 // Purpose: Keep track of physgun influence
 //-----------------------------------------------------------------------------
 
-void CBreakable::OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason )
+void CBreakable::OnPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason )
 {
 	m_hPhysicsAttacker = pPhysGunUser;
 	m_flLastPhysicsInfluenceTime = gpGlobals->curtime;
@@ -1194,7 +1194,7 @@ void CBreakable::OnPhysGunDrop( CBasePlayer *pPhysGunUser, PhysGunDrop_t reason 
 	m_flLastPhysicsInfluenceTime = gpGlobals->curtime;
 }
 
-CBasePlayer *CBreakable::HasPhysicsAttacker( float dt )
+CBaseCombatCharacter* CBreakable::HasPhysicsAttacker( float dt )
 {
 	if (gpGlobals->curtime - dt <= m_flLastPhysicsInfluenceTime)
 	{

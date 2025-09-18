@@ -74,11 +74,11 @@ public:
 #endif	// HL2_EPISODIC
 
 	// Player pickup
-	virtual void	OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason );
+	virtual void	OnPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason );
 	virtual void	OnPhysGunDrop( CBasePlayer *pPhysGunUser, PhysGunDrop_t Reason );
 	virtual bool	HasPreferredCarryAnglesForPlayer( CBasePlayer *pPlayer );
 	virtual QAngle	PreferredCarryAngles( void );
-	virtual bool	OnAttemptPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason );
+	virtual bool	OnAttemptPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason );
 
 	const char *GetTracerType( void ) { return "AR2Tracer"; }
 
@@ -104,7 +104,7 @@ public:
 	virtual Vector	GetAttackSpread( CBaseCombatWeapon *pWeapon, CBaseEntity *pTarget );
 
 	// Do we have a physics attacker?
-	CBasePlayer *HasPhysicsAttacker( float dt );
+	CBaseCombatCharacter* HasPhysicsAttacker( float dt );
 	bool IsHeldByPhyscannon( )	{ return VPhysicsGetObject() && (VPhysicsGetObject()->GetGameFlags() & FVPHYSICS_PLAYER_HELD); }
 
 	// Use functions
@@ -238,7 +238,7 @@ protected:
 	Vector	m_vecEnemyLKP;
 
 	// physics influence
-	CHandle<CBasePlayer>	m_hPhysicsAttacker;
+	CHandle<CBaseCombatCharacter>	m_hPhysicsAttacker;
 	float					m_flLastPhysicsInfluenceTime;
 
 	static const char		*m_pShotSounds[];

@@ -98,10 +98,10 @@ public:
 	void	BeginShutdownThink( void );
 
 public:
-	virtual bool OnAttemptPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason ) { return true; }
-	virtual void OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason );
+	virtual bool OnAttemptPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason ) { return true; }
+	virtual void OnPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason );
 	virtual void OnPhysGunDrop( CBasePlayer *pPhysGunUser, PhysGunDrop_t reason );
-	virtual	CBasePlayer *HasPhysicsAttacker( float dt );
+	virtual	CBaseCombatCharacter* HasPhysicsAttacker( float dt );
 	virtual bool ShouldPuntUseLaunchForces( PhysGunForce_t reason ) 
 	{ 
 		if ( reason == PHYSGUN_FORCE_LAUNCHED ) 
@@ -113,7 +113,7 @@ public:
 	virtual Vector PhysGunLaunchVelocity( const Vector &forward, float flMass ) { return vec3_origin; }
 
 protected:
-	void SetPhysicsAttacker( CBasePlayer *pEntity, float flTime );
+	void SetPhysicsAttacker(CBaseCombatCharacter* pEntity, float flTime );
 
 
 public:
@@ -134,7 +134,7 @@ public:
 	COutputEvent		m_onActivate;
 	COutputEvent		m_OnAwakened;
 
-	CHandle<CBasePlayer>	m_hPhysicsAttacker;
+	CHandle<CBaseCombatCharacter>	m_hPhysicsAttacker;
 	float					m_flLastPhysicsInfluenceTime;
 	EHANDLE					m_hLauncher;	// Entity that caused this cannister to launch
 

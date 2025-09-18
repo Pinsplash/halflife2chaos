@@ -436,7 +436,7 @@ void CNPC_Manhack::HitPhysicsObject( CBaseEntity *pOther )
 // Take damage from being thrown by a physcannon 
 //-----------------------------------------------------------------------------
 #define MANHACK_SMASH_SPEED 500.0	// How fast a manhack must slam into something to take full damage
-void CNPC_Manhack::TakeDamageFromPhyscannon( CBasePlayer *pPlayer )
+void CNPC_Manhack::TakeDamageFromPhyscannon(CBaseCombatCharacter* pPlayer )
 {
 	CTakeDamageInfo info;
 	info.SetDamageType( DMG_GENERIC );
@@ -548,12 +548,12 @@ void CNPC_Manhack::VPhysicsCollision( int index, gamevcollisionevent_t *pEvent )
 	int otherIndex = !index;
 	CBaseEntity *pHitEntity = pEvent->pEntities[otherIndex];
 
-	CBasePlayer *pPlayer = HasPhysicsAttacker( MANHACK_SMASH_TIME );
-	if( pPlayer )
+	CBaseCombatCharacter* pPhysAttacker = HasPhysicsAttacker( MANHACK_SMASH_TIME );
+	if(pPhysAttacker)
 	{
 		if (!pHitEntity)
 		{
-			TakeDamageFromPhyscannon( pPlayer );
+			TakeDamageFromPhyscannon(pPhysAttacker);
 			StopBurst( true );
 			return;
 		}
@@ -562,7 +562,7 @@ void CNPC_Manhack::VPhysicsCollision( int index, gamevcollisionevent_t *pEvent )
 		CRagdollProp *pRagdollProp = dynamic_cast<CRagdollProp*>(pHitEntity);
 		if (!pHitEntity->IsNPC() && (!pRagdollProp || pRagdollProp->GetKiller() != this))
 		{
-			TakeDamageFromPhyscannon( pPlayer );
+			TakeDamageFromPhyscannon(pPhysAttacker);
 			StopBurst( true );
 			return;
 		}
@@ -1505,10 +1505,10 @@ void CNPC_Manhack::Slice( CBaseEntity *pHitEntity, float flInterval, trace_t &tr
 	CTakeDamageInfo info( this, this, flDamage, DMG_SLASH );
 
 	// check for actual "ownership" of damage
-	CBasePlayer *pPlayer = HasPhysicsAttacker( MANHACK_SMASH_TIME );
-	if (pPlayer)
+	CBaseCombatCharacter* pPhysAttacker = HasPhysicsAttacker( MANHACK_SMASH_TIME );
+	if (pPhysAttacker)
 	{
-		info.SetAttacker( pPlayer );
+		info.SetAttacker(pPhysAttacker);
 	}
 
 	Vector dir = (tr.endpos - tr.startpos);
@@ -1713,12 +1713,12 @@ void CNPC_Manhack::CheckCollisions(float flInterval)
 	vecTraceDir *= flInterval;
 	if ( IsHeldByPhyscannon() )
 	{
-		CBasePlayer *pCarrier = HasPhysicsAttacker( FLT_MAX );
-		if ( pCarrier )
+		CBaseCombatCharacter * pPhysAttacker = HasPhysicsAttacker( FLT_MAX );
+		if (pPhysAttacker)
 		{
-			if ( pCarrier->CollisionProp()->CalcDistanceFromPoint( WorldSpaceCenter() ) < 30 )
+			if (pPhysAttacker->CollisionProp()->CalcDistanceFromPoint( WorldSpaceCenter() ) < 30 )
 			{
-				AngleVectors( pCarrier->EyeAngles(), &vecTraceDir, NULL, NULL );
+				AngleVectors(pPhysAttacker->EyeAngles(), &vecTraceDir, NULL, NULL );
 				vecTraceDir *= 40.0f;
 			}
 		}
@@ -2989,7 +2989,7 @@ void CNPC_Manhack::InputUnpack( inputdata_t &inputdata )
 // Input  : *pPhysGunUser - 
 //			reason - 
 //-----------------------------------------------------------------------------
-void CNPC_Manhack::OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason )
+void CNPC_Manhack::OnPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason )
 {
 	m_hPhysicsAttacker = pPhysGunUser;
 	m_flLastPhysicsInfluenceTime = gpGlobals->curtime;
@@ -3067,7 +3067,7 @@ void CNPC_Manhack::StartLoitering( const Vector &vecLoiterPosition )
 	SetCurrentVelocity( vec3_origin );
 }
 
-CBasePlayer *CNPC_Manhack::HasPhysicsAttacker( float dt )
+CBaseCombatCharacter* CNPC_Manhack::HasPhysicsAttacker( float dt )
 {
 	// If the player is holding me now, or I've been recently thrown
 	// then return a pointer to that player

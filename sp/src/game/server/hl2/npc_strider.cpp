@@ -4119,10 +4119,10 @@ void CNPC_Strider::VPhysicsShadowCollision( int index, gamevcollisionevent_t *pE
 	if ( !HasMemory( bits_MEMORY_PROVOKED ) )
 	{
 		// if the player threw this in the last 1 seconds
-		CBasePlayer *pPlayer = pEvent->pEntities[!index]->HasPhysicsAttacker( 1 );
-		if ( pPlayer )
+		CBaseCombatCharacter* pPhysAttacker = pEvent->pEntities[!index]->HasPhysicsAttacker( 1 );
+		if (pPhysAttacker)
 		{
-			GetEnemies()->ClearMemory( pPlayer );
+			GetEnemies()->ClearMemory(pPhysAttacker);
 			Remember( bits_MEMORY_PROVOKED );
 			SetCondition( COND_LIGHT_DAMAGE );
 		}
@@ -4137,10 +4137,10 @@ void CNPC_Strider::VPhysicsShadowCollision( int index, gamevcollisionevent_t *pE
 		CTakeDamageInfo dmgInfo( pOther, pOther, vec3_origin, damagePos, (m_iMaxHealth / 3) + 1, DMG_BLAST | DMG_PREVENT_PHYSICS_FORCE );
 
 		// FIXME: is there a better way for physics objects to keep track of what root entity responsible for them moving?
-		CBasePlayer *pPlayer = pOther->HasPhysicsAttacker( 1.0 );
-		if (pPlayer)
+		CBaseCombatCharacter* pPhysAttacker = pOther->HasPhysicsAttacker( 1.0 );
+		if (pPhysAttacker)
 		{
-			dmgInfo.SetAttacker( pPlayer );
+			dmgInfo.SetAttacker(pPhysAttacker);
 		}
 
 		// UNDONE: Find one near damagePos?

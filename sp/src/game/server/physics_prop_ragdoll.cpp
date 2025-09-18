@@ -345,7 +345,7 @@ void CRagdollProp::ModifyOrAppendCriteria( AI_CriteriaSet& set )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CRagdollProp::OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason )
+void CRagdollProp::OnPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason )
 {
 	m_hPhysicsAttacker = pPhysGunUser;
 	m_flLastPhysicsInfluenceTime = gpGlobals->curtime;
@@ -454,7 +454,7 @@ void CRagdollProp::OnPhysGunDrop( CBasePlayer *pPhysGunUser, PhysGunDrop_t Reaso
 //-----------------------------------------------------------------------------
 // Physics attacker
 //-----------------------------------------------------------------------------
-CBasePlayer *CRagdollProp::HasPhysicsAttacker( float dt )
+CBaseCombatCharacter* CRagdollProp::HasPhysicsAttacker( float dt )
 {
 	if (gpGlobals->curtime - dt <= m_flLastPhysicsInfluenceTime)
 	{

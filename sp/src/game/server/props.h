@@ -189,18 +189,18 @@ private:
 	CBaseEntity		*FindEnableMotionFixup();
 
 public:
-	virtual bool OnAttemptPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason );
-	virtual void OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason );
+	virtual bool OnAttemptPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason );
+	virtual void OnPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason );
 	virtual void OnPhysGunDrop( CBasePlayer *pPhysGunUser, PhysGunDrop_t reason );
 	virtual AngularImpulse	PhysGunLaunchAngularImpulse();
-	virtual	CBasePlayer *HasPhysicsAttacker( float dt );
+	virtual	CBaseCombatCharacter* HasPhysicsAttacker( float dt );
 
 #ifdef HL2_EPISODIC
 	void CreateFlare( float flLifetime );
 #endif //HL2_EPISODIC
 
 protected:
-	void SetPhysicsAttacker( CBasePlayer *pEntity, float flTime );
+	void SetPhysicsAttacker(CBaseCombatCharacter* pEntity, float flTime );
 	void CheckRemoveRagdolls();
 	
 private:
@@ -227,7 +227,7 @@ private:
 		PHYSGUN_ANIMATE_IS_POST_ANIMATING,
 	};
 
-	CHandle<CBasePlayer>	m_hPhysicsAttacker;
+	CHandle<CBaseCombatCharacter>	m_hPhysicsAttacker;
 	float					m_flLastPhysicsInfluenceTime;
 	bool					m_bBlockLOSSetByPropData;
 	bool					m_bIsWalkableSetByPropData;
@@ -354,7 +354,7 @@ public:
 
 	void EnableMotion( void );
 	bool CanBePickedUpByPhyscannon( void );
-	void OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason );
+	void OnPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason );
 	void OnPhysGunDrop( CBasePlayer *pPhysGunUser, PhysGunDrop_t reason );
 
 	bool GetPropDataAngles( const char *pKeyName, QAngle &vecAngles );

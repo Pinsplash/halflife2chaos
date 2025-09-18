@@ -175,7 +175,7 @@ int CPropVehicle::DrawDebugTextOverlays()
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-CBasePlayer *CPropVehicle::HasPhysicsAttacker( float dt )
+CBaseCombatCharacter* CPropVehicle::HasPhysicsAttacker( float dt )
 {
 	if (gpGlobals->curtime - dt <= m_flLastPhysicsInfluenceTime)
 	{
@@ -187,7 +187,7 @@ CBasePlayer *CPropVehicle::HasPhysicsAttacker( float dt )
 //-----------------------------------------------------------------------------
 // Purpose: Keep track of physgun influence
 //-----------------------------------------------------------------------------
-void CPropVehicle::OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason )
+void CPropVehicle::OnPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason )
 {
 	m_hPhysicsAttacker = pPhysGunUser;
 	m_flLastPhysicsInfluenceTime = gpGlobals->curtime;

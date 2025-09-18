@@ -85,7 +85,7 @@ public:
 	virtual QAngle	PreferredCarryAngles( void ) { return m_CarryAngles; }
 	virtual bool	HasPreferredCarryAnglesForPlayer( CBasePlayer *pPlayer ) { return true; }
 
-	virtual void OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason );
+	virtual void OnPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason );
 	virtual void OnPhysGunDrop( CBasePlayer *pPhysGunUser, PhysGunDrop_t Reason );
 	virtual Vector	PhysGunLaunchVelocity( const Vector &forward, float flMass );
 	virtual float	GetAutoAimRadius( void ) { return striderbuster_autoaim_radius.GetFloat(); }
@@ -108,7 +108,7 @@ public:
 
 private:
 
-	void	Launch( CBasePlayer *pPhysGunUser );
+	void	Launch(CBaseCombatCharacter* pPhysGunUser );
 	void	Detonate( void );
 	void	Shatter( CBaseEntity *pAttacker );
 	bool	StickToEntity( CBaseEntity *pOther );
@@ -782,7 +782,7 @@ int CWeaponStriderBuster::OnTakeDamage( const CTakeDamageInfo &info )
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-void CWeaponStriderBuster::OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason )
+void CWeaponStriderBuster::OnPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason )
 {
 	m_PickupTime = gpGlobals->curtime;
 	m_CarryAngles.Init( 45, 0, 0 );
@@ -792,10 +792,10 @@ void CWeaponStriderBuster::OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPi
 	}
 	else if ( reason == PUNTED_BY_CANNON )
 	{
-		Launch( pPhysGunUser );
+		Launch(pPhysGunUser);
 	}
 	
-	BaseClass::OnPhysGunPickup( pPhysGunUser, reason );
+	BaseClass::OnPhysGunPickup(pPhysGunUser, reason );
 }
 
 
@@ -820,7 +820,7 @@ void CWeaponStriderBuster::OnPhysGunDrop( CBasePlayer *pPhysGunUser, PhysGunDrop
 //-----------------------------------------------------------------------------
 // Fling the buster with the physcannon either via punt or launch.
 //-----------------------------------------------------------------------------
-void CWeaponStriderBuster::Launch( CBasePlayer *pPhysGunUser )
+void CWeaponStriderBuster::Launch(CBaseCombatCharacter* pPhysGunUser )
 {
 	if ( !HasSpawnFlags( SF_DONT_WEAPON_MANAGE ) )
 	{
@@ -857,8 +857,9 @@ void CWeaponStriderBuster::Launch( CBasePlayer *pPhysGunUser )
 
 	SetThink( &CWeaponStriderBuster::BusterFlyThink );
 	SetNextThink( gpGlobals->curtime );
-
-	gamestats->Event_WeaponFired( pPhysGunUser, true, GetClassname() );
+	CBasePlayer* pPlayerUser = ToBasePlayer(pPhysGunUser);
+	if (pPlayerUser)
+		gamestats->Event_WeaponFired(pPlayerUser, true, GetClassname() );
 }
 		
 

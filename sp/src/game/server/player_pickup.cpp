@@ -40,12 +40,12 @@ void Pickup_OnPhysGunDrop( CBaseEntity *pDroppedObject, CBasePlayer *pPlayer, Ph
 }
 
 
-void Pickup_OnPhysGunPickup( CBaseEntity *pPickedUpObject, CBasePlayer *pPlayer, PhysGunPickup_t reason )
+void Pickup_OnPhysGunPickup( CBaseEntity *pPickedUpObject, CBaseCombatCharacter* pOwner, PhysGunPickup_t reason )
 {
 	IPlayerPickupVPhysics *pPickup = dynamic_cast<IPlayerPickupVPhysics *>(pPickedUpObject);
 	if ( pPickup )
 	{
-		pPickup->OnPhysGunPickup( pPlayer, reason );
+		pPickup->OnPhysGunPickup(pOwner, reason );
 	}
 
 	// send phys gun pickup item event, but only in single player
@@ -60,12 +60,12 @@ void Pickup_OnPhysGunPickup( CBaseEntity *pPickedUpObject, CBasePlayer *pPlayer,
 	}
 }
 
-bool Pickup_OnAttemptPhysGunPickup( CBaseEntity *pPickedUpObject, CBasePlayer *pPlayer, PhysGunPickup_t reason )
+bool Pickup_OnAttemptPhysGunPickup( CBaseEntity *pPickedUpObject, CBaseCombatCharacter *pOwner, PhysGunPickup_t reason )
 {
 	IPlayerPickupVPhysics *pPickup = dynamic_cast<IPlayerPickupVPhysics *>(pPickedUpObject);
 	if ( pPickup )
 	{
-		return pPickup->OnAttemptPhysGunPickup( pPlayer, reason );
+		return pPickup->OnAttemptPhysGunPickup(pOwner, reason );
 	}
 	return true;
 }
@@ -81,12 +81,13 @@ CBaseEntity	*Pickup_OnFailedPhysGunPickup( CBaseEntity *pPickedUpObject, Vector 
 	return NULL;
 }
 
-bool Pickup_GetPreferredCarryAngles( CBaseEntity *pObject, CBasePlayer *pPlayer, matrix3x4_t &localToWorld, QAngle &outputAnglesWorldSpace )
+bool Pickup_GetPreferredCarryAngles( CBaseEntity *pObject, CBaseCombatCharacter *pOwner, matrix3x4_t &localToWorld, QAngle &outputAnglesWorldSpace )
 {
+	CBasePlayer* pPlayerOwner = ToBasePlayer(pOwner);
 	IPlayerPickupVPhysics *pPickup = dynamic_cast<IPlayerPickupVPhysics *>(pObject);
-	if ( pPickup )
+	if ( pPickup && pPlayerOwner)
 	{
-		if ( pPickup->HasPreferredCarryAnglesForPlayer( pPlayer ) )
+		if ( pPickup->HasPreferredCarryAnglesForPlayer(pPlayerOwner) )
 		{
 			outputAnglesWorldSpace = TransformAnglesToWorldSpace( pPickup->PreferredCarryAngles(), localToWorld );
 			return true;

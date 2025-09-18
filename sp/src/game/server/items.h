@@ -62,7 +62,7 @@ public:
 	void ActivateWhenAtRest( float flTime = 0.5f );
 
 	// IPlayerPickupVPhysics
-	virtual void OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason = PICKED_UP_BY_CANNON );
+	virtual void OnPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason = PICKED_UP_BY_CANNON );
 	virtual void OnPhysGunDrop( CBasePlayer *pPhysGunUser, PhysGunDrop_t reason );
 
 	virtual int	ObjectCaps() { return BaseClass::ObjectCaps() | FCAP_IMPULSE_USE | FCAP_WCEDIT_POSITION; };

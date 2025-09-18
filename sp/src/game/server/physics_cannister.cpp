@@ -426,7 +426,7 @@ void CPhysicsCannister::BeginShutdownThink( void )
 //-----------------------------------------------------------------------------
 // Physics Attacker
 //-----------------------------------------------------------------------------
-void CPhysicsCannister::SetPhysicsAttacker( CBasePlayer *pEntity, float flTime )
+void CPhysicsCannister::SetPhysicsAttacker(CBaseCombatCharacter* pEntity, float flTime )
 {
 	m_hPhysicsAttacker = pEntity;
 	m_flLastPhysicsInfluenceTime = flTime;
@@ -436,7 +436,7 @@ void CPhysicsCannister::SetPhysicsAttacker( CBasePlayer *pEntity, float flTime )
 //-----------------------------------------------------------------------------
 // Purpose: Keep track of physgun influence
 //-----------------------------------------------------------------------------
-void CPhysicsCannister::OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason )
+void CPhysicsCannister::OnPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason )
 {
 	SetPhysicsAttacker( pPhysGunUser, gpGlobals->curtime );
 }
@@ -456,7 +456,7 @@ void CPhysicsCannister::OnPhysGunDrop( CBasePlayer *pPhysGunUser, PhysGunDrop_t 
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-CBasePlayer *CPhysicsCannister::HasPhysicsAttacker( float dt )
+CBaseCombatCharacter* CPhysicsCannister::HasPhysicsAttacker( float dt )
 {
 	if (gpGlobals->curtime - dt <= m_flLastPhysicsInfluenceTime)
 	{

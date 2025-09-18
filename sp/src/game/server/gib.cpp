@@ -460,7 +460,7 @@ void CGib::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType,
 //-----------------------------------------------------------------------------
 // Physics Attacker
 //-----------------------------------------------------------------------------
-void CGib::SetPhysicsAttacker( CBasePlayer *pEntity, float flTime )
+void CGib::SetPhysicsAttacker(CBaseCombatCharacter* pEntity, float flTime )
 {
 	m_hPhysicsAttacker = pEntity;
 	m_flLastPhysicsInfluenceTime = flTime;
@@ -470,7 +470,7 @@ void CGib::SetPhysicsAttacker( CBasePlayer *pEntity, float flTime )
 //-----------------------------------------------------------------------------
 // Purpose: Keep track of physgun influence
 //-----------------------------------------------------------------------------
-void CGib::OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason )
+void CGib::OnPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason )
 {
 	SetPhysicsAttacker( pPhysGunUser, gpGlobals->curtime );
 }
@@ -485,7 +485,7 @@ void CGib::OnPhysGunDrop( CBasePlayer *pPhysGunUser, PhysGunDrop_t Reason )
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-CBasePlayer *CGib::HasPhysicsAttacker( float dt )
+CBaseCombatCharacter* CGib::HasPhysicsAttacker( float dt )
 {
 	if (gpGlobals->curtime - dt <= m_flLastPhysicsInfluenceTime)
 	{

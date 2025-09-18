@@ -695,9 +695,10 @@ void CPhysBox::InputDisableFloating( inputdata_t &inputdata )
 //-----------------------------------------------------------------------------
 void CPhysBox::InputForceDrop( inputdata_t &inputdata )
 {
-	if ( m_hCarryingPlayer )
+	if ( m_hCarryingPlayer && m_hCarryingPlayer->IsPlayer())
 	{
-		m_hCarryingPlayer->ForceDropOfCarriedPhysObjects();
+		CBasePlayer* pPlayer = ToBasePlayer(m_hCarryingPlayer);
+		pPlayer->ForceDropOfCarriedPhysObjects();
 	}
 }
 
@@ -729,7 +730,7 @@ void CPhysBox::VPhysicsUpdate( IPhysicsObject *pPhysics )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CPhysBox::OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason )
+void CPhysBox::OnPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason )
 {
 	if ( reason == PUNTED_BY_CANNON )
 	{

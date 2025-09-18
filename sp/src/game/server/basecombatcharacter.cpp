@@ -3219,10 +3219,10 @@ void CBaseCombatCharacter::VPhysicsShadowCollision( int index, gamevcollisioneve
 	CTakeDamageInfo dmgInfo( pOther, pOther, damageForce, damagePos, damage, damageType );
 
 	// FIXME: is there a better way for physics objects to keep track of what root entity responsible for them moving?
-	CBasePlayer *pPlayer = pOther->HasPhysicsAttacker( 1.0 );
-	if (pPlayer)
+	CBaseCombatCharacter *pPhysAttacker = pOther->HasPhysicsAttacker( 1.0 );
+	if (pPhysAttacker)
 	{
-		dmgInfo.SetAttacker( pPlayer );
+		dmgInfo.SetAttacker(pPhysAttacker);
 	}
 
 	// UNDONE: Find one near damagePos?

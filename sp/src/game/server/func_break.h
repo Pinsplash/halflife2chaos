@@ -163,11 +163,11 @@ protected:
 
 public:
 	// IPlayerPickupVPhysics
-	virtual void OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason );
+	virtual void OnPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason );
 	virtual void OnPhysGunDrop( CBasePlayer *pPhysGunUser, PhysGunDrop_t Reason );
-	virtual	CBasePlayer *HasPhysicsAttacker( float dt );
+	virtual	CBaseCombatCharacter* HasPhysicsAttacker(float dt);
 private:
-	CHandle<CBasePlayer>	m_hPhysicsAttacker;
+	CHandle<CBaseCombatCharacter>	m_hPhysicsAttacker;
 	float					m_flLastPhysicsInfluenceTime;
 };
 

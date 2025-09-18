@@ -37,7 +37,7 @@ public:
 	void InputKill( inputdata_t &data );
 
 	virtual void VPhysicsCollision( int index, gamevcollisionevent_t *pEvent );
-	virtual void OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason );
+	virtual void OnPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason );
 
 protected:
 	virtual void OnBreak( const Vector &vecVelocity, const AngularImpulse &angVel, CBaseEntity *pBreaker );
@@ -251,7 +251,7 @@ void CItem_ItemCrate::OnBreak( const Vector &vecVelocity, const AngularImpulse &
 	}
 }
 
-void CItem_ItemCrate::OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason )
+void CItem_ItemCrate::OnPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason )
 {
 	BaseClass::OnPhysGunPickup( pPhysGunUser, reason );
 

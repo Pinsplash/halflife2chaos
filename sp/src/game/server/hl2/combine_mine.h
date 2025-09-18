@@ -56,12 +56,12 @@ public:
 	void UpdateLight( bool bTurnOn, unsigned int r, unsigned int g, unsigned int b, unsigned int a );
 	bool IsLightOn() { return m_hSprite.Get() != NULL; }
 
-	void OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason = PICKED_UP_BY_CANNON );
+	void OnPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason = PICKED_UP_BY_CANNON );
 	void OnPhysGunDrop( CBasePlayer *pPhysGunUser, PhysGunDrop_t reason );
 	bool ForcePhysgunOpen( CBasePlayer *pPlayer ) { return true; }
 	bool HasPreferredCarryAnglesForPlayer( CBasePlayer *pPlayer ) { return true; }
 	virtual QAngle	PreferredCarryAngles( void ) { return vec3_angle; }
-	CBasePlayer *HasPhysicsAttacker( float dt );
+	CBaseCombatCharacter* HasPhysicsAttacker( float dt );
 
 	bool IsPlayerPlaced() { return m_bPlacedByPlayer; }
 
@@ -112,7 +112,7 @@ private:
 	int		m_iFlipAttempts;
 	int     m_iModification;
 
-	CHandle<CBasePlayer>	m_hPhysicsAttacker;
+	CHandle<CBaseCombatCharacter>	m_hPhysicsAttacker;
 	float					m_flLastPhysicsInfluenceTime;
 
 	float					m_flTimeGrabbed;

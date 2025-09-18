@@ -231,7 +231,7 @@ public:
 
 #ifdef HL2_EPISODIC
 	virtual void LogicExplode();
-	virtual void OnPhysGunPickup(CBasePlayer *pPhysGunUser, PhysGunPickup_t reason );
+	virtual void OnPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason );
 	virtual void OnPhysGunDrop( CBasePlayer *pPhysGunUser, PhysGunDrop_t reason );
 	virtual Class_T Classify( void ) {	return CLASS_MISSILE; }
 	void SetCollisionObject( CBaseEntity *pEntity ) { m_hCollisionObject = pEntity; }
@@ -5706,7 +5706,7 @@ void CGrenadeHelicopter::ExplodeConcussion( CBaseEntity *pOther )
 //-----------------------------------------------------------------------------
 // Purpose: The bomb will act differently when picked up by the player
 //-----------------------------------------------------------------------------
-void CGrenadeHelicopter::OnPhysGunPickup(CBasePlayer *pPhysGunUser, PhysGunPickup_t reason )
+void CGrenadeHelicopter::OnPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason )
 {
 	if ( reason == PICKED_UP_BY_CANNON )
 	{

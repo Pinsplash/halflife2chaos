@@ -58,7 +58,7 @@ public:
 	void SetSourceClassName( const char *pClassname );
 
 	// Physics attacker
-	virtual CBasePlayer *HasPhysicsAttacker( float dt );
+	virtual CBaseCombatCharacter* HasPhysicsAttacker( float dt );
 
 	// locals
 	void InitRagdollAnimation( void );
@@ -79,7 +79,7 @@ public:
 
 	// Purpose: CDefaultPlayerPickupVPhysics
 	virtual void VPhysicsCollision( int index, gamevcollisionevent_t *pEvent );
- 	virtual void OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason );
+ 	virtual void OnPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason );
 	virtual void OnPhysGunDrop( CBasePlayer *pPhysGunUser, PhysGunDrop_t Reason );
 	virtual AngularImpulse	PhysGunLaunchAngularImpulse();
 	bool HasPhysgunInteraction( const char *pszKeyName, const char *pszValue );
@@ -131,7 +131,7 @@ private:
 	bool				m_bFirstCollisionAfterLaunch;
 	EHANDLE				m_hDamageEntity;
 	EHANDLE				m_hKiller;	// Who killed me?
-	CHandle<CBasePlayer>	m_hPhysicsAttacker;
+	CHandle<CBaseCombatCharacter>	m_hPhysicsAttacker;
 	float					m_flLastPhysicsInfluenceTime;
 	float				m_flFadeOutStartTime;
 	float				m_flFadeTime;

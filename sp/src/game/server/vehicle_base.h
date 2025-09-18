@@ -95,8 +95,8 @@ public:
 	void			Teleport( const Vector *newPosition, const QAngle *newAngles, const Vector *newVelocity );
 	virtual void	Think( void );
 	CFourWheelVehiclePhysics *GetPhysics( void ) { return &m_VehiclePhysics; }
-	CBasePlayer		*HasPhysicsAttacker( float dt );
-	void			OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason );
+	CBaseCombatCharacter* HasPhysicsAttacker( float dt );
+	void			OnPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason );
 
 	Vector GetSmoothedVelocity( void );	//Save and update our smoothed velocity for prediction
 
@@ -140,7 +140,7 @@ protected:
 private:
 	Vector							m_vecSmoothedVelocity;
 
-	CHandle<CBasePlayer>			m_hPhysicsAttacker;
+	CHandle<CBaseCombatCharacter>			m_hPhysicsAttacker;
 
 	float							m_flLastPhysicsInfluenceTime;
 };

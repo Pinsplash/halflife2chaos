@@ -772,7 +772,7 @@ void CPropCombineBall::SetBallAsLaunched( void )
 //-----------------------------------------------------------------------------
 // Lighten the mass so it's zippy toget to the gun
 //-----------------------------------------------------------------------------
-void CPropCombineBall::OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason )
+void CPropCombineBall::OnPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason )
 {
 	CDefaultPlayerPickupVPhysics::OnPhysGunPickup( pPhysGunUser, reason );
 
@@ -865,7 +865,7 @@ void CPropCombineBall::OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup
 //-----------------------------------------------------------------------------
 // Purpose: Reset the ball to be deadly to NPCs after we've picked it up
 //-----------------------------------------------------------------------------
-void CPropCombineBall::SetPlayerLaunched( CBasePlayer *pOwner )
+void CPropCombineBall::SetPlayerLaunched(CBaseCombatCharacter* pOwner )
 {
 	// Now we own this ball
 	SetOwnerEntity( pOwner );

@@ -1453,7 +1453,7 @@ public:
 	bool					IsEdictFree() const { return edict()->IsFree(); }
 
 	// Callbacks for the physgun/cannon picking up an entity
-	virtual	CBasePlayer		*HasPhysicsAttacker( float dt ) { return NULL; }
+	virtual	CBaseCombatCharacter* HasPhysicsAttacker( float dt ) { return NULL; }
 
 	// UNDONE: Make this data?
 	virtual unsigned int	PhysicsSolidMaskForEntity( void ) const;

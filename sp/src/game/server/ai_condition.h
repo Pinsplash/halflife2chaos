@@ -72,6 +72,7 @@ enum SCOND_t
 	COND_TOO_FAR_TO_ATTACK,
 	COND_NOT_FACING_ATTACK,
 	COND_WEAPON_HAS_LOS,
+	COND_WEAPON_NOT_READY,
 	COND_WEAPON_BLOCKED_BY_FRIEND,	// Friend between weapon and target
 	COND_WEAPON_PLAYER_IN_SPREAD,	// Player in shooting direction
 	COND_WEAPON_PLAYER_NEAR_TARGET,	// Player near shooting position

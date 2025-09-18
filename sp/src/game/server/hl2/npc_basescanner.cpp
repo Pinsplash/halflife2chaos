@@ -440,7 +440,7 @@ void CNPC_BaseScanner::TraceAttack( const CTakeDamageInfo &info, const Vector &v
 // Take damage from being thrown by a physcannon 
 //-----------------------------------------------------------------------------
 #define SCANNER_SMASH_SPEED 250.0	// How fast a scanner must slam into something to take full damage
-void CNPC_BaseScanner::TakeDamageFromPhyscannon( CBasePlayer *pPlayer )
+void CNPC_BaseScanner::TakeDamageFromPhyscannon(CBaseCombatCharacter* pPlayer )
 {
 	CTakeDamageInfo info;
 	info.SetDamageType( DMG_GENERIC );
@@ -521,10 +521,10 @@ void CNPC_BaseScanner::VPhysicsCollision( int index, gamevcollisionevent_t *pEve
 	if ( IsHeldByPhyscannon( ) )
 		return;
 
-	CBasePlayer *pPlayer = HasPhysicsAttacker( SCANNER_SMASH_TIME );
-	if( pPlayer )
+	CBaseCombatCharacter* pPhysAttacker = HasPhysicsAttacker( SCANNER_SMASH_TIME );
+	if(pPhysAttacker)
 	{
-		TakeDamageFromPhyscannon( pPlayer );
+		TakeDamageFromPhyscannon(pPhysAttacker);
 		return;
 	}
 
@@ -595,7 +595,7 @@ void CNPC_BaseScanner::Gib( void )
 // Input  : *pPhysGunUser - 
 //			bPunting - 
 //-----------------------------------------------------------------------------
-void CNPC_BaseScanner::OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason )
+void CNPC_BaseScanner::OnPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason )
 {
 	m_hPhysicsAttacker = pPhysGunUser;
 	m_flLastPhysicsInfluenceTime = gpGlobals->curtime;
@@ -644,7 +644,7 @@ void CNPC_BaseScanner::OnPhysGunDrop( CBasePlayer *pPhysGunUser, PhysGunDrop_t R
 //------------------------------------------------------------------------------
 // Do we have a physics attacker?
 //------------------------------------------------------------------------------
-CBasePlayer *CNPC_BaseScanner::HasPhysicsAttacker( float dt )
+CBaseCombatCharacter* CNPC_BaseScanner::HasPhysicsAttacker( float dt )
 {
 	// If the player is holding me now, or I've been recently thrown
 	// then return a pointer to that player

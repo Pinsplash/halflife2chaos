@@ -1200,7 +1200,7 @@ void CBounceBomb::OnPhysGunDrop( CBasePlayer *pPhysGunUser, PhysGunDrop_t Reason
 
 //---------------------------------------------------------
 //---------------------------------------------------------
-CBasePlayer *CBounceBomb::HasPhysicsAttacker( float dt )
+CBaseCombatCharacter* CBounceBomb::HasPhysicsAttacker( float dt )
 {
 	if (gpGlobals->curtime - dt <= m_flLastPhysicsInfluenceTime)
 	{
@@ -1211,7 +1211,7 @@ CBasePlayer *CBounceBomb::HasPhysicsAttacker( float dt )
 
 //---------------------------------------------------------
 //---------------------------------------------------------
-void CBounceBomb::OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason )
+void CBounceBomb::OnPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason )
 {
 	m_hPhysicsAttacker = pPhysGunUser;
 	m_flLastPhysicsInfluenceTime = gpGlobals->curtime;

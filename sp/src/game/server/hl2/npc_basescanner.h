@@ -92,7 +92,7 @@ public:
 	virtual void	VPhysicsCollision( int index, gamevcollisionevent_t *pEvent );
 
 	// 	CDefaultPlayerPickupVPhysics
-	void			OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason );
+	void			OnPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason );
 	void			OnPhysGunDrop( CBasePlayer *pPhysGunUser, PhysGunDrop_t Reason );
 
 	bool			ShouldPlayIdleSound( void );
@@ -158,13 +158,13 @@ private:
 	void	StartSmokeTrail( void );
 
 	// Take damage from being thrown by a physcannon 
-	void TakeDamageFromPhyscannon( CBasePlayer *pPlayer );
+	void TakeDamageFromPhyscannon(CBaseCombatCharacter* pPlayer );
 
 	// Take damage from physics impacts
 	void TakeDamageFromPhysicsImpact( int index, gamevcollisionevent_t *pEvent );
 
 	// Do we have a physics attacker?
-	CBasePlayer *HasPhysicsAttacker( float dt );
+	CBaseCombatCharacter* HasPhysicsAttacker( float dt );
 
 	virtual void		StopLoopingSounds(void);
 
@@ -204,7 +204,7 @@ private:
 	CSoundPatch			*m_pEngineSound;
 
 	// physics influence
-	CHandle<CBasePlayer>	m_hPhysicsAttacker;
+	CHandle<CBaseCombatCharacter>	m_hPhysicsAttacker;
 	float					m_flLastPhysicsInfluenceTime;
 
 	// Attacks

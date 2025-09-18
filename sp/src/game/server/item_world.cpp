@@ -518,7 +518,7 @@ void CItem::Precache()
 // Input  : *pPhysGunUser - 
 //			PICKED_UP_BY_CANNON - 
 //-----------------------------------------------------------------------------
-void CItem::OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason )
+void CItem::OnPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason )
 {
 	m_OnCacheInteraction.FireOutput(pPhysGunUser, this);
 

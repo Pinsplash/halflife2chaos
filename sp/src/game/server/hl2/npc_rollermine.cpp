@@ -193,7 +193,7 @@ public:
 	float	GetAttackDamageScale( CBaseEntity *pVictim );
 	void	VPhysicsCollision( int index, gamevcollisionevent_t *pEvent );
 	void	Precache( void );
-	void	OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason );
+	void	OnPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason );
 	void	OnPhysGunDrop( CBasePlayer *pPhysGunUser, PhysGunDrop_t Reason );
 	void	StopLoopingSounds( void );
 	void	PrescheduleThink();
@@ -2385,7 +2385,7 @@ CBaseEntity *CNPC_RollerMine::GetVehicleStuckTo( void )
 // Purpose: 
 // Input  : *pPhysGunUser - 
 //-----------------------------------------------------------------------------
-void CNPC_RollerMine::OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason )
+void CNPC_RollerMine::OnPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason )
 {
 	// Are we just being punted?
 	if ( reason == PUNTED_BY_CANNON )

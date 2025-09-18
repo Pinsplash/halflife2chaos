@@ -600,8 +600,8 @@ void CPhysicsProp::HandleAnyCollisionInteractions( int index, gamevcollisioneven
 			IPhysicsObject *pObj = VPhysicsGetObject();
 
 			// do not impale NPCs if the impaler is friendly
-			CBasePlayer *pAttacker = HasPhysicsAttacker( 25.0f );
-			if (pAttacker && pNPC->IRelationType( pAttacker ) == D_LI)
+			CBaseCombatCharacter* pPhysAttacker = HasPhysicsAttacker( 25.0f );
+			if (pPhysAttacker && pNPC->IRelationType(pPhysAttacker) == D_LI)
 			{
 				return;
 			}
@@ -1257,7 +1257,7 @@ bool CBreakableProp::UpdateHealth( int iNewHealth, CBaseEntity *pActivator )
 //-----------------------------------------------------------------------------
 // Purpose: Advance a ripped-off-animation frame
 //-----------------------------------------------------------------------------
-bool CBreakableProp::OnAttemptPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason )
+bool CBreakableProp::OnAttemptPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason )
 {
 	if ( m_nPhysgunState == PHYSGUN_CAN_BE_GRABBED )
 		return true;
@@ -1394,7 +1394,7 @@ void CBreakableProp::AnimateThink( void )
 //-----------------------------------------------------------------------------
 // Physics Attacker
 //-----------------------------------------------------------------------------
-void CBreakableProp::SetPhysicsAttacker( CBasePlayer *pEntity, float flTime )
+void CBreakableProp::SetPhysicsAttacker(CBaseCombatCharacter* pEntity, float flTime )
 {
 	m_hPhysicsAttacker = pEntity;
 	m_flLastPhysicsInfluenceTime = flTime;
@@ -1428,7 +1428,7 @@ void CBreakableProp::RampToDefaultFadeScale()
 //-----------------------------------------------------------------------------
 // Purpose: Keep track of physgun influence
 //-----------------------------------------------------------------------------
-void CBreakableProp::OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason )
+void CBreakableProp::OnPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason )
 {
 	// Make sure held objects are always visible
 	if ( reason == PICKED_UP_BY_CANNON )
@@ -1443,18 +1443,6 @@ void CBreakableProp::OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t
 	if( reason == PUNTED_BY_CANNON )
 	{
 		PlayPuntSound(); 
-	}
-
-	if ( IsX360() )
-	{
-		if( reason != PUNTED_BY_CANNON && (pPhysGunUser->m_nNumCrateHudHints < NUM_SUPPLY_CRATE_HUD_HINTS) )
-		{
-			if( FClassnameIs( this, "item_item_crate") )
-			{
-				pPhysGunUser->m_nNumCrateHudHints++;
-				UTIL_HudHintText( pPhysGunUser, "#Valve_Hint_Hold_ItemCrate" );
-			}
-		}
 	}
 
 	SetPhysicsAttacker( pPhysGunUser, gpGlobals->curtime );
@@ -1542,7 +1530,7 @@ AngularImpulse CBreakableProp::PhysGunLaunchAngularImpulse()
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-CBasePlayer *CBreakableProp::HasPhysicsAttacker( float dt )
+CBaseCombatCharacter* CBreakableProp::HasPhysicsAttacker( float dt )
 {
 	if (gpGlobals->curtime - dt <= m_flLastPhysicsInfluenceTime)
 	{
@@ -2788,7 +2776,7 @@ void CPhysicsProp::EnableMotion( void )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CPhysicsProp::OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason )
+void CPhysicsProp::OnPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason )
 {
 	BaseClass::OnPhysGunPickup( pPhysGunUser, reason );
 

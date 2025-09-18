@@ -63,7 +63,7 @@ public:
 	bool CanBePickedUpByPhyscannon();
 
 	// IPlayerPickupVPhysics
-	virtual void OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason );
+	virtual void OnPhysGunPickup(CBaseCombatCharacter* pPhysGunUser, PhysGunPickup_t reason );
 	virtual void OnPhysGunDrop( CBasePlayer *pPhysGunUser, PhysGunDrop_t Reason );
 
 	bool		 HasPreferredCarryAnglesForPlayer( CBasePlayer *pPlayer );
@@ -98,7 +98,7 @@ protected:
 	COutputEvent	m_OnPhysGunDrop;
 	COutputEvent	m_OnPlayerUse;
 
-	CHandle<CBasePlayer>	m_hCarryingPlayer;	// Player who's carrying us
+	CHandle<CBaseCombatCharacter>	m_hCarryingPlayer;	// Player who's carrying us
 };
 
 // ---------------------------------------------------------------------
