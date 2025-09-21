@@ -8,7 +8,7 @@
 
 ![image](https://github.com/Pinsplash/halflife2chaos/assets/39359267/854d1f1d-7c23-4b87-bd0d-ea840ea2e873)
 
-You must install Half-Life 2 and have it under the same Steam library (steamapps) folder as the mod. The same must be done for the Episodes as well to play Episode One/Two Chaos.
+You must install Half-Life 2 and have it under the same Steam library (steamapps) folder as the mod. The same must be done for the Episodes as well to play Episode One/Two Chaos. In one case, someone was not able to do this but got around this limitation by making a symbolic link between their two `sourcemods` folders with this cmd: `mklink /D "C:\Program Files (x86)\Steam\steamapps\sourcemods" "D:\somewhereelse\steamapps\sourcemods"`
 
 To play Episode One Chaos, you must also install Half-Life 2 Chaos, and if you wish to play Episode Two Chaos, you must also install Half-Life 2 Chaos and Episode One Chaos.
 
