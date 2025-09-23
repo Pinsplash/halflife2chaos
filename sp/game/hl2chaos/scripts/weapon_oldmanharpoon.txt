@@ -6,7 +6,7 @@ WeaponData
 	"playermodel"			"models/lostcoast/fisherman/harpoon.mdl"
 	"anim_prefix"			"smg2"
 	"bucket"				"0"
-	"bucket_position"		"5"
+	"bucket_position"		"3"
 
 	"clip_size"				"-1"
 	"clip2_size"			"-1"
