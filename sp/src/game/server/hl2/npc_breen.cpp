@@ -236,7 +236,7 @@ void CNPC_Breen::RunTask(const Task_t* pTask)
 			pPhysCannon->SecondaryAttack();
 			if (pPhysCannon->m_bActive)
 				TaskComplete();
-			if (!GetTarget() || IsUnreachable(GetTarget()))
+			if (!GetTarget() || IsUnreachable(GetTarget()) || (GetAbsOrigin() - GetTarget()->GetAbsOrigin()).Length() > pPhysCannon->TraceLength())
 			{
 				SetCondition(COND_BREEN_PROP_LOST);
 			}
@@ -346,8 +346,8 @@ int CNPC_Breen::TranslateSchedule(int scheduleType)
 {
 	switch (scheduleType)
 	{
-	//case SCHED_RANGE_ATTACK1:
-	//	return SCHED_BREEN_RANGE_ATTACK1;
+	case SCHED_RANGE_ATTACK1:
+		return SCHED_BREEN_RANGE_ATTACK1;
 	case SCHED_ESTABLISH_LINE_OF_FIRE:
 		return SCHED_BREEN_ESTABLISH_LINE_OF_FIRE;
 	}
@@ -386,6 +386,7 @@ DEFINE_SCHEDULE
 	"	Tasks"
 	"		TASK_STOP_MOVING		0"
 	"		TASK_FACE_ENEMY			0"
+	"		TASK_WAIT				.2"
 	"		TASK_RANGE_ATTACK1		0"
 	""
 	"	Interrupts"
