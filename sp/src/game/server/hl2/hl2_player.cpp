@@ -5388,7 +5388,6 @@ void CHL2_Player::CreateEffect(int nEffect, string_t strHudName, int nContext, f
 //effect consideration checklist:
 //probably make a class
 //add convar/s to autoexec.cfg
-//add localized strings to resource folders
 //possibly add groups in groups.cfg
 //test starting effect
 //test ending effect
@@ -5548,8 +5547,8 @@ ConVar chaos_prob_camera_textures("chaos_prob_camera_textures", "100");
 ConVar chaos_prob_camera_gravity("chaos_prob_camera_gravity", "100");
 ConVar chaos_prob_hl1_physics("chaos_prob_hl1_physics", "100");
 ConVar chaos_prob_dvd_crosshair("chaos_prob_dvd_crosshair", "100");
+ConVar chaos_prob_evil_breen("chaos_prob_evil_breen", "100");
 //ConVar chaos_prob_evil_eli("chaos_prob_evil_eli", "100");
-//ConVar chaos_prob_evil_breen("chaos_prob_evil_breen", "100");
 #define ERROR_WEIGHT 1
 void CHL2_Player::PopulateEffects()
 {
@@ -5644,8 +5643,8 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CECameraGravity>(EFFECT_CAMERA_GRAVITY,	MAKE_STRING("Camera Gravity"),			EC_NONE,									chaos_time_camera_gravity.GetFloat(),		chaos_prob_camera_gravity.GetInt());
 	CreateEffect<CEHL1Phys>(EFFECT_HL1_PHYSICS,				MAKE_STRING("Classic Physics"),			EC_NONE,									chaos_time_hl1_physics.GetFloat(),			chaos_prob_hl1_physics.GetInt());
 	CreateEffect<CEDVDCrosshair>(EFFECT_DVD_CROSSHAIR,		MAKE_STRING("DVD Crosshair"),			EC_NONE,									chaos_time_dvd_crosshair.GetFloat(),		chaos_prob_dvd_crosshair.GetInt());
+	CreateEffect<CEEvilNPC>(EFFECT_EVIL_BREEN,				MAKE_STRING("Hands-on Dr. Breen"),		EC_HAS_WEAPON,								-1,											chaos_prob_evil_breen.GetInt());
 	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_ELI,				MAKE_STRING("Evil Eli"),					EC_HAS_WEAPON,								-1,											chaos_prob_evil_eli.GetInt());
-	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_BREEN,			MAKE_STRING("Hands-on Dr. Breen"),			EC_HAS_WEAPON,								-1,											chaos_prob_evil_breen.GetInt());
 }
 
 void CHL2_Player::ClearEffectContextCache()
@@ -8191,13 +8190,12 @@ void CEEvilNPC::StartEffect()
 	case EFFECT_EVIL_VORT:
 		m_iSavedChaosID = ChaosSpawnNPC("npc_vortigaunt", MAKE_STRING("Vexing Vortigaunt"), SPAWNTYPE_EYELEVEL_REGULAR, "models/vortigaunt.mdl", "vortigaunt", "_", CSF_EVIL)->m_iChaosID;
 		break;
+	case EFFECT_EVIL_BREEN:
+		m_iSavedChaosID = ChaosSpawnNPC("npc_breen", MAKE_STRING("Hands-on Dr. Breen"), SPAWNTYPE_EYELEVEL_REGULAR, "models/breen.mdl", "breen", "weapon_physcannon", CSF_EVIL)->m_iChaosID;
+		break; 
 		/*
 	case EFFECT_EVIL_ELI:
 		m_iSavedChaosID = ChaosSpawnNPC("npc_eli", MAKE_STRING("Evil Eli"), SPAWNTYPE_EYELEVEL_REGULAR, "models/eli.mdl", "eli", "weapon_crossbow", true)->m_iChaosID;
-		break;*/
-		/*
-	case EFFECT_EVIL_BREEN:
-		m_iSavedChaosID = ChaosSpawnNPC("npc_breen", MAKE_STRING("Hands-on Dr. Breen"), SPAWNTYPE_EYELEVEL_REGULAR, "models/breen.mdl", "breen", "weapon_357", true)->m_iChaosID;
 		break;*/
 	}
 }
