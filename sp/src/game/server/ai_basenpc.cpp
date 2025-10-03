@@ -8998,13 +8998,6 @@ int CAI_BaseNPC::DrawDebugTextOverlays(void)
 	{
 		char tempstr[512];
 		// --------------
-		// Print Health
-		// --------------
-		Q_snprintf(tempstr,sizeof(tempstr),"Health: %i  (DACC:%1.2f)",m_iHealth.Get(), GetDamageAccumulator() );
-		EntityText(text_offset,tempstr,0);
-		text_offset++;
-
-		// --------------
 		// Print State
 		// --------------
 		static const char *pStateNames[] = { "None", "Idle", "Alert", "Combat", "Scripted", "PlayDead", "Dead" };

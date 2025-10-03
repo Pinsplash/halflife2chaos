@@ -3651,3 +3651,16 @@ float CBaseCombatCharacter::GetTimeSinceLastInjury( int team /*= TEAM_ANY */ ) c
 	return never;
 }
 
+int CBaseCombatCharacter::DrawDebugTextOverlays(void)
+{
+	int text_offset = 0;
+	text_offset = BaseClass::DrawDebugTextOverlays();
+	if (m_debugOverlays & OVERLAY_TEXT_BIT)
+	{
+		char tempstr[512];
+		Q_snprintf(tempstr, sizeof(tempstr), "Health: %i  (DACC:%f)", m_iHealth.Get(), GetDamageAccumulator());
+		EntityText(text_offset, tempstr, 0);
+		text_offset++;
+	}
+	return text_offset;
+}

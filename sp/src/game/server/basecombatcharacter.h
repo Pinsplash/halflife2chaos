@@ -122,6 +122,7 @@ public:
 
 public:
 
+	virtual int			DrawDebugTextOverlays(void);
 	virtual void		Spawn( void );
 	virtual void		Precache();
 	virtual void LogicExplode();
