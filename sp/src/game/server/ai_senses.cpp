@@ -133,6 +133,14 @@ void CAI_Senses::Listen( void )
 				m_iAudibleList = iSound;
 			}
 
+			//PIN: happened to me while blasting a soldier in the face with a shotgun while notarget and world of hate were on.
+			//this causes an infinite loop
+			if (iSound == pCurrentSound->NextSound())
+			{
+				Warning("NextSound referred to itself!\n");
+				break;
+			}
+
 			iSound = pCurrentSound->NextSound();
 		}
 	}

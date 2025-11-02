@@ -5569,7 +5569,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CENPCRels>(EFFECT_NPC_LIKE,				MAKE_STRING("World of Love"),			EC_NONE,									chaos_time_npc_like.GetFloat(),				chaos_prob_npc_like.GetInt());
 	CreateEffect<CENPCRels>(EFFECT_NPC_NEUTRAL,				MAKE_STRING("World of Apathy"),			EC_NONE,									chaos_time_npc_neutral.GetFloat(),			chaos_prob_npc_neutral.GetInt());
 	CreateEffect<CENPCRels>(EFFECT_NPC_FEAR,				MAKE_STRING("World of Fear"),			EC_NONE,									chaos_time_npc_fear.GetFloat(),				chaos_prob_npc_fear.GetInt());
-	CreateEffect<>(EFFECT_TELEPORT_RANDOM,					MAKE_STRING("Teleport to Random Place"),EC_PLAYER_TELEPORT,							-1,											chaos_prob_teleport_random.GetInt());//
+	CreateEffect<>(EFFECT_TELEPORT_RANDOM,					MAKE_STRING("Teleport to Random Place"),EC_PLAYER_TELEPORT,							-1,											chaos_prob_teleport_random.GetInt());
 	CreateEffect<CERandomVehicle>(EFFECT_SPAWN_VEHICLE,		MAKE_STRING("Spawn Random Vehicle"),	EC_NONE,									-1,											chaos_prob_spawn_vehicle.GetInt());
 	CreateEffect<CERandomNPC>(EFFECT_SPAWN_NPC,				MAKE_STRING("Spawn Random NPC"),		EC_NONE,									-1,											chaos_prob_spawn_npc.GetInt());
 	CreateEffect<CESwimInAir>(EFFECT_SWIM_IN_AIR,			MAKE_STRING("Water World"),				EC_PICKUPS,									chaos_time_swim_in_air.GetFloat(),			chaos_prob_swim_in_air.GetInt());
