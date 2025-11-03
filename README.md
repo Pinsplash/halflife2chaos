@@ -103,7 +103,7 @@ These settings have been put in their own CFG files so you can control what they
 * **Teleporter Bullets** does not apply to vehicle guns while a fix is in the works for a serious issue.
 
 ## Localization
-Only English strings are available. Contributions for other languages are welcome.
+The mod's strings are localized only for English and Spanish (Spain/LatAm). Contributions for other languages are welcome.
 
 ## Acknowledgements for indirect contributions - Thank you!
 * Blixibon
