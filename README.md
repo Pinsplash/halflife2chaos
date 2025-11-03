@@ -100,7 +100,6 @@ These settings have been put in their own CFG files so you can control what they
 * **Didn't Skip Arm Day** sometimes makes it harder to grab things.
 * Sometimes things are invisible with **Orthographic Camera**. Turning on the flashlight may fix it.
 * Collisions can be weird when **Slow Physics** is on.
-* **Teleporter Bullets** does not apply to vehicle guns while a fix is in the works for a serious issue.
 
 ## Localization
 The mod's strings are localized only for English and Spanish (Spain/LatAm). Contributions for other languages are welcome.
