@@ -885,7 +885,6 @@ void CHudMessage::MsgFunc_HudMsg(bf_read &msg)
 		{
 			char szLocalized[512];
 			g_pVGuiLocalize->ConvertUnicodeToANSI(pwcText, szLocalized, sizeof(szLocalized));
-			//TODO: This naked 64 is not proper...
 			Q_snprintf((char*)pNetMessage->pMessage, 64, "%s (%d)", szLocalized, pNetMessage->timertime);
 		}
 		else
