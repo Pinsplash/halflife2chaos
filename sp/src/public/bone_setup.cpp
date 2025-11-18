@@ -23,6 +23,8 @@
 #include "vphysics_interface.h"
 #ifdef CLIENT_DLL
 	#include "posedebugger.h"
+#else
+#include "ndebugoverlay.h"
 #endif
 
 // memdbgon must be the last include file in a .cpp file!!!
@@ -2670,19 +2672,16 @@ public:
 };
 
 
-
+ConVar ai_debug_ik("ai_debug_ik", "0");
 //-----------------------------------------------------------------------------
 // Purpose: visual debugging code
 //-----------------------------------------------------------------------------
-#if 1
-inline void debugLine(const Vector& origin, const Vector& dest, int r, int g, int b, bool noDepthTest, float duration) { };
-#else
-extern void drawLine( const Vector &p1, const Vector &p2, int r = 0, int g = 0, int b = 1, bool noDepthTest = true, float duration = 0.1 );
-void debugLine(const Vector& origin, const Vector& dest, int r, int g, int b, bool noDepthTest, float duration)
+void debugLine(const Vector& origin, const Vector& dest, int r, int g, int b)
 {
-	drawLine( origin, dest, r, g, b, noDepthTest, duration );
-}
+#ifndef CLIENT_DLL
+	NDebugOverlay::Line(origin, dest, r, g, b, true, ai_debug_ik.GetFloat());
 #endif
+}
 
 
 //-----------------------------------------------------------------------------
@@ -2719,9 +2718,11 @@ bool Studio_SolveIK( int iThigh, int iKnee, int iFoot, Vector &targetFoot, matri
 	MatrixPosition( pBoneToWorld[ iThigh ], worldThigh );
 	MatrixPosition( pBoneToWorld[ iKnee ], worldKnee );
 	MatrixPosition( pBoneToWorld[ iFoot ], worldFoot );
-
-	//debugLine( worldThigh, worldKnee, 0, 0, 255, true, 0 );
-	//debugLine( worldKnee, worldFoot, 0, 0, 255, true, 0 );
+	if (ai_debug_ik.GetFloat() > 0)
+	{
+		debugLine(worldThigh, worldKnee, 0, 0, 255);
+		debugLine(worldKnee, worldFoot, 0, 0, 255);
+	}
 
 	Vector ikFoot, ikKnee;
 
@@ -2784,9 +2785,12 @@ bool Studio_SolveIK( int iThigh, int iKnee, int iFoot, Vector &targetFoot, Vecto
 	MatrixPosition( pBoneToWorld[ iKnee ], worldKnee );
 	MatrixPosition( pBoneToWorld[ iFoot ], worldFoot );
 
-	//debugLine( worldThigh, worldKnee, 0, 0, 255, true, 0 );
-	//debugLine( worldThigh, worldThigh + targetKneeDir, 0, 0, 255, true, 0 );
-	// debugLine( worldKnee, targetKnee, 0, 0, 255, true, 0 );
+	if (ai_debug_ik.GetFloat() > 0)
+	{
+		debugLine(worldThigh, worldKnee, 0, 0, 255);
+		debugLine(worldThigh, worldThigh + targetKneeDir, 0, 0, 255);
+		//debugLine(worldKnee, targetKnee, 0, 0, 255);
+	}
 
 	Vector ikFoot, ikTargetKnee, ikKnee;
 
@@ -2805,7 +2809,8 @@ bool Studio_SolveIK( int iThigh, int iKnee, int iFoot, Vector &targetFoot, Vecto
 
 	ikTargetKnee = ikKnee + targetKneeDir * d;
 
-	// debugLine( worldKnee, worldThigh + ikTargetKnee, 0, 0, 255, true, 0 );
+	if (ai_debug_ik.GetFloat() > 0)
+		debugLine(worldKnee, worldThigh + ikTargetKnee, 0, 0, 255);
 
 	int color[3] = { 0, 255, 0 };
 
@@ -2835,11 +2840,13 @@ bool Studio_SolveIK( int iThigh, int iKnee, int iFoot, Vector &targetFoot, Vecto
 		matrix3x4_t& mWorldKnee = pBoneToWorld[ iKnee ];
 		matrix3x4_t& mWorldFoot = pBoneToWorld[ iFoot ];
 
-		//debugLine( worldThigh, ikKnee + worldThigh, 255, 0, 0, true, 0 );
-		//debugLine( ikKnee + worldThigh, ikFoot + worldThigh, 255, 0, 0, true,0 );
-
-		// debugLine( worldThigh, ikKnee + worldThigh, color[0], color[1], color[2], true, 0 );
-		// debugLine( ikKnee + worldThigh, ikFoot + worldThigh, color[0], color[1], color[2], true,0 );
+		if (ai_debug_ik.GetFloat() > 0)
+		{
+			debugLine(worldThigh, ikKnee + worldThigh, 255, 0, 0);
+			debugLine(ikKnee + worldThigh, ikFoot + worldThigh, 255, 0, 0);
+			debugLine(worldThigh, ikKnee + worldThigh, color[0], color[1], color[2]);
+			debugLine(ikKnee + worldThigh, ikFoot + worldThigh, color[0], color[1], color[2]);
+		}
 
 
 		// build transformation matrix for thigh
@@ -2859,12 +2866,13 @@ bool Studio_SolveIK( int iThigh, int iKnee, int iFoot, Vector &targetFoot, Vecto
 	}
 	else
 	{
-		/*
-		debugLine( worldThigh, worldThigh + ikKnee, 255, 0, 0, true, 0 );
-		debugLine( worldThigh + ikKnee, worldThigh + ikFoot, 255, 0, 0, true, 0 );
-		debugLine( worldThigh + ikFoot, worldThigh, 255, 0, 0, true, 0 );
-		debugLine( worldThigh + ikKnee, worldThigh + ikTargetKnee, 255, 0, 0, true, 0 );
-		*/
+		if (ai_debug_ik.GetFloat() > 0)
+		{
+			debugLine(worldThigh, worldThigh + ikKnee, 255, 0, 0);
+			debugLine(worldThigh + ikKnee, worldThigh + ikFoot, 255, 0, 0);
+			debugLine(worldThigh + ikFoot, worldThigh, 255, 0, 0);
+			debugLine(worldThigh + ikKnee, worldThigh + ikTargetKnee, 255, 0, 0);
+		}
 		return false;
 	}
 }
@@ -4111,7 +4119,8 @@ void CIKContext::SolveDependencies( Vector pos[], Quaternion q[], matrix3x4_t bo
 					// target p and q
 					MatrixAngles( worldTarget, q2, p2 );
 
-					// debugLine( pChainResult->pos, p2, 0, 0, 255, true, 0.1 );
+					if (ai_debug_ik.GetFloat() > 0)
+						debugLine(pChainResult->pos, p2, 0, 0, 255);
 
 					// blend in position and angles
 					pChainResult->pos = pChainResult->pos * (1.0 - flWeight) + p2 * flWeight;
@@ -4207,7 +4216,9 @@ void CIKContext::SolveDependencies( Vector pos[], Quaternion q[], matrix3x4_t bo
 		{
 			Vector tmp;
 			MatrixPosition( boneToWorld[pchain->pLink( 2 )->bone], tmp );
-			// debugLine( pChainResult->pos, tmp, 255, 255, 255, true, 0.1 );
+
+			if (ai_debug_ik.GetFloat() > 0)
+				debugLine( pChainResult->pos, tmp, 255, 255, 255);
 
 			// do exact IK solution
 			// FIXME: once per link!

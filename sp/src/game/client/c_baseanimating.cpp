@@ -2301,14 +2301,6 @@ public:
 	}
 };
 
-
-/*
-void drawLine(const Vector& origin, const Vector& dest, int r, int g, int b, bool noDepthTest, float duration) 
-{
-	debugoverlay->AddLineOverlay( origin, dest, r, g, b, noDepthTest, duration );
-}
-*/
-
 //-----------------------------------------------------------------------------
 // Purpose: update latched IK contacts if they're in a moving reference frame.
 //-----------------------------------------------------------------------------

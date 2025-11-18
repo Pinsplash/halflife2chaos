@@ -138,6 +138,7 @@ bool CBoneFollowerManager::CreatePhysicsFollower( CBaseAnimating *pParentEntity,
 	return false;
 }
 
+ConVar bone_follow_interval("bone_follow_interval", "0.1");
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -155,7 +156,7 @@ void CBoneFollowerManager::UpdateBoneFollowers( CBaseAnimating *pParentEntity )
 
 			pParentEntity->GetBoneTransform( m_physBones[i].boneIndex, boneToWorld );
 			MatrixAngles( boneToWorld, boneAngles, bonePosition );
-			m_physBones[i].hFollower->UpdateFollower( bonePosition, boneAngles, 0.1 );
+			m_physBones[i].hFollower->UpdateFollower( bonePosition, boneAngles, bone_follow_interval.GetFloat());
 		}
 	}
 }
