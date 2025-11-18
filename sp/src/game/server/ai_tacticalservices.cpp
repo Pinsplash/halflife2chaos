@@ -124,20 +124,20 @@ bool CAI_TacticalServices::FindBackAwayPos( const Vector &vecThreat, Vector *pRe
 
 //-------------------------------------
 
-bool CAI_TacticalServices::FindCoverPos( const Vector &vThreatPos, const Vector &vThreatEyePos, float flMinDist, float flMaxDist, Vector *pResult )
+bool CAI_TacticalServices::FindCoverPos( const Vector &vThreatPos, const Vector &vThreatEyePos, float flMinDist, float flMaxDist, Vector *pResult, bool bThreatNearNode)
 {
-	return FindCoverPos( GetLocalOrigin(), vThreatPos, vThreatEyePos, flMinDist, flMaxDist, pResult );
+	return FindCoverPos( GetLocalOrigin(), vThreatPos, vThreatEyePos, flMinDist, flMaxDist, pResult, bThreatNearNode);
 }
 
 //-------------------------------------
 
-bool CAI_TacticalServices::FindCoverPos( const Vector &vNearPos, const Vector &vThreatPos, const Vector &vThreatEyePos, float flMinDist, float flMaxDist, Vector *pResult )
+bool CAI_TacticalServices::FindCoverPos( const Vector &vNearPos, const Vector &vThreatPos, const Vector &vThreatEyePos, float flMinDist, float flMaxDist, Vector *pResult, bool bThreatNearNode)
 {
 	AI_PROFILE_SCOPE( CAI_TacticalServices_FindCoverPos );
 
 	MARK_TASK_EXPENSIVE();
 
-	int node = FindCoverNode( vNearPos, vThreatPos, vThreatEyePos, flMinDist, flMaxDist );
+	int node = FindCoverNode( vNearPos, vThreatPos, vThreatEyePos, flMinDist, flMaxDist, bThreatNearNode);
 	
 	if (node == NO_NODE)
 		return false;
@@ -331,14 +331,14 @@ int CAI_TacticalServices::FindBackAwayNode(const Vector &vecThreat )
 // value
 //-------------------------------------
 
-int CAI_TacticalServices::FindCoverNode(const Vector &vThreatPos, const Vector &vThreatEyePos, float flMinDist, float flMaxDist )
+int CAI_TacticalServices::FindCoverNode(const Vector &vThreatPos, const Vector &vThreatEyePos, float flMinDist, float flMaxDist, bool bThreatNearNode)
 {
-	return FindCoverNode(GetLocalOrigin(), vThreatPos, vThreatEyePos, flMinDist, flMaxDist );
+	return FindCoverNode(GetLocalOrigin(), vThreatPos, vThreatEyePos, flMinDist, flMaxDist, bThreatNearNode);
 }
 
 //-------------------------------------
 
-int CAI_TacticalServices::FindCoverNode(const Vector &vNearPos, const Vector &vThreatPos, const Vector &vThreatEyePos, float flMinDist, float flMaxDist )
+int CAI_TacticalServices::FindCoverNode(const Vector &vNearPos, const Vector &vThreatPos, const Vector &vThreatEyePos, float flMinDist, float flMaxDist, bool bThreatNearNode)
 {
 	if ( !CAI_NetworkManager::NetworksLoaded() )
 		return NO_NODE;
@@ -349,8 +349,10 @@ int CAI_TacticalServices::FindCoverNode(const Vector &vNearPos, const Vector &vT
 
 	DebugFindCover( NO_NODE, GetOuter()->EyePosition(), vThreatEyePos, 0, 255, 255 );
 
-	int iMyNode = GetPathfinder()->NearestNodeToPoint( vNearPos );
-
+	//PIN: before, this always assumed to check visibility. this does not work if the player is in a room with no nodes.
+	//only check visibility if threat is near node (or we assume it is, which is everything except spawning chaos enemies inside cover)
+	int iMyNode = GetPathfinder()->NearestNodeToPoint( vNearPos, bThreatNearNode);
+	
 	if ( iMyNode == NO_NODE )
 	{
 		Vector pos = GetOuter()->GetAbsOrigin();

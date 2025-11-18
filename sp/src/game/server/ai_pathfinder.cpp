@@ -267,9 +267,9 @@ int	CAI_Pathfinder::NearestNodeToNPC()
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-int CAI_Pathfinder::NearestNodeToPoint( const Vector &vecOrigin )
+int CAI_Pathfinder::NearestNodeToPoint( const Vector &vecOrigin, bool bCheckVisiblity )
 {
-	return GetNetwork()->NearestNodeToPoint( GetOuter(), vecOrigin );
+	return GetNetwork()->NearestNodeToPoint( GetOuter(), vecOrigin, bCheckVisiblity );
 }
 
 //-----------------------------------------------------------------------------

@@ -60,7 +60,7 @@ public:
 	//---------------------------------
 	
 	int				NearestNodeToNPC();
-	int				NearestNodeToPoint( const Vector &vecOrigin );
+	int				NearestNodeToPoint( const Vector &vecOrigin, bool bCheckVisiblity = true );
 
 	AI_Waypoint_t*	FindBestPath		(int startID, int endID);
 	AI_Waypoint_t*	FindShortRandomPath	(int startID, float minPathLength, const Vector &vDirection = vec3_origin);

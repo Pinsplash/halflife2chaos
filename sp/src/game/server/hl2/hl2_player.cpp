@@ -78,6 +78,7 @@
 #include "istudiorender.h"
 #include "vgui/ILocalize.h"
 #include "tier3/tier3.h"
+#include "ai_tacticalservices.h"
 
 #ifdef HL2_EPISODIC
 #include "npc_alyx_episodic.h"
@@ -6208,7 +6209,7 @@ void CHL2_Player::StartGivenEffect(int nID)
 {
 	Assert(nID != EFFECT_ERROR);
 	g_flNextEffectRem = chaos_effect_interval.GetFloat();
-	Msg("Effect %s\n", STRING(g_ChaosEffects[nID]->m_strHudName));
+	Msg("Effect %s\n", STRING(g_ChaosEffects[nID]->m_strGeneralName));
 	g_ChaosEffects[nID]->m_bActive = true;
 	//add to list of picked effects if shuffle mode is on
 	if (chaos_shuffle_mode.GetBool())
@@ -6987,10 +6988,8 @@ CAI_BaseNPC* CChaosEffect::ChaosSpawnNPC(const char* className, string_t strActu
 	float flExtraHeight;
 	switch (iSpawnType)
 	{
+	case SPAWNTYPE_HIDEINCOVER:
 	case SPAWNTYPE_EYELEVEL_REGULAR:
-		flDistAway = 128;
-		flExtraHeight = 64;
-		break;
 	case SPAWNTYPE_EYELEVEL_SPECIAL:
 	case SPAWNTYPE_CEILING:
 	case SPAWNTYPE_ONGROUND:
@@ -7009,7 +7008,6 @@ CAI_BaseNPC* CChaosEffect::ChaosSpawnNPC(const char* className, string_t strActu
 		return NULL;
 	}
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
-	//CHL2_Player *pHL2Player = static_cast<CHL2_Player*>(pPlayer);
 	Vector vecForward;
 	AngleVectors(pPlayer->EyeAngles(), &vecForward);
 	vecForward.z = 0;
@@ -7277,7 +7275,39 @@ CAI_BaseNPC* CChaosEffect::ChaosSpawnNPC(const char* className, string_t strActu
 		pNPC->m_bChaosSpawned = true;
 		pNPC->m_bChaosPersist = true;
 		g_iChaosSpawnCount++; pNPC->CBaseEntity::KeyValue("chaosid", g_iChaosSpawnCount);
+
 		DispatchSpawn(pNPC);
+
+		//AI functions are expecting certain things to be set up which only happen after properly spawning (namely having capabilities set)
+		if (iSpawnType == SPAWNTYPE_HIDEINCOVER)
+		{
+			Vector vResult = vec3_origin;
+			if (pNPC->GetTacticalServices()->FindLateralCover(pPlayer->EyePosition(), 0, &vResult))
+			{
+				vecOrigin = vResult;
+			}
+			else
+			{
+				//set ground capability on flying NPCs so that they are allowed to use a ground node as "cover" temporarily
+				bool bRemoveGroundCap = false;
+				if (!(pNPC->CapabilitiesGet() & bits_CAP_MOVE_GROUND))
+				{
+					bRemoveGroundCap = true;
+					pNPC->CapabilitiesAdd(bits_CAP_MOVE_GROUND);
+				}
+				if (pNPC->GetTacticalServices()->FindCoverPos(pPlayer->GetAbsOrigin(), pPlayer->EyePosition(), 0, FLT_MAX, &vResult, false))
+				{
+					vecOrigin = vResult;
+				}
+				else
+				{
+					Msg("Couldn't find cover...\n");
+				}
+				if (bRemoveGroundCap)
+					pNPC->CapabilitiesRemove(bits_CAP_MOVE_GROUND);
+			}
+		}
+
 		pNPC->Activate();
 		if (iSpawnType != SPAWNTYPE_ONGROUND)//taken care of
 			pNPC->Teleport(&vecOrigin, &aAngles, NULL);
@@ -7557,7 +7587,7 @@ void CERandomNPC::StartEffect()
 		m_iSavedChaosID = ChaosSpawnNPC("npc_alyx", MAKE_STRING("#hl2c_spawn_alyx"), SPAWNTYPE_EYELEVEL_REGULAR, "models/alyx.mdl", "alyx", "weapon_alyxgun", CSF_SQUAD)->m_iChaosID;
 		RandomizeReadiness(GetEntityWithID(m_iSavedChaosID));
 	}
-	if (nRandom == 1) m_iSavedChaosID = ChaosSpawnNPC("npc_antlion", MAKE_STRING("#hl2c_spawn_antlion"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "antlion", "_")->m_iChaosID;
+	if (nRandom == 1) m_iSavedChaosID = ChaosSpawnNPC("npc_antlion", MAKE_STRING("#hl2c_spawn_antlion"), SPAWNTYPE_HIDEINCOVER, "_", "antlion", "_")->m_iChaosID;
 	if (nRandom == 2) m_iSavedChaosID = ChaosSpawnNPC("npc_antlionguard", MAKE_STRING("Spawn Antlionguard"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "antlionguard", "_")->m_iChaosID;
 	if (nRandom == 3) m_iSavedChaosID = ChaosSpawnNPC("npc_barnacle", MAKE_STRING("#hl2c_spawn_barnacle"), SPAWNTYPE_CEILING, "_", "barnacle", "_")->m_iChaosID;
 	if (nRandom == 4)
@@ -7571,7 +7601,7 @@ void CERandomNPC::StartEffect()
 		m_iSavedChaosID = ChaosSpawnNPC("npc_citizen", MAKE_STRING("#hl2c_spawn_citizen"), SPAWNTYPE_EYELEVEL_REGULAR, "models/Humans/Group02/Male_05.mdl", "citizen", "_", CSF_SQUAD)->m_iChaosID;
 		RandomizeReadiness(GetEntityWithID(m_iSavedChaosID));
 	}
-	if (nRandom == 7) m_iSavedChaosID = ChaosSpawnNPC("npc_combine_s", MAKE_STRING("#hl2c_spawn_combine_s"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "combine_s", "_")->m_iChaosID;
+	if (nRandom == 7) m_iSavedChaosID = ChaosSpawnNPC("npc_combine_s", MAKE_STRING("#hl2c_spawn_combine_s"), SPAWNTYPE_HIDEINCOVER, "_", "combine_s", "_")->m_iChaosID;
 	if (nRandom == 8) m_iSavedChaosID = ChaosSpawnNPC("npc_combinedropship", MAKE_STRING("#hl2c_spawn_dropship"), SPAWNTYPE_BIGFLYER, "_", "combinedropship", "_")->m_iChaosID;
 	if (nRandom == 9) m_iSavedChaosID = ChaosSpawnNPC("npc_combinegunship", MAKE_STRING("#hl2c_spawn_gunship"), SPAWNTYPE_BIGFLYER, "_", "combinegunship", "_")->m_iChaosID;
 	if (nRandom == 10) m_iSavedChaosID = ChaosSpawnNPC("npc_crow", MAKE_STRING("#hl2c_spawn_crow"), SPAWNTYPE_EYELEVEL_REGULAR, "models/crow.mdl", "crow", "_")->m_iChaosID;
@@ -7582,20 +7612,20 @@ void CERandomNPC::StartEffect()
 		GetEntityWithID(m_iSavedChaosID)->AcceptInput("StartCatchThrowBehavior", GetEntityWithID(m_iSavedChaosID), GetEntityWithID(m_iSavedChaosID), emptyVariant, 0);
 	}
 	if (nRandom == 13) m_iSavedChaosID = ChaosSpawnNPC("npc_eli", MAKE_STRING("#hl2c_spawn_eli"), SPAWNTYPE_EYELEVEL_REGULAR, "models/eli.mdl", "eli", "_", CSF_SQUAD)->m_iChaosID;
-	if (nRandom == 14) m_iSavedChaosID = ChaosSpawnNPC("npc_fastzombie", MAKE_STRING("#hl2c_spawn_fastzombie"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "fastzombie", "_")->m_iChaosID;
+	if (nRandom == 14) m_iSavedChaosID = ChaosSpawnNPC("npc_fastzombie", MAKE_STRING("#hl2c_spawn_fastzombie"), SPAWNTYPE_HIDEINCOVER, "_", "fastzombie", "_")->m_iChaosID;
 	if (nRandom == 15) m_iSavedChaosID = ChaosSpawnNPC("npc_gman", MAKE_STRING("#hl2c_spawn_gman"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "gman", "_", CSF_SQUAD)->m_iChaosID;
-	if (nRandom == 16) m_iSavedChaosID = ChaosSpawnNPC("npc_headcrab", MAKE_STRING("#hl2c_spawn_headcrab"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "headcrab", "_")->m_iChaosID;
-	if (nRandom == 17) m_iSavedChaosID = ChaosSpawnNPC("npc_headcrab_black", MAKE_STRING("#hl2c_spawn_headcrab_p"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "headcrab_black", "_")->m_iChaosID;
-	if (nRandom == 18) m_iSavedChaosID = ChaosSpawnNPC("npc_headcrab_fast", MAKE_STRING("#hl2c_spawn_headcrab_f"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "headcrab_fast", "_")->m_iChaosID;
+	if (nRandom == 16) m_iSavedChaosID = ChaosSpawnNPC("npc_headcrab", MAKE_STRING("#hl2c_spawn_headcrab"), SPAWNTYPE_HIDEINCOVER, "_", "headcrab", "_")->m_iChaosID;
+	if (nRandom == 17) m_iSavedChaosID = ChaosSpawnNPC("npc_headcrab_black", MAKE_STRING("#hl2c_spawn_headcrab_p"), SPAWNTYPE_HIDEINCOVER, "_", "headcrab_black", "_")->m_iChaosID;
+	if (nRandom == 18) m_iSavedChaosID = ChaosSpawnNPC("npc_headcrab_fast", MAKE_STRING("#hl2c_spawn_headcrab_f"), SPAWNTYPE_HIDEINCOVER, "_", "headcrab_fast", "_")->m_iChaosID;
 	if (nRandom == 19) m_iSavedChaosID = ChaosSpawnNPC("npc_helicopter", MAKE_STRING("#hl2c_spawn_heli"), SPAWNTYPE_BIGFLYER, "_", "helicopter", "_")->m_iChaosID;
 	if (nRandom == 20) m_iSavedChaosID = ChaosSpawnNPC("npc_ichthyosaur", MAKE_STRING("#hl2c_spawn_ich"), SPAWNTYPE_EYELEVEL_SPECIAL, "_", "ichthyosaur", "_")->m_iChaosID;
 	if (nRandom == 21) m_iSavedChaosID = ChaosSpawnNPC("npc_kleiner", MAKE_STRING("#hl2c_spawn_dr_k"), SPAWNTYPE_EYELEVEL_REGULAR, "models/kleiner.mdl", "kleiner", "_", CSF_SQUAD)->m_iChaosID;
-	if (nRandom == 22) m_iSavedChaosID = ChaosSpawnNPC("npc_manhack", MAKE_STRING("#hl2c_spawn_manhack"), SPAWNTYPE_EYELEVEL_SPECIAL, "_", "manhack", "_")->m_iChaosID;
-	if (nRandom == 23) m_iSavedChaosID = ChaosSpawnNPC("npc_metropolice", MAKE_STRING("#hl2c_spawn_metrocop"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "metropolice", "_")->m_iChaosID;
+	if (nRandom == 22) m_iSavedChaosID = ChaosSpawnNPC("npc_manhack", MAKE_STRING("#hl2c_spawn_manhack"), SPAWNTYPE_HIDEINCOVER, "_", "manhack", "_")->m_iChaosID;
+	if (nRandom == 23) m_iSavedChaosID = ChaosSpawnNPC("npc_metropolice", MAKE_STRING("#hl2c_spawn_metrocop"), SPAWNTYPE_HIDEINCOVER, "_", "metropolice", "_")->m_iChaosID;
 	if (nRandom == 24) m_iSavedChaosID = ChaosSpawnNPC("npc_monk", MAKE_STRING("#hl2c_spawn_grigori"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "monk", "weapon_annabelle", CSF_SQUAD)->m_iChaosID;
 	if (nRandom == 25) m_iSavedChaosID = ChaosSpawnNPC("npc_mossman", MAKE_STRING("#hl2c_spawn_mossman"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "mossman", "_", CSF_SQUAD)->m_iChaosID;
 	if (nRandom == 26) m_iSavedChaosID = ChaosSpawnNPC("npc_pigeon", MAKE_STRING("#hl2c_spawn_pigeon"), SPAWNTYPE_EYELEVEL_REGULAR, "models/pigeon.mdl", "pigeon", "_")->m_iChaosID;
-	if (nRandom == 27) m_iSavedChaosID = ChaosSpawnNPC("npc_poisonzombie", MAKE_STRING("#hl2c_spawn_poison_z"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "poisonzombie", "_")->m_iChaosID;
+	if (nRandom == 27) m_iSavedChaosID = ChaosSpawnNPC("npc_poisonzombie", MAKE_STRING("#hl2c_spawn_poison_z"), SPAWNTYPE_HIDEINCOVER, "_", "poisonzombie", "_")->m_iChaosID;
 	if (nRandom == 28) m_iSavedChaosID = ChaosSpawnNPC("npc_rollermine", MAKE_STRING("#hl2c_spawn_rollermine"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "rollermine", "_")->m_iChaosID;
 	if (nRandom == 29) m_iSavedChaosID = ChaosSpawnNPC("npc_seagull", MAKE_STRING("#hl2c_spawn_seagull"), SPAWNTYPE_EYELEVEL_REGULAR, "models/seagull.mdl", "seagull", "_")->m_iChaosID;
 	if (nRandom == 30) m_iSavedChaosID = ChaosSpawnNPC("npc_sniper", MAKE_STRING("#hl2c_spawn_sniper"), SPAWNTYPE_EYELEVEL_SPECIAL, "_", "sniper", "_")->m_iChaosID;
@@ -7609,8 +7639,8 @@ void CERandomNPC::StartEffect()
 		m_iSavedChaosID = ChaosSpawnNPC("npc_vortigaunt", MAKE_STRING("#hl2c_spawn_vortigaunt"), SPAWNTYPE_EYELEVEL_REGULAR, "models/vortigaunt.mdl", "vortigaunt", "_", CSF_SQUAD)->m_iChaosID;
 		RandomizeReadiness(GetEntityWithID(m_iSavedChaosID));
 	}
-	if (nRandom == 37) m_iSavedChaosID = ChaosSpawnNPC("npc_zombie", MAKE_STRING("#hl2c_spawn_zombie"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "zombie", "_")->m_iChaosID;
-	if (nRandom == 38) m_iSavedChaosID = ChaosSpawnNPC("npc_zombie_torso", MAKE_STRING("#hl2c_spawn_zombie_t"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "zombie_torso", "_")->m_iChaosID;
+	if (nRandom == 37) m_iSavedChaosID = ChaosSpawnNPC("npc_zombie", MAKE_STRING("#hl2c_spawn_zombie"), SPAWNTYPE_HIDEINCOVER, "_", "zombie", "_")->m_iChaosID;
+	if (nRandom == 38) m_iSavedChaosID = ChaosSpawnNPC("npc_zombie_torso", MAKE_STRING("#hl2c_spawn_zombie_t"), SPAWNTYPE_HIDEINCOVER, "_", "zombie_torso", "_")->m_iChaosID;
 	if (nRandom == 39)
 	{
 		m_iSavedChaosID = ChaosSpawnNPC("npc_fisherman", MAKE_STRING("#hl2c_spawn_fisherman"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "fisherman", "weapon_oldmanharpoon", CSF_SQUAD)->m_iChaosID;
@@ -7631,11 +7661,11 @@ void CERandomNPC::StartEffect()
 		g_EventQueue.AddEvent("apcdriver", "FireUser1", sVariant, 0, NULL, NULL, 0);
 	}
 	//ep1
-	if (nRandom == 41) m_iSavedChaosID = ChaosSpawnNPC("npc_zombine", MAKE_STRING("#hl2c_spawn_zombine"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "zombine", "_")->m_iChaosID;
+	if (nRandom == 41) m_iSavedChaosID = ChaosSpawnNPC("npc_zombine", MAKE_STRING("#hl2c_spawn_zombine"), SPAWNTYPE_HIDEINCOVER, "_", "zombine", "_")->m_iChaosID;
 	//ep2
 	if (nRandom == 42) m_iSavedChaosID = ChaosSpawnNPC("npc_advisor", MAKE_STRING("#hl2c_spawn_advisor"), SPAWNTYPE_EYELEVEL_SPECIAL, "models/advisor.mdl", "advisor", "_")->m_iChaosID;
 	if (nRandom == 43) m_iSavedChaosID = ChaosSpawnNPC("npc_antlion_grub", MAKE_STRING("Spawn Antliongrub"), SPAWNTYPE_ONGROUND, "_", "antlion_grub", "_")->m_iChaosID;
-	if (nRandom == 44) m_iSavedChaosID = ChaosSpawnNPC("npc_fastzombie_torso", MAKE_STRING("#hl2c_spawn_fastzombie_t"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "fastzombie_torso", "_")->m_iChaosID;
+	if (nRandom == 44) m_iSavedChaosID = ChaosSpawnNPC("npc_fastzombie_torso", MAKE_STRING("#hl2c_spawn_fastzombie_t"), SPAWNTYPE_HIDEINCOVER, "_", "fastzombie_torso", "_")->m_iChaosID;
 	if (nRandom == 45) m_iSavedChaosID = ChaosSpawnNPC("npc_hunter", MAKE_STRING("#hl2c_spawn_hunter"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "hunter", "_")->m_iChaosID;
 	if (nRandom == 46) m_iSavedChaosID = ChaosSpawnNPC("npc_magnusson", MAKE_STRING("#hl2c_spawn_magnusson"), SPAWNTYPE_EYELEVEL_REGULAR, "models/magnusson.mdl", "magnusson", "_", CSF_SQUAD)->m_iChaosID;
 }
@@ -8211,32 +8241,32 @@ void CEEvilNPC::StartEffect()
 	switch (m_nID)
 	{
 	case EFFECT_EVIL_ALYX:
-		m_iSavedChaosID = ChaosSpawnNPC("npc_alyx", MAKE_STRING("#hl2c_evil_alyx"), SPAWNTYPE_EYELEVEL_REGULAR, "models/alyx.mdl", "alyx", "weapon_alyxgun", CSF_EVIL)->m_iChaosID;
+		m_iSavedChaosID = ChaosSpawnNPC("npc_alyx", MAKE_STRING("#hl2c_evil_alyx"), SPAWNTYPE_HIDEINCOVER, "models/alyx.mdl", "alyx", "weapon_alyxgun", CSF_EVIL)->m_iChaosID;
 		break;
 	case EFFECT_EVIL_NORIKO:
 		EvilNoriko();
 		break;
 	case EFFECT_EVIL_BARNEY:
-		m_iSavedChaosID = ChaosSpawnNPC("npc_barney", MAKE_STRING("#hl2c_evil_barney"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "barney", "weapon_ar2", CSF_EVIL)->m_iChaosID;
+		m_iSavedChaosID = ChaosSpawnNPC("npc_barney", MAKE_STRING("#hl2c_evil_barney"), SPAWNTYPE_HIDEINCOVER, "_", "barney", "weapon_ar2", CSF_EVIL)->m_iChaosID;
 		break;
 	case EFFECT_EVIL_KLEINER:
-		m_iSavedChaosID = ChaosSpawnNPC("npc_kleiner", MAKE_STRING("#hl2c_evil_dr_k"), SPAWNTYPE_EYELEVEL_REGULAR, "models/kleiner.mdl", "kleiner", "weapon_shotgun", CSF_EVIL)->m_iChaosID;
+		m_iSavedChaosID = ChaosSpawnNPC("npc_kleiner", MAKE_STRING("#hl2c_evil_dr_k"), SPAWNTYPE_HIDEINCOVER, "models/kleiner.mdl", "kleiner", "weapon_shotgun", CSF_EVIL)->m_iChaosID;
 		break;
 	case EFFECT_EVIL_GRIGORI:
-		m_iSavedChaosID = ChaosSpawnNPC("npc_monk", MAKE_STRING("#hl2c_evil_grig"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "monk", "weapon_annabelle", CSF_EVIL)->m_iChaosID;
+		m_iSavedChaosID = ChaosSpawnNPC("npc_monk", MAKE_STRING("#hl2c_evil_grig"), SPAWNTYPE_HIDEINCOVER, "_", "monk", "weapon_annabelle", CSF_EVIL)->m_iChaosID;
 		break;
 	case EFFECT_EVIL_MOSSMAN:
-		m_iSavedChaosID = ChaosSpawnNPC("npc_mossman", MAKE_STRING("#hl2c_evil_mossman"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "mossman", "weapon_crowbar", CSF_EVIL)->m_iChaosID;
+		m_iSavedChaosID = ChaosSpawnNPC("npc_mossman", MAKE_STRING("#hl2c_evil_mossman"), SPAWNTYPE_HIDEINCOVER, "_", "mossman", "weapon_crowbar", CSF_EVIL)->m_iChaosID;
 		break;
 	case EFFECT_EVIL_VORT:
-		m_iSavedChaosID = ChaosSpawnNPC("npc_vortigaunt", MAKE_STRING("#hl2c_evil_vort"), SPAWNTYPE_EYELEVEL_REGULAR, "models/vortigaunt.mdl", "vortigaunt", "_", CSF_EVIL)->m_iChaosID;
+		m_iSavedChaosID = ChaosSpawnNPC("npc_vortigaunt", MAKE_STRING("#hl2c_evil_vort"), SPAWNTYPE_HIDEINCOVER, "models/vortigaunt.mdl", "vortigaunt", "_", CSF_EVIL)->m_iChaosID;
 		break;
 	case EFFECT_EVIL_BREEN:
-		m_iSavedChaosID = ChaosSpawnNPC("npc_breen", MAKE_STRING("#hl2c_evil_breen"), SPAWNTYPE_EYELEVEL_REGULAR, "models/breen.mdl", "breen", "weapon_physcannon", CSF_EVIL)->m_iChaosID;
+		m_iSavedChaosID = ChaosSpawnNPC("npc_breen", MAKE_STRING("#hl2c_evil_breen"), SPAWNTYPE_HIDEINCOVER, "models/breen.mdl", "breen", "weapon_physcannon", CSF_EVIL)->m_iChaosID;
 		break;
 		/*
 	case EFFECT_EVIL_ELI:
-		m_iSavedChaosID = ChaosSpawnNPC("npc_eli", MAKE_STRING("Evil Eli"), SPAWNTYPE_EYELEVEL_REGULAR, "models/eli.mdl", "eli", "weapon_crossbow", true)->m_iChaosID;
+		m_iSavedChaosID = ChaosSpawnNPC("npc_eli", MAKE_STRING("Evil Eli"), SPAWNTYPE_HIDEINCOVER, "models/eli.mdl", "eli", "weapon_crossbow", true)->m_iChaosID;
 		break;*/
 	}
 }
