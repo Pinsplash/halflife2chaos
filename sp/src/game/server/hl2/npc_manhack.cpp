@@ -1704,7 +1704,7 @@ void CNPC_Manhack::Bump( CBaseEntity *pHitEntity, float flInterval, trace_t &tr 
 //-----------------------------------------------------------------------------
 void CNPC_Manhack::CheckCollisions(float flInterval)
 {
-	if (VPhysicsGetObject())
+	if (!VPhysicsGetObject())
 		return;
 	// Trace forward to see if I hit anything. But trace forward along the
 	// owner's view direction if you're being carried.
