@@ -2393,11 +2393,22 @@ void CBaseCombatCharacter::RemoveAllWeapons()
 	}
 }
 
-
-// take health
-int CBaseCombatCharacter::TakeHealth (float flHealth, int bitsDamageType)
+int CBaseCombatCharacter::TakeHealth(float flHealth, int bitsDamageType)
 {
 	if (!m_takedamage)
+		return 0;
+
+	//reverse of valve's code from CBaseCombatCharacter::OnTakeDamage_Alive()
+
+	float flFractionalHealthGain = flHealth - floor(flHealth);
+	m_flDamageAccumulator -= flFractionalHealthGain;
+
+	if (m_flDamageAccumulator < 0)
+	{
+		m_flDamageAccumulator += 1.0;
+		flHealth = 1.0;
+	}
+	else
 		return 0;
 	
 	return BaseClass::TakeHealth(flHealth, bitsDamageType);

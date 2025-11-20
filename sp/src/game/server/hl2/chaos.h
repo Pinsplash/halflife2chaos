@@ -508,12 +508,19 @@ class CEQuickclip : public CChaosEffect
 public:
 	void StartEffect() override;
 };
+enum GroundState
+{
+	GS_OFFGROUND,
+	GS_ACTIVATE_EFFECT,
+	GS_DONT_ACTIVATE
+};
 class CEFloorEffect : public CChaosEffect
 {
 public:
 	void FastThink() override;
-	int m_iSkipTicks = 0;
+	bool m_iJumped = false;
 	bool CheckStrike(const CTakeDamageInfo &info) override;
+	GroundState GroundShouldActivateEffect();
 };
 class CEUseSpam : public CChaosEffect
 {

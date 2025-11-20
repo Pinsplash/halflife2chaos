@@ -9162,85 +9162,106 @@ void CEQuickclip::StartEffect()
 		break;
 	}
 }
-void CEFloorEffect::FastThink()
+ConVar groundeffect_tracedist("groundeffect_tracedist", "4");
+GroundState CEFloorEffect::GroundShouldActivateEffect()
 {
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
-	int iTicks = 7;
-	bool bSkipThisTick = false;
+
 	//have to be on solid ground
 	if (pPlayer->IsInAVehicle())
-		bSkipThisTick = true;
-
-	//don't hurt if in water
-	if (pPlayer->GetWaterLevel() >= WL_Feet)
-		bSkipThisTick = true;
-
-	//allow all grating and clipping
-	if (pPlayer->m_chTextureType == 'G' || pPlayer->m_chTextureType == 'I')
-		bSkipThisTick = true;
-
-	if (!bSkipThisTick)
 	{
-		//trace hull lets us see when player is surfing. checking ground entity can't differentiate between surfing and being entirely in the air
-		float flHullWidth = 16 * pPlayer->GetModelScale();
-		trace_t	trace;
-		UTIL_TraceHull(pPlayer->GetAbsOrigin() + Vector(0, 0, 1), pPlayer->GetAbsOrigin() - Vector(0, 0, 1), Vector(-flHullWidth, -flHullWidth, -1), Vector(flHullWidth, flHullWidth, 0), CONTENTS_SOLID, pPlayer, COLLISION_GROUP_NONE, &trace);
+		//Msg("In a vehicle\n");
+		return GS_OFFGROUND;
+	}
 
-		//have to be on solid ground
+	if (m_nID == EFFECT_FLOOR_IS_LAVA)
+	{
+		//don't hurt if in water
+		if (pPlayer->GetWaterLevel() >= WL_Feet)
+			return GS_DONT_ACTIVATE;
+
+		//allow all grating and clipping
+		if (pPlayer->m_chTextureType == 'G' || pPlayer->m_chTextureType == 'I')
+			return GS_DONT_ACTIVATE;
+	}
+
+	//trace hull lets us see when player is surfing. ground entity is null when surfing, so it's not reliable.
+	float flHullWidth = 16 * pPlayer->GetModelScale();
+	Vector vStart = pPlayer->GetAbsOrigin() + Vector(0, 0, 1);
+	Vector vEnd = pPlayer->GetAbsOrigin() - Vector(0, 0, groundeffect_tracedist.GetFloat());
+	Vector vHullWidth = Vector(flHullWidth, flHullWidth, 0);
+	trace_t	trace;
+	UTIL_TraceHull(vStart, vEnd, -vHullWidth, vHullWidth, CONTENTS_SOLID, pPlayer, COLLISION_GROUP_NONE, &trace);
+
+	//have to be on solid ground
+	if (!trace.m_pEnt)
+	{
+		//Msg("Off the ground\n");
+		return GS_OFFGROUND;
+	}
+
+	if (m_nID == EFFECT_FLOOR_IS_LAVA)
+	{
 		//all entities get a free pass
-		if (!trace.m_pEnt || !trace.m_pEnt->IsWorld())
-			bSkipThisTick = true;
+		if (!trace.m_pEnt->IsWorld())
+			return GS_DONT_ACTIVATE;
 
-		if (!bSkipThisTick)
-		{
-			//don't count static props
-			if (!strcmp(trace.surface.name, "**studio**"))
-				bSkipThisTick = true;
-		}
-
-		//test in center
-		trace_t	trace2;
-		UTIL_TraceLine(pPlayer->GetAbsOrigin(), pPlayer->GetAbsOrigin() - Vector(0, 0, 20), CONTENTS_SOLID, pPlayer, COLLISION_GROUP_NONE, &trace2);
-
-		//if you're on sky or nodraw, then whatever
-		if ((trace2.surface.flags & SURF_SKY) || (trace2.surface.flags & SURF_NODRAW))
-		{
-			bSkipThisTick = true;
-			//break;
-		}
-
-		//want grass only
-		if (m_nID == EFFECT_GRASS_HEAL && pPlayer->m_chTextureType != 'J' && pPlayer->m_chTextureType != 'K')
-			bSkipThisTick = true;
+		//don't count static props
+		if (!strcmp(trace.surface.name, "**studio**"))
+			return GS_DONT_ACTIVATE;
 	}
 
-	if (bSkipThisTick)
+	//test in center
+	//for some reason this distance used to be 20 units down. if there was a reason for this, write it here when we re-discover it.
+	trace_t	trace2;
+	UTIL_TraceLine(vStart, vEnd, CONTENTS_SOLID, pPlayer, COLLISION_GROUP_NONE, &trace2);
+
+	//if you're on sky or nodraw, then whatever
+	if ((trace2.surface.flags & SURF_SKY) || (trace2.surface.flags & SURF_NODRAW))
 	{
-		//off ground, reset the timer so that we get burned on the first tick we're back on solid ground
-		m_iSkipTicks = 0;
+		//Msg("Standing on sky/nodraw\n");
+		return GS_DONT_ACTIVATE;
 	}
-	else
+
+	//want grass only
+	if (m_nID == EFFECT_GRASS_HEAL)
 	{
-		//When on solid ground, wait X ticks between applying damage.
-		if (m_iSkipTicks > 0)
+		if (pPlayer->m_chTextureType == 'J' || pPlayer->m_chTextureType == 'K')
 		{
-			//tick timer down
-			m_iSkipTicks--;
-			return;
+			//Msg("Texture type %c (grass)\n", pPlayer->m_chTextureType);
+			return GS_ACTIVATE_EFFECT;
 		}
 		else
 		{
-			//time to burn again
-			m_iSkipTicks = iTicks;
-			CTakeDamageInfo infoBurn(pPlayer, pPlayer, 1, DMG_BURN);
-			//apply dmg
+			//Msg("Texture type %c (not grass)\n", pPlayer->m_chTextureType);
+			return GS_DONT_ACTIVATE;
+		}
+	}
+
+	//Msg("activating effect\n");
+	return GS_ACTIVATE_EFFECT;
+}
+void CEFloorEffect::FastThink()
+{
+	GroundState eState = GroundShouldActivateEffect();
+	if (eState == GS_OFFGROUND)
+	{
+		m_iJumped = true;
+	}
+	else
+	{
+		CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+		CTakeDamageInfo infoBurn(pPlayer, pPlayer, m_iJumped ? 2 : 0.125, DMG_BURN);
+		m_iJumped = false;
+		if (eState == GS_ACTIVATE_EFFECT)
+		{
 			switch (m_nID)
 			{
 			case EFFECT_FLOOR_IS_LAVA:
 				pPlayer->TakeDamage(infoBurn);
 				break;
 			case EFFECT_GRASS_HEAL:
-				pPlayer->TakeHealth(1, DMG_GENERIC);
+				pPlayer->TakeHealth(m_iJumped ? 2 : 0.125, DMG_GENERIC);
 				break;
 			}
 		}
