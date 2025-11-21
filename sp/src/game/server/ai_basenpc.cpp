@@ -12288,7 +12288,7 @@ bool CAI_BaseNPC::OnUpcomingPropDoor( AILocalMoveGoal_t *pMoveGoal,
 		m_hOpeningDoor = NULL;
 	}
 
-	if ((CapabilitiesGet() & bits_CAP_DOORS_GROUP) && !pDoor->IsDoorLocked() && (pDoor->IsDoorClosed() || pDoor->IsDoorClosing()))
+	if ((CapabilitiesGet() & bits_CAP_OPEN_DOORS) && (!pDoor->IsDoorLocked() || (CapabilitiesGet() & bits_CAP_UNLOCK_DOORS)) && (pDoor->IsDoorClosed() || pDoor->IsDoorClosing()))
 	{
 		AI_Waypoint_t *pOpenDoorRoute = NULL;
 

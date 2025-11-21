@@ -50,8 +50,8 @@ enum Capability_t
 	bits_CAP_SKIP_NAV_GROUND_CHECK	= 0x00000080, // optimization - skips ground tests while computing navigation//128
 	bits_CAP_USE					= 0x00000100, // open doors/push buttons/pull levers//256
 	//bits_CAP_HEAR					= 0x00000200, // can hear forced sounds//512
-	bits_CAP_AUTO_DOORS				= 0x00000400, // can trigger auto doors//1024
-	bits_CAP_OPEN_DOORS				= 0x00000800, // can open manual doors//2048
+	bits_CAP_UNLOCK_DOORS			= 0x00000400, // can unlock doors//1024
+	bits_CAP_OPEN_DOORS				= 0x00000800, // can open doors//2048
 	bits_CAP_TURN_HEAD				= 0x00001000, // can turn head, always bone controller 0//4096
 	bits_CAP_WEAPON_RANGE_ATTACK1	= 0x00002000, // can do a weapon range attack 1//8192
 	bits_CAP_WEAPON_RANGE_ATTACK2	= 0x00004000, // can do a weapon range attack 2
@@ -74,7 +74,6 @@ enum Capability_t
 	bits_CAP_SIMPLE_RADIUS_DAMAGE	= 0x80000000, // Do not use robust radius damage model on this character.
 };
 
-#define bits_CAP_DOORS_GROUP    (bits_CAP_AUTO_DOORS | bits_CAP_OPEN_DOORS)
 #define bits_CAP_RANGE_ATTACK_GROUP	(bits_CAP_WEAPON_RANGE_ATTACK1 | bits_CAP_WEAPON_RANGE_ATTACK2)
 #define bits_CAP_MELEE_ATTACK_GROUP	(bits_CAP_WEAPON_MELEE_ATTACK1 | bits_CAP_WEAPON_MELEE_ATTACK2)
 

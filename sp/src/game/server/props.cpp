@@ -4644,6 +4644,8 @@ bool CBasePropDoor::NPCOpenDoor( CAI_BaseNPC *pNPC )
 	if ( IsDoorClosed() )
 	{
 		// Use the door
+		if ((pNPC->CapabilitiesGet() & bits_CAP_UNLOCK_DOORS))
+			Unlock();
 		Use( pNPC, pNPC, USE_ON, 0 );
 	}
 

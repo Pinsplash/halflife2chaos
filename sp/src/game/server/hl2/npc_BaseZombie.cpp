@@ -2218,7 +2218,7 @@ void CNPC_BaseZombie::BecomeTorso( const Vector &vecTorsoForce, const Vector &ve
 		m_iHealth = m_iMaxHealth;
 
 		// No more opening doors!
-		CapabilitiesRemove( bits_CAP_DOORS_GROUP );
+		CapabilitiesRemove(bits_CAP_OPEN_DOORS);
 		
 		ClearSchedule( "Becoming torso" );
 		GetNavigator()->ClearGoal();

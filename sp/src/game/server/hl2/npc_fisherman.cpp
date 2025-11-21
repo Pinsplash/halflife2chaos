@@ -154,6 +154,7 @@ void CNPC_Fisherman::Spawn( void )
 
 	BaseClass::Spawn();
 
+	CapabilitiesAdd(bits_CAP_UNLOCK_DOORS);
 	AddEFlags( EFL_NO_DISSOLVE | EFL_NO_MEGAPHYSCANNON_RAGDOLL | EFL_NO_PHYSCANNON_INTERACTION );
 
 	NPCInit();
