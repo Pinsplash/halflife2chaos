@@ -13,6 +13,8 @@
 			game+mod+mod_write+default_write_path	|gameinfo_path|.
 			gamebin					|gameinfo_path|bin
 			game					"..\Half-Life 2\hl2"
+			//for some reason, path above doesn't work for some people. below is older version that we scrapped a while back.
+			game					"|gameinfo_path|..\..\common\Half-Life 2\hl2"
 			game_lv					|all_source_engine_paths|hl2/hl2_lv.vpk
 			game					|all_source_engine_paths|hl2/hl2_sound_vo_english.vpk
 			game					|all_source_engine_paths|hl2/hl2_pak.vpk
