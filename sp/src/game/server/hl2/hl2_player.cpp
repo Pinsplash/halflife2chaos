@@ -5604,7 +5604,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CEPlayerBig>(EFFECT_PLAYER_BIG,			MAKE_STRING("#hl2c_plr_big"),			EC_NONE,										chaos_time_player_big.GetFloat(),			chaos_prob_player_big.GetInt());
 	CreateEffect<CEPlayerSmall>(EFFECT_PLAYER_SMALL,		MAKE_STRING("#hl2c_plr_small"),			EC_NONE,										chaos_time_player_small.GetFloat(),			chaos_prob_player_small.GetInt());
 	CreateEffect<>(EFFECT_NO_MOUSE_HORIZONTAL,				MAKE_STRING("#hl2c_nomousehorz"),		EC_NONE,										chaos_time_no_mouse_horizontal.GetFloat(),	chaos_prob_no_mouse_horizontal.GetInt());
-	CreateEffect<>(EFFECT_NO_MOUSE_VERTICAL,				MAKE_STRING("#hl2c_npmousevert"),		EC_NONE,										chaos_time_no_mouse_vertical.GetFloat(),	chaos_prob_no_mouse_vertical.GetInt());
+	CreateEffect<>(EFFECT_NO_MOUSE_VERTICAL,				MAKE_STRING("#hl2c_nomousevert"),		EC_NONE,										chaos_time_no_mouse_vertical.GetFloat(),	chaos_prob_no_mouse_vertical.GetInt());
 	CreateEffect<CESuperGrab>(EFFECT_SUPER_GRAB,			MAKE_STRING("#hl2c_super_grab"),		EC_NONE,										chaos_time_super_grab.GetFloat(),			chaos_prob_super_grab.GetInt());
 	CreateEffect<CERandomWeaponGive>(EFFECT_GIVE_WEAPON,	MAKE_STRING("#hl2c_give_wep"),			EC_NONE,										-1,											chaos_prob_give_weapon.GetInt());
 	CreateEffect<>(EFFECT_GIVE_ALL_WEAPONS,					MAKE_STRING("#hl2c_giveallweps"),		EC_NONE,										-1,											chaos_prob_give_all_weapons.GetInt());
