@@ -116,7 +116,7 @@ enum Effect_T
 #define EC_BOAT				1
 #define EC_BUGGY			2
 #define EC_WATER			4
-//#define EC_PHYSICS			8
+#define EC_EXTREME			8
 #define EC_NO_INVULN		16
 #define EC_HAS_WEAPON		32
 #define EC_QC_OFF			64
@@ -275,6 +275,7 @@ int							g_iVoteNumber = 0; // acts as a unique number for the external client
 CChaosStoredEnt *StoreEnt(CBaseEntity *pEnt);
 CBaseEntity *RetrieveStoredEnt(CChaosStoredEnt *pStoredEnt, bool bPersist);
 bool						g_bGoBackLevel = false;
+bool						g_bAvoidExtreme = false;
 
 class CEBumpy : public CChaosEffect
 {

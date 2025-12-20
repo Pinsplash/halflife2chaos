@@ -596,6 +596,7 @@ CON_COMMAND(chaos_reset, "resets stuff like sv_gravity. executes chaos_restart.c
 	engine->ClientCommand(engine->PEntityOfEntIndex(1), "exec chaos_restart\n");
 	sv_gravity.SetValue(600);
 	physenv->SetGravity(Vector(0, 0, -GetCurrentGravity()));
+	g_bAvoidExtreme = true;
 }
 CON_COMMAND(chaos_restart, "restarts map and resets stuff like sv_gravity. executes chaos_restart.cfg.")
 {
@@ -603,6 +604,7 @@ CON_COMMAND(chaos_restart, "restarts map and resets stuff like sv_gravity. execu
 	ClearChaosData();
 	engine->ClientCommand(engine->PEntityOfEntIndex(1), "restart;exec chaos_restart\n");
 	g_ChaosEffects.RemoveAll();
+	g_bAvoidExtreme = true;
 }
 //chaos_ignore_activeness
 //chaos_ignore_group
@@ -1968,6 +1970,7 @@ void CHL2_Player::Activate(void)
 			CChaosEffect* pEffect = g_ChaosEffects[i];
 			pEffect->TransitionEffect();
 		}
+		g_bAvoidExtreme = false;
 	}
 	BaseClass::Activate();
 	InitSprinting();
@@ -5595,7 +5598,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CENPCRels>(EFFECT_NPC_LIKE,				MAKE_STRING("#hl2c_npc_like"),			EC_NONE,										chaos_time_npc_like.GetFloat(),				chaos_prob_npc_like.GetInt());
 	CreateEffect<CENPCRels>(EFFECT_NPC_NEUTRAL,				MAKE_STRING("#hl2c_npc_neutral"),		EC_NONE,										chaos_time_npc_neutral.GetFloat(),			chaos_prob_npc_neutral.GetInt());
 	CreateEffect<CENPCRels>(EFFECT_NPC_FEAR,				MAKE_STRING("#hl2c_npc_fear"),			EC_NONE,										chaos_time_npc_fear.GetFloat(),				chaos_prob_npc_fear.GetInt());
-	CreateEffect<>(EFFECT_TELEPORT_RANDOM,					MAKE_STRING("#hl2c_tele_random"),		EC_PLAYER_TELEPORT,								-1,											chaos_prob_teleport_random.GetInt());
+	CreateEffect<>(EFFECT_TELEPORT_RANDOM,					MAKE_STRING("#hl2c_tele_random"),		EC_PLAYER_TELEPORT | EC_EXTREME,				-1,											chaos_prob_teleport_random.GetInt());
 	CreateEffect<CERandomVehicle>(EFFECT_SPAWN_VEHICLE,		MAKE_STRING("#hl2c_spawn_veh"),			EC_NONE,										-1,											chaos_prob_spawn_vehicle.GetInt());
 	CreateEffect<CERandomNPC>(EFFECT_SPAWN_NPC,				MAKE_STRING("#hl2c_spawn_npc"),			EC_NONE,										-1,											chaos_prob_spawn_npc.GetInt());
 	CreateEffect<CESwimInAir>(EFFECT_SWIM_IN_AIR,			MAKE_STRING("#hl2c_swiminair"),			EC_PICKUPS,										chaos_time_swim_in_air.GetFloat(),			chaos_prob_swim_in_air.GetInt());
@@ -5633,17 +5636,17 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<>(EFFECT_ORTHO_CAM,						MAKE_STRING("#hl2c_ortho_cam"),			EC_NONE,										chaos_time_ortho_cam.GetFloat(),			chaos_prob_ortho_cam.GetInt());
 	CreateEffect<CETreeSpam>(EFFECT_FOREST,					MAKE_STRING("#hl2c_forest"),			EC_NONE,										chaos_time_forest.GetFloat(),				chaos_prob_forest.GetInt());
 	CreateEffect<CEMountedGun>(EFFECT_SPAWN_MOUNTED_GUN,	MAKE_STRING("#hl2c_mountedgun"),		EC_NONE,										-1,											chaos_prob_spawn_mounted_gun.GetInt());
-	CreateEffect<CERestartLevel>(EFFECT_RESTART_LEVEL,		MAKE_STRING("#hl2c_restart_lvl"),		EC_NONE,										-1,											chaos_prob_restart_level.GetInt());
+	CreateEffect<CERestartLevel>(EFFECT_RESTART_LEVEL,		MAKE_STRING("#hl2c_restart_lvl"),		EC_EXTREME,										-1,											chaos_prob_restart_level.GetInt());
 	CreateEffect<CERemovePickups>(EFFECT_REMOVE_PICKUPS,	MAKE_STRING("#hl2c_removepickups"),		EC_PICKUPS | EC_NEED_PHYSGUN | EC_HAS_WEAPON,	-1,											chaos_prob_remove_pickups.GetInt());
 	CreateEffect<CECloneNPCs>(EFFECT_CLONE_NPCS,			MAKE_STRING("#hl2c_clone_npcs"),		EC_NONE,										-1,											chaos_prob_clone_npcs.GetInt());
 	CreateEffect<CELockPVS>(EFFECT_LOCK_PVS,				MAKE_STRING("#hl2c_lock_pvs"),			EC_NONE,										chaos_time_lock_pvs.GetFloat(),				chaos_prob_lock_pvs.GetInt());
-	CreateEffect<CEDejaVu>(EFFECT_RELOAD_DEJA_VU,			MAKE_STRING("#hl2c_deja_vu"),			EC_PLAYER_TELEPORT,								-1,											chaos_prob_reload_deja_vu.GetInt());
+	CreateEffect<CEDejaVu>(EFFECT_RELOAD_DEJA_VU,			MAKE_STRING("#hl2c_deja_vu"),			EC_PLAYER_TELEPORT | EC_EXTREME,				-1,											chaos_prob_reload_deja_vu.GetInt());
 	CreateEffect<CEBumpy>(EFFECT_BUMPY,						MAKE_STRING("#hl2c_bumpy"),				EC_BUGGY,										chaos_time_bumpy.GetFloat(),				chaos_prob_bumpy.GetInt());
 	CreateEffect<CENoBrake>(EFFECT_NO_BRAKE,				MAKE_STRING("#hl2c_no_brake"),			EC_BUGGY,										chaos_time_no_brake.GetFloat(),				chaos_prob_no_brake.GetInt());
-	CreateEffect<CEForceInOutCar>(EFFECT_FORCE_INOUT_CAR,	MAKE_STRING("#hl2c_force_inout"),		EC_BUGGY | EC_BOAT | EC_PLAYER_TELEPORT,		-1,											chaos_prob_force_inout_car.GetInt());
+	CreateEffect<CEForceInOutCar>(EFFECT_FORCE_INOUT_CAR,	MAKE_STRING("#hl2c_force_inout"),		EC_BUGGY|EC_BOAT|EC_PLAYER_TELEPORT|EC_EXTREME,	-1,											chaos_prob_force_inout_car.GetInt());
 	CreateEffect<CEWeaponRemove>(EFFECT_WEAPON_REMOVE,		MAKE_STRING("#hl2c_wep_remove"),		EC_NEED_PHYSGUN,								-1,											chaos_prob_weapon_remove.GetInt());
 	CreateEffect<>(EFFECT_INTERP_NPCS,						MAKE_STRING("#hl2c_interp_npcs"),		EC_NONE,										chaos_time_interp_npcs.GetFloat(),			chaos_prob_interp_npcs.GetInt());
-	CreateEffect<CEPhysConvert>(EFFECT_PHYS_CONVERT,		MAKE_STRING("#hl2c_phys_convert"),		EC_NONE,										-1,											chaos_prob_phys_convert.GetInt());
+	CreateEffect<CEPhysConvert>(EFFECT_PHYS_CONVERT,		MAKE_STRING("#hl2c_phys_convert"),		EC_EXTREME,										-1,											chaos_prob_phys_convert.GetInt());
 	CreateEffect<CEIncline>(EFFECT_INCLINE,					MAKE_STRING("#hl2c_no_climb"),			EC_NONE,										chaos_time_incline.GetFloat(),				chaos_prob_incline.GetInt());
 	CreateEffect<>(EFFECT_DISABLE_SAVE,						MAKE_STRING("#hl2c_no_save"),			EC_NONE,										chaos_time_disable_save.GetFloat(),			chaos_prob_disable_save.GetInt());
 	CreateEffect<>(EFFECT_NO_RELOAD,						MAKE_STRING("#hl2c_no_reload"),			EC_HAS_WEAPON,									chaos_time_no_reload.GetFloat(),			chaos_prob_no_reload.GetInt());
@@ -5664,7 +5667,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CEGiveAllRPG>(EFFECT_GIVE_ALL_RPG,			MAKE_STRING("#hl2c_giveallrpgs"),		EC_NONE,										-1,											chaos_prob_giveallrpg.GetInt());
 	CreateEffect<CEFloorEffect>(EFFECT_GRASS_HEAL,			MAKE_STRING("#hl2c_grass_heal"),		EC_NONE,										chaos_time_grass_heal.GetFloat(),			chaos_prob_grass_heal.GetInt());
 	CreateEffect<CEChangePitch>(EFFECT_CHANGE_PITCH,		MAKE_STRING("#hl2c_change_pitch"),		EC_NONE,										chaos_time_change_pitch.GetFloat(),			chaos_prob_change_pitch.GetInt());
-	CreateEffect<CELogicExplode>(EFFECT_LOGIC_EXPLODE,		MAKE_STRING("#hl2c_logic_explode"),		EC_NONE,										-1,											chaos_prob_logic_explode.GetInt());
+	CreateEffect<CELogicExplode>(EFFECT_LOGIC_EXPLODE,		MAKE_STRING("#hl2c_logic_explode"),		EC_EXTREME,										-1,											chaos_prob_logic_explode.GetInt());
 	CreateEffect<CECameraTextures>(EFFECT_CAMERA_TEXTURES,	MAKE_STRING("#hl2c_camera_textures"),	EC_NONE,										chaos_time_camera_textures.GetFloat(),		chaos_prob_camera_textures.GetInt());
 	CreateEffect<CECameraGravity>(EFFECT_CAMERA_GRAVITY,	MAKE_STRING("#hl2c_camera_gravity"),	EC_NONE,										chaos_time_camera_gravity.GetFloat(),		chaos_prob_camera_gravity.GetInt());
 	CreateEffect<CEHL1Phys>(EFFECT_HL1_PHYSICS,				MAKE_STRING("#hl2c_hl1_physics"),		EC_NONE,										chaos_time_hl1_physics.GetFloat(),			chaos_prob_hl1_physics.GetInt());
@@ -5875,11 +5878,6 @@ bool CChaosEffect::CheckEffectContext()
 	if (m_iContextStatusCache != C_STATUS_UNKNOWN)
 		return m_iContextStatusCache == C_STATUS_GOOD;
 
-	//avoid long maps
-	if (m_nID == EFFECT_RESTART_LEVEL)
-		if (MapIsLong(pMapName))
-			return false;//this is a long map
-
 	//potential softlock if clone npcs happens on some maps
 	if (m_nID == EFFECT_CLONE_NPCS)
 		if (!SafeCloneNPCs(pMapName))
@@ -6000,6 +5998,11 @@ bool CChaosEffect::CheckEffectContext()
 
 	if (m_nContext == EC_NONE)
 		return true;
+
+	//avoid extreme effects if already had to reset the map once
+	if (m_nContext & EC_EXTREME)
+		if (g_bAvoidExtreme)
+			return false;//too much chaos
 
 	//need at least one vehicle of desired type
 	if (m_nContext & EC_BUGGY || m_nContext & EC_BOAT)
@@ -6689,25 +6692,6 @@ CBaseEntity* CChaosEffect::GetEntityWithID(int iChaosID)
 	return NULL;
 }
 
-bool CChaosEffect::MapIsLong(const char* pMapName)
-{
-	if (!Q_strnicmp("d", pMapName, 1))//hl2
-	{
-		if (!Q_strcmp(pMapName, "d1_trainstation_01") || !Q_strcmp(pMapName, "d1_trainstation_05")
-			|| !Q_strcmp(pMapName, "d1_eli_01") || !Q_strcmp(pMapName, "d1_eli_02") || !Q_strcmp(pMapName, "d2_coast_08")
-			|| !Q_strcmp(pMapName, "d2_prison_05") || !Q_strcmp(pMapName, "d2_prison_06") || !Q_strcmp(pMapName, "d2_prison_07") || !Q_strcmp(pMapName, "d2_prison_08")
-			|| !Q_strcmp(pMapName, "d3_c17_13") || !Q_strcmp(pMapName, "d3_citadel_02") || !Q_strcmp(pMapName, "d3_citadel_05") || !Q_strcmp(pMapName, "d3_breen_01"))
-			return true;
-	}
-	else//ep2 or ep1 goes here
-	{
-		if (!Q_strcmp(pMapName, "ep1_citadel_00") || !Q_strcmp(pMapName, "ep1_citadel_01") || !Q_strcmp(pMapName, "ep1_citadel_03")
-			|| !Q_strcmp(pMapName, "ep2_outland_02") || !Q_strcmp(pMapName, "ep2_outland_11") || !Q_strcmp(pMapName, "ep2_outland_11b") || !Q_strcmp(pMapName, "ep2_outland_12") || !Q_strcmp(pMapName, "ep2_outland_12a"))
-			return true;
-	}
-	return false;
-}
-
 bool CChaosEffect::MapGoodForCrane(const char* pMapName)
 {
 	//Disallow maps that wouldn't let a crane do much. cranes need wide open land to graze on.
@@ -6819,24 +6803,15 @@ bool CChaosEffect::PhysConvertSoftlock(const char* pMapName)
 {
 	if (!Q_strnicmp("d", pMapName, 1))//hl2
 	{
-		if (!Q_strnicmp("d1", pMapName, 2))
-		{
-			if (!Q_strcmp(pMapName, "d1_trainstation_01") || !Q_strcmp(pMapName, "d1_trainstation_05")
-				|| !Q_strcmp(pMapName, "d1_canals_11") || !Q_strcmp(pMapName, "d1_canals_13")
-				|| !Q_strcmp(pMapName, "d1_eli_01") || !Q_strcmp(pMapName, "d1_town_01"))
-				return true;//bad map
-		}
-		else
-		{
-			if (!Q_strcmp(pMapName, "d2_prison_08") || !Q_strcmp(pMapName, "d3_c17_07") || !Q_strcmp(pMapName, "d3_c17_08")
-				|| !Q_strcmp(pMapName, "d3_citadel_01") || !Q_strcmp(pMapName, "d3_citadel_02") || !Q_strcmp(pMapName, "d3_citadel_05") || !Q_strcmp(pMapName, "d3_breen_01"))
-				return true;//bad map
-		}
+		if (!Q_strcmp(pMapName, "d1_trainstation_05") || !Q_strcmp(pMapName, "d1_canals_11")
+			|| !Q_strcmp(pMapName, "d1_eli_01") || !Q_strcmp(pMapName, "d1_town_01")
+			|| !Q_strcmp(pMapName, "d2_prison_08") || !Q_strcmp(pMapName, "d3_c17_08"))
+			return true;//bad map
 	}
 	else
 	{
 		if (!Q_strcmp(pMapName, "ep1_citadel_03") || !Q_strcmp(pMapName, "ep1_c17_00a")
-			|| !Q_strcmp(pMapName, "ep2_outland_01") || !Q_strcmp(pMapName, "ep2_outland_03") || !Q_strcmp(pMapName, "ep2_outland_11") || !Q_strcmp(pMapName, "ep2_outland_11b"))
+			|| !Q_strcmp(pMapName, "ep2_outland_03") || !Q_strcmp(pMapName, "ep2_outland_11") || !Q_strcmp(pMapName, "ep2_outland_11b"))
 			return true;//bad map
 	}
 	return false;
@@ -6886,20 +6861,12 @@ bool CChaosEffect::DontTeleportPlayer(const char* pMapName)
 		return false;
 	if (!Q_strnicmp("d", pMapName, 1))//hl2
 	{
-		if (!Q_strnicmp("d1", pMapName, 2))
-		{
-			if (!Q_strcmp(pMapName, "d1_trainstation_01") || !Q_strcmp(pMapName, "d1_trainstation_03") || !Q_strcmp(pMapName, "d1_trainstation_04") || !Q_strcmp(pMapName, "d1_trainstation_05")
-				|| !Q_strcmp(pMapName, "d1_canals_01") || !Q_strcmp(pMapName, "d1_canals_05") || !Q_strcmp(pMapName, "d1_canals_06") || !Q_strcmp(pMapName, "d1_canals_08") || !Q_strcmp(pMapName, "d1_canals_11")
-				|| !Q_strcmp(pMapName, "d1_eli_01") || !Q_strcmp(pMapName, "d1_eli_02") || !Q_strcmp(pMapName, "d1_town_02a") || !Q_strcmp(pMapName, "d1_town_05"))
-				return true;//no
-		}
-		else
-		{
-			if (!Q_strcmp(pMapName, "d2_coast_11") || !Q_strcmp(pMapName, "d2_prison_06") || !Q_strcmp(pMapName, "d2_prison_08")
-				|| !Q_strcmp(pMapName, "d3_c17_06b") || !Q_strcmp(pMapName, "d3_c17_07") || !Q_strcmp(pMapName, "d3_c17_10b") || !Q_strcmp(pMapName, "d3_c17_13")
-				|| !Q_strcmp(pMapName, "d3_citadel_03") || !Q_strcmp(pMapName, "d3_citadel_04") || !Q_strcmp(pMapName, "d3_breen_01"))
-				return true;//no
-		}
+		if (!Q_strcmp(pMapName, "d1_trainstation_01") || !Q_strcmp(pMapName, "d1_trainstation_04") || !Q_strcmp(pMapName, "d1_trainstation_05")
+			|| !Q_strcmp(pMapName, "d1_eli_01") || !Q_strcmp(pMapName, "d1_town_05")
+			|| !Q_strcmp(pMapName, "d2_coast_11") || !Q_strcmp(pMapName, "d2_prison_08")
+			|| !Q_strcmp(pMapName, "d3_c17_13")
+			|| !Q_strcmp(pMapName, "d3_breen_01"))
+			return true;//no
 	}
 	else
 	{
@@ -6911,8 +6878,7 @@ bool CChaosEffect::DontTeleportPlayer(const char* pMapName)
 		}
 		else
 		{
-			if (!Q_strcmp(pMapName, "ep2_outland_01") || !Q_strcmp(pMapName, "ep2_outland_03") || !Q_strcmp(pMapName, "ep2_outland_06a") || !Q_strcmp(pMapName, "ep2_outland_09")
-				|| !Q_strcmp(pMapName, "ep2_outland_10") || !Q_strcmp(pMapName, "ep2_outland_11") || !Q_strcmp(pMapName, "ep2_outland_11a") || !Q_strcmp(pMapName, "ep2_outland_11b") || !Q_strcmp(pMapName, "ep2_outland_12") || !Q_strcmp(pMapName, "ep2_outland_12a"))
+			if (!Q_strcmp(pMapName, "ep2_outland_01") || !Q_strcmp(pMapName, "ep2_outland_11") || !Q_strcmp(pMapName, "ep2_outland_11b") || !Q_strcmp(pMapName, "ep2_outland_12a"))
 				return true;//no
 		}
 	}
@@ -8740,6 +8706,7 @@ void CEMountedGun::StartEffect()
 void CERestartLevel::StartEffect()
 {
 	g_bGoBackLevel = true;
+	g_bAvoidExtreme = true;
 	if (completed_town03.GetBool() && !strcmp(gpGlobals->mapname.ToCStr(), "d1_town_02"))
 		engine->ClientCommand(engine->PEntityOfEntIndex(1), "map d1_town_02 setpos -3648 0 -3419 setang 0 90 0");
 	else if (completed_coast08.GetBool() && !strcmp(gpGlobals->mapname.ToCStr(), "d2_coast_07"))
