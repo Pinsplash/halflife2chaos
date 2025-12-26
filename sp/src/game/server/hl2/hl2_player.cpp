@@ -79,6 +79,7 @@
 #include "vgui/ILocalize.h"
 #include "tier3/tier3.h"
 #include "ai_tacticalservices.h"
+#include <vector>
 
 #ifdef HL2_EPISODIC
 #include "npc_alyx_episodic.h"
@@ -8079,79 +8080,71 @@ void CENPCRels::StartEffect()
 		break;
 	}
 }
-static const char* zombieNPCs[] = { "npc_zombie", "npc_zombie_torso", "npc_poisonzombie", "npc_fastzombie", "npc_zombine", "npc_fastzombie_torso" };
-void CEZombieSpamFar::MaintainEffect()
+int CE_NPC_Spam::PickRandomClass(int iNode)
 {
-	int iZombieType, nRandMax;
+	int rng;
+	if (chaos_rng1.GetInt() == -1)
+		rng = chaos_rng1.GetInt();
+	else
+		rng = RandomInt(0, m_sSpawnNPCs.size() - 1);
 
-	nRandMax = 5;
-
+	//add node id to random number and modulo by max to prevent odd bug where rng seed would not update after every call,
+	//leading to the majority of zombies being the same kind
+	return (rng + iNode) % m_sSpawnNPCs.size();
+}
+void CE_NPC_Spam::SpawnNPC(Vector vPos, int iNPCType)
+{
+	CBaseEntity* pNPC = (CBaseEntity*)CreateEntityByName(m_sSpawnNPCs[iNPCType]);
+	Assert(pNPC);
+	pNPC->SetAbsOrigin(vPos);
+	pNPC->KeyValue("targetname", m_sTargetname);
+	g_iChaosSpawnCount++; pNPC->KeyValue("chaosid", g_iChaosSpawnCount);
+	DispatchSpawn(pNPC);
+	pNPC->Activate();
+	pNPC->m_bChaosSpawned = true;
+	pNPC->m_bChaosPersist = true;
+}
+void CE_NPC_Spam::SpawnNPC(CAI_Node* pNode)
+{
+	int iNPCType = PickRandomClass(pNode->GetId());
+	SpawnNPC(pNode->GetOrigin(), iNPCType);
+}
+//find a random hidden node
+void CE_NPC_SpamFar::MaintainEffect()
+{
 	while (true)
 	{
-		//find a random hidden node
 		CAI_Node* pNode = g_pBigAINet->GetNode(RandomInt(0, g_pBigAINet->NumNodes() - 1));
 		trace_t	tr;
 		UTIL_TraceLine(UTIL_GetLocalPlayer()->EyePosition(), pNode->GetPosition(HULL_HUMAN), MASK_VISIBLE, UTIL_GetLocalPlayer(), COLLISION_GROUP_NONE, &tr);
 		if (tr.DidHit())//can't see
 		{
-			if (chaos_rng1.GetInt() == -1)
-				iZombieType = RandomInt(0, nRandMax);
-			else
-				iZombieType = chaos_rng1.GetInt() % nRandMax;
-
-			CBaseEntity* pNPC = (CBaseEntity*)CreateEntityByName(zombieNPCs[iZombieType]);
-
-			if (!pNPC)
-				return;
-
-			pNPC->SetAbsOrigin(pNode->GetOrigin());
-			pNPC->KeyValue("targetname", "l4d_zombie");
-			g_iChaosSpawnCount++; pNPC->KeyValue("chaosid", g_iChaosSpawnCount);
-			DispatchSpawn(pNPC);
-			pNPC->Activate();
-			pNPC->m_bChaosSpawned = true;
-			pNPC->m_bChaosPersist = true;
+			SpawnNPC(pNode);
 			return;
 		}
 	}
 }
-void CEZombieSpamClose::StartEffect()
+//pick nodes near player
+void CE_NPC_SpamClose::InitialSpawn()
 {
-	int iZombieType, nRandMax;
-
-	nRandMax = 5;
-
 	CAI_Node* pNode;
 	CNodeList* result = GetNearbyNodes(20);
 	for (; result->Count(); result->RemoveAtHead())
 	{
 		pNode = g_pBigAINet->GetNode(result->ElementAtHead().nodeIndex);
-
-		int rng;
-		if (chaos_rng1.GetInt() == -1)
-			rng = chaos_rng1.GetInt();
-		else
-			rng = RandomInt(0, nRandMax);
-
-		//add node id to random number and modulo by max to prevent odd bug where rng seed would not update after every call,
-		//leading to the majority of zombies being the same kind
-		iZombieType = (rng + result->ElementAtHead().nodeIndex) % (nRandMax + 1);
-		if (iZombieType < 0 || iZombieType > nRandMax)//just incase?
-			return;
-
-		CBaseEntity* pNPC = (CBaseEntity*)CreateEntityByName(zombieNPCs[iZombieType]);
-
-		if (!pNPC)
-			return;
-
-		pNPC->SetAbsOrigin(pNode->GetOrigin());
-		pNPC->KeyValue("targetname", "l4d_zombie");
-		g_iChaosSpawnCount++; pNPC->KeyValue("chaosid", g_iChaosSpawnCount);
-		DispatchSpawn(pNPC);
-		pNPC->Activate();
-		pNPC->m_bChaosSpawned = true;
-		pNPC->m_bChaosPersist = true;
+		SpawnNPC(pNode);
 	}
+}
+void CEZombieSpamClose::StartEffect()
+{
+	m_sSpawnNPCs = { "npc_zombie", "npc_zombie_torso", "npc_poisonzombie", "npc_fastzombie", "npc_zombine", "npc_fastzombie_torso" };
+	m_sTargetname = "l4d_zombie";
+	InitialSpawn();
+}
+void CEZombieSpamFar::StartEffect()
+{
+	m_sSpawnNPCs = { "npc_zombie", "npc_zombie_torso", "npc_poisonzombie", "npc_fastzombie", "npc_zombine", "npc_fastzombie_torso" };
+	m_sTargetname = "l4d_zombie";
 }
 void CEBottle::StartEffect()
 {

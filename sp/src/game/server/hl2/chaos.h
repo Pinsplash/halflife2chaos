@@ -4,6 +4,7 @@
 #include "ai_node.h"
 #include "ai_network.h"
 #include "vehicle_base.h"
+#include <vector>
 #define MAX_ACTIVE_EFFECTS 64
 #define MAX_EFFECTS_IN_GROUP 32
 enum Effect_T
@@ -411,15 +412,34 @@ class CERandomWeaponGive : public CChaosEffect
 public:
 	void StartEffect() override;
 };
-class CEZombieSpamClose : public CChaosEffect
+class CE_NPC_Spam : public CChaosEffect
+{
+public:
+	int PickRandomClass(int iNode);
+	void SpawnNPC(Vector vPos, int iNPCType);
+	void SpawnNPC(CAI_Node* pNode);
+	std::vector<const char*> m_sSpawnNPCs;
+	const char* m_sTargetname;
+};
+class CE_NPC_SpamClose : public CE_NPC_Spam
+{
+public:
+	void InitialSpawn();
+};
+class CE_NPC_SpamFar : public CE_NPC_Spam
+{
+public:
+	void MaintainEffect() override;
+};
+class CEZombieSpamClose : public CE_NPC_SpamClose
 {
 public:
 	void StartEffect() override;
 };
-class CEZombieSpamFar : public CChaosEffect
+class CEZombieSpamFar : public CE_NPC_SpamFar
 {
 public:
-	void MaintainEffect() override;
+	void StartEffect() override;
 };
 class CENPCRels : public CChaosEffect
 {
