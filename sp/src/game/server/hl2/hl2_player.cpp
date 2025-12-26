@@ -5424,256 +5424,258 @@ void CHL2_Player::CreateEffect(int nEffect, string_t strHudName, int nContext, f
 //test loading save made while effect was NOT active when effect is active
 //test loading save made while effect was active after effect ends
 //should it be in DoRestorationAbort?
-ConVar chaos_time_zerog("chaos_time_zerog", "1");
-ConVar chaos_time_superg("chaos_time_superg", "1");
-ConVar chaos_time_lowg("chaos_time_lowg", "1");
-ConVar chaos_time_invertg("chaos_time_invertg", "1");
-ConVar chaos_time_phys_pause("chaos_time_phys_pause", "1");
-ConVar chaos_time_phys_fast("chaos_time_phys_fast", "1");
-ConVar chaos_time_phys_slow("chaos_time_phys_slow", "1");
-ConVar chaos_time_pull_to_player("chaos_time_pull_to_player", "1");
-ConVar chaos_time_push_from_player("chaos_time_push_from_player", "1");
-ConVar chaos_time_no_movement("chaos_time_no_movement", "1");
-ConVar chaos_time_super_movement("chaos_time_super_movement", "1");
-ConVar chaos_time_lock_vehicle("chaos_time_lock_vehicle", "1");
-ConVar chaos_time_npc_hate("chaos_time_npc_hate", "1");
-ConVar chaos_time_npc_like("chaos_time_npc_like", "1");
-ConVar chaos_time_npc_neutral("chaos_time_npc_neutral", "1");
-ConVar chaos_time_npc_fear("chaos_time_npc_fear", "1");
-ConVar chaos_time_swim_in_air("chaos_time_swim_in_air", "1");
-ConVar chaos_time_only_draw_world("chaos_time_only_draw_world", "1");
-ConVar chaos_time_low_detail("chaos_time_low_detail", "1");
-ConVar chaos_time_player_big("chaos_time_player_big", "1");
-ConVar chaos_time_player_small("chaos_time_player_small", "1");
-ConVar chaos_time_no_mouse_horizontal("chaos_time_no_mouse_horizontal", "1");
-ConVar chaos_time_no_mouse_vertical("chaos_time_no_mouse_vertical", "1");
-ConVar chaos_time_super_grab("chaos_time_super_grab", "1");
-ConVar chaos_time_earthquake("chaos_time_earthquake", "1");
-ConVar chaos_time_explode_on_death("chaos_time_explode_on_death", "1");
-ConVar chaos_time_bullet_teleport("chaos_time_bullet_teleport", "1");
-ConVar chaos_time_nade_guns("chaos_time_nade_guns", "1");
-ConVar chaos_time_superhot("chaos_time_superhot", "1");
-ConVar chaos_time_supercold("chaos_time_supercold", "1");
-ConVar chaos_time_barrel_shotgun("chaos_time_barrel_shotgun", "1");
-ConVar chaos_time_solid_triggers("chaos_time_solid_triggers", "1");
-ConVar chaos_time_random_colors("chaos_time_random_colors", "1");
-ConVar chaos_time_cant_leave_map("chaos_time_cant_leave_map", "1");
-ConVar chaos_time_floor_is_lava("chaos_time_floor_is_lava", "1");
-ConVar chaos_time_use_spam("chaos_time_use_spam", "1");
-ConVar chaos_time_ortho_cam("chaos_time_ortho_cam", "1");
-ConVar chaos_time_forest("chaos_time_forest", "1");
-ConVar chaos_time_lock_pvs("chaos_time_lock_pvs", "1");
-ConVar chaos_time_bumpy("chaos_time_bumpy", "1");
-ConVar chaos_time_no_brake("chaos_time_no_brake", "1");
-ConVar chaos_time_interp_npcs("chaos_time_interp_npcs", "1");
-ConVar chaos_time_incline("chaos_time_incline", "1");
-ConVar chaos_time_disable_save("chaos_time_disable_save", "1");
-ConVar chaos_time_no_reload("chaos_time_no_reload", "1");
-ConVar chaos_time_npc_teleport("chaos_time_npc_teleport", "1");
-ConVar chaos_time_death_water("chaos_time_death_water", "1");
-ConVar chaos_time_quickclip_on("chaos_time_quickclip_on", "1");
-ConVar chaos_time_quickclip_off("chaos_time_quickclip_off", "1");
-ConVar chaos_time_random_cc("chaos_time_random_cc", "1");
-ConVar chaos_time_secondary_spam("chaos_time_secondary_spam", "1");
-ConVar chaos_time_steal_health("chaos_time_steal_health", "1");
-ConVar chaos_time_yawroll("chaos_time_yawroll", "1");
-ConVar chaos_time_zombiespam("chaos_time_zombiespam", "1");
-ConVar chaos_time_normalvision("chaos_time_normalvision", "1");
-ConVar chaos_time_grass_heal("chaos_time_grass_heal", "1");
-ConVar chaos_time_change_pitch("chaos_time_change_pitch", "1");
-ConVar chaos_time_camera_textures("chaos_time_camera_textures", "1");
-ConVar chaos_time_camera_gravity("chaos_time_camera_gravity", "1");
-ConVar chaos_time_hl1_physics("chaos_time_hl1_physics", "1");
-ConVar chaos_time_dvd_crosshair("chaos_time_dvd_crosshair", "1");
+ConVar chaos_t_zerog("chaos_t_zerog", "1");
+ConVar chaos_t_superg("chaos_t_superg", "1");
+ConVar chaos_t_lowg("chaos_t_lowg", "1");
+ConVar chaos_t_invertg("chaos_t_invertg", "1");
+ConVar chaos_t_phys_pause("chaos_t_phys_pause", "1");
+ConVar chaos_t_phys_fast("chaos_t_phys_fast", "1");
+ConVar chaos_t_phys_slow("chaos_t_phys_slow", "1");
+ConVar chaos_t_pull_to_player("chaos_t_pull_to_player", "1");
+ConVar chaos_t_push_from_player("chaos_t_push_from_player", "1");
+ConVar chaos_t_no_movement("chaos_t_no_movement", "1");
+ConVar chaos_t_super_movement("chaos_t_super_movement", "1");
+ConVar chaos_t_lock_vehicle("chaos_t_lock_vehicle", "1");
+ConVar chaos_t_npc_hate("chaos_t_npc_hate", "1");
+ConVar chaos_t_npc_like("chaos_t_npc_like", "1");
+ConVar chaos_t_npc_neutral("chaos_t_npc_neutral", "1");
+ConVar chaos_t_npc_fear("chaos_t_npc_fear", "1");
+ConVar chaos_t_swim_in_air("chaos_t_swim_in_air", "1");
+ConVar chaos_t_only_draw_world("chaos_t_only_draw_world", "1");
+ConVar chaos_t_low_detail("chaos_t_low_detail", "1");
+ConVar chaos_t_player_big("chaos_t_player_big", "1");
+ConVar chaos_t_player_small("chaos_t_player_small", "1");
+ConVar chaos_t_no_mouse_horizontal("chaos_t_no_mouse_horizontal", "1");
+ConVar chaos_t_no_mouse_vertical("chaos_t_no_mouse_vertical", "1");
+ConVar chaos_t_super_grab("chaos_t_super_grab", "1");
+ConVar chaos_t_earthquake("chaos_t_earthquake", "1");
+ConVar chaos_t_explode_on_death("chaos_t_explode_on_death", "1");
+ConVar chaos_t_bullet_teleport("chaos_t_bullet_teleport", "1");
+ConVar chaos_t_nade_guns("chaos_t_nade_guns", "1");
+ConVar chaos_t_superhot("chaos_t_superhot", "1");
+ConVar chaos_t_supercold("chaos_t_supercold", "1");
+ConVar chaos_t_barrel_shotgun("chaos_t_barrel_shotgun", "1");
+ConVar chaos_t_solid_triggers("chaos_t_solid_triggers", "1");
+ConVar chaos_t_random_colors("chaos_t_random_colors", "1");
+ConVar chaos_t_cant_leave_map("chaos_t_cant_leave_map", "1");
+ConVar chaos_t_floor_is_lava("chaos_t_floor_is_lava", "1");
+ConVar chaos_t_use_spam("chaos_t_use_spam", "1");
+ConVar chaos_t_ortho_cam("chaos_t_ortho_cam", "1");
+ConVar chaos_t_forest("chaos_t_forest", "1");
+ConVar chaos_t_lock_pvs("chaos_t_lock_pvs", "1");
+ConVar chaos_t_bumpy("chaos_t_bumpy", "1");
+ConVar chaos_t_no_brake("chaos_t_no_brake", "1");
+ConVar chaos_t_interp_npcs("chaos_t_interp_npcs", "1");
+ConVar chaos_t_incline("chaos_t_incline", "1");
+ConVar chaos_t_disable_save("chaos_t_disable_save", "1");
+ConVar chaos_t_no_reload("chaos_t_no_reload", "1");
+ConVar chaos_t_npc_teleport("chaos_t_npc_teleport", "1");
+ConVar chaos_t_death_water("chaos_t_death_water", "1");
+ConVar chaos_t_quickclip_on("chaos_t_quickclip_on", "1");
+ConVar chaos_t_quickclip_off("chaos_t_quickclip_off", "1");
+ConVar chaos_t_random_cc("chaos_t_random_cc", "1");
+ConVar chaos_t_secondary_spam("chaos_t_secondary_spam", "1");
+ConVar chaos_t_steal_health("chaos_t_steal_health", "1");
+ConVar chaos_t_yawroll("chaos_t_yawroll", "1");
+ConVar chaos_t_zombie_spam_new("chaos_t_zombie_spam_new", "1");
+ConVar chaos_t_normalvision("chaos_t_normalvision", "1");
+ConVar chaos_t_grass_heal("chaos_t_grass_heal", "1");
+ConVar chaos_t_change_pitch("chaos_t_change_pitch", "1");
+ConVar chaos_t_camera_textures("chaos_t_camera_textures", "1");
+ConVar chaos_t_camera_gravity("chaos_t_camera_gravity", "1");
+ConVar chaos_t_hl1_physics("chaos_t_hl1_physics", "1");
+ConVar chaos_t_dvd_crosshair("chaos_t_dvd_crosshair", "1");
 
-ConVar chaos_prob_zerog("chaos_prob_zerog", "100");
-ConVar chaos_prob_superg("chaos_prob_superg", "100");
-ConVar chaos_prob_lowg("chaos_prob_lowg", "100");
-ConVar chaos_prob_invertg("chaos_prob_invertg", "100");
-ConVar chaos_prob_phys_pause("chaos_prob_phys_pause", "100");
-ConVar chaos_prob_phys_fast("chaos_prob_phys_fast", "100");
-ConVar chaos_prob_phys_slow("chaos_prob_phys_slow", "100");
-ConVar chaos_prob_pull_to_player("chaos_prob_pull_to_player", "100");
-ConVar chaos_prob_push_from_player("chaos_prob_push_from_player", "100");
-ConVar chaos_prob_no_movement("chaos_prob_no_movement", "100");
-ConVar chaos_prob_super_movement("chaos_prob_super_movement", "100");
-ConVar chaos_prob_lock_vehicle("chaos_prob_lock_vehicle", "100");
-ConVar chaos_prob_npc_hate("chaos_prob_npc_hate", "100");
-ConVar chaos_prob_npc_like("chaos_prob_npc_like", "100");
-ConVar chaos_prob_npc_neutral("chaos_prob_npc_neutral", "100");
-ConVar chaos_prob_npc_fear("chaos_prob_npc_fear", "100");
-ConVar chaos_prob_swim_in_air("chaos_prob_swim_in_air", "100");
-ConVar chaos_prob_only_draw_world("chaos_prob_only_draw_world", "100");
-ConVar chaos_prob_low_detail("chaos_prob_low_detail", "100");
-ConVar chaos_prob_player_big("chaos_prob_player_big", "100");
-ConVar chaos_prob_player_small("chaos_prob_player_small", "100");
-ConVar chaos_prob_no_mouse_horizontal("chaos_prob_no_mouse_horizontal", "100");
-ConVar chaos_prob_no_mouse_vertical("chaos_prob_no_mouse_vertical", "100");
-ConVar chaos_prob_super_grab("chaos_prob_super_grab", "100");
-ConVar chaos_prob_earthquake("chaos_prob_earthquake", "100");
-ConVar chaos_prob_explode_on_death("chaos_prob_explode_on_death", "100");
-ConVar chaos_prob_bullet_teleport("chaos_prob_bullet_teleport", "100");
-ConVar chaos_prob_teleport_random("chaos_prob_teleport_random", "100");
-ConVar chaos_prob_spawn_vehicle("chaos_prob_spawn_vehicle", "100");
-ConVar chaos_prob_spawn_npc("chaos_prob_spawn_npc", "100");
-ConVar chaos_prob_give_weapon("chaos_prob_give_weapon", "100");
-ConVar chaos_prob_give_all_weapons("chaos_prob_give_all_weapons", "100");
-ConVar chaos_prob_drop_weapons("chaos_prob_drop_weapons", "100");
-ConVar chaos_prob_420_joke("chaos_prob_420_joke", "100");
-ConVar chaos_prob_zombie_spam("chaos_prob_zombie_spam", "100");
-ConVar chaos_prob_credits("chaos_prob_credits", "100");
-ConVar chaos_prob_nade_guns("chaos_prob_nade_guns", "100");
-ConVar chaos_prob_superhot("chaos_prob_superhot", "100");
-ConVar chaos_prob_supercold("chaos_prob_supercold", "100");
-ConVar chaos_prob_barrel_shotgun("chaos_prob_barrel_shotgun", "100");
-ConVar chaos_prob_quickclip_on("chaos_prob_quickclip_on", "100");
-ConVar chaos_prob_quickclip_off("chaos_prob_quickclip_off", "100");
-ConVar chaos_prob_solid_triggers("chaos_prob_solid_triggers", "100");
-ConVar chaos_prob_random_colors("chaos_prob_random_colors", "100");
-ConVar chaos_prob_beer_bottle("chaos_prob_beer_bottle", "100");
-ConVar chaos_prob_evil_alyx("chaos_prob_evil_alyx", "100");
-ConVar chaos_prob_evil_noriko("chaos_prob_evil_noriko", "100");
-ConVar chaos_prob_cant_leave_map("chaos_prob_cant_leave_map", "100");
-ConVar chaos_prob_floor_is_lava("chaos_prob_floor_is_lava", "100");
-ConVar chaos_prob_play_music("chaos_prob_play_music", "100");
-ConVar chaos_prob_use_spam("chaos_prob_use_spam", "100");
-ConVar chaos_prob_ortho_cam("chaos_prob_ortho_cam", "100");
-ConVar chaos_prob_forest("chaos_prob_forest", "100");
-ConVar chaos_prob_spawn_mounted_gun("chaos_prob_spawn_mounted_gun", "100");
-ConVar chaos_prob_restart_level("chaos_prob_restart_level", "100");
-ConVar chaos_prob_remove_pickups("chaos_prob_remove_pickups", "100");
-ConVar chaos_prob_clone_npcs("chaos_prob_clone_npcs", "100");
-ConVar chaos_prob_lock_pvs("chaos_prob_lock_pvs", "100");
-ConVar chaos_prob_reload_deja_vu("chaos_prob_reload_deja_vu", "100");
-ConVar chaos_prob_bumpy("chaos_prob_bumpy", "100");
-ConVar chaos_prob_no_brake("chaos_prob_no_brake", "100");
-ConVar chaos_prob_force_inout_car("chaos_prob_force_inout_car", "100");
-ConVar chaos_prob_weapon_remove("chaos_prob_weapon_remove", "100");
-ConVar chaos_prob_interp_npcs("chaos_prob_interp_npcs", "100");
-ConVar chaos_prob_phys_convert("chaos_prob_phys_convert", "100");
-ConVar chaos_prob_incline("chaos_prob_incline", "100");
-ConVar chaos_prob_disable_save("chaos_prob_disable_save", "100");
-ConVar chaos_prob_no_reload("chaos_prob_no_reload", "100");
-ConVar chaos_prob_npc_teleport("chaos_prob_npc_teleport", "100");
-ConVar chaos_prob_death_water("chaos_prob_death_water", "100");
-ConVar chaos_prob_random_cc("chaos_prob_random_cc", "100");
-ConVar chaos_prob_evil_barney("chaos_prob_evil_barney", "100");
-ConVar chaos_prob_good_gman("chaos_prob_good_gman", "100");
-ConVar chaos_prob_evil_kleiner("chaos_prob_evil_kleiner", "100");
-ConVar chaos_prob_evil_grigori("chaos_prob_evil_grigori", "100");
-ConVar chaos_prob_evil_mossman("chaos_prob_evil_mossman", "100");
-ConVar chaos_prob_evil_vort("chaos_prob_evil_vort", "100");
-ConVar chaos_prob_secondary_spam("chaos_prob_secondary_spam", "100");
-ConVar chaos_prob_steal_health("chaos_prob_steal_health", "100");
-ConVar chaos_prob_suit_swap("chaos_prob_suit_swap", "100");
-ConVar chaos_prob_yawroll("chaos_prob_yawroll", "100");
-ConVar chaos_prob_normalvision("chaos_prob_normalvision", "100");
-ConVar chaos_prob_giveallrpg("chaos_prob_giveallrpg", "100");
-ConVar chaos_prob_grass_heal("chaos_prob_grass_heal", "100");
-ConVar chaos_prob_change_pitch("chaos_prob_change_pitch", "100");
-ConVar chaos_prob_logic_explode("chaos_prob_logic_explode", "100");
-ConVar chaos_prob_camera_textures("chaos_prob_camera_textures", "100");
-ConVar chaos_prob_camera_gravity("chaos_prob_camera_gravity", "100");
-ConVar chaos_prob_hl1_physics("chaos_prob_hl1_physics", "100");
-ConVar chaos_prob_dvd_crosshair("chaos_prob_dvd_crosshair", "100");
-ConVar chaos_prob_evil_breen("chaos_prob_evil_breen", "100");
-//ConVar chaos_prob_evil_eli("chaos_prob_evil_eli", "100");
+ConVar chaos_p_zerog("chaos_p_zerog", "100");
+ConVar chaos_p_superg("chaos_p_superg", "100");
+ConVar chaos_p_lowg("chaos_p_lowg", "100");
+ConVar chaos_p_invertg("chaos_p_invertg", "100");
+ConVar chaos_p_phys_pause("chaos_p_phys_pause", "100");
+ConVar chaos_p_phys_fast("chaos_p_phys_fast", "100");
+ConVar chaos_p_phys_slow("chaos_p_phys_slow", "100");
+ConVar chaos_p_pull_to_player("chaos_p_pull_to_player", "100");
+ConVar chaos_p_push_from_player("chaos_p_push_from_player", "100");
+ConVar chaos_p_no_movement("chaos_p_no_movement", "100");
+ConVar chaos_p_super_movement("chaos_p_super_movement", "100");
+ConVar chaos_p_lock_vehicle("chaos_p_lock_vehicle", "100");
+ConVar chaos_p_npc_hate("chaos_p_npc_hate", "100");
+ConVar chaos_p_npc_like("chaos_p_npc_like", "100");
+ConVar chaos_p_npc_neutral("chaos_p_npc_neutral", "100");
+ConVar chaos_p_npc_fear("chaos_p_npc_fear", "100");
+ConVar chaos_p_swim_in_air("chaos_p_swim_in_air", "100");
+ConVar chaos_p_only_draw_world("chaos_p_only_draw_world", "100");
+ConVar chaos_p_low_detail("chaos_p_low_detail", "100");
+ConVar chaos_p_player_big("chaos_p_player_big", "100");
+ConVar chaos_p_player_small("chaos_p_player_small", "100");
+ConVar chaos_p_no_mouse_horizontal("chaos_p_no_mouse_horizontal", "100");
+ConVar chaos_p_no_mouse_vertical("chaos_p_no_mouse_vertical", "100");
+ConVar chaos_p_super_grab("chaos_p_super_grab", "100");
+ConVar chaos_p_earthquake("chaos_p_earthquake", "100");
+ConVar chaos_p_explode_on_death("chaos_p_explode_on_death", "100");
+ConVar chaos_p_bullet_teleport("chaos_p_bullet_teleport", "100");
+ConVar chaos_p_teleport_random("chaos_p_teleport_random", "100");
+ConVar chaos_p_spawn_vehicle("chaos_p_spawn_vehicle", "100");
+ConVar chaos_p_spawn_npc("chaos_p_spawn_npc", "100");
+ConVar chaos_p_give_weapon("chaos_p_give_weapon", "100");
+ConVar chaos_p_give_all_weapons("chaos_p_give_all_weapons", "100");
+ConVar chaos_p_drop_weapons("chaos_p_drop_weapons", "100");
+ConVar chaos_p_420_joke("chaos_p_420_joke", "100");
+ConVar chaos_p_zombie_spam("chaos_p_zombie_spam", "100");
+ConVar chaos_p_zombie_spam_new("chaos_p_zombie_spam_new", "100");
+ConVar chaos_p_credits("chaos_p_credits", "100");
+ConVar chaos_p_nade_guns("chaos_p_nade_guns", "100");
+ConVar chaos_p_superhot("chaos_p_superhot", "100");
+ConVar chaos_p_supercold("chaos_p_supercold", "100");
+ConVar chaos_p_barrel_shotgun("chaos_p_barrel_shotgun", "100");
+ConVar chaos_p_quickclip_on("chaos_p_quickclip_on", "100");
+ConVar chaos_p_quickclip_off("chaos_p_quickclip_off", "100");
+ConVar chaos_p_solid_triggers("chaos_p_solid_triggers", "100");
+ConVar chaos_p_random_colors("chaos_p_random_colors", "100");
+ConVar chaos_p_beer_bottle("chaos_p_beer_bottle", "100");
+ConVar chaos_p_evil_alyx("chaos_p_evil_alyx", "100");
+ConVar chaos_p_evil_noriko("chaos_p_evil_noriko", "100");
+ConVar chaos_p_cant_leave_map("chaos_p_cant_leave_map", "100");
+ConVar chaos_p_floor_is_lava("chaos_p_floor_is_lava", "100");
+ConVar chaos_p_play_music("chaos_p_play_music", "100");
+ConVar chaos_p_use_spam("chaos_p_use_spam", "100");
+ConVar chaos_p_ortho_cam("chaos_p_ortho_cam", "100");
+ConVar chaos_p_forest("chaos_p_forest", "100");
+ConVar chaos_p_spawn_mounted_gun("chaos_p_spawn_mounted_gun", "100");
+ConVar chaos_p_restart_level("chaos_p_restart_level", "100");
+ConVar chaos_p_remove_pickups("chaos_p_remove_pickups", "100");
+ConVar chaos_p_clone_npcs("chaos_p_clone_npcs", "100");
+ConVar chaos_p_lock_pvs("chaos_p_lock_pvs", "100");
+ConVar chaos_p_reload_deja_vu("chaos_p_reload_deja_vu", "100");
+ConVar chaos_p_bumpy("chaos_p_bumpy", "100");
+ConVar chaos_p_no_brake("chaos_p_no_brake", "100");
+ConVar chaos_p_force_inout_car("chaos_p_force_inout_car", "100");
+ConVar chaos_p_weapon_remove("chaos_p_weapon_remove", "100");
+ConVar chaos_p_interp_npcs("chaos_p_interp_npcs", "100");
+ConVar chaos_p_phys_convert("chaos_p_phys_convert", "100");
+ConVar chaos_p_incline("chaos_p_incline", "100");
+ConVar chaos_p_disable_save("chaos_p_disable_save", "100");
+ConVar chaos_p_no_reload("chaos_p_no_reload", "100");
+ConVar chaos_p_npc_teleport("chaos_p_npc_teleport", "100");
+ConVar chaos_p_death_water("chaos_p_death_water", "100");
+ConVar chaos_p_random_cc("chaos_p_random_cc", "100");
+ConVar chaos_p_evil_barney("chaos_p_evil_barney", "100");
+ConVar chaos_p_good_gman("chaos_p_good_gman", "100");
+ConVar chaos_p_evil_kleiner("chaos_p_evil_kleiner", "100");
+ConVar chaos_p_evil_grigori("chaos_p_evil_grigori", "100");
+ConVar chaos_p_evil_mossman("chaos_p_evil_mossman", "100");
+ConVar chaos_p_evil_vort("chaos_p_evil_vort", "100");
+ConVar chaos_p_secondary_spam("chaos_p_secondary_spam", "100");
+ConVar chaos_p_steal_health("chaos_p_steal_health", "100");
+ConVar chaos_p_suit_swap("chaos_p_suit_swap", "100");
+ConVar chaos_p_yawroll("chaos_p_yawroll", "100");
+ConVar chaos_p_normalvision("chaos_p_normalvision", "100");
+ConVar chaos_p_giveallrpg("chaos_p_giveallrpg", "100");
+ConVar chaos_p_grass_heal("chaos_p_grass_heal", "100");
+ConVar chaos_p_change_pitch("chaos_p_change_pitch", "100");
+ConVar chaos_p_logic_explode("chaos_p_logic_explode", "100");
+ConVar chaos_p_camera_textures("chaos_p_camera_textures", "100");
+ConVar chaos_p_camera_gravity("chaos_p_camera_gravity", "100");
+ConVar chaos_p_hl1_physics("chaos_p_hl1_physics", "100");
+ConVar chaos_p_dvd_crosshair("chaos_p_dvd_crosshair", "100");
+ConVar chaos_p_evil_breen("chaos_p_evil_breen", "100");
+//ConVar chaos_p_evil_eli("chaos_p_evil_eli", "100");
 #define ERROR_WEIGHT 1
 void CHL2_Player::PopulateEffects()
 {
-	CreateEffect<>(EFFECT_ERROR,							MAKE_STRING("#hl2c_null_effect"),		EC_NONE,										-1,											ERROR_WEIGHT);
-	CreateEffect<CEGravitySet>(EFFECT_ZEROG,				MAKE_STRING("#hl2c_zero_g"),			EC_NONE,										chaos_time_zerog.GetFloat(),				chaos_prob_zerog.GetInt());
-	CreateEffect<CEGravitySet>(EFFECT_SUPERG,				MAKE_STRING("#hl2c_super_g"),			EC_NONE,										chaos_time_superg.GetFloat(),				chaos_prob_superg.GetInt());
-	CreateEffect<CEGravitySet>(EFFECT_LOWG,					MAKE_STRING("#hl2c_low_g"),				EC_NONE,										chaos_time_lowg.GetFloat(),					chaos_prob_lowg.GetInt());
-	CreateEffect<CEGravitySet>(EFFECT_INVERTG,				MAKE_STRING("#hl2c_invert_g"),			EC_NONE,										chaos_time_invertg.GetFloat(),				chaos_prob_invertg.GetInt());
-	CreateEffect<CEPhysSpeedSet>(EFFECT_PHYS_PAUSE,			MAKE_STRING("#hl2c_phys_pause"),		EC_NO_VEHICLE,									chaos_time_phys_pause.GetFloat(),			chaos_prob_phys_pause.GetInt());
-	CreateEffect<CEPhysSpeedSet>(EFFECT_PHYS_FAST,			MAKE_STRING("#hl2c_phys_fast"),			EC_NONE,										chaos_time_phys_fast.GetFloat(),			chaos_prob_phys_fast.GetInt());
-	CreateEffect<CEPhysSpeedSet>(EFFECT_PHYS_SLOW,			MAKE_STRING("#hl2c_phys_slow"),			EC_NONE,										chaos_time_phys_slow.GetFloat(),			chaos_prob_phys_slow.GetInt());
-	CreateEffect<CEPullToPlayer>(EFFECT_PULL_TO_PLAYER,		MAKE_STRING("#hl2c_pulltoplr"),			EC_NONE,										chaos_time_pull_to_player.GetFloat(),		chaos_prob_pull_to_player.GetInt());
-	CreateEffect<CEPushFromPlayer>(EFFECT_PUSH_FROM_PLAYER,	MAKE_STRING("#hl2c_pushfromplr"),		EC_NONE,										chaos_time_push_from_player.GetFloat(),		chaos_prob_push_from_player.GetInt());
-	CreateEffect<CEStop>(EFFECT_NO_MOVEMENT,				MAKE_STRING("#hl2c_stop"),				EC_NONE,										chaos_time_no_movement.GetFloat(),			chaos_prob_no_movement.GetInt());
-	CreateEffect<CESuperMovement>(EFFECT_SUPER_MOVEMENT,	MAKE_STRING("#hl2c_super_speed"),		EC_NONE,										chaos_time_super_movement.GetFloat(),		chaos_prob_super_movement.GetInt());
-	CreateEffect<CELockVehicles>(EFFECT_LOCK_VEHICLE,		MAKE_STRING("#hl2c_lock_veh"),			EC_BOAT | EC_BUGGY,								chaos_time_lock_vehicle.GetFloat(),			chaos_prob_lock_vehicle.GetInt());
-	CreateEffect<CENPCRels>(EFFECT_NPC_HATE,				MAKE_STRING("#hl2c_npc_hate"),			EC_NONE,										chaos_time_npc_hate.GetFloat(),				chaos_prob_npc_hate.GetInt());
-	CreateEffect<CENPCRels>(EFFECT_NPC_LIKE,				MAKE_STRING("#hl2c_npc_like"),			EC_NONE,										chaos_time_npc_like.GetFloat(),				chaos_prob_npc_like.GetInt());
-	CreateEffect<CENPCRels>(EFFECT_NPC_NEUTRAL,				MAKE_STRING("#hl2c_npc_neutral"),		EC_NONE,										chaos_time_npc_neutral.GetFloat(),			chaos_prob_npc_neutral.GetInt());
-	CreateEffect<CENPCRels>(EFFECT_NPC_FEAR,				MAKE_STRING("#hl2c_npc_fear"),			EC_NONE,										chaos_time_npc_fear.GetFloat(),				chaos_prob_npc_fear.GetInt());
-	CreateEffect<>(EFFECT_TELEPORT_RANDOM,					MAKE_STRING("#hl2c_tele_random"),		EC_PLAYER_TELEPORT | EC_EXTREME,				-1,											chaos_prob_teleport_random.GetInt());
-	CreateEffect<CERandomVehicle>(EFFECT_SPAWN_VEHICLE,		MAKE_STRING("#hl2c_spawn_veh"),			EC_NONE,										-1,											chaos_prob_spawn_vehicle.GetInt());
-	CreateEffect<CERandomNPC>(EFFECT_SPAWN_NPC,				MAKE_STRING("#hl2c_spawn_npc"),			EC_NONE,										-1,											chaos_prob_spawn_npc.GetInt());
-	CreateEffect<CESwimInAir>(EFFECT_SWIM_IN_AIR,			MAKE_STRING("#hl2c_swiminair"),			EC_PICKUPS,										chaos_time_swim_in_air.GetFloat(),			chaos_prob_swim_in_air.GetInt());
-	CreateEffect<>(EFFECT_ONLY_DRAW_WORLD,					MAKE_STRING("#hl2c_onlydrawworld"),		EC_NONE,										chaos_time_only_draw_world.GetFloat(),		chaos_prob_only_draw_world.GetInt());
-	CreateEffect<>(EFFECT_LOW_DETAIL,						MAKE_STRING("#hl2c_low_detail"),		EC_NONE,										chaos_time_low_detail.GetFloat(),			chaos_prob_low_detail.GetInt());
-	CreateEffect<CEPlayerBig>(EFFECT_PLAYER_BIG,			MAKE_STRING("#hl2c_plr_big"),			EC_NONE,										chaos_time_player_big.GetFloat(),			chaos_prob_player_big.GetInt());
-	CreateEffect<CEPlayerSmall>(EFFECT_PLAYER_SMALL,		MAKE_STRING("#hl2c_plr_small"),			EC_NONE,										chaos_time_player_small.GetFloat(),			chaos_prob_player_small.GetInt());
-	CreateEffect<>(EFFECT_NO_MOUSE_HORIZONTAL,				MAKE_STRING("#hl2c_nomousehorz"),		EC_NONE,										chaos_time_no_mouse_horizontal.GetFloat(),	chaos_prob_no_mouse_horizontal.GetInt());
-	CreateEffect<>(EFFECT_NO_MOUSE_VERTICAL,				MAKE_STRING("#hl2c_nomousevert"),		EC_NONE,										chaos_time_no_mouse_vertical.GetFloat(),	chaos_prob_no_mouse_vertical.GetInt());
-	CreateEffect<CESuperGrab>(EFFECT_SUPER_GRAB,			MAKE_STRING("#hl2c_super_grab"),		EC_NONE,										chaos_time_super_grab.GetFloat(),			chaos_prob_super_grab.GetInt());
-	CreateEffect<CERandomWeaponGive>(EFFECT_GIVE_WEAPON,	MAKE_STRING("#hl2c_give_wep"),			EC_NONE,										-1,											chaos_prob_give_weapon.GetInt());
-	CreateEffect<>(EFFECT_GIVE_ALL_WEAPONS,					MAKE_STRING("#hl2c_giveallweps"),		EC_NONE,										-1,											chaos_prob_give_all_weapons.GetInt());
-	CreateEffect<CEWeaponsDrop>(EFFECT_DROP_WEAPONS,		MAKE_STRING("#hl2c_drop_weps"),			EC_HAS_WEAPON | EC_NEED_PHYSGUN,				-1,											chaos_prob_drop_weapons.GetInt());
-	CreateEffect<>(EFFECT_NADE_GUNS,						MAKE_STRING("#hl2c_nade_guns"),			EC_NO_INVULN,									chaos_time_nade_guns.GetFloat(),			chaos_prob_nade_guns.GetFloat());
-	CreateEffect<CEEarthquake>(EFFECT_EARTHQUAKE,			MAKE_STRING("#hl2c_shakecam"),			EC_NONE,										chaos_time_earthquake.GetFloat(),			chaos_prob_earthquake.GetInt());
-	CreateEffect<CE420Joke>(EFFECT_420_JOKE,				MAKE_STRING("#hl2c_420_health"),		EC_NO_INVULN,									-1,											chaos_prob_420_joke.GetInt());
-	CreateEffect<CEZombieSpam>(EFFECT_ZOMBIE_SPAM,			MAKE_STRING("#hl2c_zombie_spam"),		EC_HAS_WEAPON,									chaos_time_zombiespam.GetFloat(),			chaos_prob_zombie_spam.GetInt());
-	CreateEffect<>(EFFECT_EXPLODE_ON_DEATH,					MAKE_STRING("#hl2c_explodeondeath"),	EC_NONE,										chaos_time_explode_on_death.GetFloat(),		chaos_prob_explode_on_death.GetInt());
-	CreateEffect<>(EFFECT_BULLET_TELEPORT,					MAKE_STRING("#hl2c_bullet_tele"),		EC_NONE,										chaos_time_bullet_teleport.GetFloat(),		chaos_prob_bullet_teleport.GetInt());
-	CreateEffect<CECredits>(EFFECT_CREDITS,					MAKE_STRING("#hl2c_credits"),			EC_NONE,										-1,											chaos_prob_credits.GetInt());
-	CreateEffect<CESuperhot>(EFFECT_SUPERHOT,				MAKE_STRING("#hl2c_superhot"),			EC_NONE,										chaos_time_superhot.GetFloat(),				chaos_prob_superhot.GetInt());
-	CreateEffect<CESupercold>(EFFECT_SUPERCOLD,				MAKE_STRING("#hl2c_supercold"),			EC_NONE,										chaos_time_supercold.GetFloat(),			chaos_prob_supercold.GetInt());
-	CreateEffect<CEBarrelShotgun>(EFFECT_BARREL_SHOTGUN,	MAKE_STRING("#hl2c_barrel_shotgun"),	EC_NONE,										chaos_time_barrel_shotgun.GetFloat(),		chaos_prob_barrel_shotgun.GetInt());
-	CreateEffect<CEQuickclip>(EFFECT_QUICKCLIP_ON,			MAKE_STRING("#hl2c_quickclip_on"),		EC_QC_OFF,										chaos_time_quickclip_on.GetFloat(),			chaos_prob_quickclip_on.GetInt());
-	CreateEffect<CEQuickclip>(EFFECT_QUICKCLIP_OFF,			MAKE_STRING("#hl2c_quickclip_off"),		EC_NONE,										chaos_time_quickclip_off.GetFloat(),		chaos_prob_quickclip_off.GetInt());
-	CreateEffect<CESolidTriggers>(EFFECT_SOLID_TRIGGERS,	MAKE_STRING("#hl2c_solid_triggers"),	EC_NONE,										chaos_time_solid_triggers.GetFloat(),		chaos_prob_solid_triggers.GetInt());
-	CreateEffect<CEColors>(EFFECT_RANDOM_COLORS,			MAKE_STRING("#hl2c_rand_clr"),			EC_NONE,										chaos_time_random_colors.GetFloat(),		chaos_prob_random_colors.GetInt());
-	CreateEffect<CEBottle>(EFFECT_BEER_BOTTLE,				MAKE_STRING("#hl2c_beer_bottle"),		EC_NONE,										-1,											chaos_prob_beer_bottle.GetInt());
-	CreateEffect<CEEvilNPC>(EFFECT_EVIL_ALYX,				MAKE_STRING("#hl2c_evil_alyx"),			EC_HAS_WEAPON,									-1,											chaos_prob_evil_alyx.GetInt());
-	CreateEffect<CEEvilNPC>(EFFECT_EVIL_NORIKO,				MAKE_STRING("#hl2c_evil_noriko"),		EC_NONE,										-1,											chaos_prob_evil_noriko.GetInt());
-	CreateEffect<>(EFFECT_CANT_LEAVE_MAP,					MAKE_STRING("#hl2c_cantleavemap"),		EC_NONE,										chaos_time_cant_leave_map.GetFloat(),		chaos_prob_cant_leave_map.GetInt());
-	CreateEffect<CEFloorEffect>(EFFECT_FLOOR_IS_LAVA,		MAKE_STRING("#hl2c_floorislava"),		EC_NO_INVULN | EC_QC_OFF,						chaos_time_floor_is_lava.GetFloat(),		chaos_prob_floor_is_lava.GetInt());
-	CreateEffect<CERandomSong>(EFFECT_PLAY_MUSIC,			MAKE_STRING("#hl2c_play_music"),		EC_NONE,										-1,											chaos_prob_play_music.GetInt());
-	CreateEffect<CEUseSpam>(EFFECT_USE_SPAM,				MAKE_STRING("#hl2c_use_spam"),			EC_NO_VEHICLE,									chaos_time_use_spam.GetFloat(),				chaos_prob_use_spam.GetInt());
-	CreateEffect<>(EFFECT_ORTHO_CAM,						MAKE_STRING("#hl2c_ortho_cam"),			EC_NONE,										chaos_time_ortho_cam.GetFloat(),			chaos_prob_ortho_cam.GetInt());
-	CreateEffect<CETreeSpam>(EFFECT_FOREST,					MAKE_STRING("#hl2c_forest"),			EC_NONE,										chaos_time_forest.GetFloat(),				chaos_prob_forest.GetInt());
-	CreateEffect<CEMountedGun>(EFFECT_SPAWN_MOUNTED_GUN,	MAKE_STRING("#hl2c_mountedgun"),		EC_NONE,										-1,											chaos_prob_spawn_mounted_gun.GetInt());
-	CreateEffect<CERestartLevel>(EFFECT_RESTART_LEVEL,		MAKE_STRING("#hl2c_restart_lvl"),		EC_EXTREME,										-1,											chaos_prob_restart_level.GetInt());
-	CreateEffect<CERemovePickups>(EFFECT_REMOVE_PICKUPS,	MAKE_STRING("#hl2c_removepickups"),		EC_PICKUPS | EC_NEED_PHYSGUN | EC_HAS_WEAPON,	-1,											chaos_prob_remove_pickups.GetInt());
-	CreateEffect<CECloneNPCs>(EFFECT_CLONE_NPCS,			MAKE_STRING("#hl2c_clone_npcs"),		EC_NONE,										-1,											chaos_prob_clone_npcs.GetInt());
-	CreateEffect<CELockPVS>(EFFECT_LOCK_PVS,				MAKE_STRING("#hl2c_lock_pvs"),			EC_NONE,										chaos_time_lock_pvs.GetFloat(),				chaos_prob_lock_pvs.GetInt());
-	CreateEffect<CEDejaVu>(EFFECT_RELOAD_DEJA_VU,			MAKE_STRING("#hl2c_deja_vu"),			EC_PLAYER_TELEPORT | EC_EXTREME,				-1,											chaos_prob_reload_deja_vu.GetInt());
-	CreateEffect<CEBumpy>(EFFECT_BUMPY,						MAKE_STRING("#hl2c_bumpy"),				EC_BUGGY,										chaos_time_bumpy.GetFloat(),				chaos_prob_bumpy.GetInt());
-	CreateEffect<CENoBrake>(EFFECT_NO_BRAKE,				MAKE_STRING("#hl2c_no_brake"),			EC_BUGGY,										chaos_time_no_brake.GetFloat(),				chaos_prob_no_brake.GetInt());
-	CreateEffect<CEForceInOutCar>(EFFECT_FORCE_INOUT_CAR,	MAKE_STRING("#hl2c_force_inout"),		EC_BUGGY|EC_BOAT|EC_PLAYER_TELEPORT|EC_EXTREME,	-1,											chaos_prob_force_inout_car.GetInt());
-	CreateEffect<CEWeaponRemove>(EFFECT_WEAPON_REMOVE,		MAKE_STRING("#hl2c_wep_remove"),		EC_NEED_PHYSGUN,								-1,											chaos_prob_weapon_remove.GetInt());
-	CreateEffect<>(EFFECT_INTERP_NPCS,						MAKE_STRING("#hl2c_interp_npcs"),		EC_NONE,										chaos_time_interp_npcs.GetFloat(),			chaos_prob_interp_npcs.GetInt());
-	CreateEffect<CEPhysConvert>(EFFECT_PHYS_CONVERT,		MAKE_STRING("#hl2c_phys_convert"),		EC_EXTREME,										-1,											chaos_prob_phys_convert.GetInt());
-	CreateEffect<CEIncline>(EFFECT_INCLINE,					MAKE_STRING("#hl2c_no_climb"),			EC_NONE,										chaos_time_incline.GetFloat(),				chaos_prob_incline.GetInt());
-	CreateEffect<>(EFFECT_DISABLE_SAVE,						MAKE_STRING("#hl2c_no_save"),			EC_NONE,										chaos_time_disable_save.GetFloat(),			chaos_prob_disable_save.GetInt());
-	CreateEffect<>(EFFECT_NO_RELOAD,						MAKE_STRING("#hl2c_no_reload"),			EC_HAS_WEAPON,									chaos_time_no_reload.GetFloat(),			chaos_prob_no_reload.GetInt());
-	CreateEffect<>(EFFECT_NPC_TELEPORT,						MAKE_STRING("#hl2c_npc_teleport"),		EC_NONE,										chaos_time_npc_teleport.GetFloat(),			chaos_prob_npc_teleport.GetInt());
-	CreateEffect<CEDeathWater>(EFFECT_DEATH_WATER,			MAKE_STRING("#hl2c_death_water"),		EC_WATER,										chaos_time_death_water.GetFloat(),			chaos_prob_death_water.GetInt());
-	CreateEffect<CERandomCC>(EFFECT_RANDOM_CC,				MAKE_STRING("#hl2c_random_cc"),			EC_NONE,										chaos_time_random_cc.GetFloat(),			chaos_prob_random_cc.GetInt());
-	CreateEffect<CEEvilNPC>(EFFECT_EVIL_BARNEY,				MAKE_STRING("#hl2c_evil_barney"),		EC_HAS_WEAPON,									-1,											chaos_prob_evil_barney.GetInt());
-	CreateEffect<>(EFFECT_GOOD_GMAN,						MAKE_STRING("#hl2c_good_gman"),			EC_NONE,										-1,											chaos_prob_good_gman.GetInt());
-	CreateEffect<CEEvilNPC>(EFFECT_EVIL_KLEINER,			MAKE_STRING("#hl2c_evil_dr_k"),			EC_HAS_WEAPON,									-1,											chaos_prob_evil_kleiner.GetInt());
-	CreateEffect<CEEvilNPC>(EFFECT_EVIL_GRIGORI,			MAKE_STRING("#hl2c_evil_grig"),			EC_HAS_WEAPON,									-1,											chaos_prob_evil_grigori.GetInt());
-	CreateEffect<CEEvilNPC>(EFFECT_EVIL_MOSSMAN,			MAKE_STRING("#hl2c_evil_mossman"),		EC_HAS_WEAPON,									-1,											chaos_prob_evil_mossman.GetInt());
-	CreateEffect<CEEvilNPC>(EFFECT_EVIL_VORT,				MAKE_STRING("#hl2c_evil_vort"),			EC_HAS_WEAPON,									-1,											chaos_prob_evil_vort.GetInt());
-	CreateEffect<CESecondarySpam>(EFFECT_SECONDARY_SPAM,	MAKE_STRING("#hl2c_attack2_spam"),		EC_NONE,										chaos_time_secondary_spam.GetFloat(),		chaos_prob_secondary_spam.GetInt());
-	CreateEffect<>(EFFECT_STEAL_HEALTH,						MAKE_STRING("#hl2c_steal_health"),		EC_NONE,										chaos_time_steal_health.GetFloat(),			chaos_prob_steal_health.GetInt());
-	CreateEffect<CESuitSwap>(EFFECT_SUIT_SWAP,				MAKE_STRING("#hl2c_suit_swap"),			EC_NONE,										-1,											chaos_prob_suit_swap.GetInt());
-	CreateEffect<>(EFFECT_YAWROLL,							MAKE_STRING("#hl2c_yawroll"),			EC_NONE,										chaos_time_yawroll.GetFloat(),				chaos_prob_yawroll.GetInt());
-	CreateEffect<>(EFFECT_NORMAL_VISION,					MAKE_STRING("#hl2c_normal_view"),		EC_NONE,										chaos_time_normalvision.GetFloat(),			chaos_prob_normalvision.GetInt());
-	CreateEffect<CEGiveAllRPG>(EFFECT_GIVE_ALL_RPG,			MAKE_STRING("#hl2c_giveallrpgs"),		EC_NONE,										-1,											chaos_prob_giveallrpg.GetInt());
-	CreateEffect<CEFloorEffect>(EFFECT_GRASS_HEAL,			MAKE_STRING("#hl2c_grass_heal"),		EC_NONE,										chaos_time_grass_heal.GetFloat(),			chaos_prob_grass_heal.GetInt());
-	CreateEffect<CEChangePitch>(EFFECT_CHANGE_PITCH,		MAKE_STRING("#hl2c_change_pitch"),		EC_NONE,										chaos_time_change_pitch.GetFloat(),			chaos_prob_change_pitch.GetInt());
-	CreateEffect<CELogicExplode>(EFFECT_LOGIC_EXPLODE,		MAKE_STRING("#hl2c_logic_explode"),		EC_EXTREME,										-1,											chaos_prob_logic_explode.GetInt());
-	CreateEffect<CECameraTextures>(EFFECT_CAMERA_TEXTURES,	MAKE_STRING("#hl2c_camera_textures"),	EC_NONE,										chaos_time_camera_textures.GetFloat(),		chaos_prob_camera_textures.GetInt());
-	CreateEffect<CECameraGravity>(EFFECT_CAMERA_GRAVITY,	MAKE_STRING("#hl2c_camera_gravity"),	EC_NONE,										chaos_time_camera_gravity.GetFloat(),		chaos_prob_camera_gravity.GetInt());
-	CreateEffect<CEHL1Phys>(EFFECT_HL1_PHYSICS,				MAKE_STRING("#hl2c_hl1_physics"),		EC_NONE,										chaos_time_hl1_physics.GetFloat(),			chaos_prob_hl1_physics.GetInt());
-	CreateEffect<CEDVDCrosshair>(EFFECT_DVD_CROSSHAIR,		MAKE_STRING("#hl2c_dvd_crosshair"),		EC_NONE,										chaos_time_dvd_crosshair.GetFloat(),		chaos_prob_dvd_crosshair.GetInt());
-	CreateEffect<CEEvilNPC>(EFFECT_EVIL_BREEN,				MAKE_STRING("#hl2c_evil_breen"),		EC_HAS_WEAPON,									-1,											chaos_prob_evil_breen.GetInt());
-	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_ELI,				MAKE_STRING("Evil Eli"),				EC_HAS_WEAPON,									-1,											chaos_prob_evil_eli.GetInt());
+	CreateEffect<>(EFFECT_ERROR,								MAKE_STRING("#hl2c_null_effect"),		EC_NONE,						-1,										ERROR_WEIGHT);
+	CreateEffect<CEGravitySet>(EFFECT_ZEROG,					MAKE_STRING("#hl2c_zero_g"),			EC_NONE,						chaos_t_zerog.GetFloat(),				chaos_p_zerog.GetInt());
+	CreateEffect<CEGravitySet>(EFFECT_SUPERG,					MAKE_STRING("#hl2c_super_g"),			EC_NONE,						chaos_t_superg.GetFloat(),				chaos_p_superg.GetInt());
+	CreateEffect<CEGravitySet>(EFFECT_LOWG,						MAKE_STRING("#hl2c_low_g"),				EC_NONE,						chaos_t_lowg.GetFloat(),				chaos_p_lowg.GetInt());
+	CreateEffect<CEGravitySet>(EFFECT_INVERTG,					MAKE_STRING("#hl2c_invert_g"),			EC_NONE,						chaos_t_invertg.GetFloat(),				chaos_p_invertg.GetInt());
+	CreateEffect<CEPhysSpeedSet>(EFFECT_PHYS_PAUSE,				MAKE_STRING("#hl2c_phys_pause"),		EC_NO_VEHICLE,					chaos_t_phys_pause.GetFloat(),			chaos_p_phys_pause.GetInt());
+	CreateEffect<CEPhysSpeedSet>(EFFECT_PHYS_FAST,				MAKE_STRING("#hl2c_phys_fast"),			EC_NONE,						chaos_t_phys_fast.GetFloat(),			chaos_p_phys_fast.GetInt());
+	CreateEffect<CEPhysSpeedSet>(EFFECT_PHYS_SLOW,				MAKE_STRING("#hl2c_phys_slow"),			EC_NONE,						chaos_t_phys_slow.GetFloat(),			chaos_p_phys_slow.GetInt());
+	CreateEffect<CEPullToPlayer>(EFFECT_PULL_TO_PLAYER,			MAKE_STRING("#hl2c_pulltoplr"),			EC_NONE,						chaos_t_pull_to_player.GetFloat(),		chaos_p_pull_to_player.GetInt());
+	CreateEffect<CEPushFromPlayer>(EFFECT_PUSH_FROM_PLAYER,		MAKE_STRING("#hl2c_pushfromplr"),		EC_NONE,						chaos_t_push_from_player.GetFloat(),	chaos_p_push_from_player.GetInt());
+	CreateEffect<CEStop>(EFFECT_NO_MOVEMENT,					MAKE_STRING("#hl2c_stop"),				EC_NONE,						chaos_t_no_movement.GetFloat(),			chaos_p_no_movement.GetInt());
+	CreateEffect<CESuperMovement>(EFFECT_SUPER_MOVEMENT,		MAKE_STRING("#hl2c_super_speed"),		EC_NONE,						chaos_t_super_movement.GetFloat(),		chaos_p_super_movement.GetInt());
+	CreateEffect<CELockVehicles>(EFFECT_LOCK_VEHICLE,			MAKE_STRING("#hl2c_lock_veh"),			EC_BOAT | EC_BUGGY,				chaos_t_lock_vehicle.GetFloat(),		chaos_p_lock_vehicle.GetInt());
+	CreateEffect<CENPCRels>(EFFECT_NPC_HATE,					MAKE_STRING("#hl2c_npc_hate"),			EC_NONE,						chaos_t_npc_hate.GetFloat(),			chaos_p_npc_hate.GetInt());
+	CreateEffect<CENPCRels>(EFFECT_NPC_LIKE,					MAKE_STRING("#hl2c_npc_like"),			EC_NONE,						chaos_t_npc_like.GetFloat(),			chaos_p_npc_like.GetInt());
+	CreateEffect<CENPCRels>(EFFECT_NPC_NEUTRAL,					MAKE_STRING("#hl2c_npc_neutral"),		EC_NONE,						chaos_t_npc_neutral.GetFloat(),			chaos_p_npc_neutral.GetInt());
+	CreateEffect<CENPCRels>(EFFECT_NPC_FEAR,					MAKE_STRING("#hl2c_npc_fear"),			EC_NONE,						chaos_t_npc_fear.GetFloat(),			chaos_p_npc_fear.GetInt());
+	CreateEffect<>(EFFECT_TELEPORT_RANDOM,						MAKE_STRING("#hl2c_tele_random"),		EC_PLR_TELE,					-1,										chaos_p_teleport_random.GetInt());
+	CreateEffect<CERandomVehicle>(EFFECT_SPAWN_VEHICLE,			MAKE_STRING("#hl2c_spawn_veh"),			EC_NONE,						-1,										chaos_p_spawn_vehicle.GetInt());
+	CreateEffect<CERandomNPC>(EFFECT_SPAWN_NPC,					MAKE_STRING("#hl2c_spawn_npc"),			EC_NONE,						-1,										chaos_p_spawn_npc.GetInt());
+	CreateEffect<CESwimInAir>(EFFECT_SWIM_IN_AIR,				MAKE_STRING("#hl2c_swiminair"),			EC_PICKUPS,						chaos_t_swim_in_air.GetFloat(),			chaos_p_swim_in_air.GetInt());
+	CreateEffect<>(EFFECT_ONLY_DRAW_WORLD,						MAKE_STRING("#hl2c_onlydrawworld"),		EC_NONE,						chaos_t_only_draw_world.GetFloat(),		chaos_p_only_draw_world.GetInt());
+	CreateEffect<>(EFFECT_LOW_DETAIL,							MAKE_STRING("#hl2c_low_detail"),		EC_NONE,						chaos_t_low_detail.GetFloat(),			chaos_p_low_detail.GetInt());
+	CreateEffect<CEPlayerBig>(EFFECT_PLAYER_BIG,				MAKE_STRING("#hl2c_plr_big"),			EC_NONE,						chaos_t_player_big.GetFloat(),			chaos_p_player_big.GetInt());
+	CreateEffect<CEPlayerSmall>(EFFECT_PLAYER_SMALL,			MAKE_STRING("#hl2c_plr_small"),			EC_NONE,						chaos_t_player_small.GetFloat(),		chaos_p_player_small.GetInt());
+	CreateEffect<>(EFFECT_NO_MOUSE_HORIZONTAL,					MAKE_STRING("#hl2c_nomousehorz"),		EC_NONE,						chaos_t_no_mouse_horizontal.GetFloat(),	chaos_p_no_mouse_horizontal.GetInt());
+	CreateEffect<>(EFFECT_NO_MOUSE_VERTICAL,					MAKE_STRING("#hl2c_nomousevert"),		EC_NONE,						chaos_t_no_mouse_vertical.GetFloat(),	chaos_p_no_mouse_vertical.GetInt());
+	CreateEffect<CESuperGrab>(EFFECT_SUPER_GRAB,				MAKE_STRING("#hl2c_super_grab"),		EC_NONE,						chaos_t_super_grab.GetFloat(),			chaos_p_super_grab.GetInt());
+	CreateEffect<CERandomWeaponGive>(EFFECT_GIVE_WEAPON,		MAKE_STRING("#hl2c_give_wep"),			EC_NONE,						-1,										chaos_p_give_weapon.GetInt());
+	CreateEffect<>(EFFECT_GIVE_ALL_WEAPONS,						MAKE_STRING("#hl2c_giveallweps"),		EC_NONE,						-1,										chaos_p_give_all_weapons.GetInt());
+	CreateEffect<CEWeaponsDrop>(EFFECT_DROP_WEAPONS,			MAKE_STRING("#hl2c_drop_weps"),			EC_NEED_PHYSGUN,				-1,										chaos_p_drop_weapons.GetInt());
+	CreateEffect<>(EFFECT_NADE_GUNS,							MAKE_STRING("#hl2c_nade_guns"),			EC_NO_INVULN,					chaos_t_nade_guns.GetFloat(),			chaos_p_nade_guns.GetFloat());
+	CreateEffect<CEEarthquake>(EFFECT_EARTHQUAKE,				MAKE_STRING("#hl2c_shakecam"),			EC_NONE,						chaos_t_earthquake.GetFloat(),			chaos_p_earthquake.GetInt());
+	CreateEffect<CE420Joke>(EFFECT_420_JOKE,					MAKE_STRING("#hl2c_420_health"),		EC_NO_INVULN,					-1,										chaos_p_420_joke.GetInt());
+	CreateEffect<CEZombieSpamClose>(EFFECT_ZOMBIE_SPAM_CLOSE,	MAKE_STRING("#hl2c_zombie_spam"),		EC_HAS_WEAPON,					-1,										chaos_p_zombie_spam.GetInt());
+	CreateEffect<>(EFFECT_EXPLODE_ON_DEATH,						MAKE_STRING("#hl2c_explodeondeath"),	EC_NONE,						chaos_t_explode_on_death.GetFloat(),	chaos_p_explode_on_death.GetInt());
+	CreateEffect<>(EFFECT_BULLET_TELEPORT,						MAKE_STRING("#hl2c_bullet_tele"),		EC_NONE,						chaos_t_bullet_teleport.GetFloat(),		chaos_p_bullet_teleport.GetInt());
+	CreateEffect<CECredits>(EFFECT_CREDITS,						MAKE_STRING("#hl2c_credits"),			EC_NONE,						-1,										chaos_p_credits.GetInt());
+	CreateEffect<CESuperhot>(EFFECT_SUPERHOT,					MAKE_STRING("#hl2c_superhot"),			EC_NONE,						chaos_t_superhot.GetFloat(),			chaos_p_superhot.GetInt());
+	CreateEffect<CESupercold>(EFFECT_SUPERCOLD,					MAKE_STRING("#hl2c_supercold"),			EC_NONE,						chaos_t_supercold.GetFloat(),			chaos_p_supercold.GetInt());
+	CreateEffect<CEBarrelShotgun>(EFFECT_BARREL_SHOTGUN,		MAKE_STRING("#hl2c_barrel_shotgun"),	EC_NONE,						chaos_t_barrel_shotgun.GetFloat(),		chaos_p_barrel_shotgun.GetInt());
+	CreateEffect<CEQuickclip>(EFFECT_QUICKCLIP_ON,				MAKE_STRING("#hl2c_quickclip_on"),		EC_QC_OFF,						chaos_t_quickclip_on.GetFloat(),		chaos_p_quickclip_on.GetInt());
+	CreateEffect<CEQuickclip>(EFFECT_QUICKCLIP_OFF,				MAKE_STRING("#hl2c_quickclip_off"),		EC_NONE,						chaos_t_quickclip_off.GetFloat(),		chaos_p_quickclip_off.GetInt());
+	CreateEffect<CESolidTriggers>(EFFECT_SOLID_TRIGGERS,		MAKE_STRING("#hl2c_solid_triggers"),	EC_NONE,						chaos_t_solid_triggers.GetFloat(),		chaos_p_solid_triggers.GetInt());
+	CreateEffect<CEColors>(EFFECT_RANDOM_COLORS,				MAKE_STRING("#hl2c_rand_clr"),			EC_NONE,						chaos_t_random_colors.GetFloat(),		chaos_p_random_colors.GetInt());
+	CreateEffect<CEBottle>(EFFECT_BEER_BOTTLE,					MAKE_STRING("#hl2c_beer_bottle"),		EC_NONE,						-1,										chaos_p_beer_bottle.GetInt());
+	CreateEffect<CEEvilNPC>(EFFECT_EVIL_ALYX,					MAKE_STRING("#hl2c_evil_alyx"),			EC_FAR_ENEMY,					-1,										chaos_p_evil_alyx.GetInt());
+	CreateEffect<CEEvilNPC>(EFFECT_EVIL_NORIKO,					MAKE_STRING("#hl2c_evil_noriko"),		EC_NONE,						-1,										chaos_p_evil_noriko.GetInt());
+	CreateEffect<>(EFFECT_CANT_LEAVE_MAP,						MAKE_STRING("#hl2c_cantleavemap"),		EC_NONE,						chaos_t_cant_leave_map.GetFloat(),		chaos_p_cant_leave_map.GetInt());
+	CreateEffect<CEFloorEffect>(EFFECT_FLOOR_IS_LAVA,			MAKE_STRING("#hl2c_floorislava"),		EC_NO_INVULN | EC_QC_OFF,		chaos_t_floor_is_lava.GetFloat(),		chaos_p_floor_is_lava.GetInt());
+	CreateEffect<CERandomSong>(EFFECT_PLAY_MUSIC,				MAKE_STRING("#hl2c_play_music"),		EC_NONE,						-1,										chaos_p_play_music.GetInt());
+	CreateEffect<CEUseSpam>(EFFECT_USE_SPAM,					MAKE_STRING("#hl2c_use_spam"),			EC_NO_VEHICLE,					chaos_t_use_spam.GetFloat(),			chaos_p_use_spam.GetInt());
+	CreateEffect<>(EFFECT_ORTHO_CAM,							MAKE_STRING("#hl2c_ortho_cam"),			EC_NONE,						chaos_t_ortho_cam.GetFloat(),			chaos_p_ortho_cam.GetInt());
+	CreateEffect<CETreeSpam>(EFFECT_FOREST,						MAKE_STRING("#hl2c_forest"),			EC_NONE,						chaos_t_forest.GetFloat(),				chaos_p_forest.GetInt());
+	CreateEffect<CEMountedGun>(EFFECT_SPAWN_MOUNTED_GUN,		MAKE_STRING("#hl2c_mountedgun"),		EC_NONE,						-1,										chaos_p_spawn_mounted_gun.GetInt());
+	CreateEffect<CERestartLevel>(EFFECT_RESTART_LEVEL,			MAKE_STRING("#hl2c_restart_lvl"),		EC_EXTREME,						-1,										chaos_p_restart_level.GetInt());
+	CreateEffect<CERemovePickups>(EFFECT_REMOVE_PICKUPS,		MAKE_STRING("#hl2c_removepickups"),		EC_PICKUPS | EC_NEED_PHYSGUN,	-1,										chaos_p_remove_pickups.GetInt());
+	CreateEffect<CECloneNPCs>(EFFECT_CLONE_NPCS,				MAKE_STRING("#hl2c_clone_npcs"),		EC_NONE,						-1,										chaos_p_clone_npcs.GetInt());
+	CreateEffect<CELockPVS>(EFFECT_LOCK_PVS,					MAKE_STRING("#hl2c_lock_pvs"),			EC_NONE,						chaos_t_lock_pvs.GetFloat(),			chaos_p_lock_pvs.GetInt());
+	CreateEffect<CEDejaVu>(EFFECT_RELOAD_DEJA_VU,				MAKE_STRING("#hl2c_deja_vu"),			EC_PLR_TELE,					-1,										chaos_p_reload_deja_vu.GetInt());
+	CreateEffect<CEBumpy>(EFFECT_BUMPY,							MAKE_STRING("#hl2c_bumpy"),				EC_BUGGY,						chaos_t_bumpy.GetFloat(),				chaos_p_bumpy.GetInt());
+	CreateEffect<CENoBrake>(EFFECT_NO_BRAKE,					MAKE_STRING("#hl2c_no_brake"),			EC_BUGGY,						chaos_t_no_brake.GetFloat(),			chaos_p_no_brake.GetInt());
+	CreateEffect<CEForceInOutCar>(EFFECT_FORCE_INOUT_CAR,		MAKE_STRING("#hl2c_force_inout"),		EC_BUGGY|EC_BOAT|EC_PLR_TELE,	-1,										chaos_p_force_inout_car.GetInt());
+	CreateEffect<CEWeaponRemove>(EFFECT_WEAPON_REMOVE,			MAKE_STRING("#hl2c_wep_remove"),		EC_NEED_PHYSGUN,				-1,										chaos_p_weapon_remove.GetInt());
+	CreateEffect<>(EFFECT_INTERP_NPCS,							MAKE_STRING("#hl2c_interp_npcs"),		EC_NONE,						chaos_t_interp_npcs.GetFloat(),			chaos_p_interp_npcs.GetInt());
+	CreateEffect<CEPhysConvert>(EFFECT_PHYS_CONVERT,			MAKE_STRING("#hl2c_phys_convert"),		EC_EXTREME,						-1,										chaos_p_phys_convert.GetInt());
+	CreateEffect<CEIncline>(EFFECT_INCLINE,						MAKE_STRING("#hl2c_no_climb"),			EC_NONE,						chaos_t_incline.GetFloat(),				chaos_p_incline.GetInt());
+	CreateEffect<>(EFFECT_DISABLE_SAVE,							MAKE_STRING("#hl2c_no_save"),			EC_NONE,						chaos_t_disable_save.GetFloat(),		chaos_p_disable_save.GetInt());
+	CreateEffect<>(EFFECT_NO_RELOAD,							MAKE_STRING("#hl2c_no_reload"),			EC_HAS_WEAPON,					chaos_t_no_reload.GetFloat(),			chaos_p_no_reload.GetInt());
+	CreateEffect<>(EFFECT_NPC_TELEPORT,							MAKE_STRING("#hl2c_npc_teleport"),		EC_NONE,						chaos_t_npc_teleport.GetFloat(),		chaos_p_npc_teleport.GetInt());
+	CreateEffect<CEDeathWater>(EFFECT_DEATH_WATER,				MAKE_STRING("#hl2c_death_water"),		EC_WATER,						chaos_t_death_water.GetFloat(),			chaos_p_death_water.GetInt());
+	CreateEffect<CERandomCC>(EFFECT_RANDOM_CC,					MAKE_STRING("#hl2c_random_cc"),			EC_NONE,						chaos_t_random_cc.GetFloat(),			chaos_p_random_cc.GetInt());
+	CreateEffect<CEEvilNPC>(EFFECT_EVIL_BARNEY,					MAKE_STRING("#hl2c_evil_barney"),		EC_FAR_ENEMY,					-1,										chaos_p_evil_barney.GetInt());
+	CreateEffect<>(EFFECT_GOOD_GMAN,							MAKE_STRING("#hl2c_good_gman"),			EC_NONE,						-1,										chaos_p_good_gman.GetInt());
+	CreateEffect<CEEvilNPC>(EFFECT_EVIL_KLEINER,				MAKE_STRING("#hl2c_evil_dr_k"),			EC_FAR_ENEMY,					-1,										chaos_p_evil_kleiner.GetInt());
+	CreateEffect<CEEvilNPC>(EFFECT_EVIL_GRIGORI,				MAKE_STRING("#hl2c_evil_grig"),			EC_FAR_ENEMY,					-1,										chaos_p_evil_grigori.GetInt());
+	CreateEffect<CEEvilNPC>(EFFECT_EVIL_MOSSMAN,				MAKE_STRING("#hl2c_evil_mossman"),		EC_FAR_ENEMY,					-1,										chaos_p_evil_mossman.GetInt());
+	CreateEffect<CEEvilNPC>(EFFECT_EVIL_VORT,					MAKE_STRING("#hl2c_evil_vort"),			EC_FAR_ENEMY,					-1,										chaos_p_evil_vort.GetInt());
+	CreateEffect<CESecondarySpam>(EFFECT_SECONDARY_SPAM,		MAKE_STRING("#hl2c_attack2_spam"),		EC_NONE,						chaos_t_secondary_spam.GetFloat(),		chaos_p_secondary_spam.GetInt());
+	CreateEffect<>(EFFECT_STEAL_HEALTH,							MAKE_STRING("#hl2c_steal_health"),		EC_NONE,						chaos_t_steal_health.GetFloat(),		chaos_p_steal_health.GetInt());
+	CreateEffect<CESuitSwap>(EFFECT_SUIT_SWAP,					MAKE_STRING("#hl2c_suit_swap"),			EC_NONE,						-1,										chaos_p_suit_swap.GetInt());
+	CreateEffect<>(EFFECT_YAWROLL,								MAKE_STRING("#hl2c_yawroll"),			EC_NONE,						chaos_t_yawroll.GetFloat(),				chaos_p_yawroll.GetInt());
+	CreateEffect<>(EFFECT_NORMAL_VISION,						MAKE_STRING("#hl2c_normal_view"),		EC_NONE,						chaos_t_normalvision.GetFloat(),		chaos_p_normalvision.GetInt());
+	CreateEffect<CEGiveAllRPG>(EFFECT_GIVE_ALL_RPG,				MAKE_STRING("#hl2c_giveallrpgs"),		EC_NONE,						-1,										chaos_p_giveallrpg.GetInt());
+	CreateEffect<CEFloorEffect>(EFFECT_GRASS_HEAL,				MAKE_STRING("#hl2c_grass_heal"),		EC_NONE,						chaos_t_grass_heal.GetFloat(),			chaos_p_grass_heal.GetInt());
+	CreateEffect<CEChangePitch>(EFFECT_CHANGE_PITCH,			MAKE_STRING("#hl2c_change_pitch"),		EC_NONE,						chaos_t_change_pitch.GetFloat(),		chaos_p_change_pitch.GetInt());
+	CreateEffect<CELogicExplode>(EFFECT_LOGIC_EXPLODE,			MAKE_STRING("#hl2c_logic_explode"),		EC_EXTREME,						-1,										chaos_p_logic_explode.GetInt());
+	CreateEffect<CECameraTextures>(EFFECT_CAMERA_TEXTURES,		MAKE_STRING("#hl2c_camera_textures"),	EC_NONE,						chaos_t_camera_textures.GetFloat(),		chaos_p_camera_textures.GetInt());
+	CreateEffect<CECameraGravity>(EFFECT_CAMERA_GRAVITY,		MAKE_STRING("#hl2c_camera_gravity"),	EC_NONE,						chaos_t_camera_gravity.GetFloat(),		chaos_p_camera_gravity.GetInt());
+	CreateEffect<CEHL1Phys>(EFFECT_HL1_PHYSICS,					MAKE_STRING("#hl2c_hl1_physics"),		EC_NONE,						chaos_t_hl1_physics.GetFloat(),			chaos_p_hl1_physics.GetInt());
+	CreateEffect<CEDVDCrosshair>(EFFECT_DVD_CROSSHAIR,			MAKE_STRING("#hl2c_dvd_crosshair"),		EC_NONE,						chaos_t_dvd_crosshair.GetFloat(),		chaos_p_dvd_crosshair.GetInt());
+	CreateEffect<CEEvilNPC>(EFFECT_EVIL_BREEN,					MAKE_STRING("#hl2c_evil_breen"),		EC_FAR_ENEMY,					-1,										chaos_p_evil_breen.GetInt());
+	CreateEffect<CEZombieSpamFar>(EFFECT_ZOMBIE_SPAM_FAR,		MAKE_STRING("#hl2c_zombie_spam_new"),	EC_FAR_ENEMY,					chaos_t_zombie_spam_new.GetFloat(),		chaos_p_zombie_spam_new.GetInt());
+	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_ELI,					MAKE_STRING("Evil Eli"),				EC_FAR_ENEMY,					-1,										chaos_p_evil_eli.GetInt());
 }
 
 void CHL2_Player::ClearEffectContextCache()
@@ -5951,11 +5953,6 @@ bool CChaosEffect::CheckEffectContext()
 		if (!Q_strcmp(pMapName, "d3_citadel_01"))
 			return false;
 
-	//on some maps, alyx is unreachable by the player, but reachable by zombies, meaning there's no way to save her
-	if (m_nID == EFFECT_ZOMBIE_SPAM)
-		if (!Q_strcmp(pMapName, "d2_prison_06") || !Q_strcmp(pMapName, "ep1_citadel_03"))
-			return false;
-
 	//d1_trainstation_05 is a bad map to be introduced to No Climbing on
 	if (m_nID == EFFECT_INCLINE)
 		if (!Q_strcmp(pMapName, "d1_trainstation_05"))
@@ -6000,7 +5997,7 @@ bool CChaosEffect::CheckEffectContext()
 		return true;
 
 	//avoid extreme effects if already had to reset the map once
-	if (m_nContext & EC_EXTREME)
+	if (m_nContext & EC_EXTREME || m_nContext & EC_PLR_TELE)
 		if (g_bAvoidExtreme)
 			return false;//too much chaos
 
@@ -6013,6 +6010,11 @@ bool CChaosEffect::CheckEffectContext()
 	if (m_nContext & EC_NO_VEHICLE)
 		if (IterUsableVehicles(true))
 			return false;//vehicle found
+
+	//on some maps, a vital ally is unreachable by the player, but reachable by spawned enemies, meaning there's no way to save them
+	if (m_nContext & EC_FAR_ENEMY)
+		if (!Q_strcmp(pMapName, "d2_prison_06") || !Q_strcmp(pMapName, "ep1_citadel_03"))
+			return false;
 
 	//need at least one pickup in the map
 	if (m_nContext & EC_PICKUPS)
@@ -6036,7 +6038,7 @@ bool CChaosEffect::CheckEffectContext()
 
 	//player must have a weapon
 	//also must not be in a normal-gravity-gun-only map
-	if (m_nContext & EC_HAS_WEAPON)
+	if (m_nContext & EC_HAS_WEAPON || m_nContext & EC_FAR_ENEMY || m_nContext & EC_NEED_PHYSGUN)
 		if (pPlayer->GetActiveWeapon() == NULL || !Q_strcmp(pMapName, "ep1_citadel_00") || !Q_strcmp(pMapName, "ep1_citadel_01") || !Q_strcmp(pMapName, "ep2_outland_01"))
 			return false;//player has no weapons
 
@@ -6061,7 +6063,7 @@ bool CChaosEffect::CheckEffectContext()
 			return false;//bad time to lose the gravity gun
 
 	//NO TELEPORT LIST LEAKED
-	if (m_nContext & EC_PLAYER_TELEPORT)
+	if (m_nContext & EC_PLR_TELE)
 		if (DontTeleportPlayer(pMapName))
 			return false;
 
@@ -8078,59 +8080,46 @@ void CENPCRels::StartEffect()
 	}
 }
 static const char* zombieNPCs[] = { "npc_zombie", "npc_zombie_torso", "npc_poisonzombie", "npc_fastzombie", "npc_zombine", "npc_fastzombie_torso" };
-void CEZombieSpam::MaintainEffect()
+void CEZombieSpamFar::MaintainEffect()
 {
-	if (bNewWay)
+	int iZombieType, nRandMax;
+
+	nRandMax = 5;
+
+	while (true)
 	{
-		//new way
-		m_strHudName = MAKE_STRING("#hl2c_zombie_spam_new");
-
-		int iZombieType, nRandMax;
-
-		nRandMax = 5;
-
-		while (true)
+		//find a random hidden node
+		CAI_Node* pNode = g_pBigAINet->GetNode(RandomInt(0, g_pBigAINet->NumNodes() - 1));
+		trace_t	tr;
+		UTIL_TraceLine(UTIL_GetLocalPlayer()->EyePosition(), pNode->GetPosition(HULL_HUMAN), MASK_VISIBLE, UTIL_GetLocalPlayer(), COLLISION_GROUP_NONE, &tr);
+		if (tr.DidHit())//can't see
 		{
-			//find a random hidden node
-			CAI_Node* pNode = g_pBigAINet->GetNode(RandomInt(0, g_pBigAINet->NumNodes() - 1));
-			trace_t	tr;
-			UTIL_TraceLine(UTIL_GetLocalPlayer()->EyePosition(), pNode->GetPosition(HULL_HUMAN), MASK_VISIBLE, UTIL_GetLocalPlayer(), COLLISION_GROUP_NONE, &tr);
-			if (tr.DidHit())//can't see
-			{
-				if (chaos_rng1.GetInt() == -1)
-					iZombieType = RandomInt(0, nRandMax);
-				else
-					iZombieType = chaos_rng1.GetInt() % nRandMax;
+			if (chaos_rng1.GetInt() == -1)
+				iZombieType = RandomInt(0, nRandMax);
+			else
+				iZombieType = chaos_rng1.GetInt() % nRandMax;
 
-				CBaseEntity* pNPC = (CBaseEntity*)CreateEntityByName(zombieNPCs[iZombieType]);
+			CBaseEntity* pNPC = (CBaseEntity*)CreateEntityByName(zombieNPCs[iZombieType]);
 
-				if (!pNPC)
-					return;
-
-				pNPC->SetAbsOrigin(pNode->GetOrigin());
-				pNPC->KeyValue("targetname", "l4d_zombie");
-				g_iChaosSpawnCount++; pNPC->KeyValue("chaosid", g_iChaosSpawnCount);
-				DispatchSpawn(pNPC);
-				pNPC->Activate();
-				pNPC->m_bChaosSpawned = true;
-				pNPC->m_bChaosPersist = true;
+			if (!pNPC)
 				return;
-			}
+
+			pNPC->SetAbsOrigin(pNode->GetOrigin());
+			pNPC->KeyValue("targetname", "l4d_zombie");
+			g_iChaosSpawnCount++; pNPC->KeyValue("chaosid", g_iChaosSpawnCount);
+			DispatchSpawn(pNPC);
+			pNPC->Activate();
+			pNPC->m_bChaosSpawned = true;
+			pNPC->m_bChaosPersist = true;
+			return;
 		}
 	}
 }
-void CEZombieSpam::StartEffect()
+void CEZombieSpamClose::StartEffect()
 {
-	bNewWay = (chaos_rng1.GetInt() == -1 ? RandomInt(0, 1) : chaos_rng1.GetInt()) == 1;
-	if (bNewWay)
-		return;
-
-	//old way
-	m_strHudName = MAKE_STRING("#hl2c_zombie_spam");
-
 	int iZombieType, nRandMax;
 
-	nRandMax = 5;//ep2
+	nRandMax = 5;
 
 	CAI_Node* pNode;
 	CNodeList* result = GetNearbyNodes(20);
@@ -8144,6 +8133,8 @@ void CEZombieSpam::StartEffect()
 		else
 			rng = RandomInt(0, nRandMax);
 
+		//add node id to random number and modulo by max to prevent odd bug where rng seed would not update after every call,
+		//leading to the majority of zombies being the same kind
 		iZombieType = (rng + result->ElementAtHead().nodeIndex) % (nRandMax + 1);
 		if (iZombieType < 0 || iZombieType > nRandMax)//just incase?
 			return;

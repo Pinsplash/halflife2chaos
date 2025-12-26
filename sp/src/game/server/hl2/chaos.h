@@ -45,7 +45,7 @@ enum Effect_T
 	EFFECT_EARTHQUAKE,
 	//EFFECT_WINDY,//broken for unknown reasons
 	EFFECT_420_JOKE,
-	EFFECT_ZOMBIE_SPAM,
+	EFFECT_ZOMBIE_SPAM_CLOSE,
 	//EFFECT_LOW_FOV,
 	//EFFECT_HIGH_FOV,
 	EFFECT_EXPLODE_ON_DEATH,
@@ -106,6 +106,7 @@ enum Effect_T
 	EFFECT_HL1_PHYSICS,
 	EFFECT_DVD_CROSSHAIR,
 	EFFECT_EVIL_BREEN,
+	EFFECT_ZOMBIE_SPAM_FAR,
 	//EFFECT_EVIL_ELI,
 
 	NUM_EFFECTS
@@ -120,10 +121,10 @@ enum Effect_T
 #define EC_NO_INVULN		16
 #define EC_HAS_WEAPON		32
 #define EC_QC_OFF			64
-//#define EC_NO_CUTSCENE		128//hate, fear, you tele
+#define EC_FAR_ENEMY		128
 #define EC_PICKUPS			256
 #define EC_NEED_PHYSGUN		512
-#define EC_PLAYER_TELEPORT	1024
+#define EC_PLR_TELE	1024
 #define EC_NO_VEHICLE		2048
 
 //flags for spawning chaos npcs
@@ -410,15 +411,15 @@ class CERandomWeaponGive : public CChaosEffect
 public:
 	void StartEffect() override;
 };
-//intentionally no strike check because the chance that you can't kill at least one zombie per life is super low
-//maybe we could do something but ehhhh. the prospect of dying and reloading from this effect is part of the appeal.
-//maybe instead of abort removing all zombies, just remove the one that did the final blow
-class CEZombieSpam : public CChaosEffect
+class CEZombieSpamClose : public CChaosEffect
 {
 public:
 	void StartEffect() override;
+};
+class CEZombieSpamFar : public CChaosEffect
+{
+public:
 	void MaintainEffect() override;
-	bool bNewWay;
 };
 class CENPCRels : public CChaosEffect
 {
