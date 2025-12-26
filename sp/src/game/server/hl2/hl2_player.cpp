@@ -5486,6 +5486,7 @@ ConVar chaos_t_camera_textures("chaos_t_camera_textures", "1");
 ConVar chaos_t_camera_gravity("chaos_t_camera_gravity", "1");
 ConVar chaos_t_hl1_physics("chaos_t_hl1_physics", "1");
 ConVar chaos_t_dvd_crosshair("chaos_t_dvd_crosshair", "1");
+ConVar chaos_t_cop_spam("chaos_t_cop_spam", "1");
 
 ConVar chaos_p_zerog("chaos_p_zerog", "100");
 ConVar chaos_p_superg("chaos_p_superg", "100");
@@ -5579,6 +5580,8 @@ ConVar chaos_p_camera_gravity("chaos_p_camera_gravity", "100");
 ConVar chaos_p_hl1_physics("chaos_p_hl1_physics", "100");
 ConVar chaos_p_dvd_crosshair("chaos_p_dvd_crosshair", "100");
 ConVar chaos_p_evil_breen("chaos_p_evil_breen", "100");
+ConVar chaos_p_cop_spam("chaos_p_cop_spam", "100");
+ConVar chaos_p_scanner_spam("chaos_p_scanner_spam", "100");
 //ConVar chaos_p_evil_eli("chaos_p_evil_eli", "100");
 #define ERROR_WEIGHT 1
 void CHL2_Player::PopulateEffects()
@@ -5676,6 +5679,8 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CEDVDCrosshair>(EFFECT_DVD_CROSSHAIR,			MAKE_STRING("#hl2c_dvd_crosshair"),		EC_NONE,						chaos_t_dvd_crosshair.GetFloat(),		chaos_p_dvd_crosshair.GetInt());
 	CreateEffect<CEEvilNPC>(EFFECT_EVIL_BREEN,					MAKE_STRING("#hl2c_evil_breen"),		EC_FAR_ENEMY,					-1,										chaos_p_evil_breen.GetInt());
 	CreateEffect<CEZombieSpamFar>(EFFECT_ZOMBIE_SPAM_FAR,		MAKE_STRING("#hl2c_zombie_spam_new"),	EC_FAR_ENEMY,					chaos_t_zombie_spam_new.GetFloat(),		chaos_p_zombie_spam_new.GetInt());
+	CreateEffect<CECopSpam>(EFFECT_COP_SPAM,					MAKE_STRING("#hl2c_cop_spam"),			EC_FAR_ENEMY,					chaos_t_cop_spam.GetFloat(),			chaos_p_cop_spam.GetInt());
+	CreateEffect<CEScannerSpam>(EFFECT_SCANNER_SPAM,			MAKE_STRING("#hl2c_scanner_spam"),		EC_FAR_ENEMY,					-1,										chaos_p_scanner_spam.GetInt());
 	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_ELI,					MAKE_STRING("Evil Eli"),				EC_FAR_ENEMY,					-1,										chaos_p_evil_eli.GetInt());
 }
 
@@ -8082,6 +8087,9 @@ void CENPCRels::StartEffect()
 }
 int CE_NPC_Spam::PickRandomClass(int iNode)
 {
+	if (m_sSpawnNPCs.size() == 1)
+		return 0;
+
 	int rng;
 	if (chaos_rng1.GetInt() == -1)
 		rng = chaos_rng1.GetInt();
@@ -8098,6 +8106,7 @@ void CE_NPC_Spam::SpawnNPC(Vector vPos, int iNPCType)
 	Assert(pNPC);
 	pNPC->SetAbsOrigin(vPos);
 	pNPC->KeyValue("targetname", m_sTargetname);
+	pNPC->KeyValue("additionalequipment", m_sWeapon);
 	g_iChaosSpawnCount++; pNPC->KeyValue("chaosid", g_iChaosSpawnCount);
 	DispatchSpawn(pNPC);
 	pNPC->Activate();
@@ -8107,7 +8116,7 @@ void CE_NPC_Spam::SpawnNPC(Vector vPos, int iNPCType)
 void CE_NPC_Spam::SpawnNPC(CAI_Node* pNode)
 {
 	int iNPCType = PickRandomClass(pNode->GetId());
-	SpawnNPC(pNode->GetOrigin(), iNPCType);
+	SpawnNPC(pNode->GetPosition(HULL_HUMAN), iNPCType);
 }
 //find a random hidden node
 void CE_NPC_SpamFar::MaintainEffect()
@@ -8119,7 +8128,15 @@ void CE_NPC_SpamFar::MaintainEffect()
 		UTIL_TraceLine(UTIL_GetLocalPlayer()->EyePosition(), pNode->GetPosition(HULL_HUMAN), MASK_VISIBLE, UTIL_GetLocalPlayer(), COLLISION_GROUP_NONE, &tr);
 		if (tr.DidHit())//can't see
 		{
-			SpawnNPC(pNode);
+			Vector vPos = pNode->GetPosition(HULL_HUMAN);
+			vPos.z++;
+			UTIL_TraceHull(vPos, vPos, Vector(-16, -16, 0), Vector(16, 16, 72), MASK_NPCSOLID, NULL, COLLISION_GROUP_NONE, &tr);
+			if (!tr.DidHit())//space is clear
+			{
+				SpawnNPC(pNode);
+			}
+			//putting return here is deliberate. some maps at times have very few occluded nodes,
+			//and these will quickly fill up with npcs, so dodge an infinite loop now.
 			return;
 		}
 	}
@@ -9644,4 +9661,16 @@ void CEDVDCrosshair::StartEffect()
 void CEDVDCrosshair::StopEffect()
 {
 	dvdcross.SetValue(false);
+}
+void CECopSpam::StartEffect()
+{
+	m_sSpawnNPCs = { "npc_metropolice" };
+	m_sTargetname = "spam_cop";
+	m_sWeapon = "weapon_pistol";
+}
+void CEScannerSpam::StartEffect()
+{
+	m_sSpawnNPCs = { "npc_cscanner" };
+	m_sTargetname = "spam_scanner";
+	InitialSpawn();
 }

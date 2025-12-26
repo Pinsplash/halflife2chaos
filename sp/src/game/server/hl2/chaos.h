@@ -108,6 +108,8 @@ enum Effect_T
 	EFFECT_DVD_CROSSHAIR,
 	EFFECT_EVIL_BREEN,
 	EFFECT_ZOMBIE_SPAM_FAR,
+	EFFECT_COP_SPAM,
+	EFFECT_SCANNER_SPAM,
 	//EFFECT_EVIL_ELI,
 
 	NUM_EFFECTS
@@ -125,7 +127,7 @@ enum Effect_T
 #define EC_FAR_ENEMY		128
 #define EC_PICKUPS			256
 #define EC_NEED_PHYSGUN		512
-#define EC_PLR_TELE	1024
+#define EC_PLR_TELE			1024
 #define EC_NO_VEHICLE		2048
 
 //flags for spawning chaos npcs
@@ -419,7 +421,8 @@ public:
 	void SpawnNPC(Vector vPos, int iNPCType);
 	void SpawnNPC(CAI_Node* pNode);
 	std::vector<const char*> m_sSpawnNPCs;
-	const char* m_sTargetname;
+	const char* m_sTargetname = "";
+	const char* m_sWeapon = "";
 };
 class CE_NPC_SpamClose : public CE_NPC_Spam
 {
@@ -659,5 +662,15 @@ class CEDVDCrosshair : public CChaosEffect
 public:
 	void StartEffect() override;
 	void StopEffect() override;
+};
+class CECopSpam : public CE_NPC_SpamFar
+{
+public:
+	void StartEffect() override;
+};
+class CEScannerSpam : public CE_NPC_SpamClose
+{
+public:
+	void StartEffect() override;
 };
 #endif
