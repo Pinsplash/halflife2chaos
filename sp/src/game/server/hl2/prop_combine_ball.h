@@ -82,7 +82,7 @@ public:
 	void StartLifetime( float flDuration );
 	void ClearLifetime( );
 	void SetMass( float mass );
-
+	bool IsEnemy(CBaseEntity* pEntity);
 	void SetWeaponLaunched( bool state = true ) { m_bWeaponLaunched = state; m_bLaunched = state; }
 	bool WasWeaponLaunched( void ) const { return m_bWeaponLaunched; }
 

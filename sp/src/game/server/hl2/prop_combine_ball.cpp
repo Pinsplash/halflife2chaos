@@ -41,11 +41,12 @@
 
 #define	MAX_COMBINEBALL_RADIUS	12
 
-ConVar	sk_npc_dmg_combineball( "sk_npc_dmg_combineball","15", FCVAR_REPLICATED);
-ConVar	sk_combineball_guidefactor( "sk_combineball_guidefactor","0.5", FCVAR_REPLICATED);
-ConVar	sk_combine_ball_search_radius( "sk_combine_ball_search_radius", "512", FCVAR_REPLICATED);
-ConVar	sk_combineball_seek_angle( "sk_combineball_seek_angle","15.0", FCVAR_REPLICATED);
-ConVar	sk_combineball_seek_kill( "sk_combineball_seek_kill","0", FCVAR_REPLICATED);
+ConVar sk_npc_dmg_combineball("sk_npc_dmg_combineball", "15", FCVAR_REPLICATED);
+ConVar sk_combineball_guidefactor("sk_combineball_guidefactor", "0.5", FCVAR_REPLICATED);
+ConVar sk_combine_ball_search_radius("sk_combine_ball_search_radius", "512", FCVAR_REPLICATED);
+ConVar sk_combineball_seek_angle("sk_combineball_seek_angle", "15.0", FCVAR_REPLICATED);
+ConVar sk_combineball_seek_kill("sk_combineball_seek_kill", "0", FCVAR_REPLICATED);
+ConVar ar2_super_seek("ar2_super_seek", "0", FCVAR_NONE);
 
 // For our ring explosion
 int s_nExplosionTexture = -1;
@@ -687,12 +688,47 @@ void CPropCombineBall::StartWhizSoundThink( void )
 	SetContextThink( &CPropCombineBall::WhizSoundThink, gpGlobals->curtime + 2.0f * TICK_INTERVAL, s_pWhizThinkContext );
 }
 
+bool CPropCombineBall::IsEnemy(CBaseEntity* pEntity)
+{
+	if (!pEntity->IsAlive())
+		return false;
+
+	if (pEntity->GetFlags() & EF_NODRAW)
+		return false;
+
+	//remember "combat character" includes projectiles which are not desirable
+	if (pEntity->IsNPC() || pEntity->IsPlayer())
+	{
+		if (pEntity->Classify() == CLASS_BULLSEYE)
+			return false;
+
+		if (GetOwnerEntity() && GetOwnerEntity()->IsCombatCharacter())
+		{
+			if (GetOwnerEntity()->MyCombatCharacterPointer()->IRelationType(pEntity) != D_HT)
+				return false;//not my owner's enemy
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	// We must be able to hit them
+	trace_t	tr;
+	UTIL_TraceLine(WorldSpaceCenter(), pEntity->BodyTarget(true), MASK_SOLID, this, COLLISION_GROUP_NONE, &tr);
+
+	if (tr.fraction < 1.0f && tr.m_pEnt != pEntity)
+		return false;
+
+	return true;
+}
+
 //-----------------------------------------------------------------------------
 // Danger sounds. 
 //-----------------------------------------------------------------------------
 void CPropCombineBall::WhizSoundThink()
 {
-	Vector vecPosition, vecVelocity;
+	Vector vecPosition, vecVelocity, vecDelta;
 	IPhysicsObject *pPhysicsObject = VPhysicsGetObject();
 	
 	if ( pPhysicsObject == NULL )
@@ -705,6 +741,38 @@ void CPropCombineBall::WhizSoundThink()
 
 	pPhysicsObject->GetPosition( &vecPosition, NULL );
 	pPhysicsObject->GetVelocity( &vecVelocity, NULL );
+
+	if (ar2_super_seek.GetBool() && UTIL_IsAR2CombineBall(this))
+	{
+		CBaseEntity* list[1024];
+		CBaseEntity* pBestTarget = NULL;
+		float flBestDist = MAX_COORD_FLOAT;
+		float distance;
+		int nCount = UTIL_EntitiesInSphere(list, 1024, GetAbsOrigin(), sk_combine_ball_search_radius.GetFloat(), FL_NPC | FL_CLIENT);
+
+		for (int i = 0; i < nCount; i++)
+		{
+			if (!IsEnemy(list[i]))
+				continue;
+
+			VectorSubtract(list[i]->WorldSpaceCenter(), vecPosition, vecDelta);
+			distance = VectorNormalize(vecDelta);
+
+			if (distance < flBestDist)
+			{
+				pBestTarget = list[i];
+				flBestDist = distance;
+			}
+		}
+		if (pBestTarget)
+		{
+			VectorSubtract(pBestTarget->WorldSpaceCenter(), vecPosition, vecDelta);
+			VectorNormalize(vecDelta);
+			float flSpeed = VectorNormalize(vecVelocity);
+			vecVelocity = vecDelta * flSpeed;
+			pPhysicsObject->SetVelocity(&vecVelocity, NULL);
+		}
+	}
 	
 	if ( gpGlobals->maxClients == 1 )
 	{
