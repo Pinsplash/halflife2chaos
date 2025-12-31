@@ -5586,6 +5586,7 @@ ConVar chaos_p_cop_spam("chaos_p_cop_spam", "100");
 ConVar chaos_p_scanner_spam("chaos_p_scanner_spam", "100");
 ConVar chaos_p_homing_ar2("chaos_p_homing_ar2", "100");
 ConVar chaos_p_climb_anywhere("chaos_p_climb_anywhere", "100");
+ConVar chaos_p_timeskip("chaos_p_timeskip", "100");
 //ConVar chaos_p_evil_eli("chaos_p_evil_eli", "100");
 #define ERROR_WEIGHT 1
 void CHL2_Player::PopulateEffects()
@@ -5687,6 +5688,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CEScannerSpam>(EFFECT_SCANNER_SPAM,			MAKE_STRING("#hl2c_scanner_spam"),		EC_FAR_ENEMY,					-1,										chaos_p_scanner_spam.GetInt());
 	CreateEffect<>(EFFECT_HOMING_AR2,							MAKE_STRING("#hl2c_homing_ar2"),		EC_NONE,						chaos_t_homing_ar2.GetFloat(),			chaos_p_homing_ar2.GetInt());
 	CreateEffect<>(EFFECT_CLIMB_ANYWHERE,						MAKE_STRING("#hl2c_climb_anywhere"),	EC_NONE,						chaos_t_climb_anywhere.GetFloat(),		chaos_p_climb_anywhere.GetInt());
+	CreateEffect<>(EFFECT_TIMESKIP,								MAKE_STRING("#hl2c_timeskip"),			EC_NONE,						-1,										chaos_p_timeskip.GetInt());
 	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_ELI,					MAKE_STRING("Evil Eli"),				EC_FAR_ENEMY,					-1,										chaos_p_evil_eli.GetInt());
 }
 
@@ -6367,6 +6369,9 @@ void CChaosEffect::StartEffect()
 		break;
 	case EFFECT_CLIMB_ANYWHERE:
 		engine->ClientCommand(engine->PEntityOfEntIndex(1), "chaos_climb_anything 1");
+		break;
+	case EFFECT_TIMESKIP:
+		engine->ClientCommand(engine->PEntityOfEntIndex(1), "host_timescale 100; wait 500; host_timescale 1");
 		break;
 	}
 }// StartEffect()
