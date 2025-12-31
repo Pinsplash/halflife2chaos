@@ -2876,35 +2876,48 @@ bool CGameMovement::LadderMove( void )
 	if ( !GameHasLadders() )
 		return false;
 
-	// If I'm already moving on a ladder, use the previous ladder direction
-	if ( player->GetMoveType() == MOVETYPE_LADDER )
+	//shuffled some of this code around to enable better switching between surface angles
+	//eg climbing from a wall onto a ceiling
+	if (mv->m_flForwardMove || mv->m_flSideMove)
+	{
+		for (int i = 0; i < 3; i++)       // Determine x and y parts of velocity
+			wishdir[i] = m_vecForward[i] * mv->m_flForwardMove + m_vecRight[i] * mv->m_flSideMove;
+
+		VectorNormalize(wishdir);
+	}
+	else if (player->GetMoveType() == MOVETYPE_LADDER)
 	{
 		wishdir = -player->m_vecLadderNormal;
 	}
 	else
 	{
-		// otherwise, use the direction player is attempting to move
-		if ( mv->m_flForwardMove || mv->m_flSideMove )
-		{
-			for (int i=0 ; i<3 ; i++)       // Determine x and y parts of velocity
-				wishdir[i] = m_vecForward[i]*mv->m_flForwardMove + m_vecRight[i]*mv->m_flSideMove;
-
-			VectorNormalize(wishdir);
-		}
-		else
-		{
-			// Player is not attempting to move, no ladder behavior
-			return false;
-		}
+		// Player is not attempting to move, no ladder behavior
+		return false;
 	}
 
 	// wishdir points toward the ladder if any exists
 	VectorMA( mv->GetAbsOrigin(), LadderDistance(), wishdir, end );
 	TracePlayerBBox( mv->GetAbsOrigin(), end, LadderMask(), COLLISION_GROUP_PLAYER_MOVEMENT, pm );
 
-	// no ladder in that direction, return
-	if ( pm.fraction == 1.0f || !OnLadder( pm ) )
-		return false;
+	// no ladder in that direction
+	if (pm.fraction == 1.0f || !OnLadder(pm))
+	{
+		//trace in direction of ladder, even if we are trying to move, because we're attempting to move away from the ladder
+		//(or so close to perpendicular that it won't actually hit the surface. this happens because we actually hover off the surface by up to LadderDistance() units)
+		if (player->GetMoveType() == MOVETYPE_LADDER && !player->m_vecLadderNormal.IsZero())
+		{
+			wishdir = -player->m_vecLadderNormal;
+			Vector vOrigEndpos = pm.endpos;
+			VectorMA(mv->GetAbsOrigin(), LadderDistance(), wishdir, end);
+			TracePlayerBBox(mv->GetAbsOrigin(), end, LadderMask(), COLLISION_GROUP_PLAYER_MOVEMENT, pm);
+
+			// no ladder in that direction, return
+			if (pm.fraction == 1.0f || !OnLadder(pm))
+				return false;
+		}
+		else
+			return false;
+	}
 
 	player->SetMoveType( MOVETYPE_LADDER );
 	player->SetMoveCollide( MOVECOLLIDE_DEFAULT );

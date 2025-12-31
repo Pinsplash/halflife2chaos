@@ -17,6 +17,7 @@ static ConVar sv_ladderautomountdot( "sv_ladderautomountdot", "0.4", FCVAR_REPLI
 
 static ConVar sv_ladder_useonly("sv_ladder_useonly", "0", FCVAR_REPLICATED, "If set, ladders can only be mounted by pressing +USE");
 ConVar chaos_disable_ladders("chaos_disable_ladders", "0");
+ConVar chaos_climb_anything("chaos_climb_anything", "0");
 
 #define USE_DISMOUNT_SPEED 100
 
@@ -284,7 +285,14 @@ bool CHL2GameMovement::ContinueForcedMove()
 //-----------------------------------------------------------------------------
 bool CHL2GameMovement::OnLadder( trace_t &trace )
 {
-	return ( GetLadder() != NULL ) ? true : false;
+	if (chaos_climb_anything.GetBool())
+	{
+		return !player->GetGroundEntity();
+	}
+	else
+	{
+		return (GetLadder() != NULL) ? true : false;
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -523,6 +531,11 @@ bool CHL2GameMovement::ExitLadderViaDismountNode( CFuncLadder *ladder, bool stri
 //-----------------------------------------------------------------------------
 void CHL2GameMovement::FullLadderMove()
 {
+	if (chaos_climb_anything.GetBool())
+	{
+		CGameMovement::FullLadderMove();
+		return;
+	}
 #if !defined( CLIENT_DLL )
 	CFuncLadder *ladder = GetLadder();
 	Assert( ladder );
@@ -884,6 +897,8 @@ bool CHL2GameMovement::CheckLadderAutoMount( CFuncLadder *ladder, const Vector& 
 //-----------------------------------------------------------------------------
 bool CHL2GameMovement::LadderMove( void )
 {
+	if (chaos_climb_anything.GetBool())
+		return CGameMovement::LadderMove();
 
 	if ( player->GetMoveType() == MOVETYPE_NOCLIP || chaos_disable_ladders.GetBool())
 	{
