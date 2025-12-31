@@ -267,7 +267,7 @@ public:
 	bool					DefaultReload( int iClipSize1, int iClipSize2, int iActivity );
 	bool					ReloadsSingly( void ) const;
 
-	virtual bool			AutoFiresFullClip( void ) { return false; }
+	virtual bool			AutoFiresFullClip();
 	virtual bool			CanOverload( void ) { return false; }
 	virtual void			UpdateAutoFire( void );
 

@@ -61,7 +61,11 @@ ConVar tf_weapon_criticals_bucket_cap( "tf_weapon_criticals_bucket_cap", "1000.0
 ConVar tf_weapon_criticals_bucket_bottom( "tf_weapon_criticals_bucket_bottom", "-250.0", FCVAR_REPLICATED );
 ConVar tf_weapon_criticals_bucket_default( "tf_weapon_criticals_bucket_default", "300.0", FCVAR_REPLICATED );
 #endif // TF
-
+ConVar chaos_fire_full_clip("chaos_fire_full_clip", "0");
+bool CBaseCombatWeapon::AutoFiresFullClip()
+{
+	return chaos_fire_full_clip.GetBool();
+}
 CBaseCombatWeapon::CBaseCombatWeapon()
 {
 	// Constructor must call this
@@ -1362,7 +1366,7 @@ bool CBaseCombatWeapon::ReloadOrSwitchWeapons( void )
 	else
 	{
 		// Weapon is useable. Reload if empty and weapon has waited as long as it has to after firing
-		if ( UsesClipsForAmmo1() && !AutoFiresFullClip() && 
+		if ( UsesClipsForAmmo1() && !m_bFiringWholeClip &&
 			 (m_iClip1 == 0) && 
 			 (GetWeaponFlags() & ITEM_FLAG_NOAUTORELOAD) == false && 
 			 m_flNextPrimaryAttack < gpGlobals->curtime && 
@@ -1553,7 +1557,7 @@ bool CBaseCombatWeapon::CanReload( void )
 	if (chaos_no_reload.GetBool())
 		return false;
 #endif
-	if ( AutoFiresFullClip() && m_bFiringWholeClip )
+	if ( m_bFiringWholeClip )
 	{
 		return false;
 	}
@@ -1722,7 +1726,7 @@ void CBaseCombatWeapon::ItemPostFrame( void )
 		}
 	}
 	
-	if ( !bFired && (pOwner->m_nButtons & IN_ATTACK) && (m_flNextPrimaryAttack <= gpGlobals->curtime))
+	if ( !bFired && (pOwner->m_nButtons & IN_ATTACK || m_bFiringWholeClip) && (m_flNextPrimaryAttack <= gpGlobals->curtime))
 	{
 		// Clip empty? Or out of ammo on a no-clip weapon?
 		if ( !IsMeleeWeapon() &&  
@@ -2210,9 +2214,6 @@ void CBaseCombatWeapon::AbortReload( void )
 
 void CBaseCombatWeapon::UpdateAutoFire( void )
 {
-	if ( !AutoFiresFullClip() )
-		return;
-
 	CBasePlayer *pOwner = ToBasePlayer( GetOwner() );
 	if ( !pOwner )
 		return;
@@ -2225,34 +2226,8 @@ void CBaseCombatWeapon::UpdateAutoFire( void )
 
 	if ( m_bFiringWholeClip )
 	{
-		// If it's firing the clip don't let them repress attack to reload
-		pOwner->m_nButtons &= ~IN_ATTACK;
-	}
-
-	// Don't use the regular reload key
-	if ( pOwner->m_nButtons & IN_RELOAD )
-	{
+		//don't allow reload
 		pOwner->m_nButtons &= ~IN_RELOAD;
-	}
-
-	// Try to fire if there's ammo in the clip and we're not holding the button
-	bool bReleaseClip = m_iClip1 > 0 && !( pOwner->m_nButtons & IN_ATTACK );
-
-	if ( !bReleaseClip )
-	{
-		if ( CanReload() && ( pOwner->m_nButtons & IN_ATTACK ) )
-		{
-			// Convert the attack key into the reload key
-			pOwner->m_nButtons |= IN_RELOAD;
-		}
-
-		// Don't allow attack button if we're not attacking
-		pOwner->m_nButtons &= ~IN_ATTACK;
-	}
-	else
-	{
-		// Fake the attack key
-		pOwner->m_nButtons |= IN_ATTACK;
 	}
 }
 
