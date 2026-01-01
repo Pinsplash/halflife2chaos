@@ -171,6 +171,7 @@ static ConVar pyro_dof( "pyro_dof", "1", FCVAR_ARCHIVE );
 extern ConVar cl_leveloverview;
 
 extern ConVar localplayer_visionflags;
+static ConVar chaos_flip_screen("chaos_flip_screen", "0");
 
 //-----------------------------------------------------------------------------
 // Globals
@@ -2167,6 +2168,37 @@ void CViewRender::RenderView( const CViewSetup &view, int nClearFlags, int whatT
 		pRenderContext->DrawScreenSpaceRectangle( pCopyMaterial, UpscaleRect.x, UpscaleRect.y, UpscaleRect.width, UpscaleRect.height,
 			DownscaleRect.x, DownscaleRect.y, DownscaleRect.x+DownscaleRect.width-1, DownscaleRect.y+DownscaleRect.height-1, 
 			pFullFrameFB1->GetActualWidth(), pFullFrameFB1->GetActualHeight() );
+
+		pCopyMaterial->DecrementReferenceCount();
+	}
+
+	if (chaos_flip_screen.GetBool())
+	{
+		CMatRenderContextPtr pRenderContext(materials);
+
+		ITexture* pFullFrameFB1 = materials->FindTexture("_rt_FullFrameFB1", TEXTURE_GROUP_RENDER_TARGET);
+		IMaterial* pCopyMaterial = materials->FindMaterial("dev/upscale", TEXTURE_GROUP_OTHER);
+		pCopyMaterial->IncrementReferenceCount();
+
+		Rect_t	DownscaleRect, UpscaleRect;
+
+		DownscaleRect.x = view.x;
+		DownscaleRect.y = view.y;
+		DownscaleRect.width = view.width;
+		DownscaleRect.height = view.height;
+
+		UpscaleRect.x = view.m_nUnscaledX;
+		UpscaleRect.y = view.m_nUnscaledY;
+		UpscaleRect.width = view.m_nUnscaledWidth;
+		UpscaleRect.height = view.m_nUnscaledHeight;
+
+		pRenderContext->CopyRenderTargetToTextureEx(pFullFrameFB1, 0, &DownscaleRect, &DownscaleRect);
+		pRenderContext->DrawScreenSpaceRectangle(pCopyMaterial,
+			UpscaleRect.x, UpscaleRect.y,//position of top right corner of texture
+			UpscaleRect.width, UpscaleRect.height,//size of new texture in pixels
+			DownscaleRect.x + DownscaleRect.width - 1, DownscaleRect.y,//mins of the texture to display
+			DownscaleRect.x, DownscaleRect.y + DownscaleRect.height - 1,//maxs of the texture to display
+			pFullFrameFB1->GetActualWidth(), pFullFrameFB1->GetActualHeight());//size of entire view
 
 		pCopyMaterial->DecrementReferenceCount();
 	}

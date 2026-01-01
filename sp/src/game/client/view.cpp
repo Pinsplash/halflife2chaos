@@ -85,6 +85,7 @@ extern ConVar sensitivity;
 
 ConVar zoom_sensitivity_ratio("zoom_sensitivity_ratio", "1.0", 0, "Additional mouse sensitivity scale factor applied when FOV is zoomed in.");
 ConVar chaos_yawroll("chaos_yawroll", "0");
+ConVar chaos_invert_stereo("chaos_invert_stereo", "0");
 
 CViewRender g_DefaultViewRender;
 IViewRender *view = NULL;	// set in cldll_client_init.cpp if no mod creates their own
@@ -805,6 +806,9 @@ void CViewRender::SetUpViews()
     Assert ( view.angles == audioState.m_Angles );
 	view.origin = audioState.m_Origin;
 	view.angles = audioState.m_Angles;
+
+	if (chaos_invert_stereo.GetBool())
+		audioState.m_Angles.y += 180;
 
 	engine->SetAudioState( audioState );
 

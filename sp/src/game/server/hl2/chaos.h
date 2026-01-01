@@ -114,6 +114,7 @@ enum Effect_T
 	EFFECT_CLIMB_ANYWHERE,
 	EFFECT_TIMESKIP,
 	EFFECT_FIRE_FULL_CLIP,
+	EFFECT_MIRROR_WORLD,
 	//EFFECT_EVIL_ELI,
 
 	NUM_EFFECTS
@@ -676,5 +677,17 @@ class CEScannerSpam : public CE_NPC_SpamClose
 {
 public:
 	void StartEffect() override;
+};
+class CEMirrorWorld : public CChaosEffect
+{
+public:
+	void StartEffect() override;
+	void StopEffect() override;
+};
+class CENoMouseHorz : public CChaosEffect
+{
+public:
+	void StartEffect() override;
+	void StopEffect() override;
 };
 #endif

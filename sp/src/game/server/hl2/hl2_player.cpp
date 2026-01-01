@@ -138,11 +138,6 @@ ConVar hl2_duckspeed("hl2_duckspeed", "64");//goodbye sanity
 
 ConVar hl2_darkness_flashlight_factor("hl2_darkness_flashlight_factor", "1");
 
-#define	HL2_WALK_SPEED hl2_walkspeed.GetFloat()
-#define	HL2_NORM_SPEED hl2_normspeed.GetFloat()
-#define	HL2_SPRINT_SPEED hl2_sprintspeed.GetFloat()
-#define	HL2_DUCK_SPEED hl2_duckspeed.GetFloat()
-
 ConVar player_showpredictedposition("player_showpredictedposition", "0");
 ConVar player_showpredictedposition_timestep("player_showpredictedposition_timestep", "1.0");
 
@@ -2588,7 +2583,7 @@ void CHL2_Player::StartSprinting(void)
 	filter.UsePredictionRules();
 	EmitSound(filter, entindex(), "HL2Player.SprintStart");
 
-	SetMaxSpeed(HL2_SPRINT_SPEED);
+	SetMaxSpeed(hl2_sprintspeed.GetFloat());
 	m_fIsSprinting = true;
 }
 
@@ -2604,11 +2599,11 @@ void CHL2_Player::StopSprinting(void)
 
 	if (IsSuitEquipped())
 	{
-		SetMaxSpeed(HL2_NORM_SPEED);
+		SetMaxSpeed(hl2_normspeed.GetFloat());
 	}
 	else
 	{
-		SetMaxSpeed(HL2_WALK_SPEED);
+		SetMaxSpeed(hl2_walkspeed.GetFloat());
 	}
 
 	m_fIsSprinting = false;
@@ -2640,7 +2635,7 @@ void CHL2_Player::EnableSprint(bool bEnable)
 //-----------------------------------------------------------------------------
 void CHL2_Player::StartWalking(void)
 {
-	SetMaxSpeed(HL2_WALK_SPEED);
+	SetMaxSpeed(hl2_walkspeed.GetFloat());
 	m_fIsWalking = true;
 }
 
@@ -2648,7 +2643,7 @@ void CHL2_Player::StartWalking(void)
 //-----------------------------------------------------------------------------
 void CHL2_Player::StopWalking(void)
 {
-	SetMaxSpeed(HL2_NORM_SPEED);
+	SetMaxSpeed(hl2_normspeed.GetFloat());
 	m_fIsWalking = false;
 }
 
@@ -2657,7 +2652,7 @@ void CHL2_Player::StopWalking(void)
 //-----------------------------------------------------------------------------
 void CHL2_Player::StartDucking(void)
 {
-	SetMaxSpeed(HL2_DUCK_SPEED);
+	SetMaxSpeed(hl2_duckspeed.GetFloat());
 	m_fIsDucking = true;
 }
 
@@ -2665,7 +2660,7 @@ void CHL2_Player::StartDucking(void)
 //-----------------------------------------------------------------------------
 void CHL2_Player::StopDucking(void)
 {
-	SetMaxSpeed(HL2_NORM_SPEED);
+	SetMaxSpeed(hl2_normspeed.GetFloat());
 	m_fIsDucking = false;
 }
 
@@ -5490,6 +5485,7 @@ ConVar chaos_t_cop_spam("chaos_t_cop_spam", "1");
 ConVar chaos_t_homing_ar2("chaos_t_homing_ar2", "1");
 ConVar chaos_t_climb_anywhere("chaos_t_climb_anywhere", "1");
 ConVar chaos_t_fire_full_clip("chaos_t_fire_full_clip", "1");
+ConVar chaos_t_mirror_world("chaos_t_mirror_world", "1");
 
 ConVar chaos_p_zerog("chaos_p_zerog", "100");
 ConVar chaos_p_superg("chaos_p_superg", "100");
@@ -5589,6 +5585,7 @@ ConVar chaos_p_homing_ar2("chaos_p_homing_ar2", "100");
 ConVar chaos_p_climb_anywhere("chaos_p_climb_anywhere", "100");
 ConVar chaos_p_timeskip("chaos_p_timeskip", "100");
 ConVar chaos_p_fire_full_clip("chaos_p_fire_full_clip", "100");
+ConVar chaos_p_mirror_world("chaos_p_mirror_world", "100");
 //ConVar chaos_p_evil_eli("chaos_p_evil_eli", "100");
 #define ERROR_WEIGHT 1
 void CHL2_Player::PopulateEffects()
@@ -5618,7 +5615,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<>(EFFECT_LOW_DETAIL,							MAKE_STRING("#hl2c_low_detail"),		EC_NONE,						chaos_t_low_detail.GetFloat(),			chaos_p_low_detail.GetInt());
 	CreateEffect<CEPlayerBig>(EFFECT_PLAYER_BIG,				MAKE_STRING("#hl2c_plr_big"),			EC_NONE,						chaos_t_player_big.GetFloat(),			chaos_p_player_big.GetInt());
 	CreateEffect<CEPlayerSmall>(EFFECT_PLAYER_SMALL,			MAKE_STRING("#hl2c_plr_small"),			EC_NONE,						chaos_t_player_small.GetFloat(),		chaos_p_player_small.GetInt());
-	CreateEffect<>(EFFECT_NO_MOUSE_HORIZONTAL,					MAKE_STRING("#hl2c_nomousehorz"),		EC_NONE,						chaos_t_no_mouse_horizontal.GetFloat(),	chaos_p_no_mouse_horizontal.GetInt());
+	CreateEffect<CENoMouseHorz>(EFFECT_NO_MOUSE_HORIZONTAL,		MAKE_STRING("#hl2c_nomousehorz"),		EC_NONE,						chaos_t_no_mouse_horizontal.GetFloat(),	chaos_p_no_mouse_horizontal.GetInt());
 	CreateEffect<>(EFFECT_NO_MOUSE_VERTICAL,					MAKE_STRING("#hl2c_nomousevert"),		EC_NONE,						chaos_t_no_mouse_vertical.GetFloat(),	chaos_p_no_mouse_vertical.GetInt());
 	CreateEffect<CESuperGrab>(EFFECT_SUPER_GRAB,				MAKE_STRING("#hl2c_super_grab"),		EC_NONE,						chaos_t_super_grab.GetFloat(),			chaos_p_super_grab.GetInt());
 	CreateEffect<CERandomWeaponGive>(EFFECT_GIVE_WEAPON,		MAKE_STRING("#hl2c_give_wep"),			EC_NONE,						-1,										chaos_p_give_weapon.GetInt());
@@ -5692,6 +5689,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<>(EFFECT_CLIMB_ANYWHERE,						MAKE_STRING("#hl2c_climb_anywhere"),	EC_NONE,						chaos_t_climb_anywhere.GetFloat(),		chaos_p_climb_anywhere.GetInt());
 	CreateEffect<>(EFFECT_TIMESKIP,								MAKE_STRING("#hl2c_timeskip"),			EC_NONE,						-1,										chaos_p_timeskip.GetInt());
 	CreateEffect<>(EFFECT_FIRE_FULL_CLIP,						MAKE_STRING("#hl2c_fire_full_clip"),	EC_HAS_WEAPON,					chaos_t_fire_full_clip.GetInt(),		chaos_p_fire_full_clip.GetInt());
+	CreateEffect<CEMirrorWorld>(EFFECT_MIRROR_WORLD,			MAKE_STRING("#hl2c_mirror_world"),		EC_NONE,						chaos_t_mirror_world.GetInt(),			chaos_p_mirror_world.GetInt());
 	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_ELI,					MAKE_STRING("Evil Eli"),				EC_FAR_ENEMY,					-1,										chaos_p_evil_eli.GetInt());
 }
 
@@ -6306,9 +6304,6 @@ void CChaosEffect::StartEffect()
 	case EFFECT_LOW_DETAIL:
 		engine->ClientCommand(engine->PEntityOfEntIndex(1), "mat_picmip 4;r_lod 6;mat_filtertextures 0;mat_filterlightmaps 0");
 		break;
-	case EFFECT_NO_MOUSE_HORIZONTAL:
-		engine->ClientCommand(engine->PEntityOfEntIndex(1), "sv_cheats 1;wait 10;m_yaw 0.0f;cl_yawspeed 0");
-		break;
 	case EFFECT_NO_MOUSE_VERTICAL:
 		engine->ClientCommand(engine->PEntityOfEntIndex(1), "sv_cheats 1;wait 10;m_pitch 0.0f;cl_pitchspeed 0");
 		break;
@@ -6390,9 +6385,6 @@ void CChaosEffect::StopEffect()
 		break;
 	case EFFECT_LOW_DETAIL:
 		engine->ClientCommand(engine->PEntityOfEntIndex(1), "mat_picmip -1;r_lod -1;mat_filtertextures 1;mat_filterlightmaps 1\n");
-		break;
-	case EFFECT_NO_MOUSE_HORIZONTAL:
-		engine->ClientCommand(engine->PEntityOfEntIndex(1), "exec yaw\n");
 		break;
 	case EFFECT_NO_MOUSE_VERTICAL:
 		engine->ClientCommand(engine->PEntityOfEntIndex(1), "exec pitch\n");
@@ -7708,37 +7700,34 @@ void CELockVehicles::StopEffect()
 }
 void CESuperMovement::StartEffect()
 {
-	sv_maxspeed.SetValue(4000);//320
-	hl2_normspeed.SetValue(4000);//190
-	hl2_sprintspeed.SetValue(4000);//320
-	hl2_walkspeed.SetValue(4000);//150
-	hl2_duckspeed.SetValue(4000);//64
-	static ConVar* pCVcl_forwardspeed = (ConVar*)cvar->FindVar("cl_forwardspeed");
-	pCVcl_forwardspeed->SetValue(4000);//450
-	static ConVar* pCVcl_sidespeed = (ConVar*)cvar->FindVar("cl_sidespeed");
-	pCVcl_sidespeed->SetValue(4000);//450
-	static ConVar* pCVcl_upspeed = (ConVar*)cvar->FindVar("cl_upspeed");
-	pCVcl_upspeed->SetValue(4000);//320
-	static ConVar* pCVcl_backspeed = (ConVar*)cvar->FindVar("cl_backspeed");
-	pCVcl_backspeed->SetValue(4000);//450
-	UTIL_GetLocalPlayer()->SetMaxSpeed(HL2_NORM_SPEED);
+	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+	CHL2_Player* pHL2Player = static_cast<CHL2_Player*>(pPlayer);
+	engine->ClientCommand(engine->PEntityOfEntIndex(1), "sv_maxspeed 4000;hl2_normspeed 4000;hl2_sprintspeed 4000;hl2_walkspeed 4000;hl2_duckspeed 4000");
+	engine->ClientCommand(engine->PEntityOfEntIndex(1), "cl_forwardspeed 4000;cl_upspeed 4000;cl_backspeed 4000");
+
+	//set cl_sidespeed in respect to Mirror World
+	if (!g_ChaosEffects[EFFECT_MIRROR_WORLD]->m_bActive)
+		engine->ClientCommand(engine->PEntityOfEntIndex(1), "cl_sidespeed 4000");
+	else
+		engine->ClientCommand(engine->PEntityOfEntIndex(1), "cl_sidespeed -4000");
+
+	pHL2Player->SetMaxSpeed(4000);
 }
 void CESuperMovement::StopEffect()
 {
-	sv_maxspeed.SetValue(320);//
-	hl2_normspeed.SetValue(190);//
-	hl2_sprintspeed.SetValue(320);//
-	hl2_walkspeed.SetValue(150);//
-	hl2_duckspeed.SetValue(64);//
-	static ConVar* pCVcl_forwardspeed = (ConVar*)cvar->FindVar("cl_forwardspeed");
-	pCVcl_forwardspeed->SetValue(450);//
-	static ConVar* pCVcl_sidespeed = (ConVar*)cvar->FindVar("cl_sidespeed");
-	pCVcl_sidespeed->SetValue(450);//
-	static ConVar* pCVcl_upspeed = (ConVar*)cvar->FindVar("cl_upspeed");
-	pCVcl_upspeed->SetValue(320);//
-	static ConVar* pCVcl_backspeed = (ConVar*)cvar->FindVar("cl_backspeed");
-	pCVcl_backspeed->SetValue(450);//
-	UTIL_GetLocalPlayer()->SetMaxSpeed(HL2_NORM_SPEED);
+	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+	CHL2_Player* pHL2Player = static_cast<CHL2_Player*>(pPlayer);
+	engine->ClientCommand(engine->PEntityOfEntIndex(1), "sv_maxspeed 320;hl2_normspeed 190;hl2_sprintspeed 320;hl2_walkspeed 150;hl2_duckspeed 64");
+	engine->ClientCommand(engine->PEntityOfEntIndex(1), "cl_forwardspeed 450;cl_upspeed 320;cl_backspeed 450");
+
+	//set cl_sidespeed in respect to Mirror World
+	if (!g_ChaosEffects[EFFECT_MIRROR_WORLD]->m_bActive)
+		engine->ClientCommand(engine->PEntityOfEntIndex(1), "cl_sidespeed 450");
+	else
+		engine->ClientCommand(engine->PEntityOfEntIndex(1), "cl_sidespeed -450");
+
+	pHL2Player->SetMaxSpeed(320);
+
 	if (g_ChaosEffects[EFFECT_NO_MOVEMENT]->m_bActive && g_ChaosEffects[EFFECT_NO_MOVEMENT]->m_flTimeRem > 1)
 	{
 		//EFFECT_NO_MOVEMENT is active and will outlast me, restore its effects
@@ -8998,7 +8987,7 @@ void CEStop::DoOnVehicles(CPropVehicleDriveable* pVehicle)
 void CEStop::StopEffect()
 {
 	sv_maxspeed.SetValue(320);
-	UTIL_GetLocalPlayer()->SetMaxSpeed(HL2_NORM_SPEED);
+	UTIL_GetLocalPlayer()->SetMaxSpeed(hl2_normspeed.GetFloat());
 	IterUsableVehicles(false);
 	if (g_ChaosEffects[EFFECT_SUPER_MOVEMENT]->m_bActive && g_ChaosEffects[EFFECT_SUPER_MOVEMENT]->m_flTimeRem > 1)
 	{
@@ -9710,4 +9699,46 @@ void CEScannerSpam::StartEffect()
 	m_sSpawnNPCs = { "npc_cscanner" };
 	m_sTargetname = "spam_scanner";
 	InitialSpawn();
+}
+void CEMirrorWorld::StartEffect()
+{
+	engine->ClientCommand(engine->PEntityOfEntIndex(1), "chaos_flip_screen 1;chaos_invert_stereo 1");
+
+	//set m_yaw in respect to No Looking Left/Right
+	if (!g_ChaosEffects[EFFECT_NO_MOUSE_HORIZONTAL]->m_bActive)
+		engine->ClientCommand(engine->PEntityOfEntIndex(1), "exec negative_yaw\n");
+	//if it's active, keep m_yaw at 0
+
+	//set cl_sidespeed in respect to Super Speed
+	if (!g_ChaosEffects[EFFECT_SUPER_MOVEMENT]->m_bActive)
+		engine->ClientCommand(engine->PEntityOfEntIndex(1), "cl_sidespeed -450");
+	else
+		engine->ClientCommand(engine->PEntityOfEntIndex(1), "cl_sidespeed -4000");
+}
+void CEMirrorWorld::StopEffect()
+{
+	engine->ClientCommand(engine->PEntityOfEntIndex(1), "chaos_flip_screen 0;chaos_invert_stereo 0");
+
+	//set m_yaw in respect to No Looking Left/Right
+	if (!g_ChaosEffects[EFFECT_NO_MOUSE_HORIZONTAL]->m_bActive)
+		engine->ClientCommand(engine->PEntityOfEntIndex(1), "exec yaw\n");
+	//if it's active, keep m_yaw at 0
+
+	//set cl_sidespeed in respect to Super Speed
+	if (!g_ChaosEffects[EFFECT_SUPER_MOVEMENT]->m_bActive)
+		engine->ClientCommand(engine->PEntityOfEntIndex(1), "cl_sidespeed 450");
+	else
+		engine->ClientCommand(engine->PEntityOfEntIndex(1), "cl_sidespeed 4000");
+}
+void CENoMouseHorz::StartEffect()
+{
+	engine->ClientCommand(engine->PEntityOfEntIndex(1), "m_yaw 0.0f;cl_yawspeed 0");
+}
+void CENoMouseHorz::StopEffect()
+{
+	//set m_yaw in respect to Mirror World
+	if (!g_ChaosEffects[EFFECT_MIRROR_WORLD]->m_bActive)
+		engine->ClientCommand(engine->PEntityOfEntIndex(1), "exec yaw\n");
+	else
+		engine->ClientCommand(engine->PEntityOfEntIndex(1), "exec negative_yaw\n");
 }
