@@ -5586,7 +5586,7 @@ ConVar chaos_p_climb_anywhere("chaos_p_climb_anywhere", "100");
 ConVar chaos_p_timeskip("chaos_p_timeskip", "100");
 ConVar chaos_p_fire_full_clip("chaos_p_fire_full_clip", "100");
 ConVar chaos_p_mirror_world("chaos_p_mirror_world", "100");
-//ConVar chaos_p_evil_eli("chaos_p_evil_eli", "100");
+ConVar chaos_p_evil_eli("chaos_p_evil_eli", "100");
 #define ERROR_WEIGHT 1
 void CHL2_Player::PopulateEffects()
 {
@@ -5688,9 +5688,9 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<>(EFFECT_HOMING_AR2,							MAKE_STRING("#hl2c_homing_ar2"),		EC_NONE,						chaos_t_homing_ar2.GetFloat(),			chaos_p_homing_ar2.GetInt());
 	CreateEffect<>(EFFECT_CLIMB_ANYWHERE,						MAKE_STRING("#hl2c_climb_anywhere"),	EC_NONE,						chaos_t_climb_anywhere.GetFloat(),		chaos_p_climb_anywhere.GetInt());
 	CreateEffect<>(EFFECT_TIMESKIP,								MAKE_STRING("#hl2c_timeskip"),			EC_NONE,						-1,										chaos_p_timeskip.GetInt());
-	CreateEffect<>(EFFECT_FIRE_FULL_CLIP,						MAKE_STRING("#hl2c_fire_full_clip"),	EC_HAS_WEAPON,					chaos_t_fire_full_clip.GetInt(),		chaos_p_fire_full_clip.GetInt());
-	CreateEffect<CEMirrorWorld>(EFFECT_MIRROR_WORLD,			MAKE_STRING("#hl2c_mirror_world"),		EC_NONE,						chaos_t_mirror_world.GetInt(),			chaos_p_mirror_world.GetInt());
-	//CreateEffect<CEEvilNPC>(EFFECT_EVIL_ELI,					MAKE_STRING("Evil Eli"),				EC_FAR_ENEMY,					-1,										chaos_p_evil_eli.GetInt());
+	CreateEffect<>(EFFECT_FIRE_FULL_CLIP,						MAKE_STRING("#hl2c_fire_full_clip"),	EC_HAS_WEAPON,					chaos_t_fire_full_clip.GetFloat(),		chaos_p_fire_full_clip.GetInt());
+	CreateEffect<CEMirrorWorld>(EFFECT_MIRROR_WORLD,			MAKE_STRING("#hl2c_mirror_world"),		EC_NONE,						chaos_t_mirror_world.GetFloat(),		chaos_p_mirror_world.GetInt());
+	CreateEffect<CEEvilNPC>(EFFECT_EVIL_ELI,					MAKE_STRING("#hl2c_evil_eli"),			EC_FAR_ENEMY,					-1,										chaos_p_evil_eli.GetInt());
 }
 
 void CHL2_Player::ClearEffectContextCache()
@@ -8257,10 +8257,9 @@ void CEEvilNPC::StartEffect()
 	case EFFECT_EVIL_BREEN:
 		m_iSavedChaosID = ChaosSpawnNPC("npc_breen", MAKE_STRING("#hl2c_evil_breen"), SPAWNTYPE_HIDEINCOVER, "models/breen.mdl", "breen", "weapon_physcannon", CSF_EVIL)->m_iChaosID;
 		break;
-		/*
 	case EFFECT_EVIL_ELI:
-		m_iSavedChaosID = ChaosSpawnNPC("npc_eli", MAKE_STRING("Evil Eli"), SPAWNTYPE_HIDEINCOVER, "models/eli.mdl", "eli", "weapon_crossbow", true)->m_iChaosID;
-		break;*/
+		m_iSavedChaosID = ChaosSpawnNPC("npc_eli", MAKE_STRING("#hl2c_evil_eli"), SPAWNTYPE_EYELEVEL_REGULAR, "models/eli.mdl", "eli", "weapon_crossbow", CSF_EVIL)->m_iChaosID;
+		break;
 	}
 }
 bool CEEvilNPC::CheckStrike(const CTakeDamageInfo& info)

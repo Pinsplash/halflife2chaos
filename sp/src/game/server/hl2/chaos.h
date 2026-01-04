@@ -40,19 +40,13 @@ enum Effect_T
 	EFFECT_GIVE_WEAPON,
 	EFFECT_GIVE_ALL_WEAPONS,
 	EFFECT_DROP_WEAPONS,
-	//EFFECT_CROSSBOW_GUNS,//crossbow guns - replace bullets with crossbow bolts. requires moving some code around and i don't wanna deal with it right now
-	EFFECT_NADE_GUNS,//grenade guns - replace bullets with grenades. same story as crossbow
-	//rapid weapon fire - that will take a while to do
+	EFFECT_NADE_GUNS,
 	EFFECT_EARTHQUAKE,
-	//EFFECT_WINDY,//broken for unknown reasons
 	EFFECT_420_JOKE,
 	EFFECT_ZOMBIE_SPAM_CLOSE,
-	//EFFECT_LOW_FOV,
-	//EFFECT_HIGH_FOV,
 	EFFECT_EXPLODE_ON_DEATH,
 	EFFECT_BULLET_TELEPORT,
 	EFFECT_CREDITS,
-	//EFFECT_SANTIAGO,
 	EFFECT_SUPERHOT,
 	EFFECT_SUPERCOLD,
 	EFFECT_BARREL_SHOTGUN,
@@ -115,7 +109,7 @@ enum Effect_T
 	EFFECT_TIMESKIP,
 	EFFECT_FIRE_FULL_CLIP,
 	EFFECT_MIRROR_WORLD,
-	//EFFECT_EVIL_ELI,
+	EFFECT_EVIL_ELI,
 
 	NUM_EFFECTS
 };

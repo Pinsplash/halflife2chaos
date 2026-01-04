@@ -439,12 +439,13 @@ public:
 	virtual void	Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatCharacter *pOperator );
 	virtual bool	SendWeaponAnim( int iActivity );
 	virtual bool	IsWeaponZoomed() { return m_bInZoom; }
-	
+	void FireNPCPrimaryAttack(CBaseCombatCharacter* pOperator);
 	bool	ShouldDisplayHUDHint() { return true; }
 
 
 	DECLARE_SERVERCLASS();
 	DECLARE_DATADESC();
+	DECLARE_ACTTABLE();
 
 private:
 	
@@ -494,11 +495,22 @@ BEGIN_DATADESC( CWeaponCrossbow )
 
 END_DATADESC()
 
+acttable_t	CWeaponCrossbow::m_acttable[] =
+{
+	{ ACT_IDLE,						ACT_IDLE_SMG1,						true },
+	{ ACT_RANGE_ATTACK1,			ACT_RANGE_ATTACK_SHOTGUN,			true },
+	{ ACT_RELOAD,					ACT_RELOAD_CROSSBOW,				true },
+	{ ACT_WALK,						ACT_WALK_RIFLE,						true },
+	{ ACT_IDLE_ANGRY,				ACT_IDLE_ANGRY_SHOTGUN,				true },
+	{ ACT_RUN,						ACT_RUN_RIFLE,						true },
+};
+IMPLEMENT_ACTTABLE(CWeaponCrossbow);
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
 //-----------------------------------------------------------------------------
 CWeaponCrossbow::CWeaponCrossbow( void )
 {
+	m_fMinRange1 = 0;
 	m_bReloadsSingly	= true;
 	m_bFiresUnderwater	= true;
 	m_bAltFiresUnderwater = true;
@@ -620,29 +632,51 @@ void CWeaponCrossbow::ItemPostFrame( void )
 //-----------------------------------------------------------------------------
 void CWeaponCrossbow::FireBolt( void )
 {
-	if ( m_iClip1 <= 0 )
+	CBaseCombatCharacter* pOwner = GetOwner();
+	
+	if ( pOwner == NULL )
+		return;
+
+	CBasePlayer* pPlayer = ToBasePlayer(pOwner);
+	CAI_BaseNPC* pNPC = pOwner->MyNPCPointer();
+
+	if (!pPlayer && !pNPC)
+		return;
+
+	if (m_iClip1 <= 0)
 	{
-		if ( !m_bFireOnEmpty )
+		if (!m_bFireOnEmpty)
 		{
-			Reload();
+			if (pPlayer)
+				Reload();
 		}
 		else
 		{
-			WeaponSound( EMPTY );
+			WeaponSound(EMPTY);
 			m_flNextPrimaryAttack = 0.15;
 		}
 
 		return;
 	}
 
-	CBasePlayer *pOwner = ToBasePlayer( GetOwner() );
-	
-	if ( pOwner == NULL )
-		return;
+	if (pPlayer)
+		pPlayer->RumbleEffect(RUMBLE_357, 0, RUMBLE_FLAG_RESTART);
 
-	pOwner->RumbleEffect( RUMBLE_357, 0, RUMBLE_FLAG_RESTART );
-
-	Vector vecAiming	= pOwner->GetAutoaimVector( 0 );
+	Vector vecAiming = vec3_origin;
+	if (pPlayer)
+	{
+		vecAiming = pPlayer->GetAutoaimVector(0);
+	}
+	else if (pOwner->GetEnemy())
+	{
+		vecAiming = pOwner->GetEnemy()->BodyTarget(false) - pOwner->Weapon_ShootPosition();
+		/*
+		NDebugOverlay::Cross3D(pOwner->Weapon_ShootPosition(), 10, 255, 255, 255, true, 10);
+		NDebugOverlay::Cross3D(pOwner->GetEnemy()->BodyTarget(false), 10, 255, 255, 255, true, 10);
+		NDebugOverlay::Line(pOwner->Weapon_ShootPosition(), pOwner->Weapon_ShootPosition() + vecAiming, 255, 255, 255, true, 10);
+		*/
+		vecAiming.NormalizeInPlace();
+	}
 	Vector vecSrc		= pOwner->Weapon_ShootPosition();
 
 	QAngle angAiming;
@@ -678,7 +712,8 @@ void CWeaponCrossbow::FireBolt( void )
 
 	m_iClip1--;
 
-	pOwner->ViewPunch( QAngle( -2, 0, 0 ) );
+	if (pPlayer)
+		pPlayer->ViewPunch( QAngle( -2, 0, 0 ) );
 
 	WeaponSound( SINGLE );
 	WeaponSound( SPECIAL2 );
@@ -687,16 +722,19 @@ void CWeaponCrossbow::FireBolt( void )
 
 	SendWeaponAnim( ACT_VM_PRIMARYATTACK );
 
-	if ( !m_iClip1 && pOwner->GetAmmoCount( m_iPrimaryAmmoType ) <= 0 )
+	if (pPlayer && !m_iClip1 && pPlayer->GetAmmoCount( m_iPrimaryAmmoType ) <= 0 )
 	{
 		// HEV suit - indicate out of ammo condition
-		pOwner->SetSuitUpdate("!HEV_AMO0", FALSE, 0);
+		pPlayer->SetSuitUpdate("!HEV_AMO0", FALSE, 0);
 	}
 
 	m_flNextPrimaryAttack = m_flNextSecondaryAttack	= gpGlobals->curtime + 0.75;
 
 	DoLoadEffect();
 	SetChargerState( CHARGER_STATE_DISCHARGE );
+
+	if (pNPC)
+		pNPC->TaskComplete();//yeah i know this is stupid, but i just can't manage to make eli correctly realize he fired the shot already
 }
 
 //-----------------------------------------------------------------------------
@@ -760,6 +798,9 @@ void CWeaponCrossbow::ToggleZoom( void )
 void CWeaponCrossbow::CreateChargerEffects( void )
 {
 	CBasePlayer *pOwner = ToBasePlayer( GetOwner() );
+
+	if (!pOwner)
+		return;
 
 	if ( m_hChargerSprite != NULL )
 		return;
@@ -933,10 +974,23 @@ void CWeaponCrossbow::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombat
 		SetChargerState( CHARGER_STATE_READY );
 		break;
 
+	case EVENT_WEAPON_SHOTGUN_FIRE:
+		FireNPCPrimaryAttack(pOperator);
+		break;
+
 	default:
 		BaseClass::Operator_HandleAnimEvent( pEvent, pOperator );
 		break;
 	}
+}
+
+void CWeaponCrossbow::FireNPCPrimaryAttack(CBaseCombatCharacter* pOperator)
+{
+	Vector vecShootOrigin, vecShootDir;
+
+	CSoundEnt::InsertSound(SOUND_COMBAT | SOUND_CONTEXT_GUNFIRE, pOperator->GetAbsOrigin(), SOUNDENT_VOLUME_MACHINEGUN, 0.2, pOperator, SOUNDENT_CHANNEL_WEAPON, pOperator->GetEnemy());
+
+	FireBolt();
 }
 
 //-----------------------------------------------------------------------------
