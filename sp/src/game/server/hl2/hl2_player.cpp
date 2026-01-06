@@ -5684,7 +5684,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CEEvilNPC>(EFFECT_EVIL_BREEN,					MAKE_STRING("#hl2c_evil_breen"),		EC_FAR_ENEMY,					-1,										chaos_p_evil_breen.GetInt());
 	CreateEffect<CEZombieSpamFar>(EFFECT_ZOMBIE_SPAM_FAR,		MAKE_STRING("#hl2c_zombie_spam_new"),	EC_FAR_ENEMY,					chaos_t_zombie_spam_new.GetFloat(),		chaos_p_zombie_spam_new.GetInt());
 	CreateEffect<CECopSpam>(EFFECT_COP_SPAM,					MAKE_STRING("#hl2c_cop_spam"),			EC_FAR_ENEMY,					chaos_t_cop_spam.GetFloat(),			chaos_p_cop_spam.GetInt());
-	CreateEffect<CEScannerSpam>(EFFECT_SCANNER_SPAM,			MAKE_STRING("#hl2c_scanner_spam"),		EC_FAR_ENEMY,					-1,										chaos_p_scanner_spam.GetInt());
+	CreateEffect<CEScannerSpam>(EFFECT_SCANNER_SPAM,			MAKE_STRING("#hl2c_scanner_spam"),		EC_NONE,						-1,										chaos_p_scanner_spam.GetInt());
 	CreateEffect<>(EFFECT_HOMING_AR2,							MAKE_STRING("#hl2c_homing_ar2"),		EC_NONE,						chaos_t_homing_ar2.GetFloat(),			chaos_p_homing_ar2.GetInt());
 	CreateEffect<>(EFFECT_CLIMB_ANYWHERE,						MAKE_STRING("#hl2c_climb_anywhere"),	EC_NONE,						chaos_t_climb_anywhere.GetFloat(),		chaos_p_climb_anywhere.GetInt());
 	CreateEffect<>(EFFECT_TIMESKIP,								MAKE_STRING("#hl2c_timeskip"),			EC_NONE,						-1,										chaos_p_timeskip.GetInt());
@@ -8258,7 +8258,7 @@ void CEEvilNPC::StartEffect()
 		m_iSavedChaosID = ChaosSpawnNPC("npc_breen", MAKE_STRING("#hl2c_evil_breen"), SPAWNTYPE_HIDEINCOVER, "models/breen.mdl", "breen", "weapon_physcannon", CSF_EVIL)->m_iChaosID;
 		break;
 	case EFFECT_EVIL_ELI:
-		m_iSavedChaosID = ChaosSpawnNPC("npc_eli", MAKE_STRING("#hl2c_evil_eli"), SPAWNTYPE_EYELEVEL_REGULAR, "models/eli.mdl", "eli", "weapon_crossbow", CSF_EVIL)->m_iChaosID;
+		m_iSavedChaosID = ChaosSpawnNPC("npc_eli", MAKE_STRING("#hl2c_evil_eli"), SPAWNTYPE_HIDEINCOVER, "models/eli.mdl", "eli", "weapon_crossbow", CSF_EVIL)->m_iChaosID;
 		break;
 	}
 }
