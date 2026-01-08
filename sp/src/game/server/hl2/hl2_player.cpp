@@ -2254,7 +2254,7 @@ void CHL2_Player::PlayerRunCommand(CUserCmd* ucmd, IMoveHelper* moveHelper)
 }
 void CHL2_Player::StartGame()
 {
-	if (gpGlobals->eLoadType == MapLoad_NewGame || gpGlobals->eLoadType == MapLoad_Background)
+	if (g_ChaosEffects.Size() == 0)
 		PopulateEffects();
 	gEntList.AddListenerEntity(this);
 	const char* pMapName = STRING(gpGlobals->mapname);
