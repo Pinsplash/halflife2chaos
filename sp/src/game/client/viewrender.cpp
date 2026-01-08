@@ -96,6 +96,7 @@ extern ConVar mat_motion_blur_enabled;
 extern ConVar r_depthoverlay;
 extern ConVar mat_viewportscale;
 extern ConVar mat_viewportupscale;
+extern ConVar chaos_yawroll;
 extern bool g_bDumpRenderTargets;
 
 //-----------------------------------------------------------------------------
@@ -2920,6 +2921,8 @@ void CViewRender::ViewDrawScene_Intro( const CViewSetup &view, int nClearFlags, 
 		CViewSetup playerView( view );
 		playerView.origin = introData.m_vecCameraView;
 		playerView.angles = introData.m_vecCameraViewAngles;
+		if (chaos_yawroll.GetBool())
+			playerView.angles.z = view.angles.y;
 		if ( introData.m_playerViewFOV )
 		{
 			playerView.fov = ScaleFOVByWidthRatio( introData.m_playerViewFOV, engine->GetScreenAspectRatio() / ( 4.0f / 3.0f ) );

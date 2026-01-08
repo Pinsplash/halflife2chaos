@@ -686,8 +686,6 @@ void CViewRender::SetUpViews()
 		if (pPlayer)
 		{
 			pPlayer->CalcView(view.origin, view.angles, view.zNear, view.zFar, view.fov);
-			if (chaos_yawroll.GetBool())
-				view.angles.z = view.angles.y;
 			// If we are looking through another entities eyes, then override the angles/origin for view
 			int viewentity = render->GetViewEntity();
 
@@ -700,6 +698,9 @@ void CViewRender::SetUpViews()
 					VectorCopy( ve->GetAbsAngles(), view.angles );
 				}
 			}
+
+			if (chaos_yawroll.GetBool())
+				view.angles.z = view.angles.y;
 
 			// There is a viewmodel.
 			bCalcViewModelView = true;
