@@ -2001,53 +2001,56 @@ void CHL2_Player::ReplaceEffects()
 	//g_iActiveEffects: effects at time of loading
 	//these two must ALWAYS be identical in all places except this.
 
-	//copy load list into temp list because it will get trampled on by AbortEffect
-	int iEffects[MAX_ACTIVE_EFFECTS];
-	for (int n = 0; n < MAX_ACTIVE_EFFECTS; n++)
+	if (g_ChaosEffects.Size() != 0)
 	{
-		iEffects[n] = g_iActiveEffects[n];
-	}
-	//get rid of effects that existed at the time of save that are no longer active
-	//for (int l = 0; m_iActiveEffects.Size() >= l + 1; l++)
-	for (int l = 0; l < MAX_ACTIVE_EFFECTS; l++)
-	{
-		if (!m_iActiveEffects[l])
-			continue;
-		int nID = m_iActiveEffects[l];
-		CChaosEffect* pEffect = g_ChaosEffects[nID];
-
-		//UNDONE: unless that certain effect happens to be active from the abandoned game state as well!
-		//it's not enough to abort only the now-inactives. if an effect expired after saving but before loading, this check will let the effect linger.
-		//if (!pEffect->m_bActive)
+		//copy load list into temp list because it will get trampled on by AbortEffect
+		int iEffects[MAX_ACTIVE_EFFECTS];
+		for (int n = 0; n < MAX_ACTIVE_EFFECTS; n++)
 		{
+			iEffects[n] = g_iActiveEffects[n];
+		}
+		//get rid of effects that existed at the time of save that are no longer active
+		//for (int l = 0; m_iActiveEffects.Size() >= l + 1; l++)
+		for (int l = 0; l < MAX_ACTIVE_EFFECTS; l++)
+		{
+			if (!m_iActiveEffects[l])
+				continue;
+			int nID = m_iActiveEffects[l];
+			CChaosEffect* pEffect = g_ChaosEffects[nID];
+
+			//UNDONE: unless that certain effect happens to be active from the abandoned game state as well!
+			//it's not enough to abort only the now-inactives. if an effect expired after saving but before loading, this check will let the effect linger.
+			//if (!pEffect->m_bActive)
+			{
+				if (pEffect->DoRestorationAbort())
+				{
+					Msg("Killing effect %s\n", STRING(pEffect->m_strHudName));
+					pEffect->StopEffect();
+				}
+			}
+			m_iActiveEffects[l] = NULL;
+		}
+		//now we have to restore the effects that were there at the time of load
+		//for (int m = 0; g_iActiveEffects.Size() >= m + 1; m++)
+		for (int m = 0; m < MAX_ACTIVE_EFFECTS; m++)
+		{
+			if (!iEffects[m])
+				continue;
+			CChaosEffect* pEffect = g_ChaosEffects[iEffects[m]];
+
+			//yes this is necessary. g_ChaosEffects is the final authority on activeness
+			if (!pEffect->m_bActive)
+				continue;
+
 			if (pEffect->DoRestorationAbort())
 			{
-				Msg("Killing effect %s\n", STRING(pEffect->m_strHudName));
-				pEffect->StopEffect();
+				Msg("Restoring effect %s\n", STRING(pEffect->m_strHudName));
+				pEffect->RestoreEffect();
 			}
+			//make two lists equal again
+			m_iActiveEffects[m] = iEffects[m];
+			g_iActiveEffects[m] = iEffects[m];
 		}
-		m_iActiveEffects[l] = NULL;
-	}
-	//now we have to restore the effects that were there at the time of load
-	//for (int m = 0; g_iActiveEffects.Size() >= m + 1; m++)
-	for (int m = 0; m < MAX_ACTIVE_EFFECTS; m++)
-	{
-		if (!iEffects[m])
-			continue;
-		CChaosEffect* pEffect = g_ChaosEffects[iEffects[m]];
-
-		//yes this is necessary. g_ChaosEffects is the final authority on activeness
-		if (!pEffect->m_bActive)
-			continue;
-
-		if (pEffect->DoRestorationAbort())
-		{
-			Msg("Restoring effect %s\n", STRING(pEffect->m_strHudName));
-			pEffect->RestoreEffect();
-		}
-		//make two lists equal again
-		m_iActiveEffects[m] = iEffects[m];
-		g_iActiveEffects[m] = iEffects[m];
 	}
 	g_bGoBackLevel = false;
 	//make two lists equal again
