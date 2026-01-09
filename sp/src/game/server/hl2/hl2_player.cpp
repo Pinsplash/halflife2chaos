@@ -2271,7 +2271,7 @@ void CHL2_Player::StartGame()
 		return;
 	}
 	//start halfway through when it's from Restart Level and we already went through the detour map
-	if (g_bGoBackLevel && completed_town03.GetBool() && !Q_strcmp(pMapName, "d1_town_02"))
+	else if (g_bGoBackLevel && completed_town03.GetBool() && !Q_strcmp(pMapName, "d1_town_02"))
 	{
 		Vector vecOrigin = Vector(-3648, 0, -3419);
 		static const char* strWeapons[] = {
@@ -2312,7 +2312,7 @@ void CHL2_Player::StartGame()
 		return;
 	}
 	//start halfway through when it's from Restart Level and we already went through the detour map
-	if (g_bGoBackLevel && completed_coast08.GetBool() && !Q_strcmp(pMapName, "d2_coast_07"))
+	else if (g_bGoBackLevel && completed_coast08.GetBool() && !Q_strcmp(pMapName, "d2_coast_07"))
 	{
 		Vector vecOrigin = Vector(3008, 5184, 1572);
 		CBaseEntity* pItem = (CBaseEntity*)CreateEntityByName("item_suit");
@@ -2407,6 +2407,13 @@ void CHL2_Player::StartGame()
 				UTIL_Remove(pCycle);
 			}
 		}
+	}
+	//remove suffocating fall trigger that prevents you from completing sections out of order
+	else if (!Q_strcmp(pMapName, "ep1_citadel_03"))
+	{
+		CBaseEntity* pEnt;
+		pEnt = gEntList.FindEntityByName(NULL, "trigger_fall_2");
+		UTIL_Remove(pEnt);
 	}
 	//advisor model, same as breen 01
 	else if (!Q_strcmp(pMapName, "ep1_c17_02"))
