@@ -7597,7 +7597,7 @@ void CERandomNPC::StartEffect()
 	nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 46) : chaos_rng1.GetInt();
 	if (nRandom == 0)
 	{
-		m_iSavedChaosID = ChaosSpawnNPC("npc_alyx", MAKE_STRING("#hl2c_spawn_alyx"), SPAWNTYPE_EYELEVEL_REGULAR, "models/alyx.mdl", "alyx", "weapon_alyxgun", CSF_SQUAD)->m_iChaosID;
+		m_iSavedChaosID = ChaosSpawnNPC("npc_alyx", MAKE_STRING("#hl2c_spawn_alyx"), SPAWNTYPE_EYELEVEL_REGULAR, "models/alyx.mdl", "chaos_alyx", "weapon_alyxgun", CSF_SQUAD)->m_iChaosID;
 		RandomizeReadiness(GetEntityWithID(m_iSavedChaosID));
 	}
 	if (nRandom == 1) m_iSavedChaosID = ChaosSpawnNPC("npc_antlion", MAKE_STRING("#hl2c_spawn_antlion"), SPAWNTYPE_HIDEINCOVER, "_", "antlion", "_")->m_iChaosID;
@@ -8244,7 +8244,7 @@ void CEEvilNPC::StartEffect()
 	switch (m_nID)
 	{
 	case EFFECT_EVIL_ALYX:
-		m_iSavedChaosID = ChaosSpawnNPC("npc_alyx", MAKE_STRING("#hl2c_evil_alyx"), SPAWNTYPE_HIDEINCOVER, "models/alyx.mdl", "alyx", "weapon_alyxgun", CSF_EVIL)->m_iChaosID;
+		m_iSavedChaosID = ChaosSpawnNPC("npc_alyx", MAKE_STRING("#hl2c_evil_alyx"), SPAWNTYPE_HIDEINCOVER, "models/alyx.mdl", "chaos_evil_alyx", "weapon_alyxgun", CSF_EVIL)->m_iChaosID;
 		break;
 	case EFFECT_EVIL_NORIKO:
 		EvilNoriko();
