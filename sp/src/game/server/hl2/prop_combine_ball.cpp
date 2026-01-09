@@ -975,30 +975,34 @@ void CPropCombineBall::OnPhysGunDrop( CBasePlayer *pPhysGunUser, PhysGunDrop_t R
 	SetSpeed( 1500.0f );
 	SetPlayerLaunched( pPhysGunUser );
 
-	if ( Reason != LAUNCHED_BY_CANNON )
+	//if holder dies... (only happens by evil breen) just do whatever?
+	if (pPhysGunUser)
 	{
-		// Choose a random direction (forward facing)
-		Vector vecForward;
-		pPhysGunUser->GetVectors( &vecForward, NULL, NULL );
+		if (Reason != LAUNCHED_BY_CANNON)
+		{
+			// Choose a random direction (forward facing)
+			Vector vecForward;
+			pPhysGunUser->GetVectors(&vecForward, NULL, NULL);
 
-		QAngle shotAng;
-		VectorAngles( vecForward, shotAng );
+			QAngle shotAng;
+			VectorAngles(vecForward, shotAng);
 
-		// Offset by some small cone
-		shotAng[PITCH] += random->RandomInt( -55, 55 );
-		shotAng[YAW] += random->RandomInt( -55, 55 );
+			// Offset by some small cone
+			shotAng[PITCH] += random->RandomInt(-55, 55);
+			shotAng[YAW] += random->RandomInt(-55, 55);
 
-		AngleVectors( shotAng, &vecForward, NULL, NULL );
+			AngleVectors(shotAng, &vecForward, NULL, NULL);
 
-		vecForward *= GetSpeed();
+			vecForward *= GetSpeed();
 
-		VPhysicsGetObject()->SetVelocity( &vecForward, &vec3_origin );
-	}
-	else
-	{
-		// This will have the consequence of making it so that the
-		// ball is launched directly down the crosshair even if the player is moving.
-		VPhysicsGetObject()->SetVelocity( &vec3_origin, &vec3_origin );
+			VPhysicsGetObject()->SetVelocity(&vecForward, &vec3_origin);
+		}
+		else
+		{
+			// This will have the consequence of making it so that the
+			// ball is launched directly down the crosshair even if the player is moving.
+			VPhysicsGetObject()->SetVelocity(&vec3_origin, &vec3_origin);
+		}
 	}
 
 	SetBallAsLaunched();
