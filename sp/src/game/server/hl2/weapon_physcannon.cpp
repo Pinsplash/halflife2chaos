@@ -1734,7 +1734,7 @@ void CWeaponPhysCannon::ApplyVelocityBasedForce( CBaseEntity *pEntity, const Vec
 		{
 			CPropJeepEpisodic *pVehicle = dynamic_cast<CPropJeepEpisodic *>(pEntity);
 			//HACK: this should be inside CPropJeepEpisodic::PhysGunLaunchVelocity
-			if (reason == PHYSGUN_FORCE_PUNTED && pVehicle->m_bJalopy)
+			if (reason == PHYSGUN_FORCE_PUNTED && pVehicle && pVehicle->m_bJalopy)
 			{
 				// We want the point to emanate low on the vehicle to move it along the ground, not to twist it
 				Vector vecFinalPos = vecHitPos;
