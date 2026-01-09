@@ -30,6 +30,7 @@ ConVar    sk_plr_dmg_satchel		( "sk_plr_dmg_satchel", "150");
 ConVar    sk_satchel_radius("sk_satchel_radius", "200");
 
 extern const char* g_pModelNameLaser;
+extern int g_iGrenades;
 
 ConVar    sk_plr_dmg_tripmine("sk_plr_dmg_tripmine", "200");
 ConVar    sk_tripmine_radius("sk_tripmine_radius", "200");
@@ -304,6 +305,7 @@ LINK_ENTITY_TO_CLASS(npc_satchel, CSatchelCharge);
 void CSatchelCharge::Deactivate(void)
 {
 	AddSolidFlags(FSOLID_NOT_SOLID);
+	g_iGrenades--;
 	UTIL_Remove(this);
 }
 
@@ -339,7 +341,7 @@ void CSatchelCharge::Spawn(void)
 	m_flNextBounceSoundTime = 0;
 
 	m_vLastPosition = vec3_origin;
-
+	g_iGrenades++;
 	InitSlideSound();
 }
 
@@ -682,7 +684,7 @@ void CWeapon_SLAM::Spawn( )
 
 	SetThink( NULL );
 
-	m_tSlamState		= SLAM_TRIPMINE_READY;
+	m_tSlamState		= SLAM_SATCHEL_THROW;
 	m_flWallSwitchTime	= 0;
 
 	// Give 1 piece of default ammo when first picked up
@@ -736,7 +738,8 @@ void CWeapon_SLAM::SlamTouch( CBaseEntity *pOther )
 		else
 		{
 			pBCC->GiveAmmo( 1, m_iSecondaryAmmoType );
-			SetThink(NULL);
+			//not thinking was preventing the satchel-attach action
+			//SetThink(NULL);
 		}
 	}
 }
@@ -1424,6 +1427,7 @@ void CWeapon_SLAM::WeaponIdle( void )
 						}
 						break;
 					case SLAM_SATCHEL_ATTACH:
+						///*
 						{
 							if (m_bNeedDetonatorHolster)
 							{
@@ -1441,6 +1445,7 @@ void CWeapon_SLAM::WeaponIdle( void )
 							}
 						}
 						break;
+						//*/
 					case SLAM_SATCHEL_THROW:
 						{
 							if (m_bNeedDetonatorHolster)
@@ -1557,25 +1562,26 @@ bool CWeapon_SLAM::Deploy( void )
 			iActivity = ACT_SLAM_DETONATOR_DRAW;
 			m_bNeedReload = true;
 		}
-		else if (CanAttachSLAM())
-		{
-			iActivity = ACT_SLAM_DETONATOR_STICKWALL_DRAW; 
-		}
-		else
-		{
+		//switching draw animations here is dumb and buggy. we'll go to the correct animation after we finish drawing.
+		//else if (CanAttachSLAM())
+		//{
+		//	iActivity = ACT_SLAM_DETONATOR_STICKWALL_DRAW; 
+		//}
+		//else
+		//{
 			iActivity = ACT_SLAM_DETONATOR_THROW_DRAW; 
-		}
+		//}
 	}
 	else
 	{	
-		if (CanAttachSLAM())
-		{
-			iActivity = ACT_SLAM_STICKWALL_ND_DRAW; 
-		}
-		else
-		{
+		//if (CanAttachSLAM())
+		//{
+		//	iActivity = ACT_SLAM_STICKWALL_ND_DRAW; 
+		//}
+		//else
+		//{
 			iActivity = ACT_SLAM_THROW_ND_DRAW; 
-		}
+		//}
 	}
 
 	return DefaultDeploy( (char*)GetViewModel(), (char*)GetWorldModel(), iActivity, (char*)GetAnimPrefix() );
