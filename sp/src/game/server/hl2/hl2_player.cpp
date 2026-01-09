@@ -6848,17 +6848,27 @@ bool CChaosEffect::QuickclipProblems(const char* pMapName)
 
 bool CChaosEffect::PhysConvertSoftlock(const char* pMapName)
 {
+	//Types of softlocks:
+	//ED: Ending Door: If a door is broken off, it can never close, which is a problem because that door triggers the end of the level.
+	//EWN: Elevator With NPC: An NPC has to move on an elevator, which will be impossible.
+	//UPE: Upward Player Elevator: Player has to ride an elevator that moves up. A downward one is fine, but there's not exactly a variety of ways to go up.
 	if (!Q_strnicmp("d", pMapName, 1))//hl2
 	{
-		if (!Q_strcmp(pMapName, "d1_trainstation_05") || !Q_strcmp(pMapName, "d1_canals_11")
-			|| !Q_strcmp(pMapName, "d1_eli_01") || !Q_strcmp(pMapName, "d1_town_01")
-			|| !Q_strcmp(pMapName, "d2_prison_08") || !Q_strcmp(pMapName, "d3_c17_08"))
+		if (!Q_strcmp(pMapName, "d1_trainstation_05")//EWN
+			|| !Q_strcmp(pMapName, "d1_canals_11")//recheck - something about doors?
+			|| !Q_strcmp(pMapName, "d1_eli_01")//ED and EWN
+			|| !Q_strcmp(pMapName, "d1_town_01")//UPE
+			|| !Q_strcmp(pMapName, "d2_prison_08")//EWN and UPE
+			|| !Q_strcmp(pMapName, "d3_c17_08"))//UPE
 			return true;//bad map
 	}
 	else
 	{
-		if (!Q_strcmp(pMapName, "ep1_citadel_03") || !Q_strcmp(pMapName, "ep1_c17_00a")
-			|| !Q_strcmp(pMapName, "ep2_outland_03") || !Q_strcmp(pMapName, "ep2_outland_11") || !Q_strcmp(pMapName, "ep2_outland_11b"))
+		if (!Q_strcmp(pMapName, "ep1_citadel_03")//EWN
+			|| !Q_strcmp(pMapName, "ep1_c17_00a")//EWN
+			|| !Q_strcmp(pMapName, "ep2_outland_03")//EWN and UPE
+			|| !Q_strcmp(pMapName, "ep2_outland_11")//EWN
+			|| !Q_strcmp(pMapName, "ep2_outland_11b"))//ED
 			return true;//bad map
 	}
 	return false;
@@ -9364,6 +9374,12 @@ void CEWeaponRemove::StartEffect()
 }
 void CEPhysConvert::StartEffect()
 {
+	bool ep1c1700Hack = false;
+	const char* pMapName = STRING(gpGlobals->mapname);
+	if (!Q_strcmp(pMapName, "ep1_c17_00"))
+	{
+		ep1c1700Hack = true;
+	}
 	//door-linked areaportals become permanently open since the door is now free to move
 	CBaseEntity* pPortal = NULL;
 	while ((pPortal = gEntList.FindEntityByClassname(pPortal, "func_a*")) != NULL)
@@ -9431,6 +9447,12 @@ void CEPhysConvert::StartEffect()
 			pPhysicsObject->EnableMotion(true);
 			pPhysicsObject->RecheckCollisionFilter();
 			pPhysicsObject->Wake();
+			if (ep1c1700Hack && pEnt->NameMatches("door_lock2_2"))
+			{
+				Vector pos = pEnt->GetAbsOrigin();
+				pos.x += 10;
+				pEnt->Teleport(&pos, NULL, NULL);
+			}
 		}
 		pEnt = gEntList.NextEnt(pEnt);
 	}
