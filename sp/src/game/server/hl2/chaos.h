@@ -233,6 +233,7 @@ public:
 	int modelindex;
 	float speed;
 	int solid;
+	bool persist = false;
 	//pKVData->SetInt("touchStamp", pEnt->touchStamp);//this was a speculative fix for some kind of touchlink related crash. if that crash comes back, put this back in.
 
 	bool animating = false;
@@ -276,7 +277,7 @@ int							g_arriVoteEffects[4];
 int							g_arriVotes[4];
 int							g_iVoteNumber = 0; // acts as a unique number for the external client
 CChaosStoredEnt *StoreEnt(CBaseEntity *pEnt);
-CBaseEntity *RetrieveStoredEnt(CChaosStoredEnt *pStoredEnt, bool bPersist);
+CBaseEntity *RetrieveStoredEnt(CChaosStoredEnt *pStoredEnt);
 bool						g_bGoBackLevel = false;
 bool						g_bAvoidExtreme = false;
 

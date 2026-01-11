@@ -255,6 +255,7 @@ CChaosStoredEnt* StoreEnt(CBaseEntity* pEnt)
 	pStoredEnt->modelindex = pEnt->GetModelIndex();
 	pStoredEnt->speed = pEnt->m_flSpeed;
 	pStoredEnt->solid = pEnt->CollisionProp()->GetSolid();
+	pStoredEnt->persist = pEnt->m_bChaosPersist;
 
 	//pStoredEnt.touchStamp = pEnt->touchStamp;//this was a speculative fix for some kind of touchlink related crash. if that crash comes back, put this back in.
 
@@ -325,7 +326,7 @@ CChaosStoredEnt* StoreEnt(CBaseEntity* pEnt)
 	return pStoredEnt;
 }
 
-CBaseEntity* RetrieveStoredEnt(CChaosStoredEnt* pStoredEnt, bool bPersist)
+CBaseEntity* RetrieveStoredEnt(CChaosStoredEnt* pStoredEnt)
 {
 	CBaseEntity* pEnt = CreateEntityByName(pStoredEnt->strClassname);
 	//Msg("Spawning persist ent %i\n", pStoredEnt->chaosid);
@@ -352,7 +353,7 @@ CBaseEntity* RetrieveStoredEnt(CChaosStoredEnt* pStoredEnt, bool bPersist)
 	//pEnt->touchStamp = pKey->GetInt("touchStamp");//this was a speculative fix for some kind of touchlink related crash. if that crash comes back, put this back in.
 
 	pEnt->m_bChaosSpawned = true;
-	pEnt->m_bChaosPersist = bPersist;
+	pEnt->m_bChaosPersist = pStoredEnt->persist;
 
 	if (pStoredEnt->animating)//CBaseAnimating
 	{
@@ -2116,7 +2117,7 @@ void CHL2_Player::SpawnStoredEnts()
 			pDupeEnt = gEntList.NextEnt(pDupeEnt);
 		}
 		CChaosStoredEnt* pStored = g_PersistEnts[j];
-		CBaseEntity* pEnt = RetrieveStoredEnt(pStored, true);
+		CBaseEntity* pEnt = RetrieveStoredEnt(pStored);
 		if (pEnt)
 		{
 			DispatchSpawn(pEnt);
@@ -8795,7 +8796,7 @@ void CECloneNPCs::StartEffect()
 	//clone them
 	for (int i = 0; vNPCs.Size() >= i + 1; i++)
 	{
-		CBaseEntity* pCloneNPC = RetrieveStoredEnt(&vNPCs[i], false);
+		CBaseEntity* pCloneNPC = RetrieveStoredEnt(&vNPCs[i]);
 		if (pCloneNPC)
 		{
 			Vector vecOrigin = pCloneNPC->GetAbsOrigin();
