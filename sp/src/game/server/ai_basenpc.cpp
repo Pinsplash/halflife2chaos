@@ -696,16 +696,17 @@ bool CAI_BaseNPC::PassesDamageFilter( const CTakeDamageInfo &info )
 		// check attackers relationship with me
 		CBaseEntity *pAttacker = info.GetAttacker();
 		CBaseCombatCharacter *npcEnemy = pAttacker->MyCombatCharacterPointer();
-		bool bHitByVehicle = false;
 		if ( !npcEnemy )
 		{
-			if ( info.GetAttacker()->GetServerVehicle() )
+			if (info.GetAttacker()->GetServerVehicle()
+			 && info.GetAttacker()->GetServerVehicle()->GetVehicleEnt()
+			 && info.GetAttacker()->GetServerVehicle()->GetVehicleEnt()->GetOwnerEntity())
 			{
-				bHitByVehicle = true;
+				npcEnemy = info.GetAttacker()->GetServerVehicle()->GetVehicleEnt()->GetOwnerEntity()->MyCombatCharacterPointer();
 			}
 		}
 
-		if ( bHitByVehicle || (npcEnemy && npcEnemy->IRelationType( this ) == D_LI) )
+		if (npcEnemy && npcEnemy->IRelationType(this) == D_LI)
 		{
 			m_fNoDamageDecal = true;
 
