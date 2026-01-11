@@ -6073,7 +6073,7 @@ bool CChaosEffect::CheckEffectContext()
 
 	//on some maps, a vital ally is unreachable by the player, but reachable by spawned enemies, meaning there's no way to save them
 	if (m_nContext & EC_FAR_ENEMY)
-		if (!Q_strcmp(pMapName, "d2_prison_06") || !Q_strcmp(pMapName, "ep1_citadel_03"))
+		if (!Q_strcmp(pMapName, "d2_prison_06") || !Q_strcmp(pMapName, "ep1_citadel_03") || !Q_strcmp(pMapName, "ep1_c17_02"))
 			return false;
 
 	//need at least one pickup in the map
