@@ -2416,6 +2416,24 @@ void CHL2_Player::StartGame()
 		pEnt = gEntList.FindEntityByName(NULL, "trigger_fall_2");
 		UTIL_Remove(pEnt);
 	}
+	//fix bad autosave trigger. it shouldn't be active until ladder is accessible.
+	else if (!Q_strcmp(pMapName, "ep1_c17_01"))
+	{
+		for (CBaseEntity* pEnt = gEntList.FindEntityByClassname(NULL, "trigger_once"); pEnt; pEnt = gEntList.FindEntityByClassname(pEnt, "trigger_once"))
+		{
+			//trigger has no name, origin is easiest way to find it
+			if (pEnt->GetAbsOrigin() == Vector(109, 692, 216))
+			{
+				pEnt->SetName(MAKE_STRING("ladder_auto_save"));
+				variant_t emptyVariant;
+				pEnt->AcceptInput("Disable", this, this, emptyVariant, 0);
+			}
+		}
+		CBaseEntity* pRelay = gEntList.FindEntityByName(NULL, "relay_alyx_shoot_ladder2");
+		variant_t variant;
+		variant.SetString(MAKE_STRING("OnTrigger ladder_auto_save,Enable,,-1"));
+		pRelay->AcceptInput("AddOutput", this, this, variant, 0);
+	}
 	//advisor model, same as breen 01
 	else if (!Q_strcmp(pMapName, "ep1_c17_02"))
 	{
