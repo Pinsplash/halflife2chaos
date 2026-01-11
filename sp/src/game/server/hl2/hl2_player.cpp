@@ -9237,6 +9237,11 @@ GroundState CEFloorEffect::GroundShouldActivateEffect()
 	trace_t	trace;
 	UTIL_TraceHull(vStart, vEnd, -vHullWidth, vHullWidth, CONTENTS_SOLID, pPlayer, COLLISION_GROUP_NONE, &trace);
 
+	//but if we do have a ground entity, trust it over our own trace
+	//this prevents a problem in ep1_c17_02b where we could stand on a wood board, but somehow the trace fucks up and goes through it
+	if (pPlayer->GetGroundEntity())
+		trace.m_pEnt = pPlayer->GetGroundEntity();
+
 	//have to be on solid ground
 	if (!trace.m_pEnt)
 	{
