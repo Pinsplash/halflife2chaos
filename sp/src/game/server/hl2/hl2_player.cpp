@@ -6400,7 +6400,7 @@ void CChaosEffect::StartEffect()
 		engine->ClientCommand(engine->PEntityOfEntIndex(1), "chaos_yawroll 1");
 		break;
 	case EFFECT_NORMAL_VISION:
-		engine->ClientCommand(engine->PEntityOfEntIndex(1), "mat_normalmaps 1;mat_normals 1;r_3dsky 0;r_drawskybox 0");
+		engine->ClientCommand(engine->PEntityOfEntIndex(1), "mat_normalmaps 1;mat_normals 1;r_3dsky 0;r_drawskybox 0;r_underwateroverlay 0");
 		break;
 	case EFFECT_HOMING_AR2:
 		engine->ClientCommand(engine->PEntityOfEntIndex(1), "ar2_super_seek 1");
@@ -6467,7 +6467,7 @@ void CChaosEffect::StopEffect()
 		engine->ClientCommand(engine->PEntityOfEntIndex(1), "chaos_yawroll 0");
 		break;
 	case EFFECT_NORMAL_VISION:
-		engine->ClientCommand(engine->PEntityOfEntIndex(1), "mat_normalmaps 0;mat_normals 0;r_3dsky 1;r_drawskybox 1");
+		engine->ClientCommand(engine->PEntityOfEntIndex(1), "mat_normalmaps 0;mat_normals 0;r_3dsky 1;r_drawskybox 1;r_underwateroverlay 1");
 		break;
 	case EFFECT_HOMING_AR2:
 		engine->ClientCommand(engine->PEntityOfEntIndex(1), "ar2_super_seek 0");
