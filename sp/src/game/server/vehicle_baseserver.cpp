@@ -629,9 +629,8 @@ bool CBaseServerVehicle::GetPassengerExitPoint( int nRole, Vector *pExitPoint, Q
 	pExitPoint->z = vecWorldMaxs.z - 200.0f;
 
 	// Make sure it's clear
-	//why where these two traces using m_pVehicle->CollisionProp()->WorldSpaceCenter() as the start pos???
-	UTIL_TraceHull(*pExitPoint, *pExitPoint, VEC_HULL_MIN, VEC_HULL_MAX, MASK_PLAYERSOLID, m_pVehicle, COLLISION_GROUP_NONE, &tr);
-	if (!tr.startsolid)
+	UTIL_TraceHull(m_pVehicle->CollisionProp()->WorldSpaceCenter(), *pExitPoint, VEC_HULL_MIN, VEC_HULL_MAX, MASK_PLAYERSOLID, m_pVehicle, COLLISION_GROUP_NONE, &tr);
+	if (tr.fraction == 1.0f)
 	{
 		return true;
 	}
@@ -643,12 +642,11 @@ bool CBaseServerVehicle::GetPassengerExitPoint( int nRole, Vector *pExitPoint, Q
 	pExitPoint->z = vecWorldMaxs.z + 50.0f;
 
 	// Make sure it's clear
-	UTIL_TraceHull(*pExitPoint, *pExitPoint, VEC_HULL_MIN, VEC_HULL_MAX, MASK_PLAYERSOLID, m_pVehicle, COLLISION_GROUP_NONE, &tr);
-	if ( !tr.startsolid )
+	UTIL_TraceHull(m_pVehicle->CollisionProp()->WorldSpaceCenter(), *pExitPoint, VEC_HULL_MIN, VEC_HULL_MAX, MASK_PLAYERSOLID, m_pVehicle, COLLISION_GROUP_NONE, &tr);
+	if (tr.fraction == 1.0f)
 	{
 		return true;
 	}
-	
 
 	// No clear exit point available!
 	return false;
