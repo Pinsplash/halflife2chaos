@@ -2416,9 +2416,10 @@ void CHL2_Player::StartGame()
 		pEnt = gEntList.FindEntityByName(NULL, "trigger_fall_2");
 		UTIL_Remove(pEnt);
 	}
-	//fix bad autosave trigger. it shouldn't be active until ladder is accessible.
+	//multiple problems!
 	else if (!Q_strcmp(pMapName, "ep1_c17_01"))
 	{
+		//fix bad autosave trigger. it shouldn't be active until ladder is accessible.
 		for (CBaseEntity* pEnt = gEntList.FindEntityByClassname(NULL, "trigger_once"); pEnt; pEnt = gEntList.FindEntityByClassname(pEnt, "trigger_once"))
 		{
 			//trigger has no name, origin is easiest way to find it
@@ -2433,6 +2434,16 @@ void CHL2_Player::StartGame()
 		variant_t variant;
 		variant.SetString(MAKE_STRING("OnTrigger ladder_auto_save,Enable,,-1"));
 		pRelay->AcceptInput("AddOutput", this, this, variant, 0);
+
+		//Don't let cars move until punted by gravity gun. Camera Gravity can send them to random places where you'll never find them.
+		CBaseEntity* pProp = gEntList.FindEntityByName(NULL, "lastcar");
+		pProp->VPhysicsGetObject()->EnableMotion(false);
+		pProp->AddSpawnFlags(SF_PHYSPROP_ENABLE_ON_PHYSCANNON);
+		for (CBaseEntity* pCar = gEntList.FindEntityByName(NULL, "car"); pCar; pCar = gEntList.FindEntityByName(pCar, "car"))
+		{
+			pCar->VPhysicsGetObject()->EnableMotion(false);
+			pCar->AddSpawnFlags(SF_PHYSPROP_ENABLE_ON_PHYSCANNON);
+		}
 	}
 	//advisor model, same as breen 01
 	else if (!Q_strcmp(pMapName, "ep1_c17_02"))
