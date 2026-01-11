@@ -8020,11 +8020,15 @@ bool IsPlayerAlly(CBaseCombatCharacter* pCharacter)
 	{
 		if (pCharacter->GetMaxHealth() < 10)//talkers (max health of 8 for all of them apparently?)
 			return true;
+		//damage filter pertains to some invulnerable citizens in some maps
+		//moving this outside the check below because we were changing the relationships of the "alyx" sniper in ep1_c17_01,
+		//and the relationship-reverting code would turn the sniper back into an enemy once the effect ended,
+		//which could be a real problem since it's invulnerable. if we find that the check being in this position causes other problems,
+		//then i guess move it back and remove damage filters from any NPC affected by world of hate?
+		if (pCharacter->m_hDamageFilter)
+			return true;
 		if (pCharacter->MyNPCPointer()->IsPlayerAlly())//fighters
 		{
-			//damage filter pertains to some invulnerable citizens in some maps
-			if (pCharacter->m_hDamageFilter)
-				return true;
 			if (pCharacter->ClassMatches("npc_a*") || pCharacter->ClassMatches("npc_b*") || pCharacter->ClassMatches("npc_mon*") || pCharacter->ClassMatches("npc_v*"))
 				return true;
 		}
