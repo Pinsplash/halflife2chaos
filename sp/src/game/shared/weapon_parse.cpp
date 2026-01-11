@@ -413,6 +413,7 @@ void FileWeaponInfo_t::Parse( KeyValues *pKeyValuesData, const char *szWeaponNam
 	m_bMeleeWeapon = ( pKeyValuesData->GetInt( "MeleeWeapon", 0 ) != 0 ) ? true : false;
 
 #if defined(_DEBUG) && defined(HL2_CLIENT_DLL)
+	Msg("Putting %s at slot %d position %d.\n", szClassName, iSlot, iPosition);
 	// make sure two weapons aren't in the same slot & position
 	if ( iSlot >= MAX_WEAPON_SLOTS ||
 		iPosition >= MAX_WEAPON_POSITIONS )
@@ -424,9 +425,9 @@ void FileWeaponInfo_t::Parse( KeyValues *pKeyValuesData, const char *szWeaponNam
 	{
 		if (g_bUsedWeaponSlots[iSlot][iPosition])
 		{
-			Warning( "Can't put %s at slot %d position %d. Already taken by %s.\n", szPrintName, iSlot, iPosition, g_bUsedWeaponSlots[iSlot][iPosition]);
+			Warning( "Can't put %s at slot %d position %d. Already taken by %s.\n", szClassName, iSlot, iPosition, g_bUsedWeaponSlots[iSlot][iPosition]);
 		}
-		g_bUsedWeaponSlots[iSlot][iPosition] = MAKE_STRING(szPrintName);
+		g_bUsedWeaponSlots[iSlot][iPosition] = MAKE_STRING(szClassName);
 	}
 #endif
 
