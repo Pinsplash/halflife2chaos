@@ -7998,9 +7998,6 @@ void CEColors::OnEntitySpawned(CBaseEntity* pEntity)
 //is the given character one that the game will force you to keep alive
 bool IsPlayerAlly(CBaseCombatCharacter* pCharacter)
 {
-	if (pCharacter->m_bChaosSpawned)
-		return false;
-
 	if (pCharacter->IsNPC())
 	{
 		if (pCharacter->GetMaxHealth() < 10)//talkers (max health of 8 for all of them apparently?)
