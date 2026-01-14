@@ -224,6 +224,9 @@ void ClearChaosData()
 		g_iActiveEffects[j] = NULL;
 	}
 
+	//we recently saw a case where a certain few effects kept ruining a map, and even though
+	//shuffle mode was on, calling this here was causing those effects to remain pickable over
+	//and over. i think the problem was more with the effects being pickable on that map at all.
 	ClearShuffleData();
 
 	g_iTerminated.RemoveAll();
@@ -415,6 +418,10 @@ void SavePersistEnts()
 		}
 		pEnt = gEntList.NextEnt(pEnt);
 	}
+}
+CON_COMMAND(chaos_suffle_reset, "forget which effects have been picked already")
+{
+	ClearShuffleData();
 }
 CON_COMMAND(chaos_print, "print all effects for debugging")
 {
