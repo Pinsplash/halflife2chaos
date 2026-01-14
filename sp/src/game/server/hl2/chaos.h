@@ -285,7 +285,6 @@ class CEBumpy : public CChaosEffect
 public:
 	void FastThink() override;
 	void DoOnVehicles(CPropVehicleDriveable *pVehicle);
-	bool m_bReverse;
 };
 class CECloneNPCs : public CChaosEffect
 {

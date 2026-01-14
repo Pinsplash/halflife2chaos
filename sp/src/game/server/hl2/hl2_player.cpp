@@ -8885,11 +8885,13 @@ void CECloneNPCs::StartEffect()
 }
 void CEBumpy::FastThink()
 {
-	if (IterUsableVehicles(false))
-		m_bReverse = !m_bReverse;
+	IterUsableVehicles(false);
 }
 void CEBumpy::DoOnVehicles(CPropVehicleDriveable* pVehicle)
 {
+	//only do this for player's vehicle
+	if (!pVehicle->GetDriver() || !pVehicle->GetDriver()->IsPlayer())
+		return;
 	int iSpheres = 0;
 	CBaseEntity* pSphere = gEntList.FindEntityByClassname(NULL, "prop_physics");
 	while (pSphere)
