@@ -3315,11 +3315,11 @@ void CNPC_PlayerCompanion::EnterVehicle( CBaseEntity *pEntityVehicle, bool bImme
 	CPropJeepEpisodic *pVehicle = dynamic_cast<CPropJeepEpisodic *>(pEntityVehicle);
 
 	// Get in the car if it's valid
-	if ( pVehicle != NULL && pVehicle->NPC_CanEnterVehicle( this, true ) )
+	if (pVehicle != NULL && (bImmediately || pVehicle->NPC_CanEnterVehicle(this, true)))
 	{
 		// Set her into a "passenger" behavior
 		m_PassengerBehavior.Enable( pVehicle, bImmediately );
-		m_PassengerBehavior.EnterVehicle();
+		m_PassengerBehavior.EnterVehicle(bImmediately);
 
 		// Only do this if we're outside the vehicle
 		if ( m_PassengerBehavior.GetPassengerState() == PASSENGER_STATE_OUTSIDE )

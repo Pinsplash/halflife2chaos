@@ -153,7 +153,7 @@ class INPCPassengerCarrier
 public:
 	virtual bool	NPC_CanEnterVehicle( CAI_BaseNPC *pPassenger, bool bCompanion ) = 0;
 	virtual bool	NPC_CanExitVehicle( CAI_BaseNPC *pPassenger, bool bCompanion ) = 0;
-	virtual bool	NPC_AddPassenger( CAI_BaseNPC *pPassenger, string_t strRoleName, int nSeatID ) = 0;
+	virtual bool	NPC_AddPassenger(CAI_BaseNPC *pPassenger, string_t strRoleName, int nSeatID, bool bImmediateEnter) = 0;
 	virtual bool	NPC_RemovePassenger( CAI_BaseNPC *pPassenger ) = 0;
 	virtual void	NPC_FinishedEnterVehicle( CAI_BaseNPC *pPassenger, bool bCompanion ) = 0;
 	virtual void	NPC_FinishedExitVehicle( CAI_BaseNPC *pPassenger, bool bCompanion ) = 0;
@@ -279,7 +279,7 @@ public:
 
 	virtual bool	NPC_CanEnterVehicle( CAI_BaseNPC *pPassenger, bool bCompanion );
 	virtual bool	NPC_CanExitVehicle( CAI_BaseNPC *pPassenger, bool bCompanion );
-	virtual bool	NPC_AddPassenger( CAI_BaseNPC *pPassenger, string_t strRoleName, int nSeatID );
+	virtual bool	NPC_AddPassenger(CAI_BaseNPC *pPassenger, string_t strRoleName, int nSeatID, bool bImmediateEnter);
 	virtual bool 	NPC_RemovePassenger( CAI_BaseNPC *pPassenger );
 	virtual void	NPC_FinishedEnterVehicle( CAI_BaseNPC *pPassenger, bool bCompanion ) {} 
 	virtual void	NPC_FinishedExitVehicle( CAI_BaseNPC *pPassenger, bool bCompanion ) {}

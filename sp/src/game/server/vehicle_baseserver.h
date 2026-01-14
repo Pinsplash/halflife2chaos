@@ -195,7 +195,7 @@ public:
 
 public:
 
-	bool			NPC_AddPassenger( CBaseCombatCharacter *pPassenger, string_t strRoleName, int nSeat );
+	bool			NPC_AddPassenger(CBaseCombatCharacter *pPassenger, string_t strRoleName, int nSeat, bool bImmediateEnter);
 	bool			NPC_RemovePassenger( CBaseCombatCharacter *pPassenger );
 	virtual bool	NPC_GetPassengerSeatPosition( CBaseCombatCharacter *pPassenger, Vector *vecResultPos, QAngle *vecResultAngle );
 	virtual bool	NPC_GetPassengerSeatPositionLocal( CBaseCombatCharacter *pPassenger, Vector *vecResultPos, QAngle *vecResultAngles );

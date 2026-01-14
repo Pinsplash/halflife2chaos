@@ -757,7 +757,7 @@ bool CAI_PassengerBehaviorZombie::AttachToVehicle( void )
 		return false;
 
 	// Reserve the seat
-	if ( ReserveEntryPoint( VEHICLE_SEAT_ANY ) == false )
+	if ( ReserveEntryPoint(VEHICLE_SEAT_ANY, true) == false )
 		return false;
 
 	// Use the best one we've found

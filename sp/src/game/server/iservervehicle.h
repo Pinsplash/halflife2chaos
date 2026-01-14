@@ -67,7 +67,7 @@ public:
 	virtual IPhysicsVehicleController *GetVehicleController() = 0;
 
 	virtual int				NPC_GetAvailableSeat( CBaseCombatCharacter *pPassenger, string_t strRoleName, VehicleSeatQuery_e nQueryType ) = 0;
-	virtual bool			NPC_AddPassenger( CBaseCombatCharacter *pPassenger, string_t strRoleName, int nSeat ) = 0;
+	virtual bool			NPC_AddPassenger(CBaseCombatCharacter *pPassenger, string_t strRoleName, int nSeat, bool bImmediateEnter) = 0;
 	virtual bool			NPC_RemovePassenger( CBaseCombatCharacter *pPassenger ) = 0;
 	virtual bool			NPC_GetPassengerSeatPosition( CBaseCombatCharacter *pPassenger, Vector *vecResultPos, QAngle *vecResultAngle ) = 0;
 	virtual bool			NPC_GetPassengerSeatPositionLocal( CBaseCombatCharacter *pPassenger, Vector *vecResultPos, QAngle *vecResultAngle ) = 0;

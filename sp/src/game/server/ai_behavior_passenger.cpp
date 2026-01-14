@@ -587,7 +587,7 @@ bool CAI_PassengerBehavior::GetExitPoint( int nSequence, Vector *vecExitPoint, Q
 // Purpose: Reserve our entry point
 // Output : Returns true on success, false on failure.
 //-----------------------------------------------------------------------------
-bool CAI_PassengerBehavior::ReserveEntryPoint( VehicleSeatQuery_e eSeatSearchType )
+bool CAI_PassengerBehavior::ReserveEntryPoint(VehicleSeatQuery_e eSeatSearchType, bool bImmediateEnter)
 {
 	if (!m_hVehicle)
 		return false;
@@ -595,7 +595,7 @@ bool CAI_PassengerBehavior::ReserveEntryPoint( VehicleSeatQuery_e eSeatSearchTyp
 	// Find any seat to get into
 	int nSeatID = m_hVehicle->GetServerVehicle()->NPC_GetAvailableSeat( GetOuter(), GetRoleName(), eSeatSearchType );
 	if ( nSeatID != VEHICLE_SEAT_INVALID )
-		return m_hVehicle->NPC_AddPassenger( GetOuter(), GetRoleName(), nSeatID );
+		return m_hVehicle->NPC_AddPassenger(GetOuter(), GetRoleName(), nSeatID, bImmediateEnter);
 
 	return false;
 }

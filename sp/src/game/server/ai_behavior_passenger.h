@@ -170,7 +170,7 @@ protected:
 	bool	GetEntryPoint( int nSequence, Vector *vecEntryPoint, QAngle *vecEntryAngles = NULL );
 	bool	GetExitPoint( int nSequence, Vector *vecExitPoint, QAngle *vecExitAngles = NULL );
 	bool	PointIsNavigable( const Vector &vecTargetPos );
-	bool	ReserveEntryPoint( VehicleSeatQuery_e eSeatSearchType );
+	bool	ReserveEntryPoint(VehicleSeatQuery_e eSeatSearchType, bool bImmediateEnter);
 	bool	ReserveExitPoint( void );
 	bool	FindGroundAtPosition( const Vector &in, float flUpDelta, float flDownDelta, Vector *out );
 	bool	DoTransitionMovement( void );

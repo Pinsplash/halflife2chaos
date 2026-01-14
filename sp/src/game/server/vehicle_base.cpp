@@ -1048,15 +1048,15 @@ bool CPropVehicleDriveable::NPC_CanExitVehicle( CAI_BaseNPC *pPassenger, bool bC
 //			bCompanion - 
 // Output : Returns true on success, false on failure.
 //-----------------------------------------------------------------------------
-bool CPropVehicleDriveable::NPC_AddPassenger( CAI_BaseNPC *pPassenger, string_t strRoleName, int nSeatID )
+bool CPropVehicleDriveable::NPC_AddPassenger(CAI_BaseNPC *pPassenger, string_t strRoleName, int nSeatID, bool bImmediateEnter)
 {
 	// Must be allowed to enter
-	if ( NPC_CanEnterVehicle( pPassenger, true /*FIXME*/ ) == false )
+	if (!bImmediateEnter && NPC_CanEnterVehicle( pPassenger, true /*FIXME*/ ) == false)
 		return false;
 
 	IServerVehicle *pVehicleServer = GetServerVehicle();
 	if ( pVehicleServer != NULL )
-		return pVehicleServer->NPC_AddPassenger( pPassenger, strRoleName, nSeatID );
+		return pVehicleServer->NPC_AddPassenger(pPassenger, strRoleName, nSeatID, bImmediateEnter);
 
 	return true;
 }

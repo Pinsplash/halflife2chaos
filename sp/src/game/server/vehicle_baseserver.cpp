@@ -253,7 +253,7 @@ int CBaseServerVehicle::GetPassengerRole( CBaseCombatCharacter *pPassenger )
 // Input  : nSeat - seat to sit in
 //			*pPassenger - character to enter
 //-----------------------------------------------------------------------------
-bool CBaseServerVehicle::NPC_AddPassenger( CBaseCombatCharacter *pPassenger, string_t strRoleName, int nSeat )
+bool CBaseServerVehicle::NPC_AddPassenger(CBaseCombatCharacter *pPassenger, string_t strRoleName, int nSeat, bool bImmediateEnter)
 {
 	// Players cannot yet use this code! - jdw
 	Assert( pPassenger != NULL && pPassenger->IsPlayer() == false );

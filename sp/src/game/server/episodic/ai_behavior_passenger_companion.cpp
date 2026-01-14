@@ -103,7 +103,7 @@ void CAI_PassengerBehaviorCompanion::Enable( CPropJeepEpisodic *pVehicle, bool b
 	if ( bImmediateEnter )
 	{
 		// Find the seat and sit in it
-		if ( ReserveEntryPoint( VEHICLE_SEAT_ANY ) )
+		if ( ReserveEntryPoint(VEHICLE_SEAT_ANY, bImmediateEnter) )
 		{
 			// Attach
 			AttachToVehicle();
@@ -788,7 +788,7 @@ bool CAI_PassengerBehaviorCompanion::CanEnterVehicleImmediately( int *pResultSeq
 		return false;
 
 	// Reserve an entry point
-	if ( ReserveEntryPoint( VEHICLE_SEAT_ANY ) == false )
+	if (ReserveEntryPoint(VEHICLE_SEAT_ANY, true) == false )
 		return false;
 
 	// Get a list of all our animations
@@ -961,7 +961,7 @@ int CAI_PassengerBehaviorCompanion::SelectFailSchedule( int failedSchedule, int 
 //-----------------------------------------------------------------------------
 // Purpose: Start to enter the vehicle
 //-----------------------------------------------------------------------------
-void CAI_PassengerBehaviorCompanion::EnterVehicle( void )
+void CAI_PassengerBehaviorCompanion::EnterVehicle(bool bImmediately)
 {
 	BaseClass::EnterVehicle();
 
@@ -1291,7 +1291,7 @@ void CAI_PassengerBehaviorCompanion::StartTask( const Task_t *pTask )
 			}
 
 			// Reserve an entry point
-			if ( ReserveEntryPoint( VEHICLE_SEAT_ANY ) == false )
+			if (ReserveEntryPoint(VEHICLE_SEAT_ANY, false) == false )
 			{
 				TaskFail( "No valid entry point!\n" );
 				return;

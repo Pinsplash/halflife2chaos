@@ -87,7 +87,7 @@ public:
 	virtual void	StartTask( const Task_t *pTask );
 	virtual void	RunTask( const Task_t *pTask );
 	virtual void	AimGun( void );
-	virtual void	EnterVehicle( void );
+	virtual void	EnterVehicle(bool bImmediately);
 	virtual void	ExitVehicle( void );
 	virtual void	FinishEnterVehicle( void );
 	virtual void	FinishExitVehicle( void );
