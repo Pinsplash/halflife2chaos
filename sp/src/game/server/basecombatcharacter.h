@@ -281,7 +281,6 @@ public:
 	virtual bool			HasAlienGibs( void );
 	virtual bool			ShouldGib( const CTakeDamageInfo &info ) { return false; }	// Always ragdoll, unless specified by the leaf class
 
-	float GetDamageAccumulator() { return m_flDamageAccumulator; }
 	int	  GetDamageCount( void ) { return m_iDamageCount; }	// # of times NPC has been damaged.  used for tracking 1-shot kills.
 
 	// Character killed (only fired once)
@@ -500,6 +499,7 @@ private:
 	// attack/damage
 	int					m_LastHitGroup;			// the last body region that took damage
 	float				m_flDamageAccumulator;	// so very small amounts of damage do not get lost.
+	float				m_flHealthAccumulator;	// Counterpart to the damage accumulator in CBaseCombatCharacter. So ally health regeneration is accurate over time.
 	int					m_iDamageCount;			// # of times NPC has been damaged.  used for tracking 1-shot kills.
 	
 	// Weapon proficiency gets calculated each time an NPC changes his weapon, and then

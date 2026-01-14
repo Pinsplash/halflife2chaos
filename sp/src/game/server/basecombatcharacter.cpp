@@ -96,6 +96,7 @@ BEGIN_DATADESC( CBaseCombatCharacter )
 
 	DEFINE_FIELD( m_LastHitGroup, FIELD_INTEGER ),
 	DEFINE_FIELD( m_flDamageAccumulator, FIELD_FLOAT ),
+	DEFINE_FIELD( m_flHealthAccumulator, FIELD_FLOAT ),
 	DEFINE_INPUT( m_impactEnergyScale, FIELD_FLOAT, "physdamagescale" ),
 	DEFINE_FIELD( m_CurrentWeaponProficiency, FIELD_INTEGER),
 
@@ -715,6 +716,7 @@ CBaseCombatCharacter::CBaseCombatCharacter( void )
 
 	// Zero the damage accumulator.
 	m_flDamageAccumulator = 0.0f;
+	m_flHealthAccumulator = 0.0f;
 
 	// Init weapon and Ammo data
 	m_hActiveWeapon			= NULL;
@@ -2398,23 +2400,21 @@ int CBaseCombatCharacter::TakeHealth(float flHealth, int bitsDamageType)
 	if (!m_takedamage)
 		return 0;
 
-	//reverse of valve's code from CBaseCombatCharacter::OnTakeDamage_Alive()
+	int intPortion;
+	float floatPortion;
 
-	float flFractionalHealthGain = flHealth - floor(flHealth);
-	m_flDamageAccumulator -= flFractionalHealthGain;
+	intPortion = ((int)flHealth);
+	floatPortion = flHealth - intPortion;
 
-	if (flFractionalHealthGain > 0)
+	m_flHealthAccumulator += floatPortion;
+
+	while (m_flHealthAccumulator > 1.0f)
 	{
-		if (m_flDamageAccumulator < 0)
-		{
-			m_flDamageAccumulator += 1.0;
-			flHealth += 1.0;
-		}
-		else
-			return 0;
+		m_flHealthAccumulator -= 1.0f;
+		intPortion += 1;
 	}
-	
-	return BaseClass::TakeHealth(flHealth, bitsDamageType);
+
+	return BaseClass::TakeHealth(((float)intPortion), bitsDamageType);
 }
 
 
@@ -3672,7 +3672,7 @@ int CBaseCombatCharacter::DrawDebugTextOverlays(void)
 	if (m_debugOverlays & OVERLAY_TEXT_BIT)
 	{
 		char tempstr[512];
-		Q_snprintf(tempstr, sizeof(tempstr), "Health: %i  (DACC:%f)", m_iHealth.Get(), GetDamageAccumulator());
+		Q_snprintf(tempstr, sizeof(tempstr), "Health: %i (DACC: %f HACC: %f)", m_iHealth.Get(), m_flDamageAccumulator, m_flHealthAccumulator);
 		EntityText(text_offset, tempstr, 0);
 		text_offset++;
 	}

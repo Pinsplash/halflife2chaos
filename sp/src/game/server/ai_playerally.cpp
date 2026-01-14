@@ -330,7 +330,6 @@ BEGIN_DATADESC( CAI_PlayerAlly )
 	DEFINE_KEYFIELD( m_bGameEndAlly, FIELD_BOOLEAN, "GameEndAlly" ),
 	DEFINE_FIELD( m_bCanSpeakWhileScripting, FIELD_BOOLEAN ),
 
-	DEFINE_FIELD( m_flHealthAccumulator, FIELD_FLOAT ),
 	DEFINE_FIELD( m_flTimeLastRegen, FIELD_TIME ),
 
 	// Inputs
@@ -1188,27 +1187,6 @@ int CAI_PlayerAlly::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 #endif
 
 	return BaseClass::OnTakeDamage_Alive( subInfo );
-}
-
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-int CAI_PlayerAlly::TakeHealth( float flHealth, int bitsDamageType )
-{
-	int intPortion;
-	float floatPortion;
-
-	intPortion = ((int)flHealth);
-	floatPortion = flHealth - intPortion;
-
-	m_flHealthAccumulator += floatPortion;
-
-	while ( m_flHealthAccumulator > 1.0f )
-	{
-		m_flHealthAccumulator -= 1.0f;
-		intPortion += 1;
-	}
-
-	return BaseClass::TakeHealth( ((float)intPortion), bitsDamageType );
 }
 
 //-----------------------------------------------------------------------------

@@ -311,7 +311,6 @@ public:
 	//---------------------------------
 	void		TraceAttack( const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr, CDmgAccumulator *pAccumulator );
 	int			OnTakeDamage_Alive( const CTakeDamageInfo &info );
-	int			TakeHealth( float flHealth, int bitsDamageType );
 	void		Event_Killed( const CTakeDamageInfo &info );
 	bool		CreateVPhysics();
 
@@ -472,7 +471,6 @@ private:
 	bool m_bCanSpeakWhileScripting;	// Allows mapmakers to override NPC_STATE_SCRIPT or IsScripting() for responses.
 
 	float	m_flTimeLastRegen;		// Last time I regenerated a bit of health.
-	float	m_flHealthAccumulator;	// Counterpart to the damage accumulator in CBaseCombatCharacter. So ally health regeneration is accurate over time.
 
 #ifdef _XBOX
 protected:
