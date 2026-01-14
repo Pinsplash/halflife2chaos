@@ -9567,17 +9567,25 @@ void CESecondarySpam::MaintainEffect()
 }
 void CESuitSwap::StartEffect()
 {
-	int iHealth = UTIL_GetLocalPlayer()->GetHealth();
-	int iSuit = UTIL_GetLocalPlayer()->m_ArmorValue;
+	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+	int iHealth = pPlayer->GetHealth();
+	int iSuit = pPlayer->m_ArmorValue;
 	//Msg("health %i suit %i\n", iHealth, iSuit);
-	UTIL_GetLocalPlayer()->SetHealth(iSuit);
-	UTIL_GetLocalPlayer()->SetArmorValue(iHealth);
+	pPlayer->SetHealth(iSuit);
+	pPlayer->SetArmorValue(iHealth);
 	if (iSuit == 0)
 	{
+		//disable point_viewcontrol. the entity prevents the player from taking damage (kind of) because if they died while the view was controlled,
+		//they could softlock. that is reasonable, so we shut them off here to avoid dropping inputs. We only need to do this when the player is dying
+		//because SetHealth() directly sets the health variable instead of going through the damage system proper.
+		for (CBaseEntity* pEnt = gEntList.FindEntityByClassname(NULL, "point_viewcontrol"); pEnt; pEnt = gEntList.FindEntityByClassname(pEnt, "point_viewcontrol"))
+		{
+			variant_t variant;
+			pEnt->AcceptInput("Disable", pPlayer, pPlayer, variant, 0);
+		}
 		//so now player is dead, but damage them a bit more so the game properly registers their death
-		variant_t variant;
-		variant.SetInt(-1);
-		UTIL_GetLocalPlayer()->AcceptInput("SetHealth", UTIL_GetLocalPlayer(), UTIL_GetLocalPlayer(), variant, 0);
+		//DMG_VEHICLE ensures we hit players in vehicles (i think this only affects the ep2 car)
+		pPlayer->TakeDamage(CTakeDamageInfo(pPlayer, pPlayer, 1, DMG_GENERIC | DMG_VEHICLE));
 	}
 }
 void CEGiveAllRPG::StartEffect()
