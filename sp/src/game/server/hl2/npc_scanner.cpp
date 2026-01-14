@@ -1598,13 +1598,13 @@ void CNPC_CScanner::SpotlightCreate(void)
 	m_hSpotlightTarget->SetSimulatedEveryTick( false );
 
 	// Using the same color as the beam...
-	m_hSpotlightTarget->SetRenderColor( 255, 255, 255 );
+	m_hSpotlightTarget->SetRenderColor(GetRenderColor());
 	m_hSpotlightTarget->m_Radius = m_flSpotlightMaxLength;
 
 	m_hSpotlight = CBeam::BeamCreate( "sprites/glow_test02.vmt", SPOTLIGHT_WIDTH );
 	// Set the temporary spawnflag on the beam so it doesn't save (we'll recreate it on restore)
 	m_hSpotlight->AddSpawnFlags( SF_BEAM_TEMPORARY );
-	m_hSpotlight->SetColor( 255, 255, 255 ); 
+	m_hSpotlight->SetColor(GetRenderColor());
 	m_hSpotlight->SetHaloTexture( m_nHaloSprite );
 	m_hSpotlight->SetHaloScale( 32 );
 	m_hSpotlight->SetEndWidth( m_hSpotlight->GetWidth() );
@@ -1870,7 +1870,7 @@ void CNPC_CScanner::TakePhoto(void)
 	
 	m_pEyeFlash->SetScale( 1.4 );
 	m_pEyeFlash->SetBrightness( 255 );
-	m_pEyeFlash->SetColor(255,255,255);
+	m_pEyeFlash->SetColor(GetRenderColor());
 
 	Vector vRawPos		= InspectTargetPosition();
 	Vector vLightPos	= vRawPos;
@@ -1926,7 +1926,7 @@ void CNPC_CScanner::AttackFlash(void)
 	ScannerEmitSound( "AttackFlash" );
 	m_pEyeFlash->SetScale( 1.8 );
 	m_pEyeFlash->SetBrightness( 255 );
-	m_pEyeFlash->SetColor(255,255,255);
+	m_pEyeFlash->SetColor(GetRenderColor());
 
 	if (GetEnemy() != NULL)
 	{
@@ -1988,15 +1988,15 @@ void CNPC_CScanner::BlindFlashTarget( CBaseEntity *pTarget )
 
 		if ( tr.startsolid == false && tr.fraction == 1.0)
 		{
-			color32 white = { 255, 255, 255, SCANNER_FLASH_MAX_VALUE * dotPr };
+			color32 flash = {GetRenderColor().r, GetRenderColor().g, GetRenderColor().b, SCANNER_FLASH_MAX_VALUE * dotPr};
 
 			if ( ( g_pMaterialSystemHardwareConfig != NULL ) && ( g_pMaterialSystemHardwareConfig->GetHDRType() != HDR_TYPE_NONE ) )
 			{
-				white.a = ( byte )( ( float )white.a * 0.9f );
+				flash.a = ( byte )( ( float )flash.a * 0.9f );
 			}
 
 			float flFadeTime = ( IsX360() ) ? 0.5f : 3.0f;
-			UTIL_ScreenFade( pTarget, white, flFadeTime, 0.5, FFADE_IN );
+			UTIL_ScreenFade( pTarget, flash, flFadeTime, 0.5, FFADE_IN );
 		}
 	}
 }

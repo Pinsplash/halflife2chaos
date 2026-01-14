@@ -163,6 +163,7 @@ public:
 	}
 	inline void SetTexture( int spriteIndex ) { SetModelIndex( spriteIndex ); }
 	inline void SetColor( int r, int g, int b ) { SetRenderColor( r, g, b, GetRenderColor().a ); }
+	inline void SetColor(color32 clr) { SetRenderColor(clr.r, clr.g, clr.b, GetRenderColor().a); }
 	
 	void SetBrightness( int brightness, float duration = 0.0f );
 	void SetScale( float scale, float duration = 0.0f );

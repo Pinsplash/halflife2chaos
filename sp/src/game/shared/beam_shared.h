@@ -99,6 +99,7 @@ public:
 	void SetFadeLength( float fadeLength );
 	void SetNoise( float amplitude );
 	void SetColor( int r, int g, int b );
+	void SetColor(color32 clr);
 	void SetBrightness( int brightness );
 	void SetFrame( float frame );
 	void SetScrollRate( int speed );
@@ -339,6 +340,11 @@ inline void CBeam::SetNoise( float amplitude )
 inline void CBeam::SetColor( int r, int g, int b )		
 { 
 	SetRenderColor( r, g, b, GetRenderColor().a );
+}
+
+inline void CBeam::SetColor(color32 clr)
+{
+	SetRenderColor(clr.r, clr.g, clr.b, GetRenderColor().a);
 }
 
 inline void CBeam::SetBrightness( int brightness )		

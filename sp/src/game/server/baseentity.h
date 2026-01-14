@@ -806,6 +806,7 @@ public:
 	CNetworkColor32( m_clrRender );
 	const color32 GetRenderColor() const;
 	void SetRenderColor( byte r, byte g, byte b );
+	void SetRenderColor(color32 clr);
 	void SetRenderColor( byte r, byte g, byte b, byte a );
 	void SetRenderColorR( byte r );
 	void SetRenderColorG( byte g );
@@ -2320,6 +2321,11 @@ inline const color32 CBaseEntity::GetRenderColor() const
 inline void CBaseEntity::SetRenderColor( byte r, byte g, byte b )
 {
 	m_clrRender.Init( r, g, b );
+}
+
+inline void CBaseEntity::SetRenderColor(color32 clr)
+{
+	m_clrRender = clr;
 }
 
 inline void CBaseEntity::SetRenderColor( byte r, byte g, byte b, byte a )
