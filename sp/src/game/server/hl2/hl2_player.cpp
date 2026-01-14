@@ -6090,7 +6090,7 @@ bool CChaosEffect::CheckEffectContext()
 
 	//on some maps, a vital ally is unreachable by the player, but reachable by spawned enemies, meaning there's no way to save them
 	if (m_nContext & EC_FAR_ENEMY)
-		if (!Q_strcmp(pMapName, "d2_prison_06") || !Q_strcmp(pMapName, "ep1_citadel_03") || !Q_strcmp(pMapName, "ep1_c17_02"))
+		if (!Q_strcmp(pMapName, "d2_prison_06") || !Q_strcmp(pMapName, "ep1_citadel_03") || !Q_strcmp(pMapName, "ep1_c17_02") || !Q_strcmp(pMapName, "ep2_outland_11") || !Q_strcmp(pMapName, "ep2_outland_12a"))
 			return false;
 
 	//need at least one pickup in the map
@@ -6932,7 +6932,7 @@ bool CChaosEffect::CombatBreaksScene(const char* pMapName)
 	else
 	{
 		if (!Q_strcmp(pMapName, "ep1_citadel_03") || !Q_strcmp(pMapName, "ep1_c17_02b")
-			|| !Q_strcmp(pMapName, "ep2_outland_01") || !Q_strcmp(pMapName, "ep2_outland_07") || !Q_strcmp(pMapName, "ep2_outland_08") || !Q_strcmp(pMapName, "ep2_outland_10a"))
+			|| !Q_strcmp(pMapName, "ep2_outland_01") || !Q_strcmp(pMapName, "ep2_outland_07") || !Q_strcmp(pMapName, "ep2_outland_08") || !Q_strcmp(pMapName, "ep2_outland_10a") || !Q_strcmp(pMapName, "ep2_outland_11"))
 			return true;//bad map
 	}
 	return false;
