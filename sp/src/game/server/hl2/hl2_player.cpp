@@ -1098,8 +1098,18 @@ void CHL2_Player::Precache(void)
 	PrecacheScriptSound("HL2Player.TrainUse");
 	PrecacheScriptSound("HL2Player.Use");
 	PrecacheScriptSound("HL2Player.BurnPain");
-	PrecacheScriptSound("*#music/hl2_song3.mp3");
-	PrecacheScriptSound("*#music/hl1_song25_remix3.mp3");
+	char modDir[MAX_PATH];
+	if (UTIL_GetModDir(modDir, sizeof(modDir)) == false)
+		return;
+	if (!Q_strcmp(modDir, "ep2chaos"))
+		PrecacheScriptSound("*#music/vlvx_song3.mp3");
+	else if (!Q_strcmp(modDir, "ep1chaos"))
+		PrecacheScriptSound("*ambient/outro/EndAmbience.wav");
+	else
+	{
+		PrecacheScriptSound("*#music/hl2_song3.mp3");
+		PrecacheScriptSound("*#music/hl1_song25_remix3.mp3");
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -7873,8 +7883,10 @@ void CESolidTriggers::TransitionEffect()
 void CECredits::StartEffect()
 {
 	//hack effect length so we can play song 2
-	m_flDuration = 100;
-	m_flTimeRem = 100;
+	m_bPlayedSecondSong = true;
+	char modDir[MAX_PATH];
+	if (UTIL_GetModDir(modDir, sizeof(modDir)) == false)
+		return;
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
 	//visual
 	CSingleUserRecipientFilter user(pPlayer);
@@ -7886,10 +7898,26 @@ void CECredits::StartEffect()
 	CPASAttenuationFilter filter(pPlayer);
 	EmitSound_t ep;
 	ep.m_nChannel = CHAN_STATIC;
-	ep.m_pSoundName = "*#music/hl2_song3.mp3";
-	ep.m_flVolume = 1;
-	ep.m_SoundLevel = SNDLVL_NORM;
 	ep.m_nPitch = PITCH_NORM;
+	ep.m_SoundLevel = SNDLVL_NORM;
+	ep.m_flVolume = VOL_NORM;
+	if (!Q_strcmp(modDir, "ep2chaos"))
+	{
+		ep.m_pSoundName = "*#music/vlvx_song3.mp3";
+		ep.m_flVolume = 0.7;
+	}
+	else if (!Q_strcmp(modDir, "ep1chaos"))
+	{
+		ep.m_pSoundName = "*ambient/outro/EndAmbience.wav";
+		ep.m_SoundLevel = SNDLVL_NONE;
+	}
+	else
+	{
+		ep.m_pSoundName = "*#music/hl2_song3.mp3";
+		m_flDuration = 100;
+		m_flTimeRem = 100;
+		m_bPlayedSecondSong = false;
+	}
 	pPlayer->EmitSound(filter, pPlayer->entindex(), ep);
 }
 void CECredits::MaintainEffect()
