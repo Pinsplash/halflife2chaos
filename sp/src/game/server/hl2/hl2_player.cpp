@@ -2497,6 +2497,15 @@ void CHL2_Player::StartGame()
 			}
 		}
 	}
+	//remove confusing and potentially softlocking clips
+	else if (!Q_strcmp(pMapName, "ep2_outland_07"))
+	{
+		for (CBaseEntity* pEnt = gEntList.FindEntityByName(NULL, "barn_hole_npcclip"); pEnt; pEnt = gEntList.FindEntityByName(pEnt, "barn_hole_npcclip"))
+		{
+			UTIL_Remove(pEnt);
+		}
+		UTIL_Remove(gEntList.FindEntityByName(NULL, "barn_hole_playerclip"));
+	}
 }
 //-----------------------------------------------------------------------------
 //Purpose: Sets HL2 specific defaults.
