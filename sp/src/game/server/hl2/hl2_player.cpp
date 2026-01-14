@@ -9405,30 +9405,15 @@ void CEForceInOutCar::DoOnVehicles(CPropVehicleDriveable* pVehicle)
 }
 void CEWeaponRemove::StartEffect()
 {
-	if (UTIL_GetLocalPlayer()->GetActiveWeapon() == NULL)
-		return;
-	CBaseCombatWeapon* pWeapon = (CBaseCombatWeapon*)gEntList.FindEntityByClassname(NULL, "we*");
-	CBaseCombatWeapon* pWeapon1 = NULL;
-	CBaseCombatWeapon* pWeapon2 = NULL;
-	while (pWeapon && !pWeapon2)
+	CUtlVector<CBaseEntity*> vpWeapons;
+	for (CBaseEntity* pEnt = gEntList.FindEntityByClassname(NULL, "weapon*"); pEnt; pEnt = gEntList.FindEntityByClassname(pEnt, "weapon*"))
 	{
-		if (pWeapon->GetOwner() && pWeapon->GetOwner()->IsPlayer())
-		{
-			if (pWeapon1)
-			{
-				pWeapon2 = pWeapon;
-				break;
-			}
-			else
-			{
-				pWeapon1 = pWeapon;
-			}
-		}
-		pWeapon = (CBaseCombatWeapon*)gEntList.FindEntityByClassname(pWeapon, "we*");
+		if (pEnt->GetOwnerEntity() == UTIL_GetLocalPlayer())
+			vpWeapons.AddToTail(pEnt);
 	}
-	if (!pWeapon2)
+	if (vpWeapons.Size() <= 1)
 		return;
-	pWeapon = RandomInt(0, 1) ? pWeapon1 : pWeapon2;
+	CBaseCombatWeapon* pWeapon = static_cast<CBaseCombatWeapon*>(vpWeapons[RandomInt(0, vpWeapons.Size() - 1)]);
 	//hide model
 	CBaseViewModel* vm = UTIL_GetLocalPlayer()->GetViewModel(pWeapon->m_nViewModelIndex);
 	if (vm && pWeapon == UTIL_GetLocalPlayer()->GetActiveWeapon())
