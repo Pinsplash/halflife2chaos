@@ -43,7 +43,7 @@ enum Effect_T
 	EFFECT_NADE_GUNS,
 	EFFECT_EARTHQUAKE,
 	EFFECT_420_JOKE,
-	EFFECT_ZOMBIE_SPAM_CLOSE,
+	EFFECT_ZOMBIE_SPAM,
 	EFFECT_EXPLODE_ON_DEATH,
 	EFFECT_BULLET_TELEPORT,
 	EFFECT_CREDITS,
@@ -101,7 +101,6 @@ enum Effect_T
 	EFFECT_HL1_PHYSICS,
 	EFFECT_DVD_CROSSHAIR,
 	EFFECT_EVIL_BREEN,
-	EFFECT_ZOMBIE_SPAM_FAR,
 	EFFECT_COP_SPAM,
 	EFFECT_SCANNER_SPAM,
 	EFFECT_HOMING_AR2,
@@ -423,26 +422,14 @@ public:
 	std::vector<const char*> m_sSpawnNPCs;
 	const char* m_sTargetname = "";
 	const char* m_sWeapon = "";
+	void InitialSpawn(int iNumToSpawn);
+	void PassiveSpawn();
 };
-class CE_NPC_SpamClose : public CE_NPC_Spam
+class CEZombieSpam : public CE_NPC_Spam
 {
 public:
-	void InitialSpawn();
-};
-class CE_NPC_SpamFar : public CE_NPC_Spam
-{
-public:
+	void StartEffect() override;
 	void MaintainEffect() override;
-};
-class CEZombieSpamClose : public CE_NPC_SpamClose
-{
-public:
-	void StartEffect() override;
-};
-class CEZombieSpamFar : public CE_NPC_SpamFar
-{
-public:
-	void StartEffect() override;
 };
 class CENPCRels : public CChaosEffect
 {
@@ -663,12 +650,13 @@ public:
 	void StartEffect() override;
 	void StopEffect() override;
 };
-class CECopSpam : public CE_NPC_SpamFar
+class CECopSpam : public CE_NPC_Spam
 {
 public:
 	void StartEffect() override;
+	void MaintainEffect() override;
 };
-class CEScannerSpam : public CE_NPC_SpamClose
+class CEScannerSpam : public CE_NPC_Spam
 {
 public:
 	void StartEffect() override;
