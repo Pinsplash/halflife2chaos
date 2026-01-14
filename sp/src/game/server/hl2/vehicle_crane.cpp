@@ -26,6 +26,7 @@
 #define	VEHICLE_HITBOX_DRIVER		1
 
 extern ConVar g_debug_vehicledriver;
+extern ConVar chaos_flip_vehicle_input;
 
 // Crane spring constants
 #define CRANE_SPRING_CONSTANT_HANGING			2e5f
@@ -501,6 +502,49 @@ void CPropCrane::SetupMove( CBasePlayer *player, CUserCmd *ucmd, IMoveHelper *pH
 	RunCraneMovement( gpGlobals->frametime );
 }
 
+void CPropCrane::TurnLeft(float flNPCSteering)
+{
+	// NPCs may cheat and set the steering
+	if (flNPCSteering)
+	{
+		m_flTurn = flNPCSteering;
+	}
+	else
+	{
+		// Try adding some randomness to make it feel shaky? 
+		float flTurnAdd = m_flTurnAccel;
+		// If we're turning back on ourselves, use decel speed
+		if (m_flTurn < 0)
+		{
+			flTurnAdd = MAX(flTurnAdd, m_flTurnDecel);
+		}
+
+		m_flTurn = UTIL_Approach(m_flMaxTurnSpeed, m_flTurn, flTurnAdd * gpGlobals->frametime);
+	}
+	m_iTurning = TURNING_LEFT;
+}
+
+void CPropCrane::TurnRight(float flNPCSteering)
+{
+	// NPCs may cheat and set the steering
+	if (flNPCSteering)
+	{
+		m_flTurn = flNPCSteering;
+	}
+	else
+	{
+		// Try adding some randomness to make it feel shaky?
+		float flTurnAdd = m_flTurnAccel;
+		// If we're turning back on ourselves, use decel speed
+		if (m_flTurn > 0)
+		{
+			flTurnAdd = MAX(flTurnAdd, m_flTurnDecel);
+		}
+		m_flTurn = UTIL_Approach(-m_flMaxTurnSpeed, m_flTurn, flTurnAdd * gpGlobals->frametime);
+	}
+	m_iTurning = TURNING_RIGHT;
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: Crane rotates around with +left and +right, and extends/retracts 
 //			the cable with +forward and +back.
@@ -512,44 +556,17 @@ void CPropCrane::DriveCrane( int iDriverButtons, int iButtonsPressed, float flNP
 	// Handle rotation of the crane
 	if ( iDriverButtons & IN_MOVELEFT )
 	{
-		// NPCs may cheat and set the steering
-		if ( flNPCSteering )
-		{
-			m_flTurn = flNPCSteering;
-		}
+		if (chaos_flip_vehicle_input.GetBool())
+			TurnRight(flNPCSteering);
 		else
-		{
-			// Try adding some randomness to make it feel shaky? 
-			float flTurnAdd = m_flTurnAccel;
-			// If we're turning back on ourselves, use decel speed
-			if ( m_flTurn < 0 )
-			{
-				flTurnAdd = MAX( flTurnAdd, m_flTurnDecel );
-			}
-
-			m_flTurn = UTIL_Approach( m_flMaxTurnSpeed, m_flTurn, flTurnAdd * gpGlobals->frametime );
-		}
-		m_iTurning = TURNING_LEFT;
+			TurnLeft(flNPCSteering);
 	}
 	else if ( iDriverButtons & IN_MOVERIGHT )
 	{
-		// NPCs may cheat and set the steering
-		if ( flNPCSteering )
-		{
-			m_flTurn = flNPCSteering;
-		}
+		if (chaos_flip_vehicle_input.GetBool())
+			TurnLeft(flNPCSteering);
 		else
-		{
-			// Try adding some randomness to make it feel shaky?
-			float flTurnAdd = m_flTurnAccel;
-			// If we're turning back on ourselves, increase the rate
-			if ( m_flTurn > 0 )
-			{
-				flTurnAdd = MAX( flTurnAdd, m_flTurnDecel );
-			}
-			m_flTurn = UTIL_Approach( -m_flMaxTurnSpeed, m_flTurn, flTurnAdd * gpGlobals->frametime );
-		}
-		m_iTurning = TURNING_RIGHT;
+			TurnRight(flNPCSteering);
 	}
 	else
 	{

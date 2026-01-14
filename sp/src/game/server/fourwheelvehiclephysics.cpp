@@ -39,6 +39,7 @@ ConVar xbox_autothrottle("xbox_autothrottle", "1", FCVAR_ARCHIVE );
 ConVar xbox_steering_deadzone("xbox_steering_deadzone", "0.0");
 ConVar r_handbrake_allowed("r_handbrake_allowed", "1");
 ConVar r_vehicleBrakeRate("r_vehicleBrakeRate", "1.5", FCVAR_NONE);
+ConVar chaos_flip_vehicle_input("chaos_flip_vehicle_input", "0", FCVAR_NONE);
 
 // remaps an angular variable to a 3 band function:
 // 0 <= t < start :		f(t) = 0
@@ -1089,13 +1090,18 @@ void CFourWheelVehiclePhysics::UpdateDriverControls( CUserCmd *cmd, float flFram
 	if ( ( nButtons & IN_MOVELEFT ) || ( nButtons & IN_MOVERIGHT ) )
 	{
 		bool bTurnLeft = ( (nButtons & IN_MOVELEFT) != 0 );
+		if (chaos_flip_vehicle_input.GetBool())
+			bTurnLeft = !bTurnLeft;
 		bool bBrake = ((nButtons & IN_BACK) != 0);
 		bool bThrottleDown = ( (nButtons & IN_FORWARD) != 0 ) && !bBrake;
 		SteeringTurn( carSpeed, vehicleData, bTurnLeft, bBrake, bThrottleDown );
 	}
 	else if ( cmd->sidemove != 0.0f )
 	{
-		SteeringTurnAnalog( carSpeed, vehicleData, cmd->sidemove );
+		float flMove = cmd->sidemove;
+		if (chaos_flip_vehicle_input.GetBool())
+			flMove = -flMove;
+		SteeringTurnAnalog(carSpeed, vehicleData, flMove);
 	}
 	else
 	{

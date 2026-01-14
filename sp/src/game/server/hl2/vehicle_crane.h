@@ -142,6 +142,8 @@ public:
 	void			ResetUseKey( CBasePlayer *pPlayer );
 
 	void			DriveCrane( int iDriverButtons, int iButtonsPressed, float flNPCSteering = 0.0 );
+	void			TurnLeft(float flNPCSteering);
+	void			TurnRight(float flNPCSteering);
 	void			RunCraneMovement( float flTime );
 
 	void			TurnMagnetOn( void );

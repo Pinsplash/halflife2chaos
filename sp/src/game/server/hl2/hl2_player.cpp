@@ -9804,7 +9804,7 @@ void CEScannerSpam::StartEffect()
 }
 void CEMirrorWorld::StartEffect()
 {
-	engine->ClientCommand(engine->PEntityOfEntIndex(1), "chaos_flip_screen 1;chaos_invert_stereo 1");
+	engine->ClientCommand(engine->PEntityOfEntIndex(1), "chaos_flip_screen 1;chaos_invert_stereo 1;chaos_flip_vehicle_input 1");
 
 	//set m_yaw in respect to No Looking Left/Right
 	if (!g_ChaosEffects[EFFECT_NO_MOUSE_HORIZONTAL]->m_bActive)
@@ -9819,7 +9819,7 @@ void CEMirrorWorld::StartEffect()
 }
 void CEMirrorWorld::StopEffect()
 {
-	engine->ClientCommand(engine->PEntityOfEntIndex(1), "chaos_flip_screen 0;chaos_invert_stereo 0");
+	engine->ClientCommand(engine->PEntityOfEntIndex(1), "chaos_flip_screen 0;chaos_invert_stereo 0;chaos_flip_vehicle_input 0");
 
 	//set m_yaw in respect to No Looking Left/Right
 	if (!g_ChaosEffects[EFFECT_NO_MOUSE_HORIZONTAL]->m_bActive)
