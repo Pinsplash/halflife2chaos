@@ -36,7 +36,7 @@ ConVar	sk_ichthyosaur_melee_dmg( "sk_ichthyosaur_melee_dmg", "0" );
 #define	ICHTHYOSAUR_MODEL	"models/ichthyosaur.mdl"
 
 #define	ICH_HEIGHT_PREFERENCE	16.0f
-#define	ICH_DEPTH_PREFERENCE	32.0f
+#define	ICH_DEPTH_PREFERENCE	2
 
 #define	ICH_WAYPOINT_DISTANCE	64.0f
 
@@ -139,6 +139,7 @@ private:
 
 	bool	m_bHasMoveTarget;
 	bool	m_bIgnoreSurface;
+	bool	m_bOnLand;
 
 	//CSoundPatch	*m_pSwimSound;
 	//CSoundPatch	*m_pVoiceSound;
@@ -167,6 +168,7 @@ BEGIN_DATADESC( CNPC_Ichthyosaur )
 	DEFINE_FIELD( m_flNextGrowlTime,		FIELD_FLOAT ),
 	DEFINE_FIELD( m_bHasMoveTarget,		FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_bIgnoreSurface,		FIELD_BOOLEAN ),
+	DEFINE_FIELD(m_bOnLand, FIELD_BOOLEAN),
 
 	//DEFINE_FUNCTION( IchTouch ),
 
@@ -190,6 +192,7 @@ enum IchTasks
 	TASK_ICH_GET_PATH_TO_RANDOM_NODE = LAST_SHARED_TASK,
 	TASK_ICH_GET_PATH_TO_DROWN_NODE,
 	TASK_ICH_THRASH_PATH,
+	TASK_ICH_FALL_TO_GROUND,
 	TASK_ICH_THRASH_BEACHED,
 };
 
@@ -220,6 +223,7 @@ void CNPC_Ichthyosaur::InitCustomSchedules( void )
 	ADD_CUSTOM_TASK( CNPC_Ichthyosaur,		TASK_ICH_GET_PATH_TO_RANDOM_NODE );
 	ADD_CUSTOM_TASK( CNPC_Ichthyosaur,		TASK_ICH_GET_PATH_TO_DROWN_NODE );
 	ADD_CUSTOM_TASK( CNPC_Ichthyosaur,		TASK_ICH_THRASH_PATH );
+	ADD_CUSTOM_TASK(CNPC_Ichthyosaur, TASK_ICH_FALL_TO_GROUND);
 	ADD_CUSTOM_TASK(CNPC_Ichthyosaur, TASK_ICH_THRASH_BEACHED);
 
 	//Conditions	ADD_CUSTOM_CONDITION( CNPC_CombineGuard,	COND_ANTLIONGRUB_HEARD_SQUEAL );
@@ -278,8 +282,8 @@ void CNPC_Ichthyosaur::Spawn( void )
 
 	SetSolid( SOLID_BBOX );
 	AddSolidFlags( FSOLID_NOT_STANDABLE );
-	SetMoveType( MOVETYPE_STEP );
-	AddFlag( FL_FLY | FL_STEPMOVEMENT );
+	SetMoveType(MOVETYPE_FLY);
+	AddFlag(FL_SWIM | FL_STEPMOVEMENT);
 
 	m_flGroundSpeed			= ICH_SWIM_SPEED_RUN;
 
@@ -307,7 +311,7 @@ void CNPC_Ichthyosaur::Spawn( void )
 	//SetTouch( IchTouch );
 
 	CapabilitiesClear();
-	CapabilitiesAdd( bits_CAP_MOVE_FLY | bits_CAP_INNATE_MELEE_ATTACK1 );
+	CapabilitiesAdd(bits_CAP_INNATE_MELEE_ATTACK1);
 
 	NPCInit();
 
@@ -366,10 +370,19 @@ bool CNPC_Ichthyosaur::OverrideMove( float flInterval )
 	if (IsCurSchedule(SCHED_ICH_MELEE_ATTACK1, false))
 		moveGoal = GetEnemyLKP();
 
+	m_bOnLand = Beached();
+
+	if (!m_bOnLand)
+	{
+		Vector vecNewVel = GetAbsVelocity();
+		vecNewVel[2] -= (GetCurrentGravity() * flInterval);
+		SetAbsVelocity(vecNewVel);
+	}
+
 	if (moveGoal == vec3_origin)
 		return false;
 
-	IchthyosaurMoveType_t eMoveType = (GetNavigator()->CurWaypointIsGoal()) ? ICH_MOVETYPE_ARRIVE : ICH_MOVETYPE_SEEK;
+	IchthyosaurMoveType_t eMoveType = (GetNavigator()->CurWaypointIsGoal() && !m_bOnLand) ? ICH_MOVETYPE_ARRIVE : ICH_MOVETYPE_SEEK;
 
 	m_flGroundSpeed = GetGroundSpeed();
 
@@ -609,10 +622,10 @@ void CNPC_Ichthyosaur::SetPoses( Vector moveRel, float speed )
 
 	//FIXME: Framerate dependant
 	QAngle angles = GetLocalAngles();
-
-	angles.x = (angles.x * 0.8f) + (pitch * 0.2f);
-	angles.z = (angles.z * 0.9f) + (tailPosition[ROLL] * 0.1f);
-
+	QAngle newAngles;
+	newAngles.x = (angles.x * 0.8f) + (pitch * 0.2f);
+	newAngles.z = (angles.z * 0.9f) + (tailPosition[ROLL] * 0.1f);
+	newAngles.y = angles.y;
 	SetLocalAngles( angles );
 }
 
@@ -675,47 +688,8 @@ void CNPC_Ichthyosaur::DoMovement( float flInterval, const Vector &MoveTarget, i
 		}
 	}
 	
-#if FEELER_COLLISION
-
-	Vector f, u, l, r, d;
-
-	float	probeLength = GetAbsVelocity().Length();
-
-	if ( probeLength < 150 )
-		probeLength = 150;
-
-	if ( probeLength > 500 )
-		probeLength = 500;
-
-	f = DoProbe( GetLocalOrigin() + (probeLength * forward) );
-	r = DoProbe( GetLocalOrigin() + (probeLength/3 * (forward+right)) );
-	l = DoProbe( GetLocalOrigin() + (probeLength/3 * (forward-right)) );
-	u = DoProbe( GetLocalOrigin() + (probeLength/3 * (forward+up)) );
-	d = DoProbe( GetLocalOrigin() + (probeLength/3 * (forward-up)) );
-
-	SteerAvoid = f+r+l+u+d;
-	
-	//NDebugOverlay::Line( GetLocalOrigin(), GetLocalOrigin()+SteerAvoid, 255, 255, 0, false, 0.1f );	
-
-	if ( SteerAvoid.LengthSqr() )
-	{
-		Steer = (SteerAvoid*0.5f);
-	}
-
-	m_vecVelocity = m_vecVelocity + (Steer*0.5f);
-
-	VectorNormalize( m_vecVelocity );
-
-	SteerRel.x = forward.Dot( m_vecVelocity );
-	SteerRel.y = right.Dot( m_vecVelocity );
-	SteerRel.z = up.Dot( m_vecVelocity );
-
-	m_vecVelocity *= m_flGroundSpeed;
-
-#else
-
 	//See if we need to avoid any obstacles.
-	if ( SteerAvoidObstacles( SteerAvoid, GetAbsVelocity(), forward, right, up ) )
+	if (!m_bOnLand && SteerAvoidObstacles( SteerAvoid, GetAbsVelocity(), forward, right, up ) )
 	{
 		//Take the avoidance vector
 		Steer = SteerAvoid;
@@ -724,21 +698,16 @@ void CNPC_Ichthyosaur::DoMovement( float flInterval, const Vector &MoveTarget, i
 	//Clamp our ideal steering vector to within our physical limitations.
 	ClampSteer( Steer, SteerRel, forward, right, up );
 
-	ApplyAbsVelocityImpulse( Steer * flInterval );
-	
-#endif
-
-	Vector vecNewVelocity = GetAbsVelocity();
-	float flLength = vecNewVelocity.Length();
+	float flLength = Steer.Length();
 
 	//Clamp our final speed
 	if ( flLength > m_flGroundSpeed )
 	{
-		vecNewVelocity *= ( m_flGroundSpeed / flLength );
+		Steer *= ( m_flGroundSpeed / flLength );
 		flLength = m_flGroundSpeed;
 	}
 
-	Vector	workVelocity = vecNewVelocity;
+	Vector	workVelocity = Steer;
 
 	AddSwimNoise( &workVelocity );
 
@@ -750,7 +719,8 @@ void CNPC_Ichthyosaur::DoMovement( float flInterval, const Vector &MoveTarget, i
 	{
 		DragVictim( (workVelocity*flInterval).Length() );
 	}
-
+	//wtf is this code
+	/*
 	//Move along the current velocity vector
 	if ( WalkMove( workVelocity * flInterval, MASK_NPCSOLID ) == false )
 	{
@@ -759,17 +729,18 @@ void CNPC_Ichthyosaur::DoMovement( float flInterval, const Vector &MoveTarget, i
 		{
 			//Restart the velocity
 			//VectorNormalize( m_vecVelocity );
-			vecNewVelocity *= 0.5f;
+			Steer *= 0.5f;
 		}
 		else
 		{
 			//Cut our velocity in half
-			vecNewVelocity *= 0.5f;
+			Steer *= 0.5f;
 		}
 	}
-
-	SetAbsVelocity( vecNewVelocity );
-
+	*/
+	if (!m_bOnLand)
+		Steer[2] -= (GetCurrentGravity() * flInterval);
+	SetAbsVelocity(Steer);
 }
 
 //-----------------------------------------------------------------------------
@@ -811,7 +782,10 @@ void CNPC_Ichthyosaur::SteerSeek( Vector &Steer, const Vector &Target )
 	
 	Vector DesiredVelocity = m_flGroundSpeed * offset;
 	
-	Steer = DesiredVelocity - GetAbsVelocity();
+	if (m_bOnLand)
+		Steer = DesiredVelocity;
+	else
+		Steer = DesiredVelocity - GetAbsVelocity();
 }
 
 //-----------------------------------------------------------------------------
@@ -841,7 +815,7 @@ bool CNPC_Ichthyosaur::SteerAvoidObstacles(Vector &Steer, const Vector &Velocity
 	if ( tr.fraction < 1.0f )
 	{
 		CBaseEntity *pBlocker = tr.m_pEnt;
-		
+		//NDebugOverlay::Box(tr.endpos, GetHullMins(), GetHullMaxs(), 255, 0, 0, 0, 1);
 		if ( ( pBlocker != NULL ) && ( pBlocker->MyNPCPointer() != NULL ) )
 		{
 			DevMsg( 2, "Avoiding an NPC\n" );
@@ -1147,6 +1121,12 @@ bool CNPC_Ichthyosaur::Beached( void )
 void CNPC_Ichthyosaur::PrescheduleThink( void )
 {
 	BaseClass::PrescheduleThink();
+
+	if (!IsAlive())
+	{
+		SetActivity((Activity)ACT_DIESIMPLE);
+		return;
+	}
 	
 	//Ambient sounds
 	/*
@@ -1188,13 +1168,16 @@ void CNPC_Ichthyosaur::PrescheduleThink( void )
 		{
 			DevMsg( 2, "Came out of water\n" );
 			
-			if ( Beached() )
+			if (m_bOnLand)
 			{
 				if (!IsCurSchedule(SCHED_ICH_MELEE_ATTACK1, false))
 					SetActivity((Activity)ACT_ICH_THRASH);
 
-				RemoveFlag(FL_FLY);
+				RemoveFlag(FL_SWIM);
 				SetNavType(NAV_GROUND);
+				AddFlag(FL_ONGROUND);
+				CapabilitiesRemove(bits_CAP_MOVE_FLY);
+				CapabilitiesAdd(bits_CAP_MOVE_GROUND);
 			}
 		}
 		else
@@ -1204,8 +1187,11 @@ void CNPC_Ichthyosaur::PrescheduleThink( void )
 	}
 	else
 	{
-		AddFlag(FL_FLY);
+		AddFlag(FL_SWIM);
 		SetNavType(NAV_FLY);
+		RemoveFlag(FL_ONGROUND);
+		CapabilitiesAdd(bits_CAP_MOVE_FLY);
+		CapabilitiesRemove(bits_CAP_MOVE_GROUND);
 	}
 
 	//If we have a victim, update them
@@ -1299,7 +1285,7 @@ void CNPC_Ichthyosaur::ReleaseVictim( void )
 //-----------------------------------------------------------------------------
 float CNPC_Ichthyosaur::GetGroundSpeed( void )
 {
-	if (Beached())
+	if (m_bOnLand)
 		return ICH_LAND_SPEED;
 
 	if ( m_flHoldTime > gpGlobals->curtime )
@@ -1339,15 +1325,32 @@ void CNPC_Ichthyosaur::StartTask( const Task_t *pTask )
 	switch ( pTask->iTask )
 	{
 	case TASK_ICH_THRASH_PATH:
-		GetNavigator()->SetMovementActivity( (Activity) ACT_ICH_THRASH );
+		if (IsAlive())
+			GetNavigator()->SetMovementActivity( (Activity) ACT_ICH_THRASH );
 		TaskComplete();
 		break;
 
 	case TASK_ICH_THRASH_BEACHED:
-		SetActivity((Activity)ACT_ICH_THRASH);
+		if (IsAlive())
+			SetActivity((Activity)ACT_ICH_THRASH);
 		TaskComplete();
 		break;
+	case TASK_ICH_FALL_TO_GROUND:
+		if (m_bOnLand)
+		{
+			Vector maxs = WorldAlignMaxs() - Vector(.1, .1, .2);
+			Vector mins = WorldAlignMins() + Vector(.1, .1, 0);
+			Vector vecStart = GetAbsOrigin() + Vector(0, 0, .1);
+			Vector vecDown = GetAbsOrigin();
+			vecDown.z -= FLT_MAX;
 
+			trace_t trace;
+			UTIL_TraceHull(vecStart, vecDown, mins, maxs, MASK_NPCSOLID, this, COLLISION_GROUP_NONE, &trace);
+			Vector vOrigin = trace.endpos;
+			Teleport(&vOrigin, NULL, NULL);
+		}
+		TaskComplete();
+		break;
 	case TASK_ICH_GET_PATH_TO_RANDOM_NODE:
 		{
 			if ( GetEnemy() == NULL || !GetNavigator()->SetRandomGoal( GetEnemy()->GetLocalOrigin(), pTask->flTaskData ) )
@@ -1434,6 +1437,8 @@ float CNPC_Ichthyosaur::MaxYawSpeed( void )
 //-----------------------------------------------------------------------------
 void CNPC_Ichthyosaur::TranslateNavGoal( CBaseEntity *pEnemy, Vector &chasePosition )
 {
+	if (pEnemy->GetFlags() & FL_ONGROUND)
+		return;
 	Vector offset = pEnemy->EyePosition() - pEnemy->GetAbsOrigin();
 	chasePosition += offset;
 }
