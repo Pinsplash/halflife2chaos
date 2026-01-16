@@ -194,6 +194,7 @@ enum IchTasks
 
 //Activities
 int	ACT_ICH_THRASH;
+int	ACT_ICH_MELEE_ATTACK1_MOVING;
 int	ACT_ICH_BITE_HIT;
 int	ACT_ICH_BITE_MISS;
 
@@ -225,6 +226,7 @@ void CNPC_Ichthyosaur::InitCustomSchedules( void )
 
 	//Activities
 	ADD_CUSTOM_ACTIVITY( CNPC_Ichthyosaur,	ACT_ICH_THRASH );
+	ADD_CUSTOM_ACTIVITY( CNPC_Ichthyosaur, ACT_ICH_MELEE_ATTACK1_MOVING);
 	ADD_CUSTOM_ACTIVITY( CNPC_Ichthyosaur,	ACT_ICH_BITE_HIT );
 	ADD_CUSTOM_ACTIVITY( CNPC_Ichthyosaur,	ACT_ICH_BITE_MISS );
 
@@ -617,7 +619,7 @@ void CNPC_Ichthyosaur::DoMovement( float flInterval, const Vector &MoveTarget, i
 	//Get our orientation vectors.
 	GetVectors( &forward, &right, &up);
 
-	if ( ( GetActivity() == ACT_MELEE_ATTACK1 ) && ( GetEnemy() != NULL ) )
+	if ( ( GetActivity() == ACT_MELEE_ATTACK1 || GetActivity() == (Activity)ACT_ICH_MELEE_ATTACK1_MOVING) && ( GetEnemy() != NULL ) )
 	{
 		SteerSeek( Steer, GetEnemy()->GetAbsOrigin() );
 	}
@@ -1025,7 +1027,7 @@ void CNPC_Ichthyosaur::Bite( void )
 		// Play a random attack hit sound
 		EmitSound( "NPC_Ichthyosaur.Bite" );
 
-		if ( GetActivity() == ACT_MELEE_ATTACK1 )
+		if ( GetActivity() == ACT_MELEE_ATTACK1 || GetActivity() == (Activity)ACT_ICH_MELEE_ATTACK1_MOVING)
 		{
 			SetActivity( (Activity) ACT_ICH_BITE_HIT );
 		}
@@ -1034,7 +1036,7 @@ void CNPC_Ichthyosaur::Bite( void )
 	}
 
 	//Play the miss animation and sound
-	if ( GetActivity() == ACT_MELEE_ATTACK1 )
+	if ( GetActivity() == ACT_MELEE_ATTACK1 || GetActivity() == (Activity)ACT_ICH_MELEE_ATTACK1_MOVING)
 	{
 		SetActivity( (Activity) ACT_ICH_BITE_MISS );
 	}
@@ -1281,6 +1283,10 @@ void CNPC_Ichthyosaur::StartTask( const Task_t *pTask )
 	case TASK_MELEE_ATTACK1:
 		m_flPlaybackRate = 1.0f;
 		BaseClass::StartTask(pTask);
+		if (GetEnemy() && GetEnemy()->GetAbsVelocity().Length2D() > 100)
+			ResetIdealActivity((Activity)ACT_ICH_MELEE_ATTACK1_MOVING);
+		else
+			ResetIdealActivity(ACT_MELEE_ATTACK1);
 		break;
 
 	default:
@@ -1317,7 +1323,7 @@ void CNPC_Ichthyosaur::RunTask( const Task_t *pTask )
 //-----------------------------------------------------------------------------
 float CNPC_Ichthyosaur::MaxYawSpeed( void )
 {
-	if ( GetIdealActivity() == ACT_MELEE_ATTACK1 )
+	if ( GetIdealActivity() == ACT_MELEE_ATTACK1 || GetActivity() == (Activity)ACT_ICH_MELEE_ATTACK1_MOVING)
 		return 16.0f;
 
 	if ( GetIdealActivity() == ACT_ICH_THRASH )
