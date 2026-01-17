@@ -25,6 +25,7 @@
 #include "tier0/memdbgon.h"
 
 ConVar hud_showemptyweaponslots( "hud_showemptyweaponslots", "1", FCVAR_ARCHIVE, "Shows slots for missing weapons when recieving weapons out of order" );
+extern ConVar chaos_flip_crosshair_x_offset;
 
 #define SELECTION_TIMEOUT_THRESHOLD		0.5f * cvar->FindVar("host_timescale")->GetFloat()	// Seconds
 #define SELECTION_FADEOUT_TIME			0.75f * cvar->FindVar("host_timescale")->GetFloat()
@@ -590,7 +591,10 @@ void CHudWeaponSelection::Paint()
 		{
 			float fCenterX, fCenterY;
 			bool bBehindCamera = false;
-			CHudCrosshair::GetDrawPosition( &fCenterX, &fCenterY, &bBehindCamera, pPlayer->m_vOffsetedCrosshairDir);
+			QAngle angCrossOffset = pPlayer->m_vOffsetedCrosshairDir;
+			if (chaos_flip_crosshair_x_offset.GetBool())
+				angCrossOffset.y = -angCrossOffset.y;
+			CHudCrosshair::GetDrawPosition( &fCenterX, &fCenterY, &bBehindCamera, angCrossOffset);
 
 			// if the crosshair is behind the camera, don't draw it
 			if( bBehindCamera )

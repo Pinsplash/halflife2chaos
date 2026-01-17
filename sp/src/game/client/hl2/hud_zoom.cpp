@@ -25,6 +25,7 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
+extern ConVar chaos_flip_crosshair_x_offset;
 //-----------------------------------------------------------------------------
 // Purpose: Draws the zoom screen
 //-----------------------------------------------------------------------------
@@ -186,7 +187,10 @@ void CHudZoom::Paint( void )
 	// draw zoom circles
 	float fX, fY;
 	bool bBehindCamera = false;
-	CHudCrosshair::GetDrawPosition( &fX, &fY, &bBehindCamera, pPlayer->m_vOffsetedCrosshairDir);
+	QAngle angCrossOffset = pPlayer->m_vOffsetedCrosshairDir;
+	if (chaos_flip_crosshair_x_offset.GetBool())
+		angCrossOffset.y = -angCrossOffset.y;
+	CHudCrosshair::GetDrawPosition( &fX, &fY, &bBehindCamera, angCrossOffset);
 	if( bBehindCamera )
 		return;
 	int xCrosshair = (int)fX;

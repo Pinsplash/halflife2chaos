@@ -31,6 +31,7 @@
 
 ConVar crosshair( "crosshair", "1", FCVAR_ARCHIVE );
 ConVar cl_observercrosshair( "cl_observercrosshair", "1", FCVAR_ARCHIVE );
+ConVar chaos_flip_crosshair_x_offset("chaos_flip_crosshair_x_offset", "0");
 
 using namespace vgui;
 
@@ -243,7 +244,10 @@ void CHudCrosshair::Paint( void )
 
 	float x, y;
 	bool bBehindCamera;
-	GetDrawPosition ( &x, &y, &bBehindCamera, pPlayer->m_vOffsetedCrosshairDir);
+	QAngle angCrossOffset = pPlayer->m_vOffsetedCrosshairDir;
+	if (chaos_flip_crosshair_x_offset.GetBool())
+		angCrossOffset.y = -angCrossOffset.y;
+	GetDrawPosition ( &x, &y, &bBehindCamera, angCrossOffset);
 
 	if( bBehindCamera )
 		return;

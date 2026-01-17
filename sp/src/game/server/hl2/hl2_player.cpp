@@ -9811,7 +9811,7 @@ void CEScannerSpam::StartEffect()
 }
 void CEMirrorWorld::StartEffect()
 {
-	engine->ClientCommand(engine->PEntityOfEntIndex(1), "chaos_flip_screen 1;chaos_invert_stereo 1;chaos_flip_vehicle_input 1");
+	engine->ClientCommand(engine->PEntityOfEntIndex(1), "chaos_flip_screen 1;chaos_invert_stereo 1;chaos_flip_vehicle_input 1;chaos_flip_crosshair_x_offset 1");
 
 	//set m_yaw in respect to No Looking Left/Right
 	if (!g_ChaosEffects[EFFECT_NO_MOUSE_HORIZONTAL]->m_bActive)
@@ -9823,10 +9823,18 @@ void CEMirrorWorld::StartEffect()
 		engine->ClientCommand(engine->PEntityOfEntIndex(1), "cl_sidespeed -450");
 	else
 		engine->ClientCommand(engine->PEntityOfEntIndex(1), "cl_sidespeed -4000");
+
+	//for DVD Crosshair, flip it to the other side and flip X axis motion
+	if (g_ChaosEffects[EFFECT_DVD_CROSSHAIR]->m_bActive)
+	{
+		CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+		pPlayer->m_CrosshairOffset.x = -pPlayer->m_CrosshairOffset.x;
+		pPlayer->m_bCrosshairMoveX = !pPlayer->m_bCrosshairMoveX;
+	}
 }
 void CEMirrorWorld::StopEffect()
 {
-	engine->ClientCommand(engine->PEntityOfEntIndex(1), "chaos_flip_screen 0;chaos_invert_stereo 0;chaos_flip_vehicle_input 0");
+	engine->ClientCommand(engine->PEntityOfEntIndex(1), "chaos_flip_screen 0;chaos_invert_stereo 0;chaos_flip_vehicle_input 0;chaos_flip_crosshair_x_offset 0");
 
 	//set m_yaw in respect to No Looking Left/Right
 	if (!g_ChaosEffects[EFFECT_NO_MOUSE_HORIZONTAL]->m_bActive)
@@ -9838,6 +9846,14 @@ void CEMirrorWorld::StopEffect()
 		engine->ClientCommand(engine->PEntityOfEntIndex(1), "cl_sidespeed 450");
 	else
 		engine->ClientCommand(engine->PEntityOfEntIndex(1), "cl_sidespeed 4000");
+
+	//DVD Crosshair, do the same when ending the effect
+	if (g_ChaosEffects[EFFECT_DVD_CROSSHAIR]->m_bActive)
+	{
+		CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+		pPlayer->m_CrosshairOffset.x = -pPlayer->m_CrosshairOffset.x;
+		pPlayer->m_bCrosshairMoveX = !pPlayer->m_bCrosshairMoveX;
+	}
 }
 void CENoMouseHorz::StartEffect()
 {

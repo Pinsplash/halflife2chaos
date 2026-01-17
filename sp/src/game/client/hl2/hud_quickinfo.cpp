@@ -31,6 +31,7 @@ int ScreenTransform( const Vector& point, Vector& screen );
 static ConVar	hud_quickinfo( "hud_quickinfo", "1", FCVAR_ARCHIVE );
 
 extern ConVar crosshair;
+extern ConVar chaos_flip_crosshair_x_offset;
 
 #define QUICKINFO_EVENT_DURATION	1.0f
 #define	QUICKINFO_BRIGHTNESS_FULL	255
@@ -249,7 +250,10 @@ void CHUDQuickInfo::Paint()
 
 	float fX, fY;
 	bool bBehindCamera = false;
-	CHudCrosshair::GetDrawPosition( &fX, &fY, &bBehindCamera, player->m_vOffsetedCrosshairDir);
+	QAngle angCrossOffset = player->m_vOffsetedCrosshairDir;
+	if (chaos_flip_crosshair_x_offset.GetBool())
+		angCrossOffset.y = -angCrossOffset.y;
+	CHudCrosshair::GetDrawPosition( &fX, &fY, &bBehindCamera, angCrossOffset);
 
 	// if the crosshair is behind the camera, don't draw it
 	if( bBehindCamera )
