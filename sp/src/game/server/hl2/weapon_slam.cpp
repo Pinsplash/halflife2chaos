@@ -42,15 +42,11 @@ BEGIN_DATADESC(CTripmineGrenade)
 	DEFINE_FIELD(m_flPowerUp, FIELD_TIME),
 	DEFINE_FIELD(m_vecDir, FIELD_VECTOR),
 	DEFINE_FIELD(m_vecEnd, FIELD_POSITION_VECTOR),
-	DEFINE_FIELD(m_flBeamLength, FIELD_FLOAT),
 	DEFINE_FIELD(m_pBeam, FIELD_CLASSPTR),
 	DEFINE_FIELD(m_posOwner, FIELD_POSITION_VECTOR),
 	DEFINE_FIELD(m_angleOwner, FIELD_VECTOR),
 	// Function Pointers
-	DEFINE_THINKFUNC(WarningThink),
-	DEFINE_THINKFUNC(PowerupThink),
 	DEFINE_THINKFUNC(BeamBreakThink),
-	DEFINE_THINKFUNC(DelayDeathThink),
 END_DATADESC()
 
 CTripmineGrenade::CTripmineGrenade()
@@ -84,7 +80,9 @@ void CTripmineGrenade::Spawn(void)
 
 	m_flPowerUp = gpGlobals->curtime + 2.0;
 
-	SetThink(&CTripmineGrenade::PowerupThink);
+	m_bIsLive = true;
+
+	SetThink(&CTripmineGrenade::BeamBreakThink);
 	SetNextThink(gpGlobals->curtime + 0.2);
 
 	m_takedamage = DAMAGE_YES;
@@ -98,9 +96,8 @@ void CTripmineGrenade::Spawn(void)
 	angles.x -= 90;
 
 	AngleVectors(angles, &m_vecDir);
-	trace_t tr;
-	UTIL_TraceLine(GetAbsOrigin(), GetAbsOrigin() + m_vecDir * MAX_TRACE_LENGTH, MASK_SHOT, this, COLLISION_GROUP_NONE, &tr);
-	m_vecEnd = tr.endpos;
+	m_vecEnd = GetAbsOrigin() + m_vecDir * MAX_TRACE_LENGTH;
+	g_iGrenades++;
 }
 
 
@@ -117,29 +114,6 @@ void CTripmineGrenade::Precache(void)
 }
 
 
-void CTripmineGrenade::WarningThink(void)
-{
-	// set to power up
-	SetThink(&CTripmineGrenade::PowerupThink);
-	SetNextThink(gpGlobals->curtime + 1.0f);
-}
-
-
-void CTripmineGrenade::PowerupThink(void)
-{
-	if (gpGlobals->curtime > m_flPowerUp)
-	{
-		MakeBeam();
-		RemoveSolidFlags(FSOLID_NOT_SOLID);
-		m_bIsLive = true;
-
-		// play enabled sound
-		EmitSound("TripmineGrenade.PowerUp");;
-	}
-	SetNextThink(gpGlobals->curtime + 0.1f);
-}
-
-
 void CTripmineGrenade::KillBeam(void)
 {
 	if (m_pBeam)
@@ -150,43 +124,11 @@ void CTripmineGrenade::KillBeam(void)
 }
 
 
-void CTripmineGrenade::MakeBeam(void)
+void CTripmineGrenade::MakeBeam(trace_t* tr)
 {
-	trace_t tr;
-
-	UTIL_TraceLine(GetAbsOrigin(), m_vecEnd, MASK_SHOT, this, COLLISION_GROUP_NONE, &tr);
-
-	m_flBeamLength = tr.fraction;
-
-
-
-	// If I hit a living thing, send the beam through me so it turns on briefly
-	// and then blows the living thing up
-	CBaseEntity *pEntity = tr.m_pEnt;
-	CBaseCombatCharacter *pBCC = ToBaseCombatCharacter(pEntity);
-
-	// Draw length is not the beam length if entity is in the way
-	//float drawLength = tr.fraction;
-	if (pBCC)
-	{
-		SetOwnerEntity(pBCC);
-		UTIL_TraceLine(GetAbsOrigin(), m_vecEnd, MASK_SHOT, this, COLLISION_GROUP_NONE, &tr);
-		m_flBeamLength = tr.fraction;
-		SetOwnerEntity(NULL);
-
-	}
-
-	// set to follow laser spot
-	SetThink(&CTripmineGrenade::BeamBreakThink);
-
-	// Delay first think slightly so beam has time
-	// to appear if person right in front of it
-	SetNextThink(gpGlobals->curtime + 1.0f);
-
-	//Vector vecTmpEnd = GetLocalOrigin() + m_vecDir * 2048 * drawLength;
-
+	m_vecEnd = tr->endpos;
 	m_pBeam = CBeam::BeamCreate(g_pModelNameLaser, 1.0);
-	m_pBeam->PointEntInit(m_vecEnd, this);
+	m_pBeam->PointEntInit(tr->endpos, this);
 	m_pBeam->SetColor(0, 214, 198);
 	m_pBeam->SetScrollRate(25.6);
 	m_pBeam->SetBrightness(64);
@@ -195,40 +137,25 @@ void CTripmineGrenade::MakeBeam(void)
 
 void CTripmineGrenade::BeamBreakThink(void)
 {
-	// See if I can go solid yet (has dropper moved out of way?)
-	if (IsSolidFlagSet(FSOLID_NOT_SOLID))
-	{
-		trace_t tr;
-		Vector	vUpBit = GetAbsOrigin();
-		vUpBit.z += 5.0;
-
-		UTIL_TraceEntity(this, GetAbsOrigin(), vUpBit, MASK_SHOT, &tr);
-		if (!tr.startsolid && (tr.fraction == 1.0))
-		{
-			RemoveSolidFlags(FSOLID_NOT_SOLID);
-		}
-	}
-
-	trace_t tr;
-
-	// NOT MASK_SHOT because we want only simple hit boxes
-	UTIL_TraceLine(GetAbsOrigin(), m_vecEnd, MASK_SHOT, this, COLLISION_GROUP_NONE, &tr);
-
-	// ALERT( at_console, "%f : %f\n", tr.flFraction, m_flBeamLength );
+	trace_t tr1;
+	UTIL_TraceLine(GetAbsOrigin(), m_vecEnd, MASK_BLOCKLOS_AND_NPCS, this, COLLISION_GROUP_NONE, &tr1);
 
 	// respawn detect. 
-	if (!m_pBeam)
+	if (!m_pBeam && gpGlobals->curtime > m_flPowerUp)
 	{
-		MakeBeam();
-		if (tr.m_pEnt)
-			m_hOwner = tr.m_pEnt;	// reset owner too
+		MakeBeam(&tr1);
+		EmitSound("TripmineGrenade.PowerUp");
+		if (tr1.m_pEnt)
+			m_hOwner = tr1.m_pEnt;	// reset owner too
 	}
+	
+	CBaseCombatCharacter *pBCC = ToBaseCombatCharacter(tr1.m_pEnt);
 
+	//second trace from beam end to check if entity moved away in the direction of the beam
+	trace_t tr2;
+	UTIL_TraceLine(m_vecEnd, m_vecEnd + m_vecDir, MASK_BLOCKLOS_AND_NPCS, this, COLLISION_GROUP_NONE, &tr2);
 
-	CBaseEntity *pEntity = tr.m_pEnt;
-	CBaseCombatCharacter *pBCC = ToBaseCombatCharacter(pEntity);
-
-	if (pBCC || fabs(m_flBeamLength - tr.fraction) > 0.001)
+	if (m_pBeam && (!tr2.DidHit() || pBCC || m_vecEnd != tr1.endpos))
 	{
 		m_iHealth = 0;
 		Event_Killed(CTakeDamageInfo((CBaseEntity*)m_hOwner, this, 100, GIB_NORMAL));
@@ -260,15 +187,11 @@ int CTripmineGrenade::OnTakeDamage_Alive(const CTakeDamageInfo &info)
 void CTripmineGrenade::Event_Killed(const CTakeDamageInfo &info)
 {
 	m_takedamage = DAMAGE_NO;
-
-	SetThink(&CTripmineGrenade::DelayDeathThink);
-	SetNextThink(gpGlobals->curtime + 0.5);
-	//no such sound
-	//EmitSound("TripmineGrenade.StopSound");
+	MineExplode();
 }
 
 
-void CTripmineGrenade::DelayDeathThink(void)
+void CTripmineGrenade::MineExplode(void)
 {
 	KillBeam();
 	trace_t tr;

@@ -127,13 +127,11 @@ public:
 
 	int OnTakeDamage_Alive(const CTakeDamageInfo &info);
 
-	void WarningThink(void);
-	void PowerupThink(void);
 	void BeamBreakThink(void);
-	void DelayDeathThink(void);
+	void MineExplode(void);
 	void Event_Killed(const CTakeDamageInfo &info);
 
-	void MakeBeam(void);
+	void MakeBeam(trace_t* tr);
 	void KillBeam(void);
 
 	EHANDLE		m_hOwner;
@@ -141,7 +139,6 @@ public:
 	float		m_flPowerUp;
 	Vector		m_vecDir;
 	Vector		m_vecEnd;
-	float		m_flBeamLength;
 
 	CBeam		*m_pBeam;
 	Vector		m_posOwner;
