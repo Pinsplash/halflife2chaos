@@ -136,6 +136,7 @@ void CGrenadeFrag::Spawn( void )
 	m_combineSpawned	= false;
 	m_punted			= false;
 
+	g_iGrenades++;
 	BaseClass::Spawn();
 }
 
@@ -469,7 +470,6 @@ CBaseGrenade *Fraggrenade_Create( const Vector &position, const QAngle &angles, 
 	pGrenade->m_takedamage = DAMAGE_EVENTS_ONLY;
 	pGrenade->SetCombineSpawned( combineSpawned );
 
-	g_iGrenades++;
 	//Msg("Made grenade %i, new count: %i\n", pGrenade->entindex(), g_iGrenades);
 	return pGrenade;
 }
