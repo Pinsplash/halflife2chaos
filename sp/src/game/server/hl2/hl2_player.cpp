@@ -6922,7 +6922,9 @@ bool CChaosEffect::PhysConvertSoftlock(const char* pMapName)
 			|| !Q_strcmp(pMapName, "ep1_c17_00a")//EWN
 			|| !Q_strcmp(pMapName, "ep2_outland_03")//EWN and UPE
 			|| !Q_strcmp(pMapName, "ep2_outland_11")//EWN
-			|| !Q_strcmp(pMapName, "ep2_outland_11b"))//ED
+			|| !Q_strcmp(pMapName, "ep2_outland_11a")//ED
+			|| !Q_strcmp(pMapName, "ep2_outland_11b")//ED
+			|| !Q_strcmp(pMapName, "ep2_outland_12"))//lags like crazy and moves very little
 			return true;//bad map
 	}
 	return false;
@@ -9440,12 +9442,19 @@ void CEWeaponRemove::StartEffect()
 }
 void CEPhysConvert::StartEffect()
 {
-	bool ep1c1700Hack = false;
 	const char* pMapName = STRING(gpGlobals->mapname);
+	bool ep1c1700Hack = false;
 	if (!Q_strcmp(pMapName, "ep1_c17_00"))
 	{
 		ep1c1700Hack = true;
 	}
+	/*
+	bool ep2outland11aHack = false;
+	if (!Q_strcmp(pMapName, "ep2_outland_11a"))
+	{
+		ep2outland11aHack = true;
+	}
+	*/
 	//door-linked areaportals become permanently open since the door is now free to move
 	CBaseEntity* pPortal = NULL;
 	while ((pPortal = gEntList.FindEntityByClassname(pPortal, "func_a*")) != NULL)
@@ -9519,6 +9528,26 @@ void CEPhysConvert::StartEffect()
 				pos.x += 10;
 				pEnt->Teleport(&pos, NULL, NULL);
 			}
+			/*
+			else if (ep2outland11aHack)
+			{
+				if (pEnt->NameMatches("door_silo_lab_2"))
+				{
+					Vector pos = pEnt->GetAbsOrigin();
+					pos.x += 30;
+					pEnt->Teleport(&pos, NULL, NULL);
+				}
+				if (pEnt->NameMatches("doors_biground_2"))
+				{
+					QAngle ang = pEnt->GetAbsAngles();
+					ang.x += 20;
+					ang.y += 20;
+					pEnt->Teleport(NULL, &ang, NULL);
+					IPhysicsObject* pObj = pEnt->VPhysicsGetObject();
+					pObj->SetMass(pObj->GetMass() / 3);
+				}
+			}
+			*/
 		}
 		pEnt = gEntList.NextEnt(pEnt);
 	}
