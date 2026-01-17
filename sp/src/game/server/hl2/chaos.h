@@ -150,6 +150,7 @@ enum
 	SPAWNTYPE_ONGROUND,
 	SPAWNTYPE_HIDEINCOVER
 };
+CBaseEntity* GetEntityWithID(int iChaosID);
 class CChaosEffect
 {
 public:
@@ -195,8 +196,6 @@ public:
 	CAI_Node *NearestNodeToPoint(const Vector &vPosition, bool bCheckVisibility);
 	bool IterUsableVehicles(bool bFindOnly);
 	virtual void DoOnVehicles(CPropVehicleDriveable *pVehicle){};
-	CBaseEntity *GetEntityWithID(int iChaosID);
-	bool MapIsLong(const char *pMapName);
 	bool MapGoodForCrane(const char *pMapName);
 	bool SafeCloneNPCs(const char *pMapName);
 	bool MapHasImportantPickups(const char *pMapName);
@@ -213,8 +212,6 @@ public:
 class CChaosStoredEnt
 {
 public:
-	//DECLARE_CLASS_NOBASE(CChaosStoredEnt);
-	//string_t classname;
 	const char *strClassname;
 	string_t targetname;
 	int chaosid;
@@ -233,7 +230,6 @@ public:
 	float speed;
 	int solid;
 	bool persist = false;
-	//pKVData->SetInt("touchStamp", pEnt->touchStamp);//this was a speculative fix for some kind of touchlink related crash. if that crash comes back, put this back in.
 
 	bool animating = false;
 	int skin;
@@ -257,11 +253,16 @@ public:
 	int crabcount;
 
 	bool antlion = false;
-	//bool burrowed = false;
 
 	bool antlionguard = false;
-	//bool burrowed = false;
 	bool cavernbreed = false;
+
+	bool dropship = false;
+	int containerid;
+	int cratetype;
+
+	bool dropshipcargo = false;
+	int dropshipid;
 };
 //CUtlVector<int>				g_iActiveEffects;
 int g_iActiveEffects[MAX_ACTIVE_EFFECTS];

@@ -101,7 +101,6 @@ public:
 	virtual void		InputInsideTransition(inputdata_t &inputdata);
 	void		DoChaosHUDBar();
 	void		DoChaosHUDText();
-	void		ForceUnstuck();
 	Vector		RotatedOffset(Vector vecOffset, bool bNoVertical);
 	void		ReplaceEffects();
 	void		RemoveDeadEnts();

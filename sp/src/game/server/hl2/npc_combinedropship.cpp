@@ -9,7 +9,6 @@
 #include "ai_default.h"
 #include "ai_basenpc.h"
 #include "soundenvelope.h"
-#include "cbasehelicopter.h"
 #include "ai_schedule.h"
 #include "engine/IEngineSound.h"
 #include "smoke_trail.h"
@@ -33,6 +32,7 @@
 #include "eventqueue.h"
 #include "ai_trackpather.h"
 #include "trains.h"
+#include "npc_combinedropship.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -48,7 +48,6 @@
 
 // Special actions
 #define DROPSHIP_DEFAULT_SOLDIERS		4
-#define DROPSHIP_MAX_SOLDIERS			6
 
 // Movement
 #define DROPSHIP_BUFF_TIME				0.3f
@@ -116,28 +115,6 @@ Activity ACT_DROPSHIP_DESCEND_IDLE;		// waiting to touchdown
 Activity ACT_DROPSHIP_DEPLOY_IDLE;		// idle on the ground with door open. Troops are leaving.
 Activity ACT_DROPSHIP_LIFTOFF;			// transition back to FLY IDLE
 
-enum LandingState_t
-{
-	LANDING_NO = 0,
-
-	// Dropoff
-	LANDING_LEVEL_OUT,		// Heading to a point above the dropoff point
-	LANDING_DESCEND,		// Descending from to the dropoff point
-	LANDING_TOUCHDOWN,
-	LANDING_UNLOADING,
-	LANDING_UNLOADED,
-	LANDING_LIFTOFF,
-
-	// Pickup
-	LANDING_SWOOPING,		// Swooping down to the target
-
-	// Hovering, which we're saying is a type of landing since there's so much landing code to leverage
-	LANDING_START_HOVER,
-	LANDING_HOVER_LEVEL_OUT,
-	LANDING_HOVER_DESCEND,
-	LANDING_HOVER_TOUCHDOWN,
-	LANDING_END_HOVER,
-};
 
 
 #define DROPSHIP_NEAR_SOUND_MIN_DISTANCE 1000
@@ -166,211 +143,7 @@ static const char *s_pGibModelName[DROPSHIP_CONTAINER_MAX_GIBS] =
 	"models/combine_dropship_container.mdl",
 };
 
-class CCombineDropshipContainer : public CPhysicsProp
-{
-	DECLARE_CLASS( CCombineDropshipContainer, CPhysicsProp );
-	DECLARE_DATADESC();
 
-public:
-	void Precache();
-	virtual void Spawn();
-	virtual bool OverridePropdata( void );
-	virtual int OnTakeDamage( const CTakeDamageInfo &info );
-	virtual void Event_Killed( const CTakeDamageInfo &info );
-
-private:
-	enum
-	{
-		MAX_SMOKE_TRAILS = 4,
-		MAX_EXPLOSIONS = 4,
-	};
-
-	// Should we trigger a damage effect?
-	bool ShouldTriggerDamageEffect( int nPrevHealth, int nEffectCount ) const;
-
-	// Add a smoke trail since we've taken more damage
-	void AddSmokeTrail( const Vector &vecPos );
-
-	// Pow!
-	void ThrowFlamingGib();
-
-	// Create a corpse
-	void CreateCorpse();
-
-private:
-	int m_nSmokeTrailCount;
-	EHANDLE m_hLastInflictor;
-	float m_flLastHitTime;
-};
-
-//=============================================================================
-// The combine dropship
-//=============================================================================
-class CNPC_CombineDropship : public CBaseHelicopter
-{
-	DECLARE_CLASS( CNPC_CombineDropship, CBaseHelicopter );
-
-public:
-	~CNPC_CombineDropship();
-	virtual void LogicExplode();
-	// Setup
-	void	Spawn( void );
-	void	Precache( void );
-
-	void	Activate( void );
-
-	// Thinking/init
-	void	InitializeRotorSound( void );
-	void	StopLoopingSounds();
-	void	PrescheduleThink( void );
-
-	// Flight/sound
-	void	Hunt( void );
-	void	Flight( void );
-	float	GetAltitude( void );
-	void	DoRotorWash( void );
-	void	UpdateRotorSoundPitch( int iPitch );
-	void	UpdatePickupNavigation( void );
-	void	UpdateLandTargetNavigation( void );
-	void	CalculateSoldierCount( int iSoldiers );
-
-	// Updates the facing direction
-	virtual void UpdateFacingDirection();
-
-	// Combat
-	void	GatherEnemyConditions( CBaseEntity *pEnemy );
-	void	DoCombatStuff( void );
-	void	SpawnTroop( void );
-	void	DropMine( void );
-	void	UpdateContainerGunFacing( Vector &vecMuzzle, Vector &vecToTarget, Vector &vecAimDir, float *flTargetRange );
-	bool	FireCannonRound( void );
-	void	DoImpactEffect( trace_t &tr, int nDamageType );
-	void	StartCannon( void );
-	void	StopCannon( void );
-	void	MakeTracer( const Vector &vecTracerSrc, const trace_t &tr, int iTracerType );
-	int		OnTakeDamage_Alive( const CTakeDamageInfo &inputInfo );
-
-	// Input handlers.
-	void	InputLandLeave( inputdata_t &inputdata );
-	void	InputLandTake( inputdata_t &inputdata );
-	void	InputSetLandTarget( inputdata_t &inputdata );
-	void	InputDropMines( inputdata_t &inputdata );
-	void	InputDropStrider( inputdata_t &inputdata );
-	void	InputDropAPC( inputdata_t &inputdata );
-
-	void	InputPickup( inputdata_t &inputdata );
-	void	InputSetGunRange( inputdata_t &inputdata );
-	void	InputNPCFinishDustoff( inputdata_t &inputdata );
-	void	InputStopWaitingForDropoff( inputdata_t &inputdata );
-
-	void	InputHover( inputdata_t &inputdata );
-
-	// From AI_TrackPather
-	virtual void InputFlyToPathTrack( inputdata_t &inputdata );
-
-	Vector	GetDropoffFinishPosition( Vector vecOrigin, CAI_BaseNPC *pNPC, Vector vecMins, Vector vecMaxs );
-	void	LandCommon( bool bHover = false );
-
-	Class_T Classify( void ) { return CLASS_COMBINE_GUNSHIP; }
-
-	// Drop the soldier container
-	void	DropSoldierContainer( );
-
-	// Sounds
-	virtual void UpdateRotorWashVolume();
-
-private:
-	void SetLandingState( LandingState_t landingState );
-	LandingState_t GetLandingState() const { return (LandingState_t)m_iLandState; }
-	bool IsHovering();
-	void UpdateGroundRotorWashSound( float flAltitude );
-	void UpdateRotorWashVolume( CSoundPatch *pRotorSound, float flVolume, float flDeltaTime );
-
-private:
-	// Timers
-	float	m_flTimeTakeOff;
-	float	m_flNextTroopSpawnAttempt;
-	float	m_flDropDelay;			// delta between each mine
-	float	m_flTimeNextAttack;
-	float	m_flLastTime;
-	
-	// States and counters
-	int		m_iMineCount;		// index for current mine # being deployed
-	int		m_totalMinesToDrop;	// total # of mines to drop as a group (based upon triggered input)
-	int		m_soldiersToDrop;
-	int		m_iDropState;
-	int		m_iLandState; 
-	float	m_engineThrust;		// for tracking sound volume/pitch
-	float	m_existPitch;
-	float	m_existRoll;
-	bool	m_bDropMines;		// signal to drop mines
-	bool	m_bIsFiring;
-	int		m_iBurstRounds;
-	bool	m_leaveCrate;
-	bool	m_bHasDroppedOff;
-	int		m_iCrateType;
-	float	m_flLandingSpeed;
-	float	m_flGunRange;
-	bool	m_bInvulnerable;
-
-	QAngle	m_vecAngAcceleration;
-	
-	// Misc Vars
-	CHandle<CBaseAnimating>	m_hContainer;
-	EHANDLE		m_hPickupTarget;
-	int			m_iContainerMoveType;
-	bool		m_bWaitForDropoffInput;
-
-	DECLARE_DATADESC();
-	DEFINE_CUSTOM_AI;
-
-	EHANDLE		m_hLandTarget;
-	string_t	m_iszLandTarget;
-
-	string_t	m_iszAPCVehicleName;
-
-	// Templates for soldier's dropped off
-	string_t	m_sNPCTemplate[ DROPSHIP_MAX_SOLDIERS ];
-	string_t	m_sNPCTemplateData[ DROPSHIP_MAX_SOLDIERS ];	
-	string_t	m_sDustoffPoints[ DROPSHIP_MAX_SOLDIERS ];	
-	int			m_iCurrentTroopExiting;
-	EHANDLE		m_hLastTroopToLeave;
-
-	// Template for rollermines dropped by this dropship
-	string_t	m_sRollermineTemplate;
-	string_t	m_sRollermineTemplateData;
-
-	// Cached attachment points
-	int			m_iMuzzleAttachment;
-	int			m_iMachineGunBaseAttachment;
-	int			m_iMachineGunRefAttachment;
-	int			m_iAttachmentTroopDeploy;
-	int			m_iAttachmentDeployStart;
-
-	// Sounds
-	CSoundPatch		*m_pCannonSound;
-	CSoundPatch		*m_pRotorOnGroundSound;
-	CSoundPatch		*m_pDescendingWarningSound;
-	CSoundPatch		*m_pNearRotorSound;
-
-	// Outputs
-	COutputEvent	m_OnFinishedDropoff;
-	COutputEvent	m_OnFinishedPickup;
-
-	COutputFloat	m_OnContainerShotDownBeforeDropoff;
-	COutputEvent	m_OnContainerShotDownAfterDropoff;
-
-protected:
-	// Because the combine dropship is a leaf class, we can use
-	// static variables to store this information, and save some memory.
-	// Should the dropship end up having inheritors, their activate may
-	// stomp these numbers, in which case you should make these ordinary members
-	// again.
-	static int m_poseBody_Accel, m_poseBody_Sway, m_poseCargo_Body_Accel, m_poseCargo_Body_Sway, 
-		m_poseWeapon_Pitch, m_poseWeapon_Yaw;
-	static bool m_sbStaticPoseParamsLoaded;
-	virtual void	PopulatePoseParameters( void );
-};
 
 bool CNPC_CombineDropship::m_sbStaticPoseParamsLoaded = false;
 
@@ -865,14 +638,14 @@ void CNPC_CombineDropship::Spawn( void )
 	m_iAttachmentDeployStart = -1;
 
 	// create the correct bin for the ship to carry
-	switch ( m_iCrateType )
+	switch (m_iCrateType)
 	{
 	case CRATE_ROLLER_HOPPER:
 		break;
 
 	case CRATE_SOLDIER:
-		m_hContainer = (CBaseAnimating*)CreateEntityByName( "prop_dropship_container" );
-		if ( m_hContainer )
+		m_hContainer = (CBaseAnimating*)CreateEntityByName("prop_dropship_container");
+		if (m_hContainer)
 		{
 			if (m_bChaosSpawned)
 			{
@@ -881,30 +654,30 @@ void CNPC_CombineDropship::Spawn( void )
 			}
 			m_hContainer->m_bChaosPersist = m_bChaosPersist;
 			m_hContainer->m_bChaosSpawned = m_bChaosSpawned;
-			m_hContainer->SetName( AllocPooledString("dropship_container") );
-			m_hContainer->SetAbsOrigin( GetAbsOrigin() );
-			m_hContainer->SetAbsAngles( GetAbsAngles() );
+			m_hContainer->SetName(AllocPooledString("dropship_container"));
+			m_hContainer->SetAbsOrigin(GetAbsOrigin());
+			m_hContainer->SetAbsAngles(GetAbsAngles());
 			m_hContainer->SetParent(this, 0);
 			m_hContainer->SetOwnerEntity(this);
 			m_hContainer->Spawn();
 
-			IPhysicsObject *pPhysicsObject = m_hContainer->VPhysicsGetObject();
-			if ( pPhysicsObject )
+			IPhysicsObject* pPhysicsObject = m_hContainer->VPhysicsGetObject();
+			if (pPhysicsObject)
 			{
-				pPhysicsObject->SetShadow( 1e4, 1e4, false, false );
-				pPhysicsObject->UpdateShadow( m_hContainer->GetAbsOrigin(), m_hContainer->GetAbsAngles(), false, 0 );
+				pPhysicsObject->SetShadow(1e4, 1e4, false, false);
+				pPhysicsObject->UpdateShadow(m_hContainer->GetAbsOrigin(), m_hContainer->GetAbsAngles(), false, 0);
 			}
 
-			m_hContainer->SetMoveType( MOVETYPE_PUSH );
-			m_hContainer->SetGroundEntity( NULL );
+			m_hContainer->SetMoveType(MOVETYPE_PUSH);
+			m_hContainer->SetGroundEntity(NULL);
 
 			// Cache off container's attachment points
-			m_iAttachmentTroopDeploy = m_hContainer->LookupAttachment( "deploy_landpoint" );
-			m_iAttachmentDeployStart = m_hContainer->LookupAttachment( "Deploy_Start" );
-			m_iMuzzleAttachment = m_hContainer->LookupAttachment( "muzzle" );
-			m_iMachineGunBaseAttachment = m_hContainer->LookupAttachment( "gun_base" );
+			m_iAttachmentTroopDeploy = m_hContainer->LookupAttachment("deploy_landpoint");
+			m_iAttachmentDeployStart = m_hContainer->LookupAttachment("Deploy_Start");
+			m_iMuzzleAttachment = m_hContainer->LookupAttachment("muzzle");
+			m_iMachineGunBaseAttachment = m_hContainer->LookupAttachment("gun_base");
 			// NOTE: gun_ref must have the same position as gun_base, but rotates with the gun
-			m_iMachineGunRefAttachment = m_hContainer->LookupAttachment( "gun_ref" );
+			m_iMachineGunRefAttachment = m_hContainer->LookupAttachment("gun_ref");
 		}
 		break;
 
@@ -917,50 +690,54 @@ void CNPC_CombineDropship::Spawn( void )
 		}
 		m_hContainer->m_bChaosPersist = m_bChaosPersist;
 		m_hContainer->m_bChaosSpawned = m_bChaosSpawned;
-		m_hContainer->SetAbsOrigin( GetAbsOrigin() - Vector( 0, 0 , 100 ) );
-		m_hContainer->SetAbsAngles( GetAbsAngles() );
+		m_hContainer->SetAbsOrigin(GetAbsOrigin() - Vector(0, 0, 100));
+		m_hContainer->SetAbsAngles(GetAbsAngles());
 		m_hContainer->SetParent(this, 0);
 		m_hContainer->SetOwnerEntity(this);
 		m_hContainer->Spawn();
-		m_hContainer->SetAbsOrigin( GetAbsOrigin() - Vector( 0, 0 , 100 ) );
+		m_hContainer->SetAbsOrigin(GetAbsOrigin() - Vector(0, 0, 100));
 		break;
 
 	case CRATE_APC:
+	{
+		m_soldiersToDrop = 0;
+		m_hContainer = (CBaseAnimating*)gEntList.FindEntityByName(NULL, m_iszAPCVehicleName);
+		if (!m_hContainer)
 		{
-			m_soldiersToDrop = 0;
-			m_hContainer = (CBaseAnimating*)gEntList.FindEntityByName( NULL, m_iszAPCVehicleName );
-			if ( !m_hContainer )
-			{
-				Warning("Unable to find APC %s\n", STRING( m_iszAPCVehicleName ) ); 		
-				break;
-			}
-
-			Vector apcPosition = GetAbsOrigin() - Vector( 0, 0 , 25 );
-			QAngle apcAngles = GetAbsAngles();
-			VMatrix mat, rot, result;
-			MatrixFromAngles( apcAngles, mat );
-			MatrixBuildRotateZ( rot, -90 );
-			MatrixMultiply( mat, rot, result );
-			MatrixToAngles( result, apcAngles );
-
-			m_hContainer->Teleport( &apcPosition, &apcAngles, NULL );
-
-			m_iContainerMoveType = m_hContainer->GetMoveType();
-
-			IPhysicsObject *pPhysicsObject = m_hContainer->VPhysicsGetObject();
-			if ( pPhysicsObject )
-			{
-				pPhysicsObject->SetShadow( 1e4, 1e4, false, false );
-			}
-
-			m_hContainer->SetParent(this, 0);
-			m_hContainer->SetOwnerEntity(this);
-			m_hContainer->SetMoveType( MOVETYPE_PUSH );
-			m_hContainer->SetGroundEntity( NULL );
-			m_hContainer->UpdatePhysicsShadowToCurrentPosition(0);
+			Warning("Unable to find APC %s\n", STRING(m_iszAPCVehicleName));
+			break;
 		}
-		break;
+		if (m_bChaosSpawned)
+		{
+			g_iChaosSpawnCount++;
+			m_hContainer->m_iChaosID = g_iChaosSpawnCount;
+		}
 
+		Vector apcPosition = GetAbsOrigin() - Vector(0, 0, 25);
+		QAngle apcAngles = GetAbsAngles();
+		VMatrix mat, rot, result;
+		MatrixFromAngles(apcAngles, mat);
+		MatrixBuildRotateZ(rot, -90);
+		MatrixMultiply(mat, rot, result);
+		MatrixToAngles(result, apcAngles);
+
+		m_hContainer->Teleport(&apcPosition, &apcAngles, NULL);
+
+		m_iContainerMoveType = m_hContainer->GetMoveType();
+
+		IPhysicsObject* pPhysicsObject = m_hContainer->VPhysicsGetObject();
+		if (pPhysicsObject)
+		{
+			pPhysicsObject->SetShadow(1e4, 1e4, false, false);
+		}
+
+		m_hContainer->SetParent(this, 0);
+		m_hContainer->SetOwnerEntity(this);
+		m_hContainer->SetMoveType(MOVETYPE_PUSH);
+		m_hContainer->SetGroundEntity(NULL);
+		m_hContainer->UpdatePhysicsShadowToCurrentPosition(0);
+		break;
+	}
 	case CRATE_JEEP:
 		m_hContainer = (CBaseAnimating*)CreateEntityByName( "prop_dynamic_override" );
 		if ( m_hContainer )
@@ -1237,6 +1014,7 @@ void CNPC_CombineDropship::Flight( void )
 		accel.x = 2.0 * (deltaPos.x - GetAbsVelocity().x * dt) / (dt * dt);
 		accel.y = 2.0 * (deltaPos.y - GetAbsVelocity().y * dt) / (dt * dt);
 		accel.z = 2.0 * (deltaPos.z - GetAbsVelocity().z * dt + 0.5 * 384 * dt * dt) / (dt * dt);
+		//Msg("accel = %s deltaPos = %s vel = %s dt = %f\n", VecToString(accel), VecToString(deltaPos), VecToString(GetAbsVelocity()), dt);
 		
 		float flDistFromPath = 0.0f;
 		Vector vecPoint, vecDelta;
@@ -1266,6 +1044,7 @@ void CNPC_CombineDropship::Flight( void )
 		float goalPitch = RAD2DEG( asin( DotProduct( forward, goalUp ) ) );
 		float goalYaw = UTIL_VecToYaw( m_vecDesiredFaceDir );
 		float goalRoll = RAD2DEG( asin( DotProduct( right, goalUp ) ) );
+		//Msg("forward = %s right = %s goalUp = %s\n", VecToString(forward), VecToString(right), VecToString(goalUp));
 
 		// clamp goal orientations
 		goalPitch = clamp( goalPitch, -45, 60 );
@@ -1294,6 +1073,7 @@ void CNPC_CombineDropship::Flight( void )
 		angAccelAccel.y = clamp( angAccelAccel.y, -1000, 1000 );
 		angAccelAccel.z = clamp( angAccelAccel.z, -1000, 1000 );
 
+		//Msg("m_vecAngAcceleration = %s goalAngAccel = %s goalPitch = %f goalYaw = %f goalRoll = %f\n", VecToString(m_vecAngAcceleration), VecToString(goalAngAccel), goalPitch, goalYaw, goalRoll);
 		m_vecAngAcceleration += angAccelAccel * 0.1;
 
 		// DevMsg( "pitch %6.1f (%6.1f:%6.1f)  ", goalPitch, GetLocalAngles().x, m_vecAngVelocity.x );
@@ -1314,6 +1094,7 @@ void CNPC_CombineDropship::Flight( void )
 		SetLocalAngularVelocity( angVel );
 
 		m_flForce = m_flForce * 0.8 + (accel.z + fabs( accel.x ) * 0.1 + fabs( accel.y ) * 0.1) * 0.1 * 0.2;
+		//Msg("m_flForce = %f accel = %s\n", m_flForce, VecToString(accel));
 
 		vecImpulse = m_flForce * up;
 		
@@ -1404,6 +1185,7 @@ void CNPC_CombineDropship::Flight( void )
 	if ( bRunFlight )
 	{
 		// Add in our velocity pulse for this frame
+		Assert(vecImpulse.IsValid());
 		ApplyAbsVelocityImpulse( vecImpulse );
 	}
 
@@ -2074,7 +1856,7 @@ void CNPC_CombineDropship::PrescheduleThink( void )
 			float flDescendVelocity = MIN( -75, MAX_LAND_VEL * flFactor );
 
 			vecVelocity.z = flDescendVelocity;
-
+			Assert(vecVelocity.IsValid());
 			SetAbsVelocity( vecVelocity );
 
 			if ( flAltitude < 72 )
@@ -3085,6 +2867,23 @@ void CNPC_CombineDropship::MakeTracer( const Vector &vecTracerSrc, const trace_t
 		BaseClass::MakeTracer( vecTracerSrc, tr, iTracerType );
 		break;
 	}
+}
+
+void CNPC_CombineDropship::ChaosDeploy()
+{
+	CBaseEntity* pTarget = CreateEntityByName("info_target");
+	pTarget->KeyValue("targetname", "dropship_target");
+	pTarget->SetAbsOrigin(GetAbsOrigin());
+	pTarget->SetAbsAngles(GetAbsAngles());
+	g_iChaosSpawnCount++; pTarget->KeyValue("chaosid", g_iChaosSpawnCount);
+	DispatchSpawn(pTarget);
+	KeyValue("LandTarget", "dropship_target");
+	variant_t variant;
+	variant.SetInt(6);
+	if (RandomInt(0, 1))
+		g_EventQueue.AddEvent("combinedropship", "LandLeaveCrate", variant, 1, this, this);
+	else
+		g_EventQueue.AddEvent("combinedropship", "LandTakeCrate", variant, 1, this, this);
 }
 
 AI_BEGIN_CUSTOM_NPC( npc_combinedropship, CNPC_CombineDropship )

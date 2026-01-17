@@ -9,3 +9,15 @@
 //DEFINE_FIELD(m_nContext, FIELD_INTEGER),
 //DEFINE_FIELD(m_flTimeRem, FIELD_FLOAT),
 //END_DATADESC()
+
+CBaseEntity* GetEntityWithID(int iChaosID)
+{
+	CBaseEntity* pEnt = gEntList.FirstEnt();
+	while (pEnt)
+	{
+		if (pEnt->m_iChaosID == iChaosID)
+			return pEnt;
+		pEnt = gEntList.NextEnt(pEnt);
+	}
+	return NULL;
+}

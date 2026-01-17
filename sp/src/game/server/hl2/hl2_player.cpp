@@ -80,6 +80,7 @@
 #include "tier3/tier3.h"
 #include "ai_tacticalservices.h"
 #include <vector>
+#include "npc_combinedropship.h"
 
 #ifdef HL2_EPISODIC
 #include "npc_alyx_episodic.h"
@@ -240,7 +241,6 @@ CChaosStoredEnt* StoreEnt(CBaseEntity* pEnt)
 	int len = Q_strlen(constcharClassName) + 1;
 	char* charCname = new char[len];
 	Q_strncpy(charCname, constcharClassName, len);
-	//pStoredEnt->classname = AllocPooledString(pEnt->GetClassname());
 	pStoredEnt->strClassname = charCname;
 	pStoredEnt->targetname = pEnt->GetEntityName();
 	pStoredEnt->chaosid = pEnt->m_iChaosID;
@@ -259,8 +259,6 @@ CChaosStoredEnt* StoreEnt(CBaseEntity* pEnt)
 	pStoredEnt->speed = pEnt->m_flSpeed;
 	pStoredEnt->solid = pEnt->CollisionProp()->GetSolid();
 	pStoredEnt->persist = pEnt->m_bChaosPersist;
-
-	//pStoredEnt.touchStamp = pEnt->touchStamp;//this was a speculative fix for some kind of touchlink related crash. if that crash comes back, put this back in.
 
 	CBaseAnimating* pAnimating = dynamic_cast<CBaseAnimating*>(pEnt);
 	if (pAnimating)
@@ -323,7 +321,19 @@ CChaosStoredEnt* StoreEnt(CBaseEntity* pEnt)
 					pStoredEnt->burrowed = pNPC->m_takedamage == DAMAGE_NO;
 					pStoredEnt->cavernbreed = pAnimating->m_nSkin == 1;
 				}
+				CNPC_CombineDropship* pDropship = dynamic_cast<CNPC_CombineDropship*>(pNPC);
+				if (pDropship && pDropship->m_hContainer && pDropship->m_hContainer->GetParent() == pDropship)
+				{
+					pStoredEnt->dropship = true;
+					pStoredEnt->containerid = pDropship->m_hContainer->m_iChaosID;
+					pStoredEnt->cratetype = pDropship->m_iCrateType;
+				}
 			}
+		}
+		if (pAnimating->GetParent() && pAnimating->GetParent()->ClassMatches("npc_combinedropship"))
+		{
+			pStoredEnt->dropshipcargo = true;
+			pStoredEnt->dropshipid = pAnimating->GetParent()->m_iChaosID;
 		}
 	}
 	return pStoredEnt;
@@ -353,7 +363,6 @@ CBaseEntity* RetrieveStoredEnt(CChaosStoredEnt* pStoredEnt)
 	pEnt->SetModelIndex(pStoredEnt->modelindex);
 	pEnt->m_flSpeed = pStoredEnt->speed;
 	pEnt->CollisionProp()->SetSolid((SolidType_t)pStoredEnt->solid);
-	//pEnt->touchStamp = pKey->GetInt("touchStamp");//this was a speculative fix for some kind of touchlink related crash. if that crash comes back, put this back in.
 
 	pEnt->m_bChaosSpawned = true;
 	pEnt->m_bChaosPersist = pStoredEnt->persist;
@@ -393,10 +402,14 @@ CBaseEntity* RetrieveStoredEnt(CChaosStoredEnt* pStoredEnt)
 				{
 					pEnt->KeyValue("startburrowed", pStoredEnt->burrowed);
 				}
+				if (pStoredEnt->dropship)
+				{
+					pEnt->KeyValue("CrateType", pStoredEnt->cratetype);
+				}
 			}
 		}
 	}
-	//PIN: force EF_NODRAW off. we've found some zombies in ep1_c17_01 that have the flag on for no apparent reason
+	//force EF_NODRAW off. we've found some zombies in ep1_c17_01 that have the flag on for no apparent reason
 	pEnt->RemoveEffects(EF_NODRAW);
 	return pEnt;
 }
@@ -2139,14 +2152,51 @@ void CHL2_Player::SpawnStoredEnts()
 		{
 			DispatchSpawn(pEnt);
 			pEnt->Activate();//according to some assert, we don't need this
-			//pEnt->Teleport(&vecOrigin, &vecAngle, NULL);
-			//this has to be done post spawn... ick
+			
+			//these things must be done post spawning
+
 			if (pStored->poisonzombie)
 			{
 				CNPC_PoisonZombie* pPZombie = dynamic_cast<CNPC_PoisonZombie*>(pEnt);
 				pPZombie->EnableCrab(0, pStored->crabs[0]);
 				pPZombie->EnableCrab(1, pStored->crabs[1]);
 				pPZombie->EnableCrab(2, pStored->crabs[2]);
+			}
+			//make sure container attaches back to dropship and kill the new dropship that Spawn() will spawn
+			//this has to be two-way because i don't trust that one or the other will always be first in memory
+			if (pStored->dropshipcargo)
+			{
+				CBaseEntity* pShip = GetEntityWithID(pStored->dropshipid);
+				CNPC_CombineDropship* pDropship = dynamic_cast<CNPC_CombineDropship*>(pShip);
+				if (pDropship)
+				{
+					CBaseAnimating* pAnimating = dynamic_cast<CBaseAnimating*>(pEnt);
+					if (pAnimating && pDropship->m_hContainer && pDropship->m_hContainer->m_iChaosID != pStored->chaosid)
+					{
+						UTIL_Remove(pDropship->m_hContainer);
+						pDropship->m_hContainer = pAnimating;
+						pAnimating->SetParent(pDropship, 0);
+					}
+				}
+			}
+			if (pStored->dropship)
+			{
+				CBaseEntity* pCargo = GetEntityWithID(pStored->containerid);
+				CNPC_CombineDropship* pDropship = dynamic_cast<CNPC_CombineDropship*>(pEnt);
+				if (pDropship)
+				{
+					pDropship->ChaosDeploy();
+					if (pCargo && pDropship->m_hContainer)
+					{
+						CBaseAnimating* pAnimating = dynamic_cast<CBaseAnimating*>(pCargo);
+						if (pAnimating && pDropship->m_hContainer->m_iChaosID != pStored->containerid)
+						{
+							UTIL_Remove(pDropship->m_hContainer);
+							pDropship->m_hContainer = pAnimating;
+							pAnimating->SetParent(pDropship, 0);
+						}
+					}
+				}
 			}
 		}
 	}
@@ -6781,17 +6831,6 @@ bool CChaosEffect::IterUsableVehicles(bool bFindOnly)
 	}
 	return bFoundSomething;
 }
-CBaseEntity* CChaosEffect::GetEntityWithID(int iChaosID)
-{
-	CBaseEntity* pEnt = gEntList.FirstEnt();
-	while (pEnt)
-	{
-		if (pEnt->m_iChaosID == iChaosID)
-			return pEnt;
-		pEnt = gEntList.NextEnt(pEnt);
-	}
-	return NULL;
-}
 
 bool CChaosEffect::MapGoodForCrane(const char* pMapName)
 {
@@ -7240,19 +7279,9 @@ CAI_BaseNPC* CChaosEffect::ChaosSpawnNPC(const char* className, string_t strActu
 			{
 				pNPC->KeyValue("CrateType", "1");
 				pNPC->KeyValue("GunRange", "2000");
-				//soldiers are spawned in CNPC_CombineDropship::SpawnTroop
-				CBaseEntity* pTarget = CreateEntityByName("info_target");
-				pTarget->KeyValue("targetname", "dropship_target");
-				pTarget->SetAbsOrigin(vecOrigin);
-				pTarget->SetAbsAngles(aAngles);
-				DispatchSpawn(pTarget);
-				pNPC->KeyValue("LandTarget", "dropship_target");
-				variant_t variant;
-				variant.SetInt(6);
-				if (RandomInt(0, 1))
-					g_EventQueue.AddEvent("combinedropship", "LandLeaveCrate", variant, 1, pNPC, pNPC);
-				else
-					g_EventQueue.AddEvent("combinedropship", "LandTakeCrate", variant, 1, pNPC, pNPC);
+				CNPC_CombineDropship* pDropship = dynamic_cast<CNPC_CombineDropship*>(pNPC);
+				if (pDropship)
+					pDropship->ChaosDeploy();
 			}
 		}
 		else if (FStrEq(className, "npc_dog"))

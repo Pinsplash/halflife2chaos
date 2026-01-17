@@ -148,7 +148,6 @@ public:
 	virtual void	Ignite( float flFlameLifetime, bool bNPCOnly, float flSize, bool bCalledByLevelDesigner ) { return; }
 
 
-protected:
 	void			HelicopterMove( );
 
 	// Updates the enemy
@@ -186,7 +185,6 @@ protected:
 	void	InputEnableRotorSound( inputdata_t &inputdata );
 	void	InputDisableRotorSound( inputdata_t &inputdata );
 
-protected:
 	CSoundPatch		*m_pRotorSound;				// Rotor loop played when the player can see the helicopter
 	CSoundPatch		*m_pRotorBlast;				// Sound played when the helicopter's pushing around physics objects
 
