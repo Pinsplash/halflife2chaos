@@ -22,6 +22,7 @@
 #include "worldsize.h"
 #include "game.h"
 #include "shot_manipulator.h"
+#include "vehicle_base.h"
 
 #ifdef HL2_DLL
 #include "ai_interactions.h"
@@ -698,11 +699,12 @@ bool CAI_BaseNPC::PassesDamageFilter( const CTakeDamageInfo &info )
 		CBaseCombatCharacter *npcEnemy = pAttacker->MyCombatCharacterPointer();
 		if ( !npcEnemy )
 		{
-			if (info.GetAttacker()->GetServerVehicle()
-			 && info.GetAttacker()->GetServerVehicle()->GetVehicleEnt()
-			 && info.GetAttacker()->GetServerVehicle()->GetVehicleEnt()->GetOwnerEntity())
+			if (info.GetAttacker()->GetServerVehicle())
 			{
-				npcEnemy = info.GetAttacker()->GetServerVehicle()->GetVehicleEnt()->GetOwnerEntity()->MyCombatCharacterPointer();
+				CBaseEntity* pEnt = info.GetAttacker()->GetServerVehicle()->GetVehicleEnt();
+				CPropVehicleDriveable* pVehicle = dynamic_cast<CPropVehicleDriveable*>(pEnt);
+				if (pVehicle && pVehicle->GetDriver())
+					npcEnemy = pVehicle->GetDriver()->MyCombatCharacterPointer();
 			}
 		}
 
