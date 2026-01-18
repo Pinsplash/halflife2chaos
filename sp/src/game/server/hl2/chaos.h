@@ -127,6 +127,7 @@ enum Effect_T
 #define EC_NEED_PHYSGUN		512
 #define EC_PLR_TELE			1024
 #define EC_NO_VEHICLE		2048
+#define EC_NO_SPAM_NPCS		4096
 
 //flags for spawning chaos npcs
 #define CSF_EVIL	1

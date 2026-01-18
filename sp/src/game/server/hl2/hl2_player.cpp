@@ -5739,7 +5739,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<>(EFFECT_NADE_GUNS,						MAKE_STRING("#hl2c_nade_guns"),			EC_NO_INVULN,					chaos_t_nade_guns.GetFloat(),			chaos_p_nade_guns.GetFloat());
 	CreateEffect<CEEarthquake>(EFFECT_EARTHQUAKE,			MAKE_STRING("#hl2c_shakecam"),			EC_NONE,						chaos_t_earthquake.GetFloat(),			chaos_p_earthquake.GetInt());
 	CreateEffect<CE420Joke>(EFFECT_420_JOKE,				MAKE_STRING("#hl2c_420_health"),		EC_NO_INVULN,					-1,										chaos_p_420_joke.GetInt());
-	CreateEffect<CEZombieSpam>(EFFECT_ZOMBIE_SPAM,			MAKE_STRING("#hl2c_zombie_spam"),		EC_HAS_WEAPON,					chaos_t_zombie_spam.GetFloat(),			chaos_p_zombie_spam.GetInt());
+	CreateEffect<CEZombieSpam>(EFFECT_ZOMBIE_SPAM,			MAKE_STRING("#hl2c_zombie_spam"),		EC_HAS_WEAPON | EC_NO_SPAM_NPCS,chaos_t_zombie_spam.GetFloat(),			chaos_p_zombie_spam.GetInt());
 	CreateEffect<>(EFFECT_EXPLODE_ON_DEATH,					MAKE_STRING("#hl2c_explodeondeath"),	EC_NONE,						chaos_t_explode_on_death.GetFloat(),	chaos_p_explode_on_death.GetInt());
 	CreateEffect<>(EFFECT_BULLET_TELEPORT,					MAKE_STRING("#hl2c_bullet_tele"),		EC_NONE,						chaos_t_bullet_teleport.GetFloat(),		chaos_p_bullet_teleport.GetInt());
 	CreateEffect<CECredits>(EFFECT_CREDITS,					MAKE_STRING("#hl2c_credits"),			EC_NONE,						-1,										chaos_p_credits.GetInt());
@@ -5762,7 +5762,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CEMountedGun>(EFFECT_SPAWN_MOUNTED_GUN,	MAKE_STRING("#hl2c_mountedgun"),		EC_NONE,						-1,										chaos_p_spawn_mounted_gun.GetInt());
 	CreateEffect<CERestartLevel>(EFFECT_RESTART_LEVEL,		MAKE_STRING("#hl2c_restart_lvl"),		EC_EXTREME,						-1,										chaos_p_restart_level.GetInt());
 	CreateEffect<CERemovePickups>(EFFECT_REMOVE_PICKUPS,	MAKE_STRING("#hl2c_removepickups"),		EC_PICKUPS | EC_NEED_PHYSGUN,	-1,										chaos_p_remove_pickups.GetInt());
-	CreateEffect<CECloneNPCs>(EFFECT_CLONE_NPCS,			MAKE_STRING("#hl2c_clone_npcs"),		EC_NONE,						-1,										chaos_p_clone_npcs.GetInt());
+	CreateEffect<CECloneNPCs>(EFFECT_CLONE_NPCS,			MAKE_STRING("#hl2c_clone_npcs"),		EC_NO_SPAM_NPCS,				-1,										chaos_p_clone_npcs.GetInt());
 	CreateEffect<CELockPVS>(EFFECT_LOCK_PVS,				MAKE_STRING("#hl2c_lock_pvs"),			EC_NONE,						chaos_t_lock_pvs.GetFloat(),			chaos_p_lock_pvs.GetInt());
 	CreateEffect<CEDejaVu>(EFFECT_RELOAD_DEJA_VU,			MAKE_STRING("#hl2c_deja_vu"),			EC_PLR_TELE,					-1,										chaos_p_reload_deja_vu.GetInt());
 	CreateEffect<CEBumpy>(EFFECT_BUMPY,						MAKE_STRING("#hl2c_bumpy"),				EC_BUGGY,						chaos_t_bumpy.GetFloat(),				chaos_p_bumpy.GetInt());
@@ -5797,8 +5797,8 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CEHL1Phys>(EFFECT_HL1_PHYSICS,				MAKE_STRING("#hl2c_hl1_physics"),		EC_NONE,						chaos_t_hl1_physics.GetFloat(),			chaos_p_hl1_physics.GetInt());
 	CreateEffect<CEDVDCrosshair>(EFFECT_DVD_CROSSHAIR,		MAKE_STRING("#hl2c_dvd_crosshair"),		EC_NONE,						chaos_t_dvd_crosshair.GetFloat(),		chaos_p_dvd_crosshair.GetInt());
 	CreateEffect<CEEvilNPC>(EFFECT_EVIL_BREEN,				MAKE_STRING("#hl2c_evil_breen"),		EC_FAR_ENEMY,					-1,										chaos_p_evil_breen.GetInt());
-	CreateEffect<CECopSpam>(EFFECT_COP_SPAM,				MAKE_STRING("#hl2c_cop_spam"),			EC_FAR_ENEMY,					chaos_t_cop_spam.GetFloat(),			chaos_p_cop_spam.GetInt());
-	CreateEffect<CEScannerSpam>(EFFECT_SCANNER_SPAM,		MAKE_STRING("#hl2c_scanner_spam"),		EC_NONE,						-1,										chaos_p_scanner_spam.GetInt());
+	CreateEffect<CECopSpam>(EFFECT_COP_SPAM,				MAKE_STRING("#hl2c_cop_spam"),			EC_FAR_ENEMY | EC_NO_SPAM_NPCS, chaos_t_cop_spam.GetFloat(),			chaos_p_cop_spam.GetInt());
+	CreateEffect<CEScannerSpam>(EFFECT_SCANNER_SPAM,		MAKE_STRING("#hl2c_scanner_spam"),		EC_NO_SPAM_NPCS,				-1,										chaos_p_scanner_spam.GetInt());
 	CreateEffect<>(EFFECT_HOMING_AR2,						MAKE_STRING("#hl2c_homing_ar2"),		EC_NONE,						chaos_t_homing_ar2.GetFloat(),			chaos_p_homing_ar2.GetInt());
 	CreateEffect<>(EFFECT_CLIMB_ANYWHERE,					MAKE_STRING("#hl2c_climb_anywhere"),	EC_NONE,						chaos_t_climb_anywhere.GetFloat(),		chaos_p_climb_anywhere.GetInt());
 	CreateEffect<>(EFFECT_TIMESKIP,							MAKE_STRING("#hl2c_timeskip"),			EC_NONE,						-1,										chaos_p_timeskip.GetInt());
@@ -6200,6 +6200,12 @@ bool CChaosEffect::CheckEffectContext()
 	if (m_nContext & EC_PLR_TELE)
 		if (DontTeleportPlayer(pMapName))
 			return false;
+
+	//There must be no NPCs with "spam" in their targetname, which indicates they are from an NPC spam effect
+	//we have to restrain how many we create so we don't hit the entity limit
+	if (m_nContext & EC_NO_SPAM_NPCS)
+		if (gEntList.FindEntityByName(NULL, "spam*"))
+			return false;//crash is imminent!
 
 	//you did it
 	return true;
@@ -8256,12 +8262,16 @@ void CE_NPC_Spam::SpawnNPC(Vector vPos, int iNPCType)
 	Assert(pNPC);
 	pNPC->SetAbsOrigin(vPos);
 	pNPC->KeyValue("targetname", m_sTargetname);
+	pNPC->KeyValue("squadname", m_sTargetname);
 	pNPC->KeyValue("additionalequipment", m_sWeapon);
 	g_iChaosSpawnCount++; pNPC->KeyValue("chaosid", g_iChaosSpawnCount);
 	DispatchSpawn(pNPC);
 	pNPC->Activate();
 	pNPC->m_bChaosSpawned = true;
 	pNPC->m_bChaosPersist = true;
+	variant_t variant;
+	variant.SetString(MAKE_STRING("!player"));
+	pNPC->AcceptInput("UpdateEnemyMemory", pNPC, pNPC, variant, 0);
 }
 void CE_NPC_Spam::SpawnNPC(CAI_Node* pNode)
 {
