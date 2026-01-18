@@ -440,9 +440,17 @@ CON_COMMAND(chaos_print, "print all effects for debugging")
 {
 	for (int i = 0; i < NUM_EFFECTS; i++)
 	{
-		if (g_ChaosEffects.Size() < i + 1)
-			break;
 		Msg("%i: %s %s\n", i, STRING(g_ChaosEffects[i]->m_strGeneralName), g_ChaosEffects[i]->m_bActive ? "ACTIVE" : "");
+	}
+}
+CON_COMMAND(chaos_dump_groups, "print all groups for debugging")
+{
+	for (int iEffect = 0; iEffect < NUM_EFFECTS; iEffect++)
+	{
+		for (int iExcluded = 0; iExcluded < g_ChaosEffects[iEffect]->m_iExcludeCount; iExcluded++)
+		{
+			Msg("%i: excludes %i\n", iEffect, g_ChaosEffects[iEffect]->m_iExclude[iExcluded]);
+		}
 	}
 }
 #ifdef DEBUG
@@ -462,6 +470,14 @@ CON_COMMAND(chaos_test_effect, "turn on a specific effect")
 
 			if (pHL2Player)
 			{
+				if (g_ChaosEffects[atoi(args[1])]->WasShufflePicked())
+					Msg("NOTE: Effect was already picked in shuffle mode.\n");
+				if (pHL2Player->EffectAlreadyActive(atoi(args[1])))
+					Msg("NOTE: Effect is already active.\n");
+				if (pHL2Player->GroupAlreadyActive(atoi(args[1])))
+					Msg("NOTE: Effect is in a group with an active effect.\n");
+				if (!g_ChaosEffects[atoi(args[1])]->CheckEffectContext())
+					Msg("NOTE: Effect not suitable in context.\n");
 				pHL2Player->StartGivenEffect(atoi(args[1]));
 			}
 		}
@@ -701,29 +717,6 @@ CON_COMMAND_F(chaos_group, "Creates a chaos group.", FCVAR_SERVER_CAN_EXECUTE)
 {
 	if (args.ArgC() > 1)
 	{
-		/*
-		bool bFullOnGroups = true;
-		for (int i = 0; i < MAX_EFFECTS_IN_GROUP; i++)
-		{
-			if (g_iGroups[i][0] == 0)
-			{
-				Msg("Making group %i\n", i);
-				if (atoi(args[MAX_EFFECTS_IN_GROUP + 1]))
-					Msg("Desired group exceeds group size limit\n");
-				bFullOnGroups = false;
-				for (int j = 1; j < MAX_EFFECTS_IN_GROUP + 1; j++)
-				{
-					if (!atoi(args[j]))
-						break;
-					Msg("Adding effect %i to group %i\n", , i);
-					g_iGroups[i][j - 1] = atoi(args[j]);
-				}
-				break;
-			}
-		}
-		if (bFullOnGroups)
-			Msg("Could not create group, no more groups can be made\n");
-		*/
 		for (int i = 1; atoi(args[i]); i++)
 		{
 			for (int j = 1; atoi(args[j]); j++)
@@ -5900,7 +5893,7 @@ int CHL2_Player::PickEffect(int iWeightSum, bool bTest, int iControl)
 			}
 			if (bEffectStatus[i] == false)
 			{
-				bool bGoodActiveness = !EffectOrGroupAlreadyActive(candEffect->m_nID);
+				bool bGoodActiveness = !EffectAlreadyActive(candEffect->m_nID) && !GroupAlreadyActive(candEffect->m_nID);
 				bool bGoodContext = false;
 				//check activeness and context
 				if (bGoodActiveness)
@@ -5949,9 +5942,7 @@ int CHL2_Player::PickEffect(int iWeightSum, bool bTest, int iControl)
 		}
 	}
 }
-ConVar groupcheck_debug("groupcheck_debug", "0");
-ConVar chaos_grouponly("chaos_grouponly", "0");
-bool CHL2_Player::EffectOrGroupAlreadyActive(int iEffect)
+bool CHL2_Player::EffectAlreadyActive(int iEffect)
 {
 	if (chaos_ignore_activeness.GetBool())
 		return false;
@@ -5962,7 +5953,13 @@ bool CHL2_Player::EffectOrGroupAlreadyActive(int iEffect)
 		//Msg("Effect is already active %i\n", g_ChaosEffects[iEffect]->m_nID);
 		return true;
 	}
+	return false;
+}
 
+ConVar groupcheck_debug("groupcheck_debug", "0");
+ConVar chaos_grouponly("chaos_grouponly", "0");
+bool CHL2_Player::GroupAlreadyActive(int iEffect)
+{
 	//not already active, but what about group
 	if (chaos_ignore_group.GetBool())
 		return false;

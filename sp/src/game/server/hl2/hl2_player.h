@@ -90,7 +90,8 @@ public:
 	void PopulateEffects();
 	void StartGame();//called after loads of all kinds
 	template<class T = CChaosEffect> void CreateEffect(int nEffect, string_t strHudName, int nContext, float flDurationMult, int iWeight);
-	bool EffectOrGroupAlreadyActive(int iEffect);
+	bool EffectAlreadyActive(int iEffect);
+	bool GroupAlreadyActive(int iEffect);
 	//we actually do want to remember what effects are present at the moment of a save so that we may eliminate them upon reloading if needed
 	int m_iActiveEffects[64];
 	//HACK: the chaos HUD does not appear on its own after loading a save. it must be done at some time after the screen has begun updating(?),
