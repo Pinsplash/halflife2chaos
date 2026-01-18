@@ -647,7 +647,7 @@ void CWeaponStriderBuster::Detonate( void )
 	{
 		// Kill the strider (with magic effect)
 		CBasePlayer *pPlayer = AI_GetSinglePlayer();
-		CTakeDamageInfo info( pPlayer, this, RandomVector( -100.0f, 100.0f ), GetAbsOrigin(), pVictim->GetHealth(), DMG_GENERIC );
+		CTakeDamageInfo info( this, pPlayer, RandomVector( -100.0f, 100.0f ), GetAbsOrigin(), pVictim->GetHealth(), DMG_GENERIC );
 		pVictim->TakeDamage( info );
 
 		gamestats->Event_WeaponHit( ToBasePlayer( pPlayer ), true, GetClassname(), info );

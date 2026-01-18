@@ -3054,8 +3054,9 @@ void CNPC_Strider::TraceAttack( const CTakeDamageInfo &inputInfo, const Vector &
 int CNPC_Strider::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 {
 	// don't take damage from my own weapons!!!
-	if ( info.GetInflictor() && info.GetInflictor()->GetOwnerEntity() == this )
-		return 0;
+	//PIN: removing this. the only thing a strider should ever "own" is a striderbuster, but because of a different bug fix, this check was making it unable to kill the strider
+	//if ( info.GetInflictor() && info.GetInflictor()->GetOwnerEntity() == this )
+	//	return 0;
 
 	// special interaction with combine balls
 	if ( UTIL_IsCombineBall( info.GetInflictor() ) )
@@ -3318,12 +3319,10 @@ bool CNPC_Strider::ShouldExplodeFromDamage( const CTakeDamageInfo &info )
 		return true;
 
 	// Stickybombs make us explode
-	CBaseEntity *pAttacker = info.GetAttacker();
-	if ( pAttacker != NULL && (FClassnameIs( pAttacker, "weapon_striderbuster" ) ||
-								FClassnameIs( pAttacker, "npc_grenade_magna" )))
+	if (pInflictor != NULL && FClassnameIs(pInflictor, "weapon_striderbuster"))
 		return true;
 
-	if ( pInflictor == this && pAttacker == this )
+	if (pInflictor == this)
 		return true;
 
 	return false;
