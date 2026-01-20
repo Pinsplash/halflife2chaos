@@ -641,17 +641,21 @@ void CViewRender::SetUpViews()
 {
 	VPROF("CViewRender::SetUpViews");
 
+	C_BasePlayer* pPlayer = C_BasePlayer::GetLocalPlayer();
 	// Initialize view structure with default values
 	float farZ = GetZFar();
 
     // Set up the mono/middle view.
     CViewSetup &view = m_View;
+	if (!pPlayer)
+		view.zNear = GetZNear();
+	else
+		view.zNear = GetZNear() * pPlayer->GetModelScale();
 
 	view.zFar				= farZ;
 	view.zFarViewmodel	    = farZ;
 	// UNDONE: Make this farther out? 
 	//  closest point of approach seems to be view center to top of crouched box
-	view.zNear			    = GetZNear();
 	view.zNearViewmodel	    = 1;
 	view.fov				= default_fov.GetFloat();
 
@@ -662,61 +666,47 @@ void CViewRender::SetUpViews()
 	// Enable spatial partition access to edicts
 	partition->SuppressLists( PARTITION_ALL_CLIENT_EDICTS, false );
 
-	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
 
 	// You in-view weapon aim.
 	bool bCalcViewModelView = false;
 	Vector ViewModelOrigin;
 	QAngle ViewModelAngles;
 
-	if ( engine->IsHLTV() )
+	// FIXME: Are there multiple views? If so, then what?
+	// FIXME: What happens when there's no player?
+	if (pPlayer)
 	{
-		HLTVCamera()->CalcView( view.origin, view.angles, view.fov );
+		pPlayer->CalcView(view.origin, view.angles, view.zNear, view.zFar, view.fov);
+		// If we are looking through another entities eyes, then override the angles/origin for view
+		int viewentity = render->GetViewEntity();
+
+		if (!g_nKillCamMode && (pPlayer->entindex() != viewentity))
+		{
+			C_BaseEntity* ve = cl_entitylist->GetEnt(viewentity);
+			if (ve)
+			{
+				VectorCopy(ve->GetAbsOrigin(), view.origin);
+				VectorCopy(ve->GetAbsAngles(), view.angles);
+			}
+		}
+
+		if (chaos_yawroll.GetBool())
+			view.angles.z = view.angles.y;
+
+		// There is a viewmodel.
+		bCalcViewModelView = true;
+		ViewModelOrigin = view.origin;
+		ViewModelAngles = view.angles;
 	}
-#if defined( REPLAY_ENABLED )
-	else if ( g_pEngineClientReplay->IsPlayingReplayDemo() )
-	{
-		ReplayCamera()->CalcView( view.origin, view.angles, view.fov );
-	}
-#endif
 	else
 	{
-		// FIXME: Are there multiple views? If so, then what?
-		// FIXME: What happens when there's no player?
-		if (pPlayer)
-		{
-			pPlayer->CalcView(view.origin, view.angles, view.zNear, view.zFar, view.fov);
-			// If we are looking through another entities eyes, then override the angles/origin for view
-			int viewentity = render->GetViewEntity();
-
-			if ( !g_nKillCamMode && (pPlayer->entindex() != viewentity) )
-			{
-				C_BaseEntity *ve = cl_entitylist->GetEnt( viewentity );
-				if ( ve )
-				{
-					VectorCopy( ve->GetAbsOrigin(), view.origin );
-					VectorCopy( ve->GetAbsAngles(), view.angles );
-				}
-			}
-
-			if (chaos_yawroll.GetBool())
-				view.angles.z = view.angles.y;
-
-			// There is a viewmodel.
-			bCalcViewModelView = true;
-			ViewModelOrigin = view.origin;
-			ViewModelAngles = view.angles;
-		}
-		else
-		{
-			view.origin.Init();
-			view.angles.Init();
-		}
-
-		// Even if the engine is paused need to override the view
-		// for keeping the camera control during pause.
-		g_pClientMode->OverrideView( &view );
+		view.origin.Init();
+		view.angles.Init();
 	}
+
+	// Even if the engine is paused need to override the view
+	// for keeping the camera control during pause.
+	g_pClientMode->OverrideView(&view);
 
 	// give the toolsystem a chance to override the view
 	ToolFramework_SetupEngineView(view.origin, view.angles, view.fov);
