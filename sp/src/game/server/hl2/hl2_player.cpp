@@ -725,6 +725,17 @@ CON_COMMAND_F(chaos_group, "Creates a chaos group.", FCVAR_SERVER_CAN_EXECUTE)
 				int iToMe = atoi(args[i]);
 				if (iAddMe == iToMe)//dont add an effect to its own exclude list because why
 					continue;
+				bool bAlreadyGotIt = false;
+				for (int k = 0; k < g_ChaosEffects[iToMe]->m_iExcludeCount; k++)
+				{
+					if (g_ChaosEffects[iToMe]->m_iExclude[k] == iAddMe)
+					{
+						bAlreadyGotIt = true;
+						break;
+					}
+				}
+				if (bAlreadyGotIt)
+					break;
 				Msg("Added %s to effect %s's exclusion list in slot %i\n", STRING(g_ChaosEffects[iAddMe]->m_strGeneralName), STRING(g_ChaosEffects[iToMe]->m_strGeneralName), g_ChaosEffects[iToMe]->m_iExcludeCount);
 				g_ChaosEffects[iToMe]->m_iExclude[g_ChaosEffects[iToMe]->m_iExcludeCount] = iAddMe;
 				g_ChaosEffects[iToMe]->m_iExcludeCount++;
@@ -2320,6 +2331,7 @@ void CHL2_Player::StartGame()
 {
 	if (g_ChaosEffects.Size() == 0)
 		PopulateEffects();
+	engine->ClientCommand(engine->PEntityOfEntIndex(1), "exec groups\n");
 	gEntList.AddListenerEntity(this);
 	const char* pMapName = STRING(gpGlobals->mapname);
 	//scripting of canals 11 requires an airboat to be present, give player a new one if they came here without one
@@ -2584,7 +2596,6 @@ void CHL2_Player::Spawn(void)
 			g_EventQueue.AddEvent(pAutosave, "Save", 1.0, NULL, NULL);
 			g_EventQueue.AddEvent(pAutosave, "Kill", 1.1, NULL, NULL);
 		}
-		engine->ClientCommand(engine->PEntityOfEntIndex(1), "exec groups\n");
 	}
 #ifndef HL2MP
 #ifndef PORTAL
