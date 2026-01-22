@@ -1187,6 +1187,7 @@ CBaseEntity *CPropJeepEpisodic::OnFailedPhysGunPickup( Vector vPhysgunPos )
 			return NULL;
 
 		pPlayer->EyeVectors( &vecPlayerForward );
+		AngleVectors(pPlayer->EyeAngles() + pPlayer->m_vOffsetedCrosshairDir, &vecPlayerForward);
 
 		// Origin and facing of the cargo hold
 		Vector vecCargoOrigin;
