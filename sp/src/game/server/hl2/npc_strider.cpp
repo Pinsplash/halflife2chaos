@@ -3097,8 +3097,8 @@ int CNPC_Strider::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 			// Default to NPC damage value
 			int damage = 20;
 
-			if( HasSpawnFlags(SF_TAKE_MINIMAL_DAMAGE_FROM_NPCS) )
-				damage = 1;
+			//if( HasSpawnFlags(SF_TAKE_MINIMAL_DAMAGE_FROM_NPCS) )
+				//damage = 1;
 
 			if( bPlayer )
 			{
