@@ -1107,20 +1107,20 @@ CBaseEntity *CBasePlayer::FindUseEntity()
 	{
 		if ( i == 0 )
 		{
-			UTIL_TraceLine( searchCenter, searchCenter + forward * 1024, useableContents, this, COLLISION_GROUP_NONE, &tr );
+			UTIL_TraceLine( searchCenter, searchCenter + forward * player_use_dist.GetFloat(), useableContents, this, COLLISION_GROUP_NONE, &tr );
 		}
 		else
 		{
 			Vector down = forward - tangents[i]*up;
 			VectorNormalize(down);
-			UTIL_TraceHull( searchCenter, searchCenter + down * 72, -Vector(16,16,16), Vector(16,16,16), useableContents, this, COLLISION_GROUP_NONE, &tr );
+			UTIL_TraceHull( searchCenter, searchCenter + down * (player_use_dist.GetFloat() - 16), -Vector(16,16,16), Vector(16,16,16), useableContents, this, COLLISION_GROUP_NONE, &tr );
 		}
 		pObject = tr.m_pEnt;
 
 #ifndef CLIENT_DLL
 		pFoundByTrace = pObject;
 #endif
-		bool bUsable = IsUseableEntity(pObject, 0);
+		bool bUsable = tr.DidHitNonWorldEntity() && IsUseableEntity(pObject, 0);
 		while ( pObject && !bUsable && pObject->GetMoveParent() )
 		{
 			pObject = pObject->GetMoveParent();
@@ -1136,13 +1136,15 @@ CBaseEntity *CBasePlayer::FindUseEntity()
 			if (dist < player_use_dist.GetFloat())
 			{
 #ifndef CLIENT_DLL
-
-				if ( sv_debug_player_use.GetBool() )
+				if (sv_debug_player_use.GetInt() == 1)
 				{
-					NDebugOverlay::Line( searchCenter, tr.endpos, 0, 255, 0, true, 30 );
-					NDebugOverlay::Cross3D( tr.endpos, 16, 0, 255, 0, true, 30 );
+					NDebugOverlay::Line(searchCenter, tr.endpos, 0, 255, 0, true, 30);
+					if (i != 0)
+					{
+						NDebugOverlay::Box(searchCenter, -Vector(16, 16, 16), Vector(16, 16, 16), 0, 255, 0, 1, 30);
+						NDebugOverlay::Box(tr.endpos, -Vector(16, 16, 16), Vector(16, 16, 16), 0, 255, 0, 10, 30);
+					}
 				}
-
 				if ( pObject->MyNPCPointer() && pObject->MyNPCPointer()->IsPlayerAlly( this ) )
 				{
 					// If about to select an NPC, do a more thorough check to ensure
@@ -1150,7 +1152,7 @@ CBaseEntity *CBasePlayer::FindUseEntity()
 					pObject = DoubleCheckUseNPC( pObject, searchCenter, forward );
 				}
 #endif
-				if ( sv_debug_player_use.GetBool() )
+				if (sv_debug_player_use.GetInt() == 1)
 				{
 					Msg( "Trace using: %s\n", pObject ? pObject->GetDebugName() : "no usable entity found" );
 				}
@@ -1161,7 +1163,29 @@ CBaseEntity *CBasePlayer::FindUseEntity()
 				if ( i == 0 )
 					return pObject;
 			}
+#ifndef CLIENT_DLL
+			else if (sv_debug_player_use.GetInt() == 1)
+			{
+				NDebugOverlay::Line(searchCenter, tr.endpos, 255, 255, 0, true, 30);
+				if (i != 0)
+				{
+					NDebugOverlay::Box(searchCenter, -Vector(16, 16, 16), Vector(16, 16, 16), 255, 255, 0, 1, 30);
+					NDebugOverlay::Box(tr.endpos, -Vector(16, 16, 16), Vector(16, 16, 16), 255, 255, 0, 10, 30);
+				}
+			}
+#endif
 		}
+#ifndef CLIENT_DLL
+		else if (sv_debug_player_use.GetInt() == 1)
+		{
+			NDebugOverlay::Line(searchCenter, tr.endpos, 255, 0, 0, true, 30);
+			if (i != 0)
+			{
+				NDebugOverlay::Box(searchCenter, -Vector(16, 16, 16), Vector(16, 16, 16), 255, 0, 0, 1, 30);
+				NDebugOverlay::Box(tr.endpos, -Vector(16, 16, 16), Vector(16, 16, 16), 255, 0, 0, 10, 30);
+			}
+		}
+#endif
 	}
 
 	// check ground entity first
@@ -1177,19 +1201,35 @@ CBaseEntity *CBasePlayer::FindUseEntity()
 		Vector point;
 		pNearest->CollisionProp()->CalcNearestPoint( searchCenter, &point );
 		nearestDist = CalcDistanceToLine( point, searchCenter, forward );
-		if ( sv_debug_player_use.GetBool() )
+		if (sv_debug_player_use.GetInt() == 1)
 		{
 			Msg("Trace found %s, dist %.2f\n", pNearest->GetClassname(), nearestDist );
 		}
 	}
+
+#ifndef CLIENT_DLL
+	if (sv_debug_player_use.GetInt() == 2)
+	{
+		NDebugOverlay::Sphere(searchCenter, player_use_dist.GetFloat(), 0, 255, 0, true, 30);
+	}
+#endif
 
 	for (CEntitySphereQuery sphere(searchCenter, player_use_dist.GetFloat()); (pObject = sphere.GetCurrentEntity()) != NULL; sphere.NextEntity())
 	{
 		if ( !pObject )
 			continue;
 
-		if ( !IsUseableEntity( pObject, FCAP_USE_IN_RADIUS ) )
+#ifndef CLIENT_DLL
+		if (!IsUseableEntity(pObject, FCAP_USE_IN_RADIUS))
+		{
+			if (sv_debug_player_use.GetInt() == 2)
+			{
+				NDebugOverlay::EntityBounds(pObject, 0, 0, 255, 10, 30);
+				Msg("Radius found %s, not usable\n", pObject->GetClassname());
+			}
 			continue;
+		}
+#endif
 
 		// see if it's more roughly in front of the player than previous guess
 		Vector point;
@@ -1201,11 +1241,20 @@ CBaseEntity *CBasePlayer::FindUseEntity()
 
 		// Need to be looking at the object more or less
 		if ( dot < 0.8 )
+		{
+#ifndef CLIENT_DLL
+			if (sv_debug_player_use.GetInt() == 2)
+			{
+				NDebugOverlay::EntityBounds(pObject, 0, 255, 255, 10, 30);
+				Msg("Radius found %s, bad dot: %f\n", pObject->GetClassname(), dot);
+			}
+#endif
 			continue;
+		}
 
 		float dist = CalcDistanceToLine( point, searchCenter, forward );
 
-		if ( sv_debug_player_use.GetBool() )
+		if (sv_debug_player_use.GetInt() == 2)
 		{
 			Msg("Radius found %s, dist %.2f\n", pObject->GetClassname(), dist );
 		}
@@ -1222,7 +1271,23 @@ CBaseEntity *CBasePlayer::FindUseEntity()
 				pNearest = pObject;
 				nearestDist = dist;
 			}
+#ifndef CLIENT_DLL
+			else if (sv_debug_player_use.GetInt() == 2)
+			{
+				NDebugOverlay::Line(point, searchCenter, 255, 0, 0, true, 30);
+				NDebugOverlay::EntityBounds(pObject, 255, 0, 0, 10, 30);
+			}
+#endif
 		}
+#ifndef CLIENT_DLL
+		else if (sv_debug_player_use.GetInt() == 2)
+		{
+			Vector oldpoint;
+			pNearest->CollisionProp()->CalcNearestPoint(searchCenter, &oldpoint);
+			NDebugOverlay::Line(point, oldpoint, 255, 255, 0, true, 30);
+			NDebugOverlay::EntityBounds(pObject, 255, 255, 0, 10, 30);
+		}
+#endif
 	}
 
 #ifndef CLIENT_DLL
@@ -1245,7 +1310,7 @@ CBaseEntity *CBasePlayer::FindUseEntity()
 		pNearest = DoubleCheckUseNPC( pNearest, searchCenter, forward );
 	}
 
-	if ( sv_debug_player_use.GetBool() )
+	if ( sv_debug_player_use.GetInt() )
 	{
 		if ( !pNearest )
 		{
@@ -1264,7 +1329,7 @@ CBaseEntity *CBasePlayer::FindUseEntity()
 	}
 #endif
 
-	if ( sv_debug_player_use.GetBool() )
+	if ( sv_debug_player_use.GetInt() )
 	{
 		Msg( "Radial using: %s\n", pNearest ? pNearest->GetDebugName() : "no usable entity found" );
 	}

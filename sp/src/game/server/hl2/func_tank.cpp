@@ -48,7 +48,7 @@
 #include "tier0/memdbgon.h"
 
 extern Vector PointOnLineNearestPoint(const Vector& vStartPos, const Vector& vEndPos, const Vector& vPoint);
-
+extern ConVar player_use_dist;
 ConVar mortar_visualize("mortar_visualize", "0" );
 
 BEGIN_DATADESC( CFuncTank )
@@ -990,7 +990,7 @@ bool CFuncTank::OnControls( CBaseEntity *pTest )
 		else//no control volume? use distance then
 		{
 			//Msg("CFuncTank::OnControls user distance: %0.1f\n", (pTest->EyePosition() - GetAbsOrigin()).Length());
-			return (pTest->EyePosition() - GetAbsOrigin()).Length() < 100;
+			return (pTest->EyePosition() - GetAbsOrigin()).Length() < player_use_dist.GetFloat();
 		}
 	}
 
@@ -1464,7 +1464,7 @@ void CFuncTank::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE use
 			{
 				m_hControlVolume = dynamic_cast<CBaseTrigger*>( gEntList.FindEntityByName( NULL, m_iszControlVolume ) );
 			}
-			else if ((pActivator->EyePosition() - GetAbsOrigin()).Length() > 100)
+			else if ((pActivator->EyePosition() - GetAbsOrigin()).Length() > player_use_dist.GetFloat())
 			{
 				return;
 			}

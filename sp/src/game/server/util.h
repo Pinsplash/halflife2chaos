@@ -309,7 +309,7 @@ void UTIL_EnableRemoveImmediate();
 void UTIL_RemoveImmediate( CBaseEntity *oldObj );
 
 // make this a fixed size so it just sits on the stack
-#define MAX_SPHERE_QUERY	512
+#define MAX_SPHERE_QUERY	2048
 class CEntitySphereQuery
 {
 public:

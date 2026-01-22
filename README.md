@@ -91,7 +91,6 @@ These settings have been put in their own CFG files so you can control what they
 * The "Saved..." message may not appear. The save is still made.
 * If you play maps from something that isn't _Half-Life 2/Episode One/Two_, the "Node graph out of date" message will appear every time you go to a new map for the first time. This message is harmless, but if you wish, you can copy the `.AIN` files from the mod as well. The mod sets `ai_norebuildgraph 1` by default to avoid issues with rebuilding node graphs on Valve maps. The `.AIN` files are included for _Half-Life 2/Episode One/Two_.
 * If you take a weird path through certain maps, you may find that some things won't work as intended and softlocks will potentially exist.
-* **Didn't Skip Arm Day** sometimes makes it harder to grab things.
 * Sometimes things are invisible with **Orthographic Camera**. Turning on the flashlight may fix it.
 * Collisions can be weird when **Slow Physics** is on.
 
