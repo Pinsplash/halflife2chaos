@@ -674,4 +674,10 @@ public:
 	void StartEffect() override;
 	void StopEffect() override;
 };
+class CENormalView : public CChaosEffect
+{
+public:
+	void StartEffect() override;
+	void StopEffect() override;
+};
 #endif

@@ -5798,7 +5798,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<>(EFFECT_STEAL_HEALTH,						MAKE_STRING("#hl2c_steal_health"),		EC_NONE,						chaos_t_steal_health.GetFloat(),		chaos_p_steal_health.GetInt());
 	CreateEffect<CESuitSwap>(EFFECT_SUIT_SWAP,				MAKE_STRING("#hl2c_suit_swap"),			EC_NONE,						-1,										chaos_p_suit_swap.GetInt());
 	CreateEffect<>(EFFECT_YAWROLL,							MAKE_STRING("#hl2c_yawroll"),			EC_NONE,						chaos_t_yawroll.GetFloat(),				chaos_p_yawroll.GetInt());
-	CreateEffect<>(EFFECT_NORMAL_VISION,					MAKE_STRING("#hl2c_normal_view"),		EC_NONE,						chaos_t_normalvision.GetFloat(),		chaos_p_normalvision.GetInt());
+	CreateEffect<CENormalView>(EFFECT_NORMAL_VISION,		MAKE_STRING("#hl2c_normal_view"),		EC_NONE,						chaos_t_normalvision.GetFloat(),		chaos_p_normalvision.GetInt());
 	CreateEffect<CEGiveAllRPG>(EFFECT_GIVE_ALL_RPG,			MAKE_STRING("#hl2c_giveallrpgs"),		EC_NONE,						-1,										chaos_p_giveallrpg.GetInt());
 	CreateEffect<CEFloorEffect>(EFFECT_GRASS_HEAL,			MAKE_STRING("#hl2c_grass_heal"),		EC_NONE,						chaos_t_grass_heal.GetFloat(),			chaos_p_grass_heal.GetInt());
 	CreateEffect<CEChangePitch>(EFFECT_CHANGE_PITCH,		MAKE_STRING("#hl2c_change_pitch"),		EC_NONE,						chaos_t_change_pitch.GetFloat(),		chaos_p_change_pitch.GetInt());
@@ -6495,9 +6495,6 @@ void CChaosEffect::StartEffect()
 	case EFFECT_YAWROLL:
 		engine->ClientCommand(engine->PEntityOfEntIndex(1), "chaos_yawroll 1");
 		break;
-	case EFFECT_NORMAL_VISION:
-		engine->ClientCommand(engine->PEntityOfEntIndex(1), "mat_normalmaps 1;mat_normals 1;r_3dsky 0;r_drawskybox 0;r_underwateroverlay 0");
-		break;
 	case EFFECT_HOMING_AR2:
 		engine->ClientCommand(engine->PEntityOfEntIndex(1), "ar2_super_seek 1");
 		break;
@@ -6561,9 +6558,6 @@ void CChaosEffect::StopEffect()
 		break;
 	case EFFECT_YAWROLL:
 		engine->ClientCommand(engine->PEntityOfEntIndex(1), "chaos_yawroll 0");
-		break;
-	case EFFECT_NORMAL_VISION:
-		engine->ClientCommand(engine->PEntityOfEntIndex(1), "mat_normalmaps 0;mat_normals 0;r_3dsky 1;r_drawskybox 1;r_underwateroverlay 1");
 		break;
 	case EFFECT_HOMING_AR2:
 		engine->ClientCommand(engine->PEntityOfEntIndex(1), "ar2_super_seek 0");
@@ -9953,4 +9947,16 @@ void CENoMouseHorz::StopEffect()
 		engine->ClientCommand(engine->PEntityOfEntIndex(1), "exec yaw\n");
 	else
 		engine->ClientCommand(engine->PEntityOfEntIndex(1), "exec negative_yaw\n");
+}
+void CENormalView::StartEffect()
+{
+	const char* pMapName = STRING(gpGlobals->mapname);
+	if (!Q_strcmp(pMapName, "ep2_outland_12a"))
+		engine->ClientCommand(engine->PEntityOfEntIndex(1), "mat_normalmaps 1;r_3dsky 0;r_drawskybox 0;r_underwateroverlay 0");
+	else
+		engine->ClientCommand(engine->PEntityOfEntIndex(1), "mat_normalmaps 1;mat_normals 1;r_3dsky 0;r_drawskybox 0;r_underwateroverlay 0");
+}
+void CENormalView::StopEffect()
+{
+	engine->ClientCommand(engine->PEntityOfEntIndex(1), "mat_normalmaps 0;mat_normals 0;r_3dsky 1;r_drawskybox 1;r_underwateroverlay 1");
 }
