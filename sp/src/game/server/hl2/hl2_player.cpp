@@ -2568,6 +2568,11 @@ void CHL2_Player::StartGame()
 		}
 		UTIL_Remove(gEntList.FindEntityByName(NULL, "barn_hole_playerclip"));
 	}
+	//delete pointless invisible wall which cause a problem if alyx teleports over a trigger
+	else if (!Q_strcmp(pMapName, "ep2_outland_12a"))
+	{
+		UTIL_Remove(gEntList.FindEntityByName(NULL, "clip.magthanks.1"));
+	}
 }
 //-----------------------------------------------------------------------------
 //Purpose: Sets HL2 specific defaults.
