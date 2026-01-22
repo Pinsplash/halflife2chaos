@@ -3007,7 +3007,7 @@ void CNPC_AttackHelicopter::InputDropBombAtTargetInternal( inputdata_t &inputdat
 		Warning("Bomb target %s is above the chopper!\n", STRING( strBombTarget ) );
 		return;
 	}
-	float dt = sqrt( 2 * dz / GetCurrentGravity() );
+	float dt = sqrt( 2 * dz / GetCurrentGravity() == 0 ? 600 : GetCurrentGravity());
 
 	// Compute the velocity that would make it happen
 	Vector vecVelocity;

@@ -1837,7 +1837,8 @@ void UTIL_StripToken( const char *pKey, char *pDest )
 // computes gravity scale for an absolute gravity.  Pass the result into CBaseEntity::SetGravity()
 float UTIL_ScaleForGravity( float desiredGravity )
 {
-	float worldGravity = GetCurrentGravity();
+	//arguably, this should always be 600, but idk...
+	float worldGravity = GetCurrentGravity() == 0 ? 600 : GetCurrentGravity();
 	return worldGravity > 0 ? desiredGravity / worldGravity : 0;
 }
 

@@ -1095,7 +1095,8 @@ Vector CAI_MoveProbe::CalcJumpLaunchVelocity(const Vector &startPos, const Vecto
 {
 	// Get the height I have to jump to get to the target
 	float	stepHeight = endPos.z - startPos.z;
-
+	//avoid divide by 0
+	flGravity = min(flGravity, 0.01);
 	// get horizontal distance to target
 	Vector targetDir2D	= endPos - startPos;
 	targetDir2D.z = 0;

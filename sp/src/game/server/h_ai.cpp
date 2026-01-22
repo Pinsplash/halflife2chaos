@@ -83,7 +83,7 @@ Vector VecCheckToss( CBaseEntity *pEntity, ITraceFilter *pFilter, Vector vecSpot
 	Vector			vecScale;
 	Vector			vecTossVel;
 	Vector			vecTemp;
-	float			flGravity = GetCurrentGravity() * flGravityAdj;
+	float			flGravity = (GetCurrentGravity() == 0 ? 600 : GetCurrentGravity()) * flGravityAdj;
 
 	if (vecSpot2.z - vecSpot1.z > 500)
 	{
@@ -213,7 +213,7 @@ Vector VecCheckToss( CBaseEntity *pEntity, Vector vecSpot1, Vector vecSpot2, flo
 // 
 Vector VecCheckThrow ( CBaseEntity *pEdict, const Vector &vecSpot1, Vector vecSpot2, float flSpeed, float flGravityAdj, Vector *vecMins, Vector *vecMaxs )
 {
-	float			flGravity = GetCurrentGravity() * flGravityAdj;
+	float			flGravity = (GetCurrentGravity() == 0 ? 600 : GetCurrentGravity()) * flGravityAdj;
 
 	Vector vecGrenadeVel = (vecSpot2 - vecSpot1);
 
