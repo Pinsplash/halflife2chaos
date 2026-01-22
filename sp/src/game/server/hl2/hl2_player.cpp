@@ -5696,6 +5696,8 @@ ConVar chaos_p_mirror_world("chaos_p_mirror_world", "100");
 ConVar chaos_p_evil_eli("chaos_p_evil_eli", "100");
 ConVar chaos_p_zombie_spam("chaos_p_zombie_spam", "100");
 #define ERROR_WEIGHT 1
+//intentionally not putting this on sector sweep because scanners are benign unless given rpgs
+#define EC_ENEMY_SPAM EC_HAS_WEAPON | EC_NO_SPAM_NPCS | EC_FAR_ENEMY
 void CHL2_Player::PopulateEffects()
 {
 	CreateEffect<>(EFFECT_ERROR,							MAKE_STRING("#hl2c_null_effect"),		EC_NONE,						-1,										ERROR_WEIGHT);
@@ -5732,7 +5734,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<>(EFFECT_NADE_GUNS,						MAKE_STRING("#hl2c_nade_guns"),			EC_NO_INVULN,					chaos_t_nade_guns.GetFloat(),			chaos_p_nade_guns.GetFloat());
 	CreateEffect<CEEarthquake>(EFFECT_EARTHQUAKE,			MAKE_STRING("#hl2c_shakecam"),			EC_NONE,						chaos_t_earthquake.GetFloat(),			chaos_p_earthquake.GetInt());
 	CreateEffect<CE420Joke>(EFFECT_420_JOKE,				MAKE_STRING("#hl2c_420_health"),		EC_NO_INVULN,					-1,										chaos_p_420_joke.GetInt());
-	CreateEffect<CEZombieSpam>(EFFECT_ZOMBIE_SPAM,			MAKE_STRING("#hl2c_zombie_spam"),		EC_HAS_WEAPON | EC_NO_SPAM_NPCS,chaos_t_zombie_spam.GetFloat(),			chaos_p_zombie_spam.GetInt());
+	CreateEffect<CEZombieSpam>(EFFECT_ZOMBIE_SPAM,			MAKE_STRING("#hl2c_zombie_spam"),		EC_ENEMY_SPAM,					chaos_t_zombie_spam.GetFloat(),			chaos_p_zombie_spam.GetInt());
 	CreateEffect<>(EFFECT_EXPLODE_ON_DEATH,					MAKE_STRING("#hl2c_explodeondeath"),	EC_NONE,						chaos_t_explode_on_death.GetFloat(),	chaos_p_explode_on_death.GetInt());
 	CreateEffect<>(EFFECT_BULLET_TELEPORT,					MAKE_STRING("#hl2c_bullet_tele"),		EC_NONE,						chaos_t_bullet_teleport.GetFloat(),		chaos_p_bullet_teleport.GetInt());
 	CreateEffect<CECredits>(EFFECT_CREDITS,					MAKE_STRING("#hl2c_credits"),			EC_NONE,						-1,										chaos_p_credits.GetInt());
@@ -5790,7 +5792,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CEHL1Phys>(EFFECT_HL1_PHYSICS,				MAKE_STRING("#hl2c_hl1_physics"),		EC_NONE,						chaos_t_hl1_physics.GetFloat(),			chaos_p_hl1_physics.GetInt());
 	CreateEffect<CEDVDCrosshair>(EFFECT_DVD_CROSSHAIR,		MAKE_STRING("#hl2c_dvd_crosshair"),		EC_NONE,						chaos_t_dvd_crosshair.GetFloat(),		chaos_p_dvd_crosshair.GetInt());
 	CreateEffect<CEEvilNPC>(EFFECT_EVIL_BREEN,				MAKE_STRING("#hl2c_evil_breen"),		EC_FAR_ENEMY,					-1,										chaos_p_evil_breen.GetInt());
-	CreateEffect<CECopSpam>(EFFECT_COP_SPAM,				MAKE_STRING("#hl2c_cop_spam"),			EC_FAR_ENEMY | EC_NO_SPAM_NPCS, chaos_t_cop_spam.GetFloat(),			chaos_p_cop_spam.GetInt());
+	CreateEffect<CECopSpam>(EFFECT_COP_SPAM,				MAKE_STRING("#hl2c_cop_spam"),			EC_ENEMY_SPAM,					chaos_t_cop_spam.GetFloat(),			chaos_p_cop_spam.GetInt());
 	CreateEffect<CEScannerSpam>(EFFECT_SCANNER_SPAM,		MAKE_STRING("#hl2c_scanner_spam"),		EC_NO_SPAM_NPCS,				-1,										chaos_p_scanner_spam.GetInt());
 	CreateEffect<>(EFFECT_HOMING_AR2,						MAKE_STRING("#hl2c_homing_ar2"),		EC_NONE,						chaos_t_homing_ar2.GetFloat(),			chaos_p_homing_ar2.GetInt());
 	CreateEffect<>(EFFECT_CLIMB_ANYWHERE,					MAKE_STRING("#hl2c_climb_anywhere"),	EC_NONE,						chaos_t_climb_anywhere.GetFloat(),		chaos_p_climb_anywhere.GetInt());
@@ -6142,9 +6144,10 @@ bool CChaosEffect::CheckEffectContext()
 		if (IterUsableVehicles(true))
 			return false;//vehicle found
 
-	//on some maps, a vital ally is unreachable by the player, but reachable by spawned enemies, meaning there's no way to save them
+	//on some maps, an important npc is unreachable by the player, but reachable by spawned enemies, meaning there's no way to save them
 	if (m_nContext & EC_FAR_ENEMY)
-		if (!Q_strcmp(pMapName, "d2_prison_06") || !Q_strcmp(pMapName, "ep1_citadel_03") || !Q_strcmp(pMapName, "ep1_c17_02") || !Q_strcmp(pMapName, "ep2_outland_11") || !Q_strcmp(pMapName, "ep2_outland_12a"))
+		if (!Q_strcmp(pMapName, "d2_prison_06") || !Q_strcmp(pMapName, "ep1_citadel_03") || !Q_strcmp(pMapName, "ep1_c17_02")
+			|| !Q_strcmp(pMapName, "ep2_outland_11") || !Q_strcmp(pMapName, "ep2_outland_12") || !Q_strcmp(pMapName, "ep2_outland_12a"))
 			return false;
 
 	//need at least one pickup in the map
@@ -6966,7 +6969,8 @@ bool CChaosEffect::PhysConvertSoftlock(const char* pMapName)
 			|| !Q_strcmp(pMapName, "ep2_outland_11")//EWN
 			|| !Q_strcmp(pMapName, "ep2_outland_11a")//ED
 			|| !Q_strcmp(pMapName, "ep2_outland_11b")//ED
-			|| !Q_strcmp(pMapName, "ep2_outland_12"))//lags like crazy and moves very little
+			|| !Q_strcmp(pMapName, "ep2_outland_12")//lags like crazy and moves very little
+			|| !Q_strcmp(pMapName, "ep2_outland_12a"))//EWN and UPE
 			return true;//bad map
 	}
 	return false;
@@ -6983,7 +6987,9 @@ bool CChaosEffect::CombatBreaksScene(const char* pMapName)
 	else
 	{
 		if (!Q_strcmp(pMapName, "ep1_citadel_03") || !Q_strcmp(pMapName, "ep1_c17_02b")
-			|| !Q_strcmp(pMapName, "ep2_outland_01") || !Q_strcmp(pMapName, "ep2_outland_07") || !Q_strcmp(pMapName, "ep2_outland_08") || !Q_strcmp(pMapName, "ep2_outland_10a") || !Q_strcmp(pMapName, "ep2_outland_11"))
+			|| !Q_strcmp(pMapName, "ep2_outland_01") || !Q_strcmp(pMapName, "ep2_outland_07") || !Q_strcmp(pMapName, "ep2_outland_08")
+			|| !Q_strcmp(pMapName, "ep2_outland_10a") || !Q_strcmp(pMapName, "ep2_outland_11")
+			|| !Q_strcmp(pMapName, "ep2_outland_12") || !Q_strcmp(pMapName, "ep2_outland_12a"))
 			return true;//bad map
 	}
 	return false;
@@ -7003,7 +7009,7 @@ bool CChaosEffect::NeedPhysgun(const char* pMapName)
 	{
 		if (!Q_strcmp(pMapName, "ep1_citadel_00") || !Q_strcmp(pMapName, "ep1_citadel_01") || !Q_strcmp(pMapName, "ep1_citadel_03") || !Q_strcmp(pMapName, "ep1_citadel_04")
 			|| !Q_strcmp(pMapName, "ep1_c17_00") || !Q_strcmp(pMapName, "ep1_c17_00a") || !Q_strcmp(pMapName, "ep1_c17_01") || !Q_strcmp(pMapName, "ep1_c17_02")
-			|| !Q_strcmp(pMapName, "ep2_outland_01"))
+			|| !Q_strcmp(pMapName, "ep2_outland_01") || !Q_strcmp(pMapName, "ep2_outland_12"))
 			return true;//bad time to lose the gravity gun
 	}
 	return false;
@@ -7033,7 +7039,7 @@ bool CChaosEffect::DontTeleportPlayer(const char* pMapName)
 		}
 		else
 		{
-			if (!Q_strcmp(pMapName, "ep2_outland_01") || !Q_strcmp(pMapName, "ep2_outland_11") || !Q_strcmp(pMapName, "ep2_outland_11b") || !Q_strcmp(pMapName, "ep2_outland_12a"))
+			if (!Q_strcmp(pMapName, "ep2_outland_01") || !Q_strcmp(pMapName, "ep2_outland_11") || !Q_strcmp(pMapName, "ep2_outland_11b") || !Q_strcmp(pMapName, "ep2_outland_12") || !Q_strcmp(pMapName, "ep2_outland_12a"))
 				return true;//no
 		}
 	}
