@@ -64,7 +64,7 @@ ConVar tf_weapon_criticals_bucket_default( "tf_weapon_criticals_bucket_default",
 ConVar chaos_fire_full_clip("chaos_fire_full_clip", "0");
 bool CBaseCombatWeapon::AutoFiresFullClip()
 {
-	return chaos_fire_full_clip.GetBool();
+	return chaos_fire_full_clip.GetBool() && m_iClip1 != WEAPON_NOCLIP;
 }
 CBaseCombatWeapon::CBaseCombatWeapon()
 {
