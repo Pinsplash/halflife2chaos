@@ -2094,11 +2094,11 @@ bool CBaseEntity::GetUnstuck(float flMaxDist, int flags)
 	}
 	else
 	{
-		UTIL_TraceEntity(this, vecGoodSpot, vecGoodSpot, MASK_NPCSOLID, &trace);
+		UTIL_TraceEntity(this, vecGoodSpot, vecGoodSpot, PhysicsSolidMaskForEntity(), &trace);
 	}
-	//trace in place to find out what we should do for pretracing
+	//trace in place to find out what we should do for pretracing in FindPassableSpace
 	trace_t	trace2;
-	UTIL_TraceLine(vecGoodSpot, vecGoodSpot, IsPlayer() ? MASK_PLAYERSOLID : MASK_NPCSOLID, this, COLLISION_GROUP_NONE, &trace2);
+	UTIL_TraceLine(vecGoodSpot, vecGoodSpot, PhysicsSolidMaskForEntity(), this, GetCollisionGroup(), &trace2);
 	if (trace2.startsolid)
 	{
 		if (unstuck_debug.GetInt() == 1 && !bNoDebug) Msg("Skipping pretrace, origin inside world\n");
@@ -2144,7 +2144,7 @@ bool CBaseEntity::GetUnstuck(float flMaxDist, int flags)
 		}
 		Vector forward, right, up;
 		AngleVectors(vec3_angle, &forward, &right, &up);
-		for (int i = 10; i <= flMaxDist && !bDone; i += 10)//don't actually do 500 tests. that's insane.
+		for (int i = 10; i <= flMaxDist && !bDone; i += 10)
 		{
 			bool bGranular = i > flMaxDist / 2;
 			//Msg("Unstuck i %i\n", i);
@@ -2263,25 +2263,20 @@ bool CBaseEntity::FindPassableSpace(const Vector direction, float step, Vector& 
 	bool bSkipPreTrace = (flags & UF_NO_PRETRACE) != 0;
 	bool bPreTraceSkipEnts = (flags & UF_PRETRACE_SKIP_ENTS) != 0;
 
+	//pre-trace
 	//draw a line between our origin and the proposed destination. if that line is obstructed, then the destination may put us through a wall. let's avoid that.
 	Vector vecDest = GetAbsOrigin() + direction * step;
 	if (!bSkipPreTrace)//if we do skip the pretrace, then our origin is in world geo
 	{
 		//initially, we do not want to clip through entities either
 		trace_t	preTrace;
-		int iMask;
-		int iCollisionGroup;
+		int iMask = PhysicsSolidMaskForEntity();
+		int iCollisionGroup = GetCollisionGroup();
 		if (bPreTraceSkipEnts)
 		{
 			//this means our origin is inside an entity
-			iMask = IsPlayer() ? MASK_PLAYERSOLID_BRUSHONLY : MASK_NPCSOLID_BRUSHONLY;
+			iMask &= ~CONTENTS_MONSTER;
 			iCollisionGroup = COLLISION_GROUP_DEBRIS;
-		}
-		else
-		{
-			//this means our origin isn't inside anything
-			iMask = IsPlayer() ? MASK_PLAYERSOLID : MASK_NPCSOLID;
-			iCollisionGroup = COLLISION_GROUP_NONE;
 		}
 		//welcome to the single dumbest hack ever. it's possible that the pretrace goes under a microscopically thin crack under a door, so offset the origin by 1
 		UTIL_TraceLine(GetAbsOrigin() + Vector(0, 0, 1), vecDest, iMask, this, iCollisionGroup, &preTrace);
@@ -2300,17 +2295,27 @@ bool CBaseEntity::FindPassableSpace(const Vector direction, float step, Vector& 
 		}
 	}
 	//clear space?
-	//trace_t	mainTrace;
-	//UTIL_TraceEntity(this, vecDest, vecDest, IsPlayer() ? MASK_PLAYERSOLID : MASK_NPCSOLID, &mainTrace);
+	//player and npcs should avoid UTIL_TraceEntity because it traces by model's hitboxes, not bbox
 	trace_t	mainTrace;
-	if (IsPlayer())
+	if (IsPlayer() || IsNPC())
 	{
-		CBasePlayer *pPlayer = static_cast<CBasePlayer*>(this);
-		UTIL_TraceHull(vecDest, vecDest, pPlayer->GetPlayerMins(), pPlayer->GetPlayerMaxs(), MASK_PLAYERSOLID, this, COLLISION_GROUP_NONE, &mainTrace);
+		Vector vMins, vMaxs;
+		if (IsPlayer())
+		{
+			CBasePlayer* pPlayer = static_cast<CBasePlayer*>(this);
+			vMins = pPlayer->GetPlayerMins();
+			vMaxs = pPlayer->GetPlayerMaxs();
+		}
+		else
+		{
+			vMins = WorldAlignMins();
+			vMaxs = WorldAlignMaxs();
+		}
+		UTIL_TraceHull(vecDest, vecDest, vMins, vMaxs, PhysicsSolidMaskForEntity(), this, GetCollisionGroup(), &mainTrace);
 	}
 	else
 	{
-		UTIL_TraceEntity(this, vecDest, vecDest, MASK_NPCSOLID, &mainTrace);
+		UTIL_TraceEntity(this, vecDest, vecDest, PhysicsSolidMaskForEntity(), &mainTrace);
 	}
 	if (mainTrace.startsolid || mainTrace.fraction != 1)
 	{
@@ -2325,7 +2330,7 @@ bool CBaseEntity::FindPassableSpace(const Vector direction, float step, Vector& 
 	//NPCs are not acceptable ground because some of them (striders and such) have weird collisions with player
 	//nodraw is allowed if the trace hits an entity, because those are brush entities like func_tracktrain, which are sometimes nodraw-textured
 	trace_t	floorTrace;
-	UTIL_TraceLine(vecDest, vecDest - Vector(0, 0, 32768), IsPlayer() ? MASK_PLAYERSOLID : MASK_NPCSOLID, this, COLLISION_GROUP_NONE, &floorTrace);
+	UTIL_TraceLine(vecDest, vecDest - Vector(0, 0, 32768), PhysicsSolidMaskForEntity(), this, GetCollisionGroup(), &floorTrace);
 	if (!floorTrace.DidHit() || (floorTrace.surface.flags & SURF_SKY) || ((floorTrace.surface.flags & SURF_NODRAW) && !floorTrace.m_pEnt) || (floorTrace.m_pEnt && floorTrace.m_pEnt->IsNPC()))
 	{
 		if (unstuck_debug.GetInt() == 1 && !bNoDebug)
@@ -2347,13 +2352,13 @@ bool CBaseEntity::CheckIfBelowGround(Vector vecPos, bool bNoDebug)
 {
 	//find floor (does not match with vecPos if we're on uneven terrain)
 	trace_t	groundTrace;
-	UTIL_TraceLine(vecPos, vecPos - Vector(0, 0, 32768), IsPlayer() ? MASK_PLAYERSOLID : MASK_NPCSOLID, this, COLLISION_GROUP_NONE, &groundTrace);
+	UTIL_TraceLine(vecPos, vecPos - Vector(0, 0, 32768), PhysicsSolidMaskForEntity(), this, GetCollisionGroup(), &groundTrace);
 	//trace up
 	trace_t	ceilingTrace1;
-	UTIL_TraceLine(groundTrace.endpos, groundTrace.endpos + Vector(0, 0, 32768), IsPlayer() ? MASK_PLAYERSOLID : MASK_NPCSOLID, this, COLLISION_GROUP_NONE, &ceilingTrace1);
+	UTIL_TraceLine(groundTrace.endpos, groundTrace.endpos + Vector(0, 0, 32768), PhysicsSolidMaskForEntity(), this, GetCollisionGroup(), &ceilingTrace1);
 	//now trace down again
 	trace_t	ceilingTrace2;
-	UTIL_TraceLine(ceilingTrace1.endpos, ceilingTrace1.endpos - Vector(0, 0, 32768), IsPlayer() ? MASK_PLAYERSOLID : MASK_NPCSOLID, this, COLLISION_GROUP_NONE, &ceilingTrace2);
+	UTIL_TraceLine(ceilingTrace1.endpos, ceilingTrace1.endpos - Vector(0, 0, 32768), PhysicsSolidMaskForEntity(), this, GetCollisionGroup(), &ceilingTrace2);
 	if (unstuck_debug.GetInt() == 1 && !bNoDebug)
 	{
 		Msg("vecPos %0.1f %0.1f %0.1f\n", vecPos.x, vecPos.y, vecPos.z);
@@ -2366,6 +2371,10 @@ bool CBaseEntity::CheckIfBelowGround(Vector vecPos, bool bNoDebug)
 	if ((groundTrace.endpos - ceilingTrace2.endpos).Length() > 1)
 	{
 		if (unstuck_debug.GetInt() == 1 && !bNoDebug) Msg("Below displacement\n");
+		Vector vecFinal = ceilingTrace2.endpos;
+		QAngle aAngle = GetAbsAngles();
+		Vector vecVel = GetAbsVelocity();
+		Teleport(&vecFinal, &aAngle, &vecVel);
 		return false;
 	}
 	return true;
