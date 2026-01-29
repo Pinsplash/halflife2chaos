@@ -9757,7 +9757,7 @@ void CESuitSwap::StartEffect()
 void CEGiveAllRPG::StartEffect()
 {
 	//player
-	ChaosSpawnWeapon("weapon_rpg", MAKE_STRING("#hl2c_giveallrpgs"), 3, "rpg_round");
+	//ChaosSpawnWeapon("weapon_rpg", MAKE_STRING("#hl2c_giveallrpgs"), 3, "rpg_round");
 	//NPCs
 	CBaseEntity* pEnt = gEntList.FindEntityByClassname(NULL, "npc*");
 	while (pEnt)
