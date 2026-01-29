@@ -2402,7 +2402,7 @@ void CHL2_Player::StartGame()
 	//scripting of canals 11 requires an airboat to be present, give player a new one if they came here without one
 	else if (!Q_strcmp(pMapName, "d1_canals_11"))
 	{
-		if (!IsInAVehicle() && gpGlobals->eLoadType != MapLoad_NewGame)
+		if (gpGlobals->eLoadType == MapLoad_Transition && !gEntList.FindEntityByClassname(NULL, "prop_vehicle_airboat"))
 		{
 			g_ChaosEffects[EFFECT_SPAWN_VEHICLE]->ChaosSpawnVehicle("prop_vehicle_airboat", MAKE_STRING("#hl2c_spawn_airboat"), SPAWNTYPE_VEHICLE, "models/airboat.mdl", "airboat", "scripts/vehicles/airboat.txt");
 		}
