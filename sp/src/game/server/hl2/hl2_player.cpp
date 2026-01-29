@@ -7017,7 +7017,8 @@ bool CChaosEffect::PhysConvertSoftlock(const char* pMapName)
 	//UPE: Upward Player Elevator: Player has to ride an elevator that moves up. A downward one is fine, but there's not exactly a variety of ways to go up.
 	if (!Q_strnicmp("d", pMapName, 1))//hl2
 	{
-		if (!Q_strcmp(pMapName, "d1_trainstation_05")//EWN
+		if (!Q_strcmp(pMapName, "d1_trainstation_04")//EWN
+			|| !Q_strcmp(pMapName, "d1_trainstation_05")//EWN
 			|| !Q_strcmp(pMapName, "d1_canals_11")//recheck - something about doors?
 			|| !Q_strcmp(pMapName, "d1_eli_01")//ED and EWN
 			|| !Q_strcmp(pMapName, "d1_town_01")//UPE
