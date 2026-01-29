@@ -2329,8 +2329,49 @@ void CHL2_Player::StartGame()
 	engine->ClientCommand(engine->PEntityOfEntIndex(1), "exec groups\n");
 	gEntList.AddListenerEntity(this);
 	const char* pMapName = STRING(gpGlobals->mapname);
+	//fixes a problem with npcs being stuck in place when player goes through queue extremely fast
+	if (!Q_strcmp(pMapName, "d1_trainstation_01"))
+	{
+		//queue system in ts01 originally worked by moving the queue when the player hits some triggers
+		//this is bad because if you hit the triggers too quickly, the move up input will be sent while NPCs are still reacting to the last such input, and they become confused permanently
+		//new system is the cut content system ala logic_timer, enabled by the old first trigger
+		for (CBaseEntity* pEnt = gEntList.FindEntityByClassname(NULL, "trigger_once"); pEnt; pEnt = gEntList.FindEntityByClassname(pEnt, "trigger_once"))
+		{
+			//trigger has no name, origin is easiest way to find it
+			if (pEnt->GetAbsOrigin() == Vector(-5022.15, - 787.48, 0))
+			{
+				//delete old output
+				datamap_t* dmap = pEnt->GetDataDescMap();
+				while (dmap)
+				{
+					int fields = dmap->dataNumFields;
+					for (int i = 0; i < fields; i++)
+					{
+						typedescription_t* dataDesc = &dmap->dataDesc[i];
+						if ((dataDesc->fieldType == FIELD_CUSTOM) && (dataDesc->flags & FTYPEDESC_OUTPUT))
+						{
+							CBaseEntityOutput* pOutput = (CBaseEntityOutput*)((int)pEnt + (int)dataDesc->fieldOffset[0]);
+							pOutput->DeleteAllElements();
+						}
+					}
+					dmap = dmap->baseMap;
+				}
+
+				//new output
+				variant_t param;
+				param.SetString(MAKE_STRING("OnTrigger customs_queue_timer,Enable,,0,1"));
+				pEnt->AcceptInput("AddOutput", this, this, param, 0);
+			}
+			//delete other two triggers
+			else if (pEnt->GetAbsOrigin() == Vector(-4614.97, -678.03, 16))
+				UTIL_Remove(pEnt);
+			else if (pEnt->GetAbsOrigin() == Vector(-4614.97, -806.03, 16))
+				UTIL_Remove(pEnt);
+		}
+		return;
+	}
 	//scripting of canals 11 requires an airboat to be present, give player a new one if they came here without one
-	if (!Q_strcmp(pMapName, "d1_canals_11"))
+	else if (!Q_strcmp(pMapName, "d1_canals_11"))
 	{
 		if (!IsInAVehicle() && gpGlobals->eLoadType != MapLoad_NewGame)
 		{
