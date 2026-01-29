@@ -2370,6 +2370,24 @@ void CHL2_Player::StartGame()
 		}
 		return;
 	}
+	//critical trigger can be activated by any NPC. only alyx should be able to.
+	else if (!Q_strcmp(pMapName, "d1_trainstation_04"))
+	{
+		//make new filter entity and apply it to the trigger
+		CBaseEntity* pFilter = (CBaseEntity*)CreateEntityByName("filter_activator_name");
+		if (pFilter)
+		{
+			pFilter->KeyValue("filtername", "alyx");
+			pFilter->KeyValue("targetname", "filter_alyx");
+			pFilter->Spawn();
+		}
+		CBaseEntity* pTrigger = gEntList.FindEntityByName(NULL, "trigger_elevator_alyxinside");
+		if (pTrigger)
+		{
+			pTrigger->KeyValue("filtername", "filter_alyx");
+		}
+		return;
+	}
 	//scripting of canals 11 requires an airboat to be present, give player a new one if they came here without one
 	else if (!Q_strcmp(pMapName, "d1_canals_11"))
 	{
