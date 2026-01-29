@@ -6201,10 +6201,10 @@ bool CChaosEffect::CheckEffectContext()
 			return false;//we only have one weapon
 	}
 
-	//seeing vision immediately crashes on this map
-	//something to do with monitors maybe?
+	//seeing vision immediately crashes on these maps
+	//might be the weird code with the bubbling liquid?
 	if (m_nID == EFFECT_CAMERA_TEXTURES)
-		if (!Q_strcmp(pMapName, "d3_c17_01"))
+		if (!Q_strcmp(pMapName, "d1_trainstation_05") || !Q_strcmp(pMapName, "d3_c17_01"))
 			return false;
 
 	if (m_nContext == EC_NONE)
