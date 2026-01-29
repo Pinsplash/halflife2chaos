@@ -9251,6 +9251,8 @@ void CEPlayerBig::StartEffect()
 {
 	UTIL_GetLocalPlayer()->SetModelScale(2);
 	UTIL_GetLocalPlayer()->GetUnstuck(500);//done here so that the player won't be stuck when reloading a save that was made before the effect was on
+	if (!g_ChaosEffects[EFFECT_SUPER_GRAB]->m_bActive)
+		player_use_dist.SetValue(160);
 }
 void CEPlayerBig::StopEffect()
 {
@@ -9260,6 +9262,8 @@ void CEPlayerBig::StopEffect()
 		//EFFECT_PLAYER_SMALL is active and will outlast me, restore its effects
 		g_ChaosEffects[EFFECT_PLAYER_SMALL]->StartEffect();
 	}
+	if (!g_ChaosEffects[EFFECT_SUPER_GRAB]->m_bActive)
+		player_use_dist.SetValue(80);
 }
 void CEPlayerBig::MaintainEffect()
 {
@@ -9298,7 +9302,10 @@ void CESuperGrab::StopEffect()
 {
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
 	CHL2_Player* pHL2Player = static_cast<CHL2_Player*>(pPlayer);
-	player_use_dist.SetValue(80);
+	if (g_ChaosEffects[EFFECT_PLAYER_BIG]->m_bActive)
+		player_use_dist.SetValue(160);
+	else
+		player_use_dist.SetValue(80);
 	player_throwforce.SetValue(1000);
 	if (pHL2Player)
 		pHL2Player->m_bSuperGrab = false;
