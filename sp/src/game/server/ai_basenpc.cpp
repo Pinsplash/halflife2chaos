@@ -161,6 +161,7 @@ ConVar	ai_frametime_limit( "ai_frametime_limit", "50", FCVAR_NONE, "frametime li
 ConVar	ai_use_think_optimizations( "ai_use_think_optimizations", "1" );
 
 ConVar	ai_test_moveprobe_ignoresmall( "ai_test_moveprobe_ignoresmall", "0" );
+ConVar  npc_debug_print_damage("npc_debug_print_damage", "0", FCVAR_NONE, "When true, print amount and type of all damage received by npcs to console.");
 
 #ifdef HL2_EPISODIC
 extern ConVar ai_vehicle_avoidance;
@@ -923,7 +924,16 @@ int CAI_BaseNPC::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 	//  Insert a combat sound so that nearby NPCs know I've been hit
 	// ---------------------------------------------------------------
 	CSoundEnt::InsertSound( SOUND_COMBAT, GetAbsOrigin(), 1024, 0.5, this, SOUNDENT_CHANNEL_INJURY );
+	if (npc_debug_print_damage.GetBool() && info.GetDamage() > 0)
+	{
+		char dmgtype[64];
+		CTakeDamageInfo::DebugGetDamageTypeString(info.GetDamageType(), dmgtype, 512);
+		char outputString[256];
+		Q_snprintf(outputString, 256, "%f: NPC %s at [%0.2f %0.2f %0.2f] took %f damage from %s, type %s\n", gpGlobals->curtime, GetDebugName(),
+			GetAbsOrigin().x, GetAbsOrigin().y, GetAbsOrigin().z, info.GetDamage(), info.GetInflictor()->GetDebugName(), dmgtype);
 
+		Msg("%s", outputString);
+	}
 	return 1;
 }
 

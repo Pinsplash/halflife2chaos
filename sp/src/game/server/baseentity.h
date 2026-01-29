@@ -1093,7 +1093,10 @@ public:
 	void	SetMaxHealth( int amt )	{ m_iMaxHealth = amt; }
 
 	int		GetHealth() const		{ return m_iHealth; }
-	void	SetHealth( int amt )	{ m_iHealth = amt; }
+	void	SetHealth( int amt )
+	{
+		m_iHealth = amt;
+	}
 
 	// Ugly code to lookup all functions to make sure they are in the table when set.
 #ifdef _DEBUG

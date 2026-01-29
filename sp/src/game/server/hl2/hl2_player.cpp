@@ -323,6 +323,11 @@ CChaosStoredEnt* StoreEnt(CBaseEntity* pEnt)
 					pStoredEnt->containerid = pDropship->m_hContainer->m_iChaosID;
 					pStoredEnt->cratetype = pDropship->m_iCrateType;
 				}
+				CAI_PlayerAlly* pPlayerAlly = dynamic_cast<CAI_PlayerAlly*>(pNPC);
+				if (pPlayerAlly)
+				{
+					pStoredEnt->playerally = true;
+				}
 			}
 		}
 		if (pAnimating->GetParent() && pAnimating->GetParent()->ClassMatches("npc_combinedropship"))
@@ -346,7 +351,6 @@ CBaseEntity* RetrieveStoredEnt(CChaosStoredEnt* pStoredEnt)
 
 	pEnt->SetAbsAngles(pStoredEnt->angle);
 
-	pEnt->SetHealth(pStoredEnt->health);
 	pEnt->SetMaxHealth(pStoredEnt->max_health);
 	pEnt->AddSpawnFlags(pStoredEnt->spawnflags);
 	pEnt->KeyValue("model", STRING(pStoredEnt->model));
@@ -400,6 +404,12 @@ CBaseEntity* RetrieveStoredEnt(CChaosStoredEnt* pStoredEnt)
 				if (pStoredEnt->dropship)
 				{
 					pEnt->KeyValue("CrateType", pStoredEnt->cratetype);
+				}
+				if (pStoredEnt->playerally)
+				{
+					CAI_PlayerAlly* pPlayerAlly = dynamic_cast<CAI_PlayerAlly*>(pNPC);
+					//avoids allies instantly regenerating all lost health
+					pPlayerAlly->m_flTimeLastRegen = gpGlobals->curtime;
 				}
 			}
 		}
@@ -2154,6 +2164,7 @@ void CHL2_Player::SpawnStoredEnts()
 			
 			//these things must be done post spawning
 
+			pEnt->SetHealth(pStored->health);
 			if (pStored->poisonzombie)
 			{
 				CNPC_PoisonZombie* pPZombie = dynamic_cast<CNPC_PoisonZombie*>(pEnt);

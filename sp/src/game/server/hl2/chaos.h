@@ -264,6 +264,8 @@ public:
 
 	bool dropshipcargo = false;
 	int dropshipid;
+
+	bool playerally = false;
 };
 //CUtlVector<int>				g_iActiveEffects;
 int g_iActiveEffects[MAX_ACTIVE_EFFECTS];
