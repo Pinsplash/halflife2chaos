@@ -9583,6 +9583,11 @@ void CEPhysConvert::StartEffect()
 		ep2outland11aHack = true;
 	}
 	*/
+	bool d2prison06Hack = false;
+	if (!Q_strcmp(pMapName, "d2_prison_06"))
+	{
+		d2prison06Hack = true;
+	}
 	//door-linked areaportals become permanently open since the door is now free to move
 	CBaseEntity* pPortal = NULL;
 	while ((pPortal = gEntList.FindEntityByClassname(pPortal, "func_a*")) != NULL)
@@ -9615,6 +9620,14 @@ void CEPhysConvert::StartEffect()
 			pEnt->AcceptInput("MagnetDropped", pEnt, pEnt, emptyVariant, 0);
 			pEnt = gEntList.NextEnt(pEnt);
 			continue;
+		}
+		if (d2prison06Hack && pEnt->GetParent() &&
+			(pEnt->GetParent()->NameMatches("door_room1_gate") ||
+			pEnt->GetParent()->NameMatches("door_room2_gate") ||
+			pEnt->GetParent()->NameMatches("door_room2_gate_2")))
+		{
+			//normally we keep child entities parented to whatever their parent is, but these ones are shaped very weirdly and result in a softlock
+			pEnt->SetParent(NULL);
 		}
 		//objects have to be real "things"
 		//no world
@@ -9656,6 +9669,7 @@ void CEPhysConvert::StartEffect()
 				pos.x += 10;
 				pEnt->Teleport(&pos, NULL, NULL);
 			}
+			//this code fixes the big silo doors, but we no longer run the effect on outland 11a at all because of the ending door issue
 			/*
 			else if (ep2outland11aHack)
 			{
