@@ -4302,9 +4302,72 @@ int CWeaponPhysCannon::WeaponRangeAttack1Condition(float flDot, float flDist)
 
 bool CWeaponPhysCannon::WeaponLOSCondition(const Vector& ownerPos, const Vector& targetPos, bool bSetConditions)
 {
-	if (!m_grabController.GetAttached())
-		return false;
-	return BaseClass::WeaponLOSCondition(m_grabController.GetAttached()->GetAbsOrigin(), targetPos, bSetConditions);
+	//test LOS from held object. hack to avoid it blocking our LOS.
+	if (m_grabController.GetAttached())
+		return BaseClass::WeaponLOSCondition(m_grabController.GetAttached()->GetAbsOrigin(), targetPos, bSetConditions);
+
+	CAI_BaseNPC* npcOwner = GetOwner()->MyNPCPointer();
+	CBaseEntity* pTargetEnt = npcOwner->GetEnemy();
+
+	//this means we want to pick something up
+	if (npcOwner->GetTarget())
+		pTargetEnt = npcOwner->GetTarget();
+
+	// Find its relative shoot position
+	Vector vecRelativeShootPosition;
+	VectorSubtract(npcOwner->Weapon_ShootPosition(), npcOwner->GetAbsOrigin(), vecRelativeShootPosition);
+	Vector barrelPos = ownerPos + vecRelativeShootPosition;
+
+	// FIXME: If we're in a vehicle, we need some sort of way to handle shooting out of them
+
+	// Use the custom LOS trace filter
+	CWeaponLOSFilter traceFilter(GetOwner(), pTargetEnt, COLLISION_GROUP_NONE);
+	trace_t tr;
+	UTIL_TraceLine(barrelPos, targetPos, MASK_SHOT, &traceFilter, &tr);
+
+	// See if we completed the trace without interruption
+	if (tr.fraction == 1.0)
+	{
+		return true;
+	}
+
+	CBaseEntity* pHitEnt = tr.m_pEnt;
+
+	// Hitting our enemy is a success case
+	if (pHitEnt == pTargetEnt)
+	{
+		return true;
+	}
+
+	// If a vehicle is blocking the view, grab its driver and use that as the combat character
+	CBaseCombatCharacter* pBCC;
+	IServerVehicle* pVehicle = pHitEnt->GetServerVehicle();
+	if (pVehicle)
+	{
+		pBCC = pVehicle->GetPassenger();
+	}
+	else
+	{
+		pBCC = ToBaseCombatCharacter(pHitEnt);
+	}
+
+	if (pBCC)
+	{
+		if (npcOwner->IRelationType(pBCC) == D_HT)
+			return false;
+
+		if (bSetConditions)
+		{
+			npcOwner->SetCondition(COND_WEAPON_BLOCKED_BY_FRIEND);
+		}
+	}
+	else if (bSetConditions)
+	{
+		npcOwner->SetCondition(COND_WEAPON_SIGHT_OCCLUDED);
+		npcOwner->SetEnemyOccluder(pHitEnt);
+	}
+
+	return false;
 }
 
 //-----------------------------------------------------------------------------

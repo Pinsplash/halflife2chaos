@@ -211,12 +211,38 @@ void CNPC_Breen::StartTask(const Task_t* pTask)
 				break;
 			}
 			Vector posLos;
-			if (pPhysCannon && pTarget && GetTacticalServices()->FindLos(pTarget->GetAbsOrigin(), pTarget->GetAbsOrigin(), 0, pPhysCannon->TraceLength(), 1.0, FLANKTYPE_NONE, vec3_origin, 0, &posLos))
+			trace_t tr;
+			UTIL_TraceLine(EyePosition(), pTarget->GetAbsOrigin(), MASK_BLOCKLOS, this, COLLISION_GROUP_NONE, &tr);
+			bool bDirectLOS = (!tr.DidHit() || tr.m_pEnt == pTarget) && (GetAbsOrigin() - GetTarget()->GetAbsOrigin()).Length() < pPhysCannon->TraceLength() / 2;
+			if (bDirectLOS)
 			{
-				GetNavigator()->SetGoal(AI_NavGoal_t(posLos, ACT_RUN, AIN_HULL_TOLERANCE));
+				NDebugOverlay::Line(tr.startpos, tr.endpos, 0, 255, 0, true, 10);
+				TaskComplete();
+				break;
 			}
+			else
+			{
+				NDebugOverlay::Line(tr.startpos, tr.endpos, 255, 0, 0, true, 10);
+				bool bFoundLOSNode = GetTacticalServices()->FindLos(pTarget->GetAbsOrigin(), pTarget->GetAbsOrigin(), 0, pPhysCannon->TraceLength(), 1.0, FLANKTYPE_NONE, vec3_origin, 0, &posLos);
+				if (bFoundLOSNode)
+				{
+					if (GetNavigator()->SetGoal(AI_NavGoal_t(posLos, ACT_RUN, AIN_HULL_TOLERANCE)))
+					{
+						TaskComplete();
+						break;
+					}
+					else
+					{
+						SetCondition(COND_BREEN_PROP_LOST);
+					}
+				}
+				else
+				{
+					SetCondition(COND_BREEN_PROP_LOST);
+				}
+			}
+			RememberUnreachable(pTarget, 10);
 		}
-		TaskComplete();
 		break;
 	}
 	default:
@@ -234,12 +260,15 @@ void CNPC_Breen::RunTask(const Task_t* pTask)
 		if (pPhysCannon && !pPhysCannon->m_bActive)
 		{
 			pPhysCannon->SecondaryAttack();
+			SetNextThink(gpGlobals->curtime + 0.01);
 			if (pPhysCannon->m_bActive)
 				TaskComplete();
-			if (!GetTarget() || IsUnreachable(GetTarget()) || (GetAbsOrigin() - GetTarget()->GetAbsOrigin()).Length() > pPhysCannon->TraceLength())
+			if (!GetTarget() || IsUnreachable(GetTarget()) || (GetAbsOrigin() - GetTarget()->GetAbsOrigin()).Length() > pPhysCannon->TraceLength() / 2)
 			{
 				SetCondition(COND_BREEN_PROP_LOST);
+				//NDebugOverlay::Line(GetTarget()->GetAbsOrigin(), GetAbsOrigin(), 255, 0, 0, true, 10);
 			}
+			break;
 		}
 		TaskComplete();
 		break;
@@ -309,6 +338,9 @@ CBaseEntity* CNPC_Breen::FindUsableProp()
 		if (pProp->ClassMatches("item*"))
 			continue;
 
+		if (pProp->VPhysicsGetObject()->IsAttachedToConstraint(false))
+			continue;
+
 		//heuristic is now mass, not distance
 		float fCurMass = pProp->VPhysicsGetObject()->GetMass();
 
@@ -339,6 +371,8 @@ CBaseEntity* CNPC_Breen::FindUsableProp()
 		fBestMass = fCurMass;
 		pBestProp = pProp;
 	}
+	//if (pBestProp)
+		//NDebugOverlay::Line(GetAbsOrigin(), pBestProp->GetAbsOrigin(), 0, 255, 0, true, 1);
 	return pBestProp;
 }
 
@@ -369,6 +403,7 @@ DEFINE_SCHEDULE
 	"		TASK_SET_TOLERANCE_DISTANCE		5"
 	"		TASK_BREEN_FIND_PROP			0"
 	"		TASK_BREEN_GO_TO_PROP			0"
+	"		TASK_RUN_PATH					0"
 	"		TASK_WAIT_FOR_MOVEMENT			0"
 	"		TASK_STOP_MOVING				0"
 	"		TASK_FACE_TARGET				0"
