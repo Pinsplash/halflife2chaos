@@ -285,14 +285,12 @@ bool CHL2GameMovement::ContinueForcedMove()
 //-----------------------------------------------------------------------------
 bool CHL2GameMovement::OnLadder( trace_t &trace )
 {
-	if (chaos_climb_anything.GetBool())
-	{
+	if (chaos_disable_ladders.GetBool())
+		return false;
+	else if (chaos_climb_anything.GetBool())
 		return !player->GetGroundEntity();
-	}
 	else
-	{
 		return (GetLadder() != NULL) ? true : false;
-	}
 }
 
 //-----------------------------------------------------------------------------
