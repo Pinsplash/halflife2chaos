@@ -2599,6 +2599,7 @@ BEGIN_DATADESC( CBaseCombatWeapon )
 	DEFINE_FIELD( m_fMinRange2, FIELD_FLOAT ),
 	DEFINE_FIELD( m_fMaxRange1, FIELD_FLOAT ),
 	DEFINE_FIELD( m_fMaxRange2, FIELD_FLOAT ),
+	DEFINE_FIELD(m_bFiringWholeClip, FIELD_BOOLEAN),
 
 	DEFINE_FIELD( m_iPrimaryAmmoCount, FIELD_INTEGER ),
 	DEFINE_FIELD( m_iSecondaryAmmoCount, FIELD_INTEGER ),
