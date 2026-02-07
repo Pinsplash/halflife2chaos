@@ -630,6 +630,8 @@ public:
 	void StartEffect() override;
 	void TransitionEffect() override;
 	void StopEffect() override;
+	void ChangeEntity(CBaseEntity* pEntity);
+	void OnEntitySpawned(CBaseEntity* pEntity);
 };
 class CECameraGravity : public CChaosEffect
 {

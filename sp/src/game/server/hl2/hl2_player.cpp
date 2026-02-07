@@ -9817,42 +9817,50 @@ void CELogicExplode::StartEffect()
 		pEnt = gEntList.NextEnt(pEnt);
 	}
 }
+void CECameraTextures::OnEntitySpawned(CBaseEntity* pEntity)
+{
+	ChangeEntity(pEntity);
+}
+void CECameraTextures::ChangeEntity(CBaseEntity* pEntity)
+{
+	model_t* pModel = pEntity->GetModel();
+	CBaseAnimating* pAnimating = pEntity->GetBaseAnimating();
+	if (pModel && modelinfo->GetModelType(pModel) == mod_studio && pAnimating)
+	{
+		//do not alter rollermines that are in their shocky state. this will cause a crash.
+		//the crash comes from animated texture proxies (since FullFrameFB does not have multiple frames?)
+		if (!pEntity->IsNPC() || !pEntity->ClassMatches("npc_rollermine") || strcmp(STRING(pEntity->GetModelName()), "models/roller_spikes.mdl"))
+		{
+			IMaterial* pMaterials[128];
+			int materialCount = g_pStudioRender->GetMaterialListFromBodyAndSkin(modelinfo->GetCacheHandle(pModel), pAnimating->m_nSkin, pAnimating->m_nBody, ARRAYSIZE(pMaterials), pMaterials);
+			for (int i = 0; i < materialCount; i++)
+			{
+				if (pMaterials[i] != NULL)
+				{
+					bool foundVar;
+					IMaterialVar* pTexName = pMaterials[i]->FindVar("$basetexture", &foundVar, false);
+					if (foundVar)
+					{
+						ITexture* pSrc = materials->FindTexture("_rt_FullFrameFB", TEXTURE_GROUP_RENDER_TARGET);
+						pTexName->SetTextureValue(pSrc);
+					}
+					IMaterialVar* pFrameNum = pMaterials[i]->FindVar("$frame", &foundVar, false);
+					if (foundVar)
+					{
+						pFrameNum->SetIntValue(0);
+					}
+				}
+			}
+		}
+	}
+}
 void CECameraTextures::StartEffect()
 {
 	//entities (studio only for now)
 	CBaseEntity* pEnt = gEntList.FirstEnt();
 	while (pEnt)
 	{
-		model_t* pModel = pEnt->GetModel();
-		CBaseAnimating* pAnimating = pEnt->GetBaseAnimating();
-		if (pModel && modelinfo->GetModelType(pModel) == mod_studio && pAnimating)
-		{
-			//do not alter rollermines that are in their shocky state. this will cause a crash.
-			//the crash comes from animated texture proxies (since FullFrameFB does not have multiple frames?)
-			if (!pEnt->IsNPC() || !pEnt->ClassMatches("npc_rollermine") || strcmp(STRING(pEnt->GetModelName()), "models/roller_spikes.mdl"))
-			{
-				IMaterial* pMaterials[128];
-				int materialCount = g_pStudioRender->GetMaterialListFromBodyAndSkin(modelinfo->GetCacheHandle(pModel), pAnimating->m_nSkin, pAnimating->m_nBody, ARRAYSIZE(pMaterials), pMaterials);
-				for (int i = 0; i < materialCount; i++)
-				{
-					if (pMaterials[i] != NULL)
-					{
-						bool foundVar;
-						IMaterialVar* pTexName = pMaterials[i]->FindVar("$basetexture", &foundVar, false);
-						if (foundVar)
-						{
-							ITexture* pSrc = materials->FindTexture("_rt_FullFrameFB", TEXTURE_GROUP_RENDER_TARGET);
-							pTexName->SetTextureValue(pSrc);
-						}
-						IMaterialVar* pFrameNum = pMaterials[i]->FindVar("$frame", &foundVar, false);
-						if (foundVar)
-						{
-							pFrameNum->SetIntValue(0);
-						}
-					}
-				}
-			}
-		}
+		ChangeEntity(pEnt);
 		pEnt = gEntList.NextEnt(pEnt);
 	}
 	//static props
@@ -9878,7 +9886,6 @@ void CECameraTextures::StartEffect()
 				}
 			}
 		}
-
 		pCollideable = staticpropmgr->GetStaticPropByIndex(i);
 	}
 }
