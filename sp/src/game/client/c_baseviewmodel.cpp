@@ -283,6 +283,8 @@ int C_BaseViewModel::DrawModel( int flags )
 	if ( !m_bReadyToDraw )
 		return 0;
 
+	C_BaseCombatWeapon* pWeapon = GetOwningWeapon();
+
 	if ( flags & STUDIO_RENDER )
 	{
 		// Determine blending amount and tell engine
@@ -297,11 +299,12 @@ int C_BaseViewModel::DrawModel( int flags )
 
 		float color[3];
 		GetColorModulation( color );
+		if (pWeapon)
+			pWeapon->GetColorModulation(color);
 		render->SetColorModulation(	color );
 	}
 		
 	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
-	C_BaseCombatWeapon *pWeapon = GetOwningWeapon();
 	int ret;
 	// If the local player's overriding the viewmodel rendering, let him do it
 	if ( pPlayer && pPlayer->IsOverridingViewmodel() )
