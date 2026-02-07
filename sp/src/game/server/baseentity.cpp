@@ -7615,6 +7615,7 @@ void CBaseEntity::LogicExplode()
 	case 2:
 		variant.SetInt(RandomInt(0, 255));
 		AcceptInput("Alpha", this, this, variant, 0);
+		SetRenderMode(kRenderTransColor);
 		break;
 	case 3:
 		variant.SetBool(RandomInt(0, 1) == 0);
