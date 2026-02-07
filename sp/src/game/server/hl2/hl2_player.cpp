@@ -6100,6 +6100,7 @@ bool CChaosEffect::CheckEffectContext()
 			return false;//bad map
 
 	//avoid maps that need striders or other NPCs to not teleport to god-knows-where
+	//d2_prison_01 have to kill gunship and heavily damage another
 	//d3_c17_11 have to kill gunship
 	//d3_c17_12b have to kill strider
 	//d3_c17_13 have to kill striders
@@ -6111,7 +6112,8 @@ bool CChaosEffect::CheckEffectContext()
 	//ep2_outland_08 have to kill helicopter
 	//ep2_outland_12 have to kill striders
 	if (m_nID == EFFECT_BULLET_TELEPORT)
-		if (!Q_strcmp(pMapName, "d3_c17_11") || !Q_strcmp(pMapName, "d3_c17_12b") || !Q_strcmp(pMapName, "d3_c17_13")
+		if (!Q_strcmp(pMapName, "d2_prison_01")
+			|| !Q_strcmp(pMapName, "d3_c17_11") || !Q_strcmp(pMapName, "d3_c17_12b") || !Q_strcmp(pMapName, "d3_c17_13")
 			|| !Q_strcmp(pMapName, "ep1_c17_00a") || !Q_strcmp(pMapName, "ep1_c17_01") || !Q_strcmp(pMapName, "ep1_c17_05") || !Q_strcmp(pMapName, "ep1_c17_06")
 			|| !Q_strcmp(pMapName, "ep2_outland_01") || !Q_strcmp(pMapName, "ep2_outland_08") || !Q_strcmp(pMapName, "ep2_outland_12"))
 			return false;
@@ -6202,9 +6204,9 @@ bool CChaosEffect::CheckEffectContext()
 	}
 
 	//seeing vision immediately crashes on these maps
-	//might be the weird code with the bubbling liquid?
+	//see StartEffect for explanation
 	if (m_nID == EFFECT_CAMERA_TEXTURES)
-		if (!Q_strcmp(pMapName, "d1_trainstation_05") || !Q_strcmp(pMapName, "d3_c17_01"))
+		if (!Q_strcmp(pMapName, "d1_trainstation_05") || !Q_strcmp(pMapName, "d1_eli_01") || !Q_strcmp(pMapName, "d3_c17_01"))
 			return false;
 
 	if (m_nContext == EC_NONE)
@@ -6227,7 +6229,8 @@ bool CChaosEffect::CheckEffectContext()
 
 	//on some maps, an important npc is unreachable by the player, but reachable by spawned enemies, meaning there's no way to save them
 	if (m_nContext & EC_FAR_ENEMY)
-		if (!Q_strcmp(pMapName, "d2_prison_06") || !Q_strcmp(pMapName, "ep1_citadel_03") || !Q_strcmp(pMapName, "ep1_c17_02")
+		if (!Q_strcmp(pMapName, "d1_eli_01") || !Q_strcmp(pMapName, "d1_eli_02") || !Q_strcmp(pMapName, "d2_prison_06")
+			|| !Q_strcmp(pMapName, "ep1_citadel_03") || !Q_strcmp(pMapName, "ep1_c17_02")
 			|| !Q_strcmp(pMapName, "ep2_outland_11") || !Q_strcmp(pMapName, "ep2_outland_12") || !Q_strcmp(pMapName, "ep2_outland_12a"))
 			return false;
 
@@ -7100,7 +7103,7 @@ bool CChaosEffect::DontTeleportPlayer(const char* pMapName)
 	{
 		if (!Q_strcmp(pMapName, "d1_trainstation_01") || !Q_strcmp(pMapName, "d1_trainstation_04") || !Q_strcmp(pMapName, "d1_trainstation_05")
 			|| !Q_strcmp(pMapName, "d1_eli_01") || !Q_strcmp(pMapName, "d1_town_05")
-			|| !Q_strcmp(pMapName, "d2_coast_11") || !Q_strcmp(pMapName, "d2_prison_08")
+			|| !Q_strcmp(pMapName, "d2_coast_11") || !Q_strcmp(pMapName, "d2_prison_06") || !Q_strcmp(pMapName, "d2_prison_08")
 			|| !Q_strcmp(pMapName, "d3_c17_13")
 			|| !Q_strcmp(pMapName, "d3_breen_01"))
 			return true;//no
@@ -9824,18 +9827,28 @@ void CECameraTextures::StartEffect()
 		CBaseAnimating* pAnimating = pEnt->GetBaseAnimating();
 		if (pModel && modelinfo->GetModelType(pModel) == mod_studio && pAnimating)
 		{
-			IMaterial* pMaterials[128];
-			int materialCount = g_pStudioRender->GetMaterialListFromBodyAndSkin(modelinfo->GetCacheHandle(pModel), pAnimating->m_nSkin, pAnimating->m_nBody, ARRAYSIZE(pMaterials), pMaterials);
-			for (int i = 0; i < materialCount; i++)
+			//do not alter rollermines that are in their shocky state. this will cause a crash.
+			//the crash comes from animated texture proxies (since FullFrameFB does not have multiple frames?)
+			if (!pEnt->IsNPC() || !pEnt->ClassMatches("npc_rollermine") || strcmp(STRING(pEnt->GetModelName()), "models/roller_spikes.mdl"))
 			{
-				if (pMaterials[i] != NULL)
+				IMaterial* pMaterials[128];
+				int materialCount = g_pStudioRender->GetMaterialListFromBodyAndSkin(modelinfo->GetCacheHandle(pModel), pAnimating->m_nSkin, pAnimating->m_nBody, ARRAYSIZE(pMaterials), pMaterials);
+				for (int i = 0; i < materialCount; i++)
 				{
-					bool foundVar;
-					IMaterialVar* pTexName = pMaterials[i]->FindVar("$basetexture", &foundVar, false);
-					if (foundVar)
+					if (pMaterials[i] != NULL)
 					{
-						ITexture* pSrc = materials->FindTexture("_rt_FullFrameFB", TEXTURE_GROUP_RENDER_TARGET);
-						pTexName->SetTextureValue(pSrc);
+						bool foundVar;
+						IMaterialVar* pTexName = pMaterials[i]->FindVar("$basetexture", &foundVar, false);
+						if (foundVar)
+						{
+							ITexture* pSrc = materials->FindTexture("_rt_FullFrameFB", TEXTURE_GROUP_RENDER_TARGET);
+							pTexName->SetTextureValue(pSrc);
+						}
+						IMaterialVar* pFrameNum = pMaterials[i]->FindVar("$frame", &foundVar, false);
+						if (foundVar)
+						{
+							pFrameNum->SetIntValue(0);
+						}
 					}
 				}
 			}
