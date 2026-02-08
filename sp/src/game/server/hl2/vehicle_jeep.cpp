@@ -1166,7 +1166,7 @@ void CPropJeep::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE use
 	Vector vecForward;
 	pPlayer->EyeVectors( &vecForward, NULL, NULL );
 
-	AngleVectors(pPlayer->m_vOffsetedCrosshairDir, &vecForward);
+	AngleVectors(pPlayer->EyeAngles() + pPlayer->m_vOffsetedCrosshairDir, &vecForward);
 
 	trace_t tr;
 	Vector vecStart = pPlayer->EyePosition();
