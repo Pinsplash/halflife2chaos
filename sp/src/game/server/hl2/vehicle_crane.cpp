@@ -160,6 +160,7 @@ void CPropCrane::Spawn( void )
 void CPropCrane::Activate( void )
 {
 	BaseClass::Activate();
+
 	if (!m_hCraneTip)//we may have lost our crane tip by transitioning to a new map
 	{
 		// Find our magnet
@@ -177,7 +178,8 @@ void CPropCrane::Activate( void )
 			UTIL_Remove(this);
 			return;
 		}
-
+		//moved turnoff up here so we can't turn the magnet off by saveload
+		TurnMagnetOff();
 		// Create our constraint group
 		constraint_groupparams_t group;
 		group.Defaults();
@@ -200,20 +202,20 @@ void CPropCrane::Activate( void )
 	// We want the magnet to cast a long shadow
 	m_hCraneMagnet->SetShadowCastDistance( 2048 );
 
-	// Make a rope to connect 'em
-	int iIndex = m_hCraneMagnet->LookupAttachment("magnetcable_a");
-	m_hRope = CRopeKeyframe::Create( this, m_hCraneMagnet, 1, iIndex );
-	if ( m_hRope )
+	if (!m_hRope)
 	{
-		m_hRope->m_Width = 3;
-		m_hRope->m_nSegments = ROPE_MAX_SEGMENTS / 2;
-		m_hRope->EnableWind( false );
-		m_hRope->SetupHangDistance( 0 );
-		m_hRope->m_RopeLength = (m_hCraneMagnet->GetAbsOrigin() - m_hCraneTip->GetAbsOrigin()).Length() * 1.1;
+		// Make a rope to connect 'em
+		int iIndex = m_hCraneMagnet->LookupAttachment("magnetcable_a");
+		m_hRope = CRopeKeyframe::Create(this, m_hCraneMagnet, 1, iIndex);
+		if (m_hRope)
+		{
+			m_hRope->m_Width = 3;
+			m_hRope->m_nSegments = ROPE_MAX_SEGMENTS / 2;
+			m_hRope->EnableWind(false);
+			m_hRope->SetupHangDistance(0);
+			m_hRope->m_RopeLength = (m_hCraneMagnet->GetAbsOrigin() - m_hCraneTip->GetAbsOrigin()).Length() * 1.1;
+		}
 	}
-
-	// Start with the magnet off
-	TurnMagnetOff();
 }
 
 //-----------------------------------------------------------------------------
