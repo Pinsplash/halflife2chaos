@@ -8985,7 +8985,7 @@ void CECloneNPCs::StartEffect()
 	{
 		//avoid cloning non-NPC entities with an "npc_" prefix, like npc_maker
 		//avoid npc_furniture, it goes bad
-		if (pNPC->IsNPC() && !pNPC->ClassMatches("npc_furniture"))
+		if (pNPC->IsNPC() && !pNPC->ClassMatches("npc_furniture") && pNPC->IsAlive())
 			vNPCs.AddToTail(*StoreEnt(pNPC));
 		pNPC = gEntList.FindEntityByClassname(pNPC, "n*");
 	}
