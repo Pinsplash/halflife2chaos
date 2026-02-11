@@ -28,6 +28,7 @@
 #define GROUNDTURRET_RETIRE_TIME	7.0f
 
 ConVar ai_newgroundturret ( "ai_newgroundturret", "0" );
+extern ConVar chaos_steal_health;
 
 
 // memdbgon must be the last include file in a .cpp file!!!
@@ -205,7 +206,7 @@ void CNPC_GroundTurret::PostNPCInit()
 //---------------------------------------------------------
 int CNPC_GroundTurret::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 {
-	if (m_bChaosSpawned && info.GetDamageType() & DMG_BLAST)//spawned turrets don't have a bullseye cause that shit's stupid as hell
+	if ((m_bChaosSpawned || chaos_steal_health.GetBool()) && info.GetDamageType() & DMG_BLAST)//spawned turrets don't have a bullseye cause that shit's stupid as hell
 	{
 		CTakeDamageInfo infoCopy = info;
 		infoCopy.SetDamage(GetHealth());
