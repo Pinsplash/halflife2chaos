@@ -7104,7 +7104,7 @@ bool CChaosEffect::DontTeleportPlayer(const char* pMapName)
 		if (!Q_strcmp(pMapName, "d1_trainstation_01") || !Q_strcmp(pMapName, "d1_trainstation_04") || !Q_strcmp(pMapName, "d1_trainstation_05")
 			|| !Q_strcmp(pMapName, "d1_eli_01") || !Q_strcmp(pMapName, "d1_town_05")
 			|| !Q_strcmp(pMapName, "d2_coast_11") || !Q_strcmp(pMapName, "d2_prison_06") || !Q_strcmp(pMapName, "d2_prison_08")
-			|| !Q_strcmp(pMapName, "d3_c17_13")
+			|| !Q_strcmp(pMapName, "d3_c17_10b") || !Q_strcmp(pMapName, "d3_c17_13")
 			|| !Q_strcmp(pMapName, "d3_breen_01"))
 			return true;//no
 	}
