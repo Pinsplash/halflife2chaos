@@ -2915,8 +2915,12 @@ bool CGameMovement::LadderMove( void )
 			if (pm.fraction == 1.0f || !OnLadder(pm))
 				return false;
 		}
-		else
+		//returning false prevents us from being considered to be on a ladder while in midair.
+		//if we don't return false here, we can "climb" through air.
+		else if (player->m_vecLadderNormal == pm.plane.normal || pm.plane.normal[2] > steepness_limit.GetFloat())
+		{
 			return false;
+		}
 	}
 
 	player->SetMoveType( MOVETYPE_LADDER );
