@@ -2081,6 +2081,7 @@ bool CBaseEntity::GetUnstuck(float flMaxDist, int flags)
 	int iOldCollisionGroup = GetCollisionGroup();
 	bool bDucked = false;
 	bool bGotStuck = false;
+	bool bResult = true;
 	float flModelScale = 1;
 	CUtlVector<Vector> vecBadDirections;
 	trace_t	trace;
@@ -2189,18 +2190,18 @@ bool CBaseEntity::GetUnstuck(float flMaxDist, int flags)
 			if (bAllowNodeTeleport)
 			{
 				if (unstuck_debug.GetInt() == 2 && !bNoDebug) Msg("Putting at node\n");
-				return PutAtNearestNode(flMaxDist, true);//i change this boolean purely on whatever i need at any moment. i am a good programmer.
+				bResult = PutAtNearestNode(flMaxDist, true);//i change this boolean purely on whatever i need at any moment. i am a good programmer.
 			}
 			else
 			{
 				if (unstuck_debug.GetInt() == 2 && !bNoDebug) Msg("Can't fit\n");
-				return false;
+				bResult = false;
 			}
 		}
 		else
 		{
 			if (unstuck_debug.GetInt() == 2 && !bNoDebug) Msg("Found place\n");
-			return true;//found a place to teleport to
+			bResult = true;//found a place to teleport to
 		}
 	}
 	if (IsPlayer())
@@ -2218,7 +2219,7 @@ bool CBaseEntity::GetUnstuck(float flMaxDist, int flags)
 		}
 	}
 	Msg("Not stuck\n");
-	return true;//not stuck anyway
+	return bResult;//not stuck anyway
 }
 bool CBaseEntity::FindOffsetSpot(Vector forward, float FFlip, Vector right, float RFlip, Vector up, float UFlip, Vector& vecGoodSpot, int flDist, CUtlVector<Vector> &vecBadDirections, int flags)
 {
