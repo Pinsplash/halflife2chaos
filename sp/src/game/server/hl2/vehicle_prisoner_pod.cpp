@@ -407,7 +407,7 @@ void CPropVehiclePrisonerPod::HandleAnimEvent( animevent_t *pEvent )
 	else if ( pEvent->event == AE_POD_CLOSE )
 	{
 		m_OnClose.FireOutput( this, this );
-		//m_bLocked = true;//PIN: fuck you, this is moronic
+		m_bLocked = !m_bChaosSpawned;
 	}
 }
 

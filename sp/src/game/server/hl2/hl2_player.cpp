@@ -6809,6 +6809,7 @@ CBaseEntity* CChaosEffect::ChaosSpawnVehicle(const char* className, string_t str
 		pVehicle->KeyValue("EnableGun", "1");
 		pVehicle->KeyValue("CargoVisible", "1");
 		pVehicle->KeyValue("vehiclescript", strScript);
+		pVehicle->m_bChaosSpawned = true;
 		g_iChaosSpawnCount++; pVehicle->KeyValue("chaosid", g_iChaosSpawnCount);
 		DispatchSpawn(pVehicle);
 		pVehicle->Activate();
