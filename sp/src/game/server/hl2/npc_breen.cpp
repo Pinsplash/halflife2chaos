@@ -216,13 +216,13 @@ void CNPC_Breen::StartTask(const Task_t* pTask)
 			bool bDirectLOS = (!tr.DidHit() || tr.m_pEnt == pTarget) && (GetAbsOrigin() - GetTarget()->GetAbsOrigin()).Length() < pPhysCannon->TraceLength() / 2;
 			if (bDirectLOS)
 			{
-				NDebugOverlay::Line(tr.startpos, tr.endpos, 0, 255, 0, true, 10);
+				//NDebugOverlay::Line(tr.startpos, tr.endpos, 0, 255, 0, true, 10);
 				TaskComplete();
 				break;
 			}
 			else
 			{
-				NDebugOverlay::Line(tr.startpos, tr.endpos, 255, 0, 0, true, 10);
+				//NDebugOverlay::Line(tr.startpos, tr.endpos, 255, 0, 0, true, 10);
 				bool bFoundLOSNode = GetTacticalServices()->FindLos(pTarget->GetAbsOrigin(), pTarget->GetAbsOrigin(), 0, pPhysCannon->TraceLength(), 1.0, FLANKTYPE_NONE, vec3_origin, 0, &posLos);
 				if (bFoundLOSNode)
 				{
