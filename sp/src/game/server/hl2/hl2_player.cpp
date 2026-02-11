@@ -6133,10 +6133,27 @@ bool CChaosEffect::CheckEffectContext()
 		if (gEntList.FindEntityByClassname(NULL, "weapon_sh*") == NULL)
 			return false;//no sir no shotguns here
 
-	//need an ar2 ANYWHERE in the map, held or not
+	//need ar2 balls in the map
 	if (m_nID == EFFECT_HOMING_AR2)
-		if (gEntList.FindEntityByClassname(NULL, "weapon_ar2") == NULL)
-			return false;//no sir no ar2s here
+	{
+		//check if player has ar2 ball ammo
+		if (pPlayer->GetAmmoCount("AR2AltFire") > 0)
+			return true;
+
+		//ammo pickup somewhere in map
+		if (gEntList.FindEntityByClassname(NULL, "item_ammo_ar2_altfire"))
+			return true;
+
+		//any elites, assume they will fire a ball
+		for (CBaseEntity* pEnt = gEntList.FindEntityByClassname(NULL, "npc_combine_s"); pEnt; pEnt = gEntList.FindEntityByClassname(NULL, "npc_combine_s"))
+		{
+			if (!strcmp(STRING(pEnt->GetModelName()), "models/combine_super_soldier.mdl"))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 
 	//Don't remove pickups on these maps
 	if (m_nID == EFFECT_REMOVE_PICKUPS)
