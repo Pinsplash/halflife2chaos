@@ -755,7 +755,7 @@ void CPropCombineBall::WhizSoundThink()
 			if (!IsEnemy(list[i]))
 				continue;
 
-			VectorSubtract(list[i]->WorldSpaceCenter(), vecPosition, vecDelta);
+			VectorSubtract(list[i]->BodyTarget(false), vecPosition, vecDelta);
 			distance = VectorNormalize(vecDelta);
 
 			if (distance < flBestDist)
@@ -766,7 +766,7 @@ void CPropCombineBall::WhizSoundThink()
 		}
 		if (pBestTarget)
 		{
-			VectorSubtract(pBestTarget->WorldSpaceCenter(), vecPosition, vecDelta);
+			VectorSubtract(pBestTarget->BodyTarget(false), vecPosition, vecDelta);
 			VectorNormalize(vecDelta);
 			float flSpeed = VectorNormalize(vecVelocity);
 			vecVelocity = vecDelta * flSpeed;
@@ -1272,8 +1272,11 @@ void CPropCombineBall::OnHitEntity( CBaseEntity *pHitEntity, float flSpeed, int 
 	if ( FClassnameIs( pHitEntity, "npc_strider" ) || 
 		(pHitEntity->GetOwnerEntity() && FClassnameIs( pHitEntity->GetOwnerEntity(), "npc_strider" )) )
 	{
-		DoExplosion();
-		return;
+		if (!ar2_super_seek.GetBool())
+		{
+			DoExplosion();
+			return;
+		}
 	}
 
 	CTakeDamageInfo info( this, GetOwnerEntity(), GetAbsVelocity(), GetAbsOrigin(), sk_npc_dmg_combineball.GetFloat(), DMG_DISSOLVE );

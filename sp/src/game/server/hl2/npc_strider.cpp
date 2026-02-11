@@ -66,7 +66,7 @@ LINK_ENTITY_TO_CLASS( bullseye_strider_focus, CNPC_Bullseye );
 
 
 //-----------------------------------------------------------------------------
-
+extern ConVar ar2_super_seek;
 ConVar strider_immolate( "strider_immolate", "0" );
 ConVar sk_strider_health( "sk_strider_health", "350" );
 ConVar npc_strider_height_adj("npc_strider_height_adj", "0" );
@@ -3179,6 +3179,8 @@ int CNPC_Strider::TakeDamageFromCombineBall( const CTakeDamageInfo &info )
 	if ( UTIL_IsAR2CombineBall( info.GetInflictor() ) )
 	{
 		damage = strider_ar2_altfire_dmg.GetFloat();
+		if (ar2_super_seek.GetBool())
+			damage = GetHealth() * 2;
 	}
 	else
 	{
