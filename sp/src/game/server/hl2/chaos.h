@@ -602,6 +602,7 @@ class CESecondarySpam : public CChaosEffect
 {
 public:
 	void MaintainEffect() override;
+	bool CheckStrike(const CTakeDamageInfo& info) override;
 };
 class CESuitSwap : public CChaosEffect
 {

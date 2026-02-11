@@ -9766,6 +9766,10 @@ void CESecondarySpam::MaintainEffect()
 	engine->ClientCommand(engine->PEntityOfEntIndex(1),
 		"+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;+attack2;wait 5;-attack2;wait 5;\n");
 }
+bool CESecondarySpam::CheckStrike(const CTakeDamageInfo& info)
+{
+	return info.GetAttacker() == UTIL_GetLocalPlayer();
+}
 void CESuitSwap::StartEffect()
 {
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
