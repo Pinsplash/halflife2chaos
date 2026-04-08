@@ -81,6 +81,7 @@
 #include "ai_tacticalservices.h"
 #include <vector>
 #include "npc_combinedropship.h"
+#include "npc_crow.h"
 
 #ifdef HL2_EPISODIC
 #include "npc_alyx_episodic.h"
@@ -328,6 +329,12 @@ CChaosStoredEnt* StoreEnt(CBaseEntity* pEnt)
 				{
 					pStoredEnt->playerally = true;
 				}
+				CNPC_Crow* pBird = dynamic_cast<CNPC_Crow*>(pNPC);
+				if (pBird)
+				{
+					pStoredEnt->bird = true;
+					pStoredEnt->gameendondeath = pBird->m_bGameEndOnDeath;
+				}
 			}
 		}
 		if (pAnimating->GetParent() && pAnimating->GetParent()->ClassMatches("npc_combinedropship"))
@@ -410,6 +417,11 @@ CBaseEntity* RetrieveStoredEnt(CChaosStoredEnt* pStoredEnt)
 					CAI_PlayerAlly* pPlayerAlly = dynamic_cast<CAI_PlayerAlly*>(pNPC);
 					//avoids allies instantly regenerating all lost health
 					pPlayerAlly->m_flTimeLastRegen = gpGlobals->curtime;
+				}
+				if (pStoredEnt->bird)
+				{
+					CNPC_Crow* pAntlion = dynamic_cast<CNPC_Crow*>(pNPC);
+					pAntlion->m_bGameEndOnDeath = pStoredEnt->gameendondeath;
 				}
 			}
 		}
@@ -5676,6 +5688,7 @@ ConVar chaos_t_climb_anywhere("chaos_t_climb_anywhere", "1");
 ConVar chaos_t_fire_full_clip("chaos_t_fire_full_clip", "1");
 ConVar chaos_t_mirror_world("chaos_t_mirror_world", "1");
 ConVar chaos_t_zombie_spam("chaos_t_zombie_spam", "1");
+ConVar chaos_t_save_gulls("chaos_t_save_gulls", "1");
 
 ConVar chaos_p_zerog("chaos_p_zerog", "100");
 ConVar chaos_p_superg("chaos_p_superg", "100");
@@ -5776,6 +5789,7 @@ ConVar chaos_p_fire_full_clip("chaos_p_fire_full_clip", "100");
 ConVar chaos_p_mirror_world("chaos_p_mirror_world", "100");
 ConVar chaos_p_evil_eli("chaos_p_evil_eli", "100");
 ConVar chaos_p_zombie_spam("chaos_p_zombie_spam", "100");
+ConVar chaos_p_save_gulls("chaos_p_save_gulls", "100");
 #define ERROR_WEIGHT 1
 //intentionally not putting this on sector sweep because scanners are benign unless given rpgs
 #define EC_ENEMY_SPAM EC_HAS_WEAPON | EC_NO_SPAM_NPCS | EC_FAR_ENEMY
@@ -5812,7 +5826,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CERandomWeaponGive>(EFFECT_GIVE_WEAPON,	MAKE_STRING("#hl2c_give_wep"),			EC_NONE,						-1,										chaos_p_give_weapon.GetInt());
 	CreateEffect<>(EFFECT_GIVE_ALL_WEAPONS,					MAKE_STRING("#hl2c_giveallweps"),		EC_NONE,						-1,										chaos_p_give_all_weapons.GetInt());
 	CreateEffect<CEWeaponsDrop>(EFFECT_DROP_WEAPONS,		MAKE_STRING("#hl2c_drop_weps"),			EC_NEED_PHYSGUN,				-1,										chaos_p_drop_weapons.GetInt());
-	CreateEffect<>(EFFECT_NADE_GUNS,						MAKE_STRING("#hl2c_nade_guns"),			EC_NO_INVULN,					chaos_t_nade_guns.GetFloat(),			chaos_p_nade_guns.GetFloat());
+	CreateEffect<>(EFFECT_NADE_GUNS,						MAKE_STRING("#hl2c_nade_guns"),			EC_NO_INVULN,					chaos_t_nade_guns.GetFloat(),			chaos_p_nade_guns.GetInt());
 	CreateEffect<CEEarthquake>(EFFECT_EARTHQUAKE,			MAKE_STRING("#hl2c_shakecam"),			EC_NONE,						chaos_t_earthquake.GetFloat(),			chaos_p_earthquake.GetInt());
 	CreateEffect<CE420Joke>(EFFECT_420_JOKE,				MAKE_STRING("#hl2c_420_health"),		EC_NO_INVULN,					-1,										chaos_p_420_joke.GetInt());
 	CreateEffect<CEZombieSpam>(EFFECT_ZOMBIE_SPAM,			MAKE_STRING("#hl2c_zombie_spam"),		EC_ENEMY_SPAM,					chaos_t_zombie_spam.GetFloat(),			chaos_p_zombie_spam.GetInt());
@@ -5881,6 +5895,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<>(EFFECT_FIRE_FULL_CLIP,					MAKE_STRING("#hl2c_fire_full_clip"),	EC_HAS_WEAPON,					chaos_t_fire_full_clip.GetFloat(),		chaos_p_fire_full_clip.GetInt());
 	CreateEffect<CEMirrorWorld>(EFFECT_MIRROR_WORLD,		MAKE_STRING("#hl2c_mirror_world"),		EC_NONE,						chaos_t_mirror_world.GetFloat(),		chaos_p_mirror_world.GetInt());
 	CreateEffect<CEEvilNPC>(EFFECT_EVIL_ELI,				MAKE_STRING("#hl2c_evil_eli"),			EC_FAR_ENEMY,					-1,										chaos_p_evil_eli.GetInt());
+	CreateEffect<CESaveGulls>(EFFECT_SAVE_GULLS,			MAKE_STRING("#hl2c_save_gulls"),		EC_NONE,						chaos_t_save_gulls.GetFloat(),			chaos_p_save_gulls.GetInt());
 }
 
 void CHL2_Player::ClearEffectContextCache()
@@ -7533,6 +7548,7 @@ CAI_BaseNPC* CChaosEffect::ChaosSpawnNPC(const char* className, string_t strActu
 		if ((flags & CSF_SQUAD) != 0)
 		{
 			CNPC_PlayerCompanion* pPC = dynamic_cast<CNPC_PlayerCompanion*>(pNPC);
+			CNPC_Crow* pCrow = dynamic_cast<CNPC_Crow*>(pNPC);
 			if (pPC)
 			{
 				if (!pPC->GetFollowBehavior().GetOuter())//avoid a crash with gman
@@ -7544,6 +7560,10 @@ CAI_BaseNPC* CChaosEffect::ChaosSpawnNPC(const char* className, string_t strActu
 				pPC->GetFollowBehavior().SetFollowTarget(UTIL_GetLocalPlayer());
 				if (!pPC->GetRunningBehavior())
 					pPC->DeferSchedulingToBehavior(&pPC->GetFollowBehavior());//ChangeBehaviorTo(&pPC->GetFollowBehavior());
+			}
+			else if (pCrow)
+			{
+				pCrow->m_bGameEndOnDeath = true;
 			}
 			else
 			{
@@ -10088,4 +10108,22 @@ void CENormalView::StartEffect()
 void CENormalView::StopEffect()
 {
 	engine->ClientCommand(engine->PEntityOfEntIndex(1), "mat_normalmaps 0;mat_normals 0;r_3dsky 1;r_drawskybox 1;r_underwateroverlay 1");
+}
+void CESaveGulls::StartEffect()
+{
+	ChaosSpawnNPC("npc_seagull", MAKE_STRING("#hl2c_save_gulls"), SPAWNTYPE_EYELEVEL_REGULAR, "models/seagull.mdl", "protect_seagull1", "_", CSF_SQUAD);
+	ChaosSpawnNPC("npc_seagull", MAKE_STRING("#hl2c_save_gulls"), SPAWNTYPE_EYELEVEL_REGULAR, "models/seagull.mdl", "protect_seagull2", "_", CSF_SQUAD);
+	ChaosSpawnNPC("npc_seagull", MAKE_STRING("#hl2c_save_gulls"), SPAWNTYPE_EYELEVEL_REGULAR, "models/seagull.mdl", "protect_seagull3", "_", CSF_SQUAD);
+	ChaosSpawnNPC("npc_seagull", MAKE_STRING("#hl2c_save_gulls"), SPAWNTYPE_EYELEVEL_REGULAR, "models/seagull.mdl", "protect_seagull4", "_", CSF_SQUAD);
+	ChaosSpawnNPC("npc_seagull", MAKE_STRING("#hl2c_save_gulls"), SPAWNTYPE_EYELEVEL_REGULAR, "models/seagull.mdl", "protect_seagull5", "_", CSF_SQUAD);
+	ChaosSpawnNPC("npc_seagull", MAKE_STRING("#hl2c_save_gulls"), SPAWNTYPE_EYELEVEL_REGULAR, "models/seagull.mdl", "protect_seagull6", "_", CSF_SQUAD);
+	ChaosSpawnNPC("npc_seagull", MAKE_STRING("#hl2c_save_gulls"), SPAWNTYPE_EYELEVEL_REGULAR, "models/seagull.mdl", "protect_seagull7", "_", CSF_SQUAD);
+	ChaosSpawnNPC("npc_seagull", MAKE_STRING("#hl2c_save_gulls"), SPAWNTYPE_EYELEVEL_REGULAR, "models/seagull.mdl", "protect_seagull8", "_", CSF_SQUAD);
+}
+void CESaveGulls::StopEffect()
+{
+	for (CBaseEntity* pEnt = gEntList.FindEntityByName(NULL, "protect_seagull*"); pEnt; pEnt = gEntList.FindEntityByName(pEnt, "protect_seagull*"))
+	{
+		UTIL_Remove(pEnt);
+	}
 }

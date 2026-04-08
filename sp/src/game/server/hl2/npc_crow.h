@@ -104,7 +104,7 @@ public:
 	virtual void Precache( void );
 	virtual void LogicExplode();
 	virtual Vector BodyTarget( bool bNoisy/* = true */);
-
+	void  Event_Killed(const CTakeDamageInfo& info);
 	virtual int DrawDebugTextOverlays( void );
 
 	//
@@ -157,7 +157,6 @@ public:
 	int			m_iBirdType;
 	bool		m_bOnJeep;
 
-protected:
 	void SetFlyingState( FlyState_t eState );
 	inline bool IsFlying( void ) const { return GetNavType() == NAV_FLY; }
 
@@ -169,13 +168,13 @@ protected:
 
 	bool IsDeaf() { return m_bIsDeaf; }
 
-protected:
 	float m_flGroundIdleMoveTime;
 
 	float m_flEnemyDist;		// Distance to GetEnemy(), cached in GatherEnemyConditions.
 	int m_nMorale;				// Used to determine which avoidance schedule to pick. Degrades as I pick avoidance schedules.
 	
 	bool m_bReachedMoveGoal;
+	bool m_bGameEndOnDeath;
 
 	float m_flHopStartZ;		// Our Z coordinate when we started a hop. Used to check for accidentally hopping off things.
 

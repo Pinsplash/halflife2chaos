@@ -109,6 +109,7 @@ enum Effect_T
 	EFFECT_FIRE_FULL_CLIP,
 	EFFECT_MIRROR_WORLD,
 	EFFECT_EVIL_ELI,
+	EFFECT_SAVE_GULLS,
 
 	NUM_EFFECTS
 };
@@ -266,6 +267,9 @@ public:
 	int dropshipid;
 
 	bool playerally = false;
+	bool gameendondeath = false;
+
+	bool bird = false;
 };
 //CUtlVector<int>				g_iActiveEffects;
 int g_iActiveEffects[MAX_ACTIVE_EFFECTS];
@@ -680,6 +684,12 @@ public:
 	void StopEffect() override;
 };
 class CENormalView : public CChaosEffect
+{
+public:
+	void StartEffect() override;
+	void StopEffect() override;
+};
+class CESaveGulls : public CChaosEffect
 {
 public:
 	void StartEffect() override;

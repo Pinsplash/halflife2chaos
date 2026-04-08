@@ -29,6 +29,7 @@
 #include "movevars_shared.h"
 #include "npc_crow.h"
 #include "ai_moveprobe.h"
+#include "eventqueue.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -64,6 +65,7 @@ BEGIN_DATADESC( CNPC_Crow )
 	DEFINE_FIELD( m_flEnemyDist, FIELD_FLOAT ),
 	DEFINE_FIELD( m_nMorale, FIELD_INTEGER ),
 	DEFINE_FIELD( m_bReachedMoveGoal, FIELD_BOOLEAN ),
+	DEFINE_FIELD(m_bGameEndOnDeath, FIELD_BOOLEAN),
 	DEFINE_FIELD( m_flHopStartZ, FIELD_FLOAT ),
 	DEFINE_FIELD( m_vDesiredTarget, FIELD_VECTOR ),
 	DEFINE_FIELD( m_vCurrentTarget, FIELD_VECTOR ),
@@ -116,7 +118,7 @@ void CNPC_Crow::Spawn( void )
 	m_flFieldOfView = VIEW_FIELD_FULL;
 	SetViewOffset( Vector(6, 0, 11) );		// Position of the eyes relative to NPC's origin.
 
-	m_flGroundIdleMoveTime = gpGlobals->curtime + random->RandomFloat( 0.0f, 5.0f );
+	m_flGroundIdleMoveTime = 0;
 
 	SetBloodColor( BLOOD_COLOR_RED );
 	m_NPCState = NPC_STATE_NONE;
@@ -675,7 +677,6 @@ void CNPC_Crow::SetFlyingState( FlyState_t eState )
 		SetMoveType( MOVETYPE_STEP );
 		m_vLastStoredOrigin = GetAbsOrigin();
 		m_flLastStuckCheck = gpGlobals->curtime + 3.0f;
-		m_flGroundIdleMoveTime = gpGlobals->curtime + random->RandomFloat( 5.0f, 10.0f );
 	}
 	else if ( eState == FlyState_Walking )
 	{
@@ -691,7 +692,6 @@ void CNPC_Crow::SetFlyingState( FlyState_t eState )
 		CapabilitiesAdd( bits_CAP_MOVE_GROUND );
 		SetMoveType( MOVETYPE_STEP );
 		m_vLastStoredOrigin = vec3_origin;
-		m_flGroundIdleMoveTime = gpGlobals->curtime + random->RandomFloat( 5.0f, 10.0f );
 	}
 	else
 	{
@@ -701,7 +701,6 @@ void CNPC_Crow::SetFlyingState( FlyState_t eState )
 		CapabilitiesRemove( bits_CAP_MOVE_FLY );
 		CapabilitiesAdd( bits_CAP_MOVE_GROUND );
 		SetMoveType( MOVETYPE_STEP );
-		m_flGroundIdleMoveTime = gpGlobals->curtime + random->RandomFloat( 5.0f, 10.0f );
 	}
 }
 
@@ -928,7 +927,11 @@ void CNPC_Crow::StartTask( const Task_t *pTask )
 
 		case TASK_CROW_PICK_RANDOM_GOAL:
 		{
-			m_vSavePosition = GetLocalOrigin() + Vector( random->RandomFloat( -48.0f, 48.0f ), random->RandomFloat( -48.0f, 48.0f ), 0 );
+			if (gpGlobals->curtime > m_flGroundIdleMoveTime && !GetNavigator()->GetPath()->GetCurWaypoint())
+			{
+				m_flGroundIdleMoveTime = gpGlobals->curtime + random->RandomFloat(5, 10);
+				m_vSavePosition = GetLocalOrigin() + Vector(random->RandomFloat(-48.0f, 48.0f), random->RandomFloat(-48.0f, 48.0f), 0);
+			}
 			TaskComplete();
 			break;
 		}
@@ -1187,7 +1190,7 @@ int CNPC_Crow::SelectSchedule( void )
 	//
 	// If someone we hate is getting WAY too close for comfort, fly away.
 	//
-	if ( HasCondition( COND_CROW_ENEMY_WAY_TOO_CLOSE ) )
+	if ( HasCondition( COND_CROW_ENEMY_WAY_TOO_CLOSE ) && m_nMorale > 0)
 	{
 		ClearCondition( COND_CROW_ENEMY_WAY_TOO_CLOSE );
 
@@ -1230,16 +1233,7 @@ int CNPC_Crow::SelectSchedule( void )
 				if ( m_bOnJeep == true )
 				     return SCHED_IDLE_STAND;
 
-				//
-				// If we are hanging out on the ground, see if it is time to pick a new place to walk to.
-				//
-				if ( gpGlobals->curtime > m_flGroundIdleMoveTime )
-				{
-					m_flGroundIdleMoveTime = gpGlobals->curtime + random->RandomFloat( 10.0f, 20.0f );
-					return SCHED_CROW_IDLE_WALK;
-				}
-
-				return SCHED_IDLE_STAND;
+				return SCHED_CROW_IDLE_WALK;
 			}
 
 			// TODO: need idle flying behaviors!
@@ -1277,6 +1271,8 @@ void CNPC_Crow::Precache( void )
 
 	//Pigeon
 	PrecacheScriptSound( "NPC_Pigeon.Idle");
+
+	PrecacheScriptSound("lostcoast.fish_shootgull");
 }
 
 
@@ -1419,6 +1415,32 @@ int CNPC_Crow::GetSoundInterests( void )
 	return	SOUND_WORLD | SOUND_COMBAT | SOUND_PLAYER | SOUND_DANGER;
 }
 
+void CNPC_Crow::Event_Killed(const CTakeDamageInfo& info)
+{
+	BaseClass::Event_Killed(info);
+	if (m_bGameEndOnDeath)
+	{
+		CBasePlayer* pPlayer = AI_GetSinglePlayer();
+
+		if (pPlayer)
+		{
+			if (!pPlayer->IsSinglePlayerGameEnding())
+			{
+				UTIL_ShowMessage("GAMEOVER_ALLY", ToBasePlayer(pPlayer));
+				pPlayer->NotifySinglePlayerGameEnding();
+
+				CBaseEntity* pReload = pPlayer->CreatePlayerLoadSave(GetAbsOrigin(), 1.5f, 8.0f, 4.5f);
+
+				if (pReload)
+				{
+					pReload->SetRenderColor(0, 0, 0, 255);
+					g_EventQueue.AddEvent(pReload, "Reload", 0, pReload, pReload);
+				}
+				EmitSound("lostcoast.fish_shootgull");
+			}
+		}
+	}
+}
 
 //-----------------------------------------------------------------------------
 //
@@ -1567,8 +1589,8 @@ AI_BEGIN_CUSTOM_NPC( npc_crow, CNPC_Crow )
 
 		"	Tasks"
 		"		TASK_SET_FAIL_SCHEDULE			SCHEDULE:SCHED_CROW_FLY_FAIL"
-		"		TASK_STOP_MOVING				0"
 		"		TASK_FIND_HINTNODE				0"
+		"		TASK_STOP_MOVING				0"
 		"		TASK_GET_PATH_TO_HINTNODE		0"
 		"		TASK_CROW_TAKEOFF				0"
 		"		TASK_WAIT_FOR_MOVEMENT			0"

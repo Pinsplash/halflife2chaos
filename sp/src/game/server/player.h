@@ -273,7 +273,7 @@ public:
 	CBaseViewModel			*GetViewModel( int viewmodelindex = 0, bool bObserverOK = true );
 	void					HideViewModels( void );
 	void					DestroyViewModels( void );
-
+	CBaseEntity*			CreatePlayerLoadSave(Vector vOrigin, float flDuration, float flHoldTime, float flLoadTime);
 	CPlayerState			*PlayerData( void ) { return &pl; }
 	
 	int						RequiredEdictIndex( void ) { return ENTINDEX(edict()); } 

@@ -344,7 +344,6 @@ BEGIN_DATADESC( CAI_PlayerAlly )
 
 END_DATADESC()
 
-CBaseEntity *CreatePlayerLoadSave( Vector vOrigin, float flDuration, float flHoldTime, float flLoadTime );
 ConVar npc_ally_deathmessage("npc_ally_deathmessage", "1", FCVAR_NONE);
 
 void CAI_PlayerAlly::InputMakeGameEndAlly( inputdata_t &inputdata )
@@ -412,7 +411,7 @@ void CAI_PlayerAlly::DisplayDeathMessage( void )
 	if ( npc_ally_deathmessage.GetBool() == 0 )
 		return;
 
-	CBaseEntity *pPlayer = AI_GetSinglePlayer();
+	CBasePlayer *pPlayer = AI_GetSinglePlayer();
 
 	if ( pPlayer )	
 	{
@@ -420,7 +419,7 @@ void CAI_PlayerAlly::DisplayDeathMessage( void )
 		ToBasePlayer(pPlayer)->NotifySinglePlayerGameEnding();
 	}
 
-	CBaseEntity *pReload = CreatePlayerLoadSave( GetAbsOrigin(), 1.5f, 8.0f, 4.5f );
+	CBaseEntity *pReload = pPlayer->CreatePlayerLoadSave( GetAbsOrigin(), 1.5f, 8.0f, 4.5f );
 
 	if ( pReload )
 	{

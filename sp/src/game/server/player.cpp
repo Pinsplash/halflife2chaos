@@ -7695,7 +7695,7 @@ BEGIN_DATADESC( CRevertSaved )
 
 END_DATADESC()
 
-CBaseEntity *CreatePlayerLoadSave( Vector vOrigin, float flDuration, float flHoldTime, float flLoadTime )
+CBaseEntity *CBasePlayer::CreatePlayerLoadSave( Vector vOrigin, float flDuration, float flHoldTime, float flLoadTime )
 {
 	CRevertSaved *pRevertSaved = (CRevertSaved *) CreateEntityByName( "player_loadsaved" );
 
