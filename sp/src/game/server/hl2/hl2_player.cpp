@@ -7997,7 +7997,7 @@ void CESolidTriggers::StartEffect()
 		Vector vecGoodSpot = pPlayer->GetAbsOrigin() + Vector(0, 0, 1);
 		int iOldCollisionGroup = pPlayer->GetCollisionGroup();
 		pPlayer->SetCollisionGroup(COLLISION_GROUP_PLAYER);
-		pPlayer->GetIntersectingEntity(vecGoodSpot, false, trace);
+		pPlayer->GetIntersectingEntity(vecGoodSpot, trace);
 		pPlayer->SetCollisionGroup(iOldCollisionGroup);
 
 		//make sure we're really stuck in a trigger and not some other thing we should actually move out of

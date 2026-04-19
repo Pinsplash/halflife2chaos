@@ -2079,14 +2079,13 @@ bool CBaseEntity::GetUnstuck(float flMaxDist, int flags)
 	Msg("GetUnstuck called by %s named %s\n", STRING(m_iClassname), STRING(m_iName));
 	bool bNoDebug = (flags & UF_NO_DEBUG) != 0;
 	bool bAllowNodeTeleport = !(flags & UF_NO_NODE_TELEPORT);
-	bool bNoDuck = (flags & UF_NO_DUCK) != 0;
 	bool bDone = false;
 	Vector vecGoodSpot = GetAbsOrigin() + Vector(0, 0, 1);
 	int iOldCollisionGroup = GetCollisionGroup();
-	bool bDucked = false;
 	bool bGotStuck = false;
 	bool bResult = true;
 	float flModelScale = 1;
+	bool bCanStand = false;
 	CUtlVector<Vector> vecBadDirections;
 	trace_t	trace;
 	if (IsPlayer())
@@ -2095,7 +2094,7 @@ bool CBaseEntity::GetUnstuck(float flMaxDist, int flags)
 		flModelScale = GetBaseAnimating()->GetModelScale();
 		//quickclip can interfere with UTIL_TraceEntity, possibly leading to us getting permastuck because it thinks we aren't colliding with the thing we're stuck in
 		SetCollisionGroup(COLLISION_GROUP_PLAYER);
-		pPlayer->GetIntersectingEntity(vecGoodSpot, bNoDuck, trace);
+		pPlayer->GetIntersectingEntity(vecGoodSpot, trace);
 	}
 	else
 	{
@@ -2146,7 +2145,6 @@ bool CBaseEntity::GetUnstuck(float flMaxDist, int flags)
 		if (IsPlayer())
 		{
 			CBasePlayer *pPlayer = static_cast<CBasePlayer*>(this);
-			bDucked = pPlayer->m_Local.m_bDucked || (pPlayer->GetFlags() & FL_DUCKING) || pPlayer->m_Local.m_bDucking;
 			pPlayer->m_Local.m_bDucked = true;
 			pPlayer->AddFlag(FL_DUCKING);
 			pPlayer->SetCollisionBounds(VEC_DUCK_HULL_MIN_SCALED(pPlayer), VEC_DUCK_HULL_MAX_SCALED(pPlayer));
@@ -2168,12 +2166,12 @@ bool CBaseEntity::GetUnstuck(float flMaxDist, int flags)
 					float FFlip;
 					for (FFlip = 0; FFlip >= -1 && !bDone; FFlip -= bGranular ? 0.5 : 1)
 					{
-						if (FindOffsetSpot(forward, FFlip, right, RFlip, up, UFlip, vecGoodSpot, i, vecBadDirections, flags))
+						if (FindOffsetSpot(forward, FFlip, right, RFlip, up, UFlip, vecGoodSpot, i, vecBadDirections, bCanStand, flags))
 							bDone = true;
 					}
 					for (FFlip = 1; FFlip > 0 && !bDone; FFlip -= bGranular ? 0.5 : 1)
 					{
-						if (FindOffsetSpot(forward, FFlip, right, RFlip, up, UFlip, vecGoodSpot, i, vecBadDirections, flags))
+						if (FindOffsetSpot(forward, FFlip, right, RFlip, up, UFlip, vecGoodSpot, i, vecBadDirections, bCanStand, flags))
 							bDone = true;
 					}
 				}
@@ -2182,12 +2180,12 @@ bool CBaseEntity::GetUnstuck(float flMaxDist, int flags)
 					float FFlip;
 					for (FFlip = 0; FFlip >= -1 && !bDone; FFlip -= bGranular ? 0.5 : 1)
 					{
-						if (FindOffsetSpot(forward, FFlip, right, RFlip, up, UFlip, vecGoodSpot, i, vecBadDirections, flags))
+						if (FindOffsetSpot(forward, FFlip, right, RFlip, up, UFlip, vecGoodSpot, i, vecBadDirections, bCanStand, flags))
 							bDone = true;
 					}
 					for (FFlip = 1; FFlip > 0 && !bDone; FFlip -= bGranular ? 0.5 : 1)
 					{
-						if (FindOffsetSpot(forward, FFlip, right, RFlip, up, UFlip, vecGoodSpot, i, vecBadDirections, flags))
+						if (FindOffsetSpot(forward, FFlip, right, RFlip, up, UFlip, vecGoodSpot, i, vecBadDirections, bCanStand, flags))
 							bDone = true;
 					}
 				}
@@ -2216,23 +2214,20 @@ bool CBaseEntity::GetUnstuck(float flMaxDist, int flags)
 	{
 		//set collisiongroup back
 		SetCollisionGroup(iOldCollisionGroup);
-		if (!bNoDuck)
+		CBasePlayer* pPlayer = static_cast<CBasePlayer*>(this);
+		if (bGotStuck && bCanStand)
 		{
-			CBasePlayer *pPlayer = static_cast<CBasePlayer*>(this);
-			if (!bDucked && bGotStuck)
-			{
-				pPlayer->m_Local.m_bDucked = false;
-				pPlayer->RemoveFlag(FL_DUCKING);
-			}
+			pPlayer->m_Local.m_bDucked = false;
+			pPlayer->RemoveFlag(FL_DUCKING);
+			pPlayer->SetCollisionBounds(VEC_HULL_MIN_SCALED(pPlayer), VEC_HULL_MAX_SCALED(pPlayer));
 		}
 	}
 	Msg("Finished GetUnstuck\n");
 	return bResult;
 }
-bool CBaseEntity::FindOffsetSpot(Vector forward, float FFlip, Vector right, float RFlip, Vector up, float UFlip, Vector& vecGoodSpot, int flDist, CUtlVector<Vector> &vecBadDirections, int flags)
+bool CBaseEntity::FindOffsetSpot(Vector forward, float FFlip, Vector right, float RFlip, Vector up, float UFlip, Vector& vecGoodSpot, int flDist, CUtlVector<Vector> &vecBadDirections, bool& bCanStand, int flags)
 {
 	bool bNoDebug = (flags & UF_NO_DEBUG) != 0;
-	bool bNoDuck = (flags & UF_NO_DUCK) != 0;
 	bool bSkipPreTrace = (flags & UF_NO_PRETRACE) != 0;
 	Vector vecTestDir = (forward * FFlip) + (right * RFlip) + (up * UFlip);
 	vecTestDir.NormalizeInPlace();
@@ -2248,7 +2243,7 @@ bool CBaseEntity::FindOffsetSpot(Vector forward, float FFlip, Vector right, floa
 			vecTestDir.y > 0 ? "NORTH" : vecTestDir.y < 0 ? "SOUTH" : "",
 			vecTestDir.z > 0 ? "UP" : vecTestDir.z < 0 ? "DOWN" : "");
 	}
-	if (FindPassableSpace(vecTestDir, flDist, vecGoodSpot, vecBadDirections, flags))
+	if (FindPassableSpace(vecTestDir, flDist, vecGoodSpot, vecBadDirections, bCanStand, flags))
 	{
 		if (unstuck_debug_findemptyspace.GetBool() && !bNoDebug) Warning("Found spot %0.1f %0.1f %0.1f\n", vecGoodSpot.x, vecGoodSpot.y, vecGoodSpot.z);
 		Vector vecFinal = vecGoodSpot;// -vecShootOffset;
@@ -2257,14 +2252,12 @@ bool CBaseEntity::FindOffsetSpot(Vector forward, float FFlip, Vector right, floa
 		Teleport(&vecFinal, &aAngle, &vecVel);
 		//if (GetMoveType() != MOVETYPE_VPHYSICS)//airboat gun go brr. turret also go brr.
 		if (unstuck_debug_findemptyspace.GetBool() && !bNoDebug) NDebugOverlay::Line(vecGoodSpot, vecGoodSpot + Vector(0, 0, 1), 0, 255, 0, true, 30);
-		if (!bNoDuck && IsPlayer())
-			GetUnstuck(10, UF_NO_DUCK);//get us unducked if possible, otherwise we will be dropped in ducking for no real reason in most cases
 		return true;
 	}
 	if (unstuck_debug_findemptyspace.GetBool()) NDebugOverlay::Line(vecGoodSpot, vecGoodSpot - Vector(0, 0, 1), flDist % 255, 128, !bSkipPreTrace ? 128 : 0, true, 30);
 	return false;
 }
-bool CBaseEntity::FindPassableSpace(const Vector direction, float step, Vector& oldorigin, CUtlVector<Vector> &vecBadDirections, int flags)
+bool CBaseEntity::FindPassableSpace(const Vector direction, float step, Vector& oldorigin, CUtlVector<Vector> &vecBadDirections, bool& bCanStand, int flags)
 {
 	bool bNoDebug = (flags & UF_NO_DEBUG) != 0;
 	bool bSkipPreTrace = (flags & UF_NO_PRETRACE) != 0;
@@ -2305,25 +2298,37 @@ bool CBaseEntity::FindPassableSpace(const Vector direction, float step, Vector& 
 	//clear space?
 	//player and npcs should avoid UTIL_TraceEntity because it traces by model's hitboxes, not bbox
 	trace_t	mainTrace;
+	trace_t	standTrace;
+	Vector vecTraceStart = vecDest;
+	Vector vecTraceEnd = vecDest;
+	Vector vTraceMins;
+	Vector vTraceMaxs;
 	if (IsPlayer() || IsNPC())
 	{
-		Vector vMins, vMaxs;
 		if (IsPlayer())
 		{
 			CBasePlayer* pPlayer = static_cast<CBasePlayer*>(this);
-			vMins = pPlayer->GetPlayerMins();
-			vMaxs = pPlayer->GetPlayerMaxs();
+			vTraceMins = pPlayer->GetPlayerMins();
+			vTraceMaxs = pPlayer->GetPlayerMaxs();
 		}
 		else
 		{
-			vMins = WorldAlignMins();
-			vMaxs = WorldAlignMaxs();
+			vTraceMins = WorldAlignMins();
+			vTraceMaxs = WorldAlignMaxs();
 		}
-		UTIL_TraceHull(vecDest, vecDest, vMins, vMaxs, PhysicsSolidMaskForEntity(), this, GetCollisionGroup(), &mainTrace);
+		//apparently if this trace goes nowhere, it can count as not being blocked
+		//so we sweep from bottom to top
+		vecTraceEnd = vecTraceStart;
+		vecTraceEnd.z += vTraceMaxs.z;
+		vTraceMaxs.z = 0;
+		UTIL_TraceHull(vecTraceStart, vecTraceEnd, vTraceMins, vTraceMaxs, PhysicsSolidMaskForEntity(), this, GetCollisionGroup(), &mainTrace);
 	}
 	else
 	{
-		UTIL_TraceEntity(this, vecDest, vecDest, PhysicsSolidMaskForEntity(), &mainTrace);
+		UTIL_TraceEntity(this, vecTraceStart, vecTraceEnd, PhysicsSolidMaskForEntity(), &mainTrace);
+		//only setting these for debugging
+		vTraceMins = CollisionProp()->CollisionSpaceMins();
+		vTraceMaxs = CollisionProp()->CollisionSpaceMaxs();
 	}
 	if (mainTrace.startsolid || mainTrace.fraction != 1)
 	{
@@ -2331,8 +2336,16 @@ bool CBaseEntity::FindPassableSpace(const Vector direction, float step, Vector& 
 		{
 			Msg("Rejected spot %0.1f %0.1f %0.1f, Can't fit\n", vecDest.x, vecDest.y, vecDest.z);
 			//NDebugOverlay::Cross3D(vecDest, 16, 0, 0, 0, true, 30);//a bit too much noise
+			DebugSweptBox(vecTraceStart, vecTraceEnd, vTraceMins, vTraceMaxs, 255, 0, 0, 5);
 		}
 		return false;
+	}
+	else if (IsPlayer())
+	{
+		//we always do traces as if we're crouching. see if we can stand up now.
+		CBasePlayer* pPlayer = static_cast<CBasePlayer*>(this);
+		UTIL_TraceHull(vecTraceStart, vecTraceEnd + Vector(0, 0, 36) * pPlayer->GetModelScale(), vTraceMins, vTraceMaxs, PhysicsSolidMaskForEntity(), this, GetCollisionGroup(), &standTrace);
+		bCanStand = !(standTrace.startsolid || standTrace.fraction != 1);
 	}
 	//don't place on these textures to avoid falling through the ground in displacement-heavy maps
 	//NPCs are not acceptable ground because some of them (striders and such) have weird collisions with player
@@ -2354,7 +2367,7 @@ bool CBaseEntity::FindPassableSpace(const Vector direction, float step, Vector& 
 	if (unstuck_debug_findgoodground.GetBool() || unstuck_debug_findemptyspace.GetBool() && !bNoDebug)
 		Msg("Good ground at %0.1f %0.1f %0.1f\n", vecDest.x, vecDest.y, vecDest.z);
 	if (unstuck_debug_findgoodground.GetBool() || unstuck_debug_findemptyspace.GetBool() && !bNoDebug)
-		DebugSweptBox(GetAbsOrigin(), vecDest, CollisionProp()->CollisionSpaceMins(), CollisionProp()->CollisionSpaceMaxs(), 255, 0, 0, 5);
+		DebugSweptBox(vecTraceStart, vecTraceEnd, vTraceMins, vTraceMaxs, 0, 255, 0, 5);
 	oldorigin = vecDest;
 	return true;
 }

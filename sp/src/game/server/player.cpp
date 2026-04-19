@@ -9436,15 +9436,8 @@ uint64 CBasePlayer::GetSteamIDAsUInt64( void )
 #endif // NO_STEAM
 
 ConVar unstuck_debug_detectifstuck("unstuck_debug_detectifstuck", "0");
-void CBasePlayer::GetIntersectingEntity(Vector vecGoodSpot, bool bNoDuck, trace_t& trace)
+void CBasePlayer::GetIntersectingEntity(Vector vecGoodSpot, trace_t& trace)
 {
-	//do checks as if standing
-	if (bNoDuck && !(m_nButtons & IN_DUCK))
-	{
-		m_Local.m_bDucked = false;
-		RemoveFlag(FL_DUCKING);
-		SetCollisionBounds(VEC_HULL_MIN_SCALED(this), VEC_HULL_MAX_SCALED(this));
-	}
 	UTIL_TraceHull(vecGoodSpot, vecGoodSpot, GetPlayerMins(), GetPlayerMaxs(), MASK_PLAYERSOLID, this, COLLISION_GROUP_NONE, &trace);
 	if (unstuck_debug_detectifstuck.GetBool())
 	{
