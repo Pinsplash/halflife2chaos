@@ -6998,7 +6998,7 @@ bool CChaosEffect::SafeCloneNPCs(const char* pMapName)
 {
 	if (!Q_strnicmp("d", pMapName, 1))//hl2
 	{
-		if (!Q_strcmp(pMapName, "d1_trainstation_01") || !Q_strnicmp("d1_e", pMapName, 4) || !Q_strcmp(pMapName, "d3_breen_01"))
+		if (!Q_strcmp(pMapName, "d1_trainstation_01") || !Q_strcmp(pMapName, "d1_trainstation_05") || !Q_strnicmp("d1_e", pMapName, 4) || !Q_strcmp(pMapName, "d3_breen_01"))
 			return false;
 	}
 	else//ep2 or ep1 goes here
