@@ -9435,6 +9435,7 @@ uint64 CBasePlayer::GetSteamIDAsUInt64( void )
 }
 #endif // NO_STEAM
 
+ConVar unstuck_debug_detectifstuck("unstuck_debug_detectifstuck", "0");
 void CBasePlayer::GetIntersectingEntity(Vector vecGoodSpot, bool bNoDuck, trace_t& trace)
 {
 	//do checks as if standing
@@ -9445,4 +9446,21 @@ void CBasePlayer::GetIntersectingEntity(Vector vecGoodSpot, bool bNoDuck, trace_
 		SetCollisionBounds(VEC_HULL_MIN_SCALED(this), VEC_HULL_MAX_SCALED(this));
 	}
 	UTIL_TraceHull(vecGoodSpot, vecGoodSpot, GetPlayerMins(), GetPlayerMaxs(), MASK_PLAYERSOLID, this, COLLISION_GROUP_NONE, &trace);
+	if (unstuck_debug_detectifstuck.GetBool())
+	{
+		int clr[3];
+		if (trace.fraction == 1.0f)
+		{
+			clr[0] = 255;
+			clr[1] = 255;
+			clr[2] = 255;
+		}
+		else
+		{
+			clr[0] = 255;
+			clr[1] = 0;
+			clr[2] = 0;
+		}
+		NDebugOverlay::Box(vecGoodSpot, GetPlayerMins(), GetPlayerMaxs(), clr[0], clr[1], clr[2], 0, 10);
+	}
 }
