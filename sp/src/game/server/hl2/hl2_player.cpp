@@ -10101,13 +10101,13 @@ void CENormalView::StartEffect()
 {
 	const char* pMapName = STRING(gpGlobals->mapname);
 	if (!Q_strcmp(pMapName, "ep2_outland_12a"))
-		engine->ClientCommand(engine->PEntityOfEntIndex(1), "mat_normalmaps 1;r_3dsky 0;r_drawskybox 0;r_underwateroverlay 0");
+		engine->ClientCommand(engine->PEntityOfEntIndex(1), "r_underwateroverlay 0;wait 5;mat_normalmaps 1;r_3dsky 0;r_drawskybox 0");
 	else
-		engine->ClientCommand(engine->PEntityOfEntIndex(1), "mat_normalmaps 1;mat_normals 1;r_3dsky 0;r_drawskybox 0;r_underwateroverlay 0");
+		engine->ClientCommand(engine->PEntityOfEntIndex(1), "r_underwateroverlay 0;wait 5;mat_normalmaps 1;mat_normals 1;r_3dsky 0;r_drawskybox 0");
 }
 void CENormalView::StopEffect()
 {
-	engine->ClientCommand(engine->PEntityOfEntIndex(1), "mat_normalmaps 0;mat_normals 0;r_3dsky 1;r_drawskybox 1;r_underwateroverlay 1");
+	engine->ClientCommand(engine->PEntityOfEntIndex(1), "mat_normalmaps 0;mat_normals 0;r_3dsky 1;r_drawskybox 1;wait 5;r_underwateroverlay 1");
 }
 void CESaveGulls::StartEffect()
 {
