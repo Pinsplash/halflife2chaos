@@ -967,7 +967,7 @@ void CNPC_Ichthyosaur::Bite( void )
 	CBaseEntity *pHurt;
 	
 	//FIXME: E3 HACK - Always damage bullseyes if we're scripted to hit them
-	if ((GetEnemy() &&  GetEnemy()->Classify() == CLASS_BULLSEYE) || MeleeAttack1Conditions(0, EnemyDistance(GetEnemy())) == COND_CAN_MELEE_ATTACK1)
+	if (GetEnemy() && (GetEnemy()->Classify() == CLASS_BULLSEYE || MeleeAttack1Conditions(0, EnemyDistance(GetEnemy())) == COND_CAN_MELEE_ATTACK1))
 	{
 		pHurt = GetEnemy();
 	}
