@@ -130,6 +130,7 @@ class CChaosEffect;
 extern CUtlVector<CChaosEffect*>	g_ChaosEffects;
 extern int						g_iChaosSpawnCount;
 //CUtlVector<int>			g_iTerminated;
+extern int g_iGrenades;
 
 ConVar sv_autojump("sv_autojump", "0");
 
@@ -2352,6 +2353,12 @@ void CHL2_Player::StartGame()
 	engine->ClientCommand(engine->PEntityOfEntIndex(1), "exec groups\n");
 	gEntList.AddListenerEntity(this);
 	const char* pMapName = STRING(gpGlobals->mapname);
+	//set grenade count to correct value
+	g_iGrenades = 0;
+	for (CBaseEntity* pNade = gEntList.FindEntityByClassname(NULL, "npc_grenade_frag"); pNade; pNade = gEntList.FindEntityByClassname(pNade, "npc_grenade_frag"))
+	{
+		g_iGrenades++;
+	}
 	//fixes a problem with npcs being stuck in place when player goes through queue extremely fast
 	if (!Q_strcmp(pMapName, "d1_trainstation_01"))
 	{
