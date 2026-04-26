@@ -1254,6 +1254,7 @@ void CNPC_Manhack::MoveToTarget(float flInterval, const Vector &vMoveTarget)
 		if ( GetEnemy() != NULL )
 		{
 			Vector steerDir = ( GetEnemy()->EyePosition() - GetAbsOrigin() );
+			//NDebugOverlay::Line(GetAbsOrigin(), GetEnemy()->EyePosition(), 255, 0, 0, true, 2);
 			zDist = fabs( steerDir.z );
 			VectorNormalize( steerDir );
 
@@ -1277,8 +1278,6 @@ void CNPC_Manhack::MoveToTarget(float flInterval, const Vector &vMoveTarget)
 		NDebugOverlay::Cross3D( GetAbsOrigin() , -Vector(8,8,8), Vector(8,8,8), 255, 0, 0, true, 2.1f );
 		*/
 
-		targetDir = m_vecBurstDirection;
-
 		flDist	= FLT_MAX;
 		myDecay	 = 0.3f;
 #ifdef _XBOX
@@ -1294,6 +1293,7 @@ void CNPC_Manhack::MoveToTarget(float flInterval, const Vector &vMoveTarget)
 		VectorNormalize( vecCurrentDir );
 
 		targetDir = vMoveTarget - GetAbsOrigin();
+		//NDebugOverlay::Line(GetAbsOrigin(), vMoveTarget, 255, 255, 0, true, 2);
 		flDist = VectorNormalize( targetDir );
 		
 		float flDot = DotProduct( targetDir, vecCurrentDir );
@@ -2949,13 +2949,11 @@ void CNPC_Manhack::TranslateNavGoal( CBaseEntity *pEnemy, Vector &chasePosition 
 		Vector vecNewPos;
 		CBaseEntity *pVehicle = assert_cast< CBasePlayer * >(pEnemy)->GetVehicleEntity();
 		pVehicle->CollisionProp()->NormalizedToWorldSpace( Vector(0.5,0.5,0.5f), &vecNewPos );
-		chasePosition.z = vecNewPos.z;
 	}
 	else
 	{
 		Vector vecTarget;
 		pEnemy->CollisionProp()->NormalizedToCollisionSpace( Vector(0,0,0.75f), &vecTarget );
-		chasePosition.z += vecTarget.z;
 	}
 }
 
