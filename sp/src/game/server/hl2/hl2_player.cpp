@@ -6807,7 +6807,8 @@ CBaseEntity* CChaosEffect::ChaosSpawnVehicle(const char* className, string_t str
 
 		//see if we're looking at a wall
 		trace_t tr;
-		UTIL_TraceLine(pPlayer->GetAbsOrigin() + Vector(0, 0, flExtraHeight), vecOrigin, MASK_SOLID, pPlayer, COLLISION_GROUP_NONE, &tr);
+		CTraceFilterSkipTwoEntities filter(pPlayer, pPlayer->GetVehicleEntity(), COLLISION_GROUP_NONE);
+		UTIL_TraceLine(pPlayer->GetAbsOrigin() + Vector(0, 0, flExtraHeight), vecOrigin, MASK_SOLID, &filter, &tr);
 		//push out of wall. GetUnstuck doesn't always work because UTIL_TraceEntity is shit
 		if (tr.fraction != 1.0 && !FStrEq(className, "prop_vehicle_crane"))//crane is generally immovable, take NO risk in spawning intersecting player
 			vecOrigin = tr.endpos - vecForward * (70);
@@ -7250,17 +7251,18 @@ CAI_BaseNPC* CChaosEffect::ChaosSpawnNPC(const char* className, string_t strActu
 	vecForward.z = 0;
 	vecForward.NormalizeInPlace();//This will always give back some actual XY numbers because the camera is actually limited to 89 degrees up or down, not 90
 	//then again something weird COULD happen to set the angle to straight 90 up/down, but idk what that would be
+	CTraceFilterSkipTwoEntities filter(pPlayer, pPlayer->GetVehicleEntity(), COLLISION_GROUP_NONE);
 	CAI_BaseNPC* pNPC = (CAI_BaseNPC*)CreateEntityByName(className);
 	if (pNPC)
 	{
 		Vector vecOrigin = pPlayer->GetAbsOrigin() + vecForward * flDistAway + Vector(0, 0, flExtraHeight);
 		trace_t wallTrace;
-		UTIL_TraceLine(pPlayer->GetAbsOrigin(), vecOrigin, MASK_SOLID, pPlayer, COLLISION_GROUP_NONE, &wallTrace);
+		UTIL_TraceLine(pPlayer->GetAbsOrigin(), vecOrigin, MASK_SOLID, &filter, &wallTrace);
 		vecOrigin = wallTrace.endpos;
 		if (iSpawnType == SPAWNTYPE_CEILING)//put the NPC on the ceiling
 		{
 			trace_t tr;
-			UTIL_TraceLine(vecOrigin, vecOrigin + Vector(0, 0, 100000), MASK_SOLID, NULL, COLLISION_GROUP_NONE, &tr);
+			UTIL_TraceLine(vecOrigin, vecOrigin + Vector(0, 0, 100000), MASK_SOLID, &filter, &tr);
 			vecOrigin = tr.endpos + Vector(0, 0, -2);//move down a bit so barnacle looks right
 		}
 		float flPitch = 0;
@@ -7268,7 +7270,7 @@ CAI_BaseNPC* CChaosEffect::ChaosSpawnNPC(const char* className, string_t strActu
 		if (iSpawnType == SPAWNTYPE_ONGROUND)//put the NPC on/in the ground
 		{
 			trace_t tr;
-			UTIL_TraceLine(vecOrigin, vecOrigin - Vector(0, 0, 100000), MASK_SOLID, NULL, COLLISION_GROUP_NONE, &tr);
+			UTIL_TraceLine(vecOrigin, vecOrigin - Vector(0, 0, 100000), MASK_SOLID, &filter, &tr);
 			vecOrigin = tr.endpos + Vector(0, 0, 1);//a little above the ground to avoid z fighting
 			Vector xaxis(1.0f, 0.0f, 0.0f);
 			pPlayer->EyeVectors(&xaxis);
@@ -8762,7 +8764,8 @@ void CEMountedGun::StartEffect()
 	vecForward.NormalizeInPlace();
 	Vector vecOrigin = pPlayer->GetAbsOrigin() + vecForward * 128 + Vector(0, 0, 16);
 	trace_t tr;
-	UTIL_TraceLine(UTIL_GetLocalPlayer()->EyePosition(), vecOrigin, MASK_SOLID, pPlayer, COLLISION_GROUP_NONE, &tr);
+	CTraceFilterSkipTwoEntities filter(pPlayer, pPlayer->GetVehicleEntity(), COLLISION_GROUP_NONE);
+	UTIL_TraceLine(UTIL_GetLocalPlayer()->EyePosition(), vecOrigin, MASK_SOLID, &filter, &tr);
 	Vector vecTargetOrigin = tr.endpos - vecForward * 40;
 	QAngle vecAngles(0, pPlayer->GetAbsAngles().y, 0);
 	//pTank->SetAbsOrigin(vecOrigin);
