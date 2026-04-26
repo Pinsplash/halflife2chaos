@@ -400,7 +400,7 @@ void CPropJeep::AimGunAt( Vector *endPos, float flInterval )
 	Vector	aimPos = *endPos;
 
 	// See if the gun should be allowed to aim
-	if ( IsOverturned() || m_bEngineLocked || m_bHasGun == false )
+	if (/* IsOverturned() || */ m_bEngineLocked || m_bHasGun == false)
 	{
 		SetPoseParameter( JEEP_GUN_YAW, 0 );
 		SetPoseParameter( JEEP_GUN_PITCH, 0 );
@@ -1329,7 +1329,7 @@ void CPropJeep::SetupMove( CBasePlayer *player, CUserCmd *ucmd, IMoveHelper *pHe
 
 	// If the throttle is disabled or we're upside-down, don't allow throttling (including turbo)
 	CUserCmd tmp;
-	if ( ( m_throttleDisableTime > gpGlobals->curtime ) || ( IsOverturned() ) )
+	if ( ( m_throttleDisableTime > gpGlobals->curtime ) /*|| ( IsOverturned() )*/)
 	{
 		m_bUnableToFire = true;
 		
@@ -1365,7 +1365,7 @@ void CPropJeep::DriveVehicle( float flFrameTime, CUserCmd *ucmd, int iButtonsDow
 	if ( m_bHasGun )
 	{
 		// If we're holding down an attack button, update our state
-		if ( IsOverturned() == false )
+		//if ( IsOverturned() == false )
 		{
 			if ( iButtons & IN_ATTACK )
 			{

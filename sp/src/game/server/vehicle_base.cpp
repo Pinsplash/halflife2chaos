@@ -815,8 +815,8 @@ bool CPropVehicleDriveable::CanEnterVehicle( CBaseEntity *pEntity )
 		return false;
 
 	// Can't enter if we're upside-down
-	if ( IsOverturned() )
-		return false;
+	//if ( IsOverturned() )
+		//return false;
 
 	// Prevent entering if the vehicle's locked, or if it's moving too fast.
 	return ( !m_bLocked && (m_nSpeed <= m_flMinimumSpeedToEnterExit) );
