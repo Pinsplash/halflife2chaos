@@ -9668,6 +9668,21 @@ void CEPhysConvert::StartEffect()
 			//normally we keep child entities parented to whatever their parent is, but these ones are shaped very weirdly and result in a softlock
 			pEnt->SetParent(NULL);
 		}
+		//npc_furniture creates a clone as a prop and is not deleted to keep actors working properly
+		if (pEnt->IsNPC() && pEnt->ClassMatches("npc_furniture"))
+		{
+			CBaseEntity* pProp = CreateEntityByName("prop_physics_override");
+			pProp->SetModel(STRING(pEnt->GetModelName()));
+			//g_iChaosSpawnCount++;
+			//pEnt->m_iChaosID = g_iChaosSpawnCount;
+			//pEnt->m_bChaosSpawned = true;
+			DispatchSpawn(pProp);
+			pEnt->SetSolid(SOLID_NONE);
+			pEnt->AddSolidFlags(FSOLID_NOT_SOLID);
+			pEnt->SetParent(pProp);
+			pEnt = gEntList.NextEnt(pEnt);
+			continue;
+		}
 		//objects have to be real "things"
 		//no world
 		//no vehicles
@@ -9682,7 +9697,6 @@ void CEPhysConvert::StartEffect()
 			continue;
 		}
 		//we DO let vphysics entities pass because we still want to wake them
-
 		IPhysicsObject* pPhysicsObject = pEnt->VPhysicsGetObject();
 		if (pPhysicsObject && pPhysicsObject->IsStatic())
 		{
