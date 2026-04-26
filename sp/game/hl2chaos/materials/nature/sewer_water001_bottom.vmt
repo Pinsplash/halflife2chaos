@@ -1,0 +1,110 @@
+"Water"
+{
+	"Water_DX60"
+	{
+		"$fallbackmaterial" "nature/water_dx70_beneath"
+	}
+
+	"Water_DX80"
+	{
+		"$refractamount" ".25"
+	}
+
+	"Water_DX81"
+	{
+		"$refractamount" ".25"
+	}
+	// Make this water expensive no matter what the water_lod_control entity
+	// says.
+	"$forceexpensive" 1
+
+	// Make this water cheap no matter what the water_lod_control entity
+	// says.  This'll ignore $reflecttexture and $refracttexture.
+	// Reflections will happen with $envmap, and refraction is assumed
+	// to be opaquely the water fog color.
+//	"$forcecheap" 1
+
+	// This says what texture to use to view this is Hammer.
+	"%tooltexture" "dev/water_normal"
+
+	// If this is set, we want real-time refraction
+	"$refracttexture" "_rt_WaterRefraction"
+
+	// This is the amount of warp for the refraction.
+	"$refractamount" "1.0"
+//	"$refractamount" "0.0"
+
+	// This is the color of the refraction
+	// This is going away so that edge transitions don't screw up.
+	// Always set to white for now.
+	//"$refracttint" "[1.0 1.0 1.0]"
+
+	// If this is set, we want real-time reflection.
+	// If this isn't set, you'll use an envmap, which needs to be set here.
+//	"$reflecttexture" "_rt_WaterReflection"
+
+	// This is for cheap reflections.  Point env_cubemaps entities at
+	// each major water area.
+	//"$envmap" "env_cubemap"
+
+	// This is the amount of warp for the reflection.
+	"$reflectamount" "0.2"
+
+	// This is the color tint for the real-time reflection AND env_cubemap.
+	//"$reflecttint" "{255 255 255}"
+
+	// WTF?
+	"$scale" "[1 1]"
+
+	// This is the dudv map for the water.  It is generated from a normal map.
+	"$bumpmap" "dev/water_dudv"
+	// This is the normal map for the water.
+	"$normalmap" "dev/water_normal"
+
+	// This is needed for the tools
+	"%compilewater" 1
+
+	// This is needed for physics, etc.
+	"$surfaceprop" "water"
+
+	// This is needed for the proxy below which animates the normal map, etc.
+	"$bumpframe" "0"
+
+	// Enable water volumetric fog.
+	"$fogenable" 1
+
+	// This is the color of the fog in the water when looking from above.
+	// You'll have the same thing in the bottom material for when looking from 
+	// below.
+	"$fogcolor" "{45 45 35}"
+
+	// This is the distance in inches from the eye which water fog starts.
+	// This has to be 0.0 for edge fading to work properly.
+	"$fogstart" 0.00
+
+	// This is the distance in inches from the eye which water fog ends.
+	"$fogend" 250.00
+
+	"$abovewater" 0
+
+	$underwateroverlay "effects/water_warp01"
+	"Proxies"
+	{
+		"AnimatedTexture"
+		{
+			"animatedtexturevar" "$normalmap"
+			"animatedtextureframenumvar" "$bumpframe"
+			"animatedtextureframerate" 20.00
+		}
+
+		"TextureScroll"
+		{
+			"texturescrollvar" "$bumptransform"
+			"texturescrollrate" .05
+			"texturescrollangle" 45.00
+		}
+		"WaterLOD"
+		{
+		}
+	}
+}

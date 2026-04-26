@@ -1,0 +1,42 @@
+"Water"
+{
+	"Water_DX60"
+	{
+		"$fallbackmaterial" "nature/water_dx70_beneath"
+	}
+
+	"%compilewater" 1
+	"%tooltexture" "dev/water_dudv"
+	"$abovewater" 0
+	"$scale" "[.1 .1]"
+
+	"$reflecttexture" "_rt_WaterReflection"
+	"$reflectamount" "1.0"
+	//"$reflecttint" "[.25 .25 .25]"
+
+	"$bumpmap" "dev/water_dudv"
+	"$normalmap" "dev/water_normal"
+
+	"$surfaceprop" "water"
+	"$bumpframe" "0"
+
+	"$fogenable" 0
+	"$fogcolor" "{22 20 10}"
+	"$fogstart" 1.00
+	"$fogend" 400.00
+
+	$underwateroverlay "effects/water_warp01"
+	"Proxies"
+	{
+		"AnimatedTexture"
+		{
+			"animatedtexturevar" "$normalmap"
+			"animatedtextureframenumvar" "$bumpframe"
+			"animatedtextureframerate" 30.00
+		}
+
+		"WaterLOD"
+		{
+		}
+	}	
+}

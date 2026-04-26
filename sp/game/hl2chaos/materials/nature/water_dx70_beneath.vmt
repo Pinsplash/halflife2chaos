@@ -1,0 +1,58 @@
+"LightmappedGeneric"
+{
+	"$abovewater" 0	
+	"%compilewater" 1
+
+	"$basetexture" "dev/water"
+	"$scale" "[1 1]"
+	"$translucent" "1"
+	"$nocull" "1"
+
+	// This is needed for physics, etc.
+	"$surfaceprop" "water"
+
+	// Enable water volumetric fog.
+	"$fogenable" 1
+
+	// This is the color of the fog in the water when looking from above.
+	// You'll have the same thing in the bottom material for when looking from 
+	// below.
+	"$fogcolor" "{25 25 15}"
+
+	// This is the distance in inches from the eye which water fog starts.
+	// This has to be 0.0 for edge fading to work properly.
+	"$fogstart" 0.00
+
+	// This is the distance in inches from the eye which water fog ends.
+	"$fogend" 450.00
+
+	"$texoffset" "[0 0]"
+
+	// The water generally looks better if we scale it down a bit
+	"$texscale" "0.5"
+
+	$underwateroverlay "effects/water_warp01"
+	"Proxies"
+	{
+		"AnimatedTexture"
+		{
+			"animatedtexturevar" "$basetexture"
+			"animatedtextureframenumvar" "$frame"
+			"animatedtextureframerate" 20.00
+		}
+
+		"TextureScroll"
+		{
+			"texturescrollvar" "$texoffset"
+			"texturescrollrate" .025
+			"texturescrollangle" 45.00
+		}
+
+		"TextureTransform"
+		{
+			"translateVar" "$texoffset"
+			"scaleVar" "$texscale"
+			"resultVar" "$basetexturetransform"
+		}
+	}
+}

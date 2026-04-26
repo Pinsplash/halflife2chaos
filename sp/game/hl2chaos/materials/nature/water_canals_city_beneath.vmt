@@ -1,0 +1,66 @@
+"Water"
+{
+	"Water_DX60"
+	{
+		"$fallbackmaterial" "nature/water_dx70_beneath"
+	}
+	"Water_DX80"
+	{
+		"$refractamount" ".2"
+	}
+	"Water_DX81"
+	{
+		"$refractamount" ".2"
+	}
+	"$abovewater" 0
+	"$forceexpensive" 1
+	"%compilewater" 1
+//	"$forcecheap" 1
+	// bottom materials shouldn't use $envmap!!!  They won't work if they do.
+//	"$envmap" "env_cubemap"
+	"%tooltexture" "dev/water_normal"
+	"$refractamount" ".4"
+	//"$refracttint" "[.8 .75 .65]"
+
+	"$reflectamount" "1"
+	//"$reflecttint" "[1 1 1]"
+
+//	"$reflecttexture" "_rt_WaterReflection"
+	"$refracttexture" "_rt_WaterRefraction"
+
+	"$scale" "[1 1]"
+
+	"$bumpmap" "dev/water_dudv"
+	"$normalmap" "dev/water_normal"
+
+	"$surfaceprop" "water"
+	"$bumpframe" "0"
+
+	"$fogenable" 1
+	"$fogcolor" "{40 34 27}"
+	"$fogstart" -100.00
+	"$fogend" 400.00
+
+	$underwateroverlay "effects/water_warp01"
+	"Proxies"
+	{
+		"AnimatedTexture"
+		{
+			"animatedtexturevar" "$normalmap"
+			"animatedtextureframenumvar" "$bumpframe"
+			"animatedtextureframerate" 30.00
+		}
+
+		"TextureScroll"
+		{
+			"texturescrollvar" "$bumptransform"
+			"texturescrollrate" .05
+			"texturescrollangle" 45.00
+		}
+
+		"WaterLOD"
+		{
+		}
+	}
+}
+
