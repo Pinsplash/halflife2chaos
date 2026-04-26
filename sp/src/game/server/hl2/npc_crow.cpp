@@ -1436,7 +1436,7 @@ void CNPC_Crow::Event_Killed(const CTakeDamageInfo& info)
 					pReload->SetRenderColor(0, 0, 0, 255);
 					g_EventQueue.AddEvent(pReload, "Reload", 0, pReload, pReload);
 				}
-				EmitSound("lostcoast.fish_shootgull");
+				pPlayer->EmitSound("lostcoast.fish_shootgull");
 			}
 		}
 	}

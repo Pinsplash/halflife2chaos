@@ -293,7 +293,7 @@
 
 "lostcoast.fish_shootgull"
 {
-	"channel"		"CHAN_STATIC"
+	"channel"		"CHAN_VOICE"
 	"volume"		"1"
 	"pitch"			"PITCH_NORM"
 	"soundlevel"	"SNDLVL_NORM"
