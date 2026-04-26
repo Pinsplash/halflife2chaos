@@ -420,6 +420,7 @@ private:
 
 	void	InputEnable( inputdata_t &inputdata );
 	void	InputDisable( inputdata_t &inputdata );
+	void	InputSetTargetToPlayerVehicle(inputdata_t& inputdata);
 
 	DECLARE_DATADESC();
 };
@@ -439,6 +440,7 @@ BEGIN_DATADESC( CPointVelocitySensor )
 
 	DEFINE_INPUTFUNC( FIELD_VOID, "Enable",		InputEnable ),
 	DEFINE_INPUTFUNC( FIELD_VOID, "Disable",	InputDisable ),
+	DEFINE_INPUTFUNC(FIELD_VOID, "SetTargetToPlayerVehicle", InputSetTargetToPlayerVehicle),
 
 END_DATADESC()
 
@@ -450,8 +452,14 @@ void CPointVelocitySensor::Spawn()
 	Vector vLine = m_vecAxis - GetAbsOrigin();
 	VectorNormalize( vLine );
 	m_vecAxis = vLine;
+	m_hTargetEntity = gEntList.FindEntityByName(NULL, m_target);
 }
 
+void CPointVelocitySensor::InputSetTargetToPlayerVehicle(inputdata_t& inputdata)
+{
+	m_hTargetEntity = UTIL_GetLocalPlayer()->GetVehicleEntity();
+	SetNextThink(gpGlobals->curtime);
+}
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -459,8 +467,6 @@ void CPointVelocitySensor::Spawn()
 void CPointVelocitySensor::Activate( void )
 {
 	BaseClass::Activate();
-
-	m_hTargetEntity = gEntList.FindEntityByName( NULL, m_target );
 	
 	if ( m_bEnabled && m_hTargetEntity )
 	{

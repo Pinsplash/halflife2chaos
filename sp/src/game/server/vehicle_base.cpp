@@ -559,6 +559,14 @@ void CPropVehicleDriveable::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, 
 	ResetUseKey( pPlayer );
 
 	m_pServerVehicle->HandlePassengerEntry( pPlayer, (value>0) );
+
+	//change valve's velocity sensors to monitor whatever vehicle the player enters
+	CBaseEntity* pVSensor = gEntList.FindEntityByName(NULL, "velsensor_car_superjump_01");
+	if (pVSensor)
+	{
+		variant_t var;
+		pVSensor->AcceptInput("SetTargetToPlayerVehicle", pActivator, this, var, 0);
+	}
 }
 
 //-----------------------------------------------------------------------------
