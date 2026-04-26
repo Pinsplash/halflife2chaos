@@ -6152,22 +6152,20 @@ bool CChaosEffect::CheckEffectContext()
 	if (m_nID == EFFECT_HOMING_AR2)
 	{
 		//check if player has ar2 ball ammo
-		if (pPlayer->GetAmmoCount("AR2AltFire") > 0)
-			return true;
-
-		//ammo pickup somewhere in map
-		if (gEntList.FindEntityByClassname(NULL, "item_ammo_ar2_altfire"))
-			return true;
-
-		//any elites, assume they will fire a ball
-		for (CBaseEntity* pEnt = gEntList.FindEntityByClassname(NULL, "npc_combine_s"); pEnt; pEnt = gEntList.FindEntityByClassname(NULL, "npc_combine_s"))
+		if (pPlayer->GetAmmoCount("AR2AltFire") <= 0)
 		{
-			if (!strcmp(STRING(pEnt->GetModelName()), "models/combine_super_soldier.mdl"))
+			//ammo pickup somewhere in map
+			if (!gEntList.FindEntityByClassname(NULL, "item_ammo_ar2_altfire"))
 			{
-				return true;
+				bool bFound = false;
+				//any elites, assume they will fire a ball
+				for (CBaseEntity* pEnt = gEntList.FindEntityByClassname(NULL, "npc_combine_s"); pEnt; pEnt = gEntList.FindEntityByClassname(pEnt, "npc_combine_s"))
+					if (!strcmp(STRING(pEnt->GetModelName()), "models/combine_super_soldier.mdl"))
+						bFound = true;
+				if (!bFound)
+					return false;
 			}
 		}
-		return false;
 	}
 
 	//Don't remove pickups on these maps
