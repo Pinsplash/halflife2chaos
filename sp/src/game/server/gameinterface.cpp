@@ -603,6 +603,93 @@ bool CServerGameDLL::DLLInit( CreateInterfaceFn appSystemFactory,
 		return false;
 	if ( (filesystem = (IFileSystem *)fileSystemFactory(FILESYSTEM_INTERFACE_VERSION,NULL)) == NULL )
 		return false;
+
+	//This is 2013anni's implementation of mounting HL2 content. This replaces the older method relying on ..\
+	//Apparently this code runs at such a late point in bootup that the engine is already looking for serverevents.res, chapterbackgrounds.txt, and the background textures.
+	//Therefore all of those have to be included in the mod's loose files. If any are missing, problems will happen, including crashing upon loading any map if serverevents.res is missing.
+
+	if (steamapicontext && steamapicontext->SteamApps())
+	{
+		char szPath[MAX_PATH * 2];
+		char szOriginalPath[MAX_PATH * 2];
+		//path to common/Half-Life 2/
+		int ccFolder = steamapicontext->SteamApps()->GetAppInstallDir(220, szPath, sizeof(szPath));
+		if (ccFolder > 0)
+		{
+			V_AppendSlash(szPath, sizeof(szPath));
+			V_strcpy(szOriginalPath, szPath);
+
+#ifdef HL2_EPISODIC
+			char modDir[MAX_PATH];
+			if (UTIL_GetModDir(modDir, sizeof(modDir)) == false)
+				Error("2013anni: Missing mod directory?");
+
+			if (Q_stristr(modDir, "mod_ep2"))
+			{
+				V_strncat(szPath, "ep2", sizeof(szPath));
+				g_pFullFileSystem->AddSearchPath(szPath, "GAME");
+				V_strcpy(szPath, szOriginalPath);
+
+				V_strncat(szPath, "ep2/ep2_sound_vo_english.vpk", sizeof(szPath));
+				g_pFullFileSystem->AddSearchPath(szPath, "GAME");
+				V_strcpy(szPath, szOriginalPath);
+
+				V_strncat(szPath, "ep2/ep2_pak.vpk", sizeof(szPath));
+				g_pFullFileSystem->AddSearchPath(szPath, "GAME");
+				V_strcpy(szPath, szOriginalPath);
+			}
+
+			V_strncat(szPath, "episodic", sizeof(szPath));
+			g_pFullFileSystem->AddSearchPath(szPath, "GAME");
+			V_strcpy(szPath, szOriginalPath);
+
+			V_strncat(szPath, "episodic/ep1_sound_vo_english.vpk", sizeof(szPath));
+			g_pFullFileSystem->AddSearchPath(szPath, "GAME");
+			V_strcpy(szPath, szOriginalPath);
+
+			V_strncat(szPath, "episodic/ep1_pak.vpk", sizeof(szPath));
+			g_pFullFileSystem->AddSearchPath(szPath, "GAME");
+			V_strcpy(szPath, szOriginalPath);
+#endif // HL2_EPISODIC
+
+			//Base HL2
+			//2013anni puts the mod folder above VPKs. It makes more sense?
+			V_strncat(szPath, "hl2", sizeof(szPath));
+			g_pFullFileSystem->AddSearchPath(szPath, "GAME");
+			V_strcpy(szPath, szOriginalPath);
+
+			V_strncat(szPath, "hl2/hl2_textures.vpk", sizeof(szPath));
+			g_pFullFileSystem->AddSearchPath(szPath, "GAME");
+			V_strcpy(szPath, szOriginalPath);
+
+			V_strncat(szPath, "hl2/hl2_sound_vo_english.vpk", sizeof(szPath));
+			g_pFullFileSystem->AddSearchPath(szPath, "GAME");
+			V_strcpy(szPath, szOriginalPath);
+
+			V_strncat(szPath, "hl2/hl2_sound_misc.vpk", sizeof(szPath));
+			g_pFullFileSystem->AddSearchPath(szPath, "GAME");
+			V_strcpy(szPath, szOriginalPath);
+
+			V_strncat(szPath, "hl2/hl2_misc.vpk", sizeof(szPath));
+			g_pFullFileSystem->AddSearchPath(szPath, "GAME");
+			V_strcpy(szPath, szOriginalPath);
+
+			V_strncat(szPath, "platform/platform_misc.vpk", sizeof(szPath));
+			g_pFullFileSystem->AddSearchPath(szPath, "PLATFORM");
+			V_strcpy(szPath, szOriginalPath);
+
+		}
+		else
+			Error("2013anni: Couldn't find HL2 installation. Please buy Half-Life 2 on Steam if you have not.");
+	}
+	else
+	{
+		if (!steamapicontext)
+			Error("2013anni: Missing Steam API context. Please buy Half-Life 2 on Steam if you have not.");
+		else if (!steamapicontext->SteamApps())
+			Error("2013anni: Missing SteamApps. Please buy Half-Life 2 on Steam if you have not.");
+	}
+
 	if ( (gameeventmanager = (IGameEventManager2 *)appSystemFactory(INTERFACEVERSION_GAMEEVENTSMANAGER2,NULL)) == NULL )
 		return false;
 	if ( (datacache = (IDataCache*)appSystemFactory(DATACACHE_INTERFACE_VERSION, NULL )) == NULL )

@@ -9,21 +9,27 @@
 		SteamAppId					243730
 		SearchPaths
 		{
-			game+mod				|gameinfo_path|custom/*
-			game+mod+mod_write+default_write_path	|gameinfo_path|.
-			gamebin					|gameinfo_path|bin
-			game					"..\Half-Life 2\hl2"
-			//for some reason, path above doesn't work for some people. below is older version that we scrapped a while back.
-			game					"|gameinfo_path|..\..\common\Half-Life 2\hl2"
-			game_lv					|all_source_engine_paths|hl2/hl2_lv.vpk
-			game					|all_source_engine_paths|hl2/hl2_sound_vo_english.vpk
-			game					|all_source_engine_paths|hl2/hl2_pak.vpk
-			game					|all_source_engine_paths|hl2/hl2_textures.vpk
-			game					|all_source_engine_paths|hl2/hl2_sound_misc.vpk
-			game					|all_source_engine_paths|hl2/hl2_misc.vpk
-			platform				|all_source_engine_paths|platform/platform_misc.vpk
-			game					|all_source_engine_paths|hl2
-			platform				|all_source_engine_paths|platform
+			//mod folder
+			game+mod	|gameinfo_path|custom/*
+			game+mod+mod_write+default_write_path+game_write	|gameinfo_path|.
+			gamebin		|gameinfo_path|bin
+
+			//Uncomment the lines below only while using a tool such as Hammer or HLMV. Those tools don't have access to the new way we get SearchPaths via code.
+			//Way #1. Try relative to SDK Base's exe. Requires that Source SDK Base 2013 Singleplayer is installed in the same Steam directory as HL2.
+			//game		"../Half-Life 2/hl2"
+			//game		"../Half-Life 2/hl2/hl2_textures.vpk"
+			//game		"../Half-Life 2/hl2/hl2_sound_vo_english.vpk"
+			//game		"../Half-Life 2/hl2/hl2_sound_misc.vpk"
+			//game		"../Half-Life 2/hl2/hl2_misc.vpk"
+			//platform	"../Half-Life 2/platform/platform_misc.vpk"
+
+			//Way #2. Try relative to mod folder. Requires that the mod is installed in the same Steam directory as HL2.
+			//game		"|gameinfo_path|../../common/Half-Life 2/hl2"
+			//game		"|gameinfo_path|../../common/Half-Life 2/hl2/hl2_textures.vpk"
+			//game		"|gameinfo_path|../../common/Half-Life 2/hl2/hl2_sound_vo_english.vpk"
+			//game		"|gameinfo_path|../../common/Half-Life 2/hl2/hl2_sound_misc.vpk"
+			//game		"|gameinfo_path|../../common/Half-Life 2/hl2/hl2_misc.vpk"
+			//platform	"|gameinfo_path|../../common/Half-Life 2/platform/platform_misc.vpk"
 		}
 	}
 	

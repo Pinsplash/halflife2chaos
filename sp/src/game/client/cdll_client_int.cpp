@@ -1167,37 +1167,6 @@ void CHLClient::PostInit()
 #endif
 
 	g_ClientVirtualReality.StartupComplete();
-
-	const char *pGameDir = GetModDirectory();
-	Msg("pGameDir %s\n", pGameDir);
-	/*if (!Q_strcmp(pGameDir, "hl2chaos"))
-	{
-		char szPath[MAX_PATH*2];
-		int ccFolder = steamapicontext->SteamApps()->GetAppInstallDir(220, szPath, sizeof(szPath));
-		Msg("szPath %s\n", szPath);
-		if (ccFolder > 0)
-		{
-			char szFullPath[MAX_PATH * 2];
-			Q_snprintf(szFullPath, sizeof(szFullPath), "%s\\%s", szPath, "hl2");
-			Msg("szFullPath %s\n", szFullPath);
-			g_pFullFileSystem->AddSearchPath(szFullPath, "GAME");
-		}
-	}*/
-#ifdef HL1MP_CLIENT_DLL
-	if ( s_cl_load_hl1_content.GetBool() && steamapicontext && steamapicontext->SteamApps() )
-	{
-		char szPath[ MAX_PATH*2 ];
-		int ccFolder= steamapicontext->SteamApps()->GetAppInstallDir( 280, szPath, sizeof(szPath) );
-		if ( ccFolder > 0 )
-		{
-			V_AppendSlash( szPath, sizeof(szPath) );
-			V_strncat( szPath, "hl1", sizeof( szPath ) );
-
-			g_pFullFileSystem->AddSearchPath( szPath, "HL1" );
-			g_pFullFileSystem->AddSearchPath( szPath, "GAME" );
-		}
-	}
-#endif
 }
 
 //-----------------------------------------------------------------------------
