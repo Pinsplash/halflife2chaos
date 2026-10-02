@@ -96,6 +96,7 @@ extern ConVar mat_motion_blur_enabled;
 extern ConVar r_depthoverlay;
 extern ConVar mat_viewportscale;
 extern ConVar mat_viewportupscale;
+extern ConVar mat_hdr_level;
 extern ConVar chaos_yawroll;
 extern bool g_bDumpRenderTargets;
 
@@ -1429,7 +1430,7 @@ void CheckAndTransitionColor( float flPercent, float *pColor, float *pLerpToColo
 	}
 }
 
-static void GetFogColorTransition( fogparams_t *pFogParams, float *pColorPrimary, float *pColorSecondary )
+static void GetFogColorTransition( fogparams_t *pFogParams, float *pColorPrimary, float *pColorSecondary, bool bUseHDR)
 {
 	if ( !pFogParams )
 		return;
@@ -1438,8 +1439,11 @@ static void GetFogColorTransition( fogparams_t *pFogParams, float *pColorPrimary
 	{
 		float flPercent = 1.0f - (( pFogParams->lerptime - gpGlobals->curtime ) / pFogParams->duration );
 
-		float flPrimaryColorLerp[3] = { pFogParams->colorPrimaryLerpTo.GetR(), pFogParams->colorPrimaryLerpTo.GetG(), pFogParams->colorPrimaryLerpTo.GetB() };
-		float flSecondaryColorLerp[3] = { pFogParams->colorSecondaryLerpTo.GetR(), pFogParams->colorSecondaryLerpTo.GetG(), pFogParams->colorSecondaryLerpTo.GetB() };
+		color32 clrPrimaryLerp = bUseHDR ? pFogParams->colorPrimaryHDRLerpTo.Get() : pFogParams->colorPrimaryLerpTo.Get();
+		color32 clrSecondaryLerp = bUseHDR ? pFogParams->colorSecondaryHDRLerpTo.Get() : pFogParams->colorSecondaryLerpTo.Get();
+
+		float flPrimaryColorLerp[3] = { clrPrimaryLerp.r, clrPrimaryLerp.g, clrPrimaryLerp.b };
+		float flSecondaryColorLerp[3] = { clrSecondaryLerp.r, clrSecondaryLerp.g, clrSecondaryLerp.b };
 
 		CheckAndTransitionColor( flPercent, pColorPrimary, flPrimaryColorLerp );
 		CheckAndTransitionColor( flPercent, pColorSecondary, flSecondaryColorLerp );
@@ -1462,10 +1466,15 @@ static void GetFogColor( fogparams_t *pFogParams, float *pColor )
 	}
 	else
 	{
-		float flPrimaryColor[3] = { pFogParams->colorPrimary.GetR(), pFogParams->colorPrimary.GetG(), pFogParams->colorPrimary.GetB() };
-		float flSecondaryColor[3] = { pFogParams->colorSecondary.GetR(), pFogParams->colorSecondary.GetG(), pFogParams->colorSecondary.GetB() };
+		bool bUseHDR = mat_hdr_level.GetInt() >= 2 && (pFogParams->colorPrimaryHDR.GetR() != 0 || pFogParams->colorPrimaryHDR.GetG() != 0 || pFogParams->colorPrimaryHDR.GetB() != 0);
 
-		GetFogColorTransition( pFogParams, flPrimaryColor, flSecondaryColor );
+		color32 clrPrimary = bUseHDR ? pFogParams->colorPrimaryHDR.Get() : pFogParams->colorPrimary.Get();
+		color32 clrSecondary = bUseHDR ? pFogParams->colorSecondaryHDR.Get() : pFogParams->colorSecondary.Get();
+
+		float flPrimaryColor[3] = { clrPrimary.r, clrPrimary.g, clrPrimary.b };
+		float flSecondaryColor[3] = { clrSecondary.r, clrSecondary.g, clrSecondary.b };
+
+		GetFogColorTransition(pFogParams, flPrimaryColor, flSecondaryColor, bUseHDR);
 
 		if( pFogParams->blend )
 		{
@@ -1656,7 +1665,11 @@ static void GetSkyboxFogColor( float *pColor )
 	}
 	else
 	{
-		if( local->m_skybox3d.fog.blend )
+		fogparams_t pFogParams = local->m_skybox3d.fog;
+		bool bUseHDR = mat_hdr_level.GetInt() >= 2 && (pFogParams.colorPrimaryHDR.GetR() != 0 || pFogParams.colorPrimaryHDR.GetG() != 0 || pFogParams.colorPrimaryHDR.GetB() != 0);
+		color32 clrPrimary = bUseHDR ? pFogParams.colorPrimaryHDR.Get() : pFogParams.colorPrimary.Get();
+
+		if (pFogParams.blend)
 		{
 			//
 			// Blend between two fog colors based on viewing angle.
@@ -1665,22 +1678,24 @@ static void GetSkyboxFogColor( float *pColor )
 			Vector forward;
 			pbp->EyeVectors( &forward, NULL, NULL );
 
-			Vector vNormalized = local->m_skybox3d.fog.dirPrimary;
-			VectorNormalize( vNormalized );
-			local->m_skybox3d.fog.dirPrimary = vNormalized;
+			Vector vNormalized = pFogParams.dirPrimary;
+			VectorNormalize(vNormalized);
+			pFogParams.dirPrimary = vNormalized;
 
-			float flBlendFactor = 0.5 * forward.Dot( local->m_skybox3d.fog.dirPrimary ) + 0.5;
-						 
+			float flBlendFactor = 0.5 * forward.Dot(pFogParams.dirPrimary) + 0.5;
+
+			color32 clrSecondary = bUseHDR ? pFogParams.colorSecondaryHDR.Get() : pFogParams.colorSecondary.Get();
+
 			// FIXME: convert to linear colorspace
-			pColor[0] = local->m_skybox3d.fog.colorPrimary.GetR() * flBlendFactor + local->m_skybox3d.fog.colorSecondary.GetR() * ( 1 - flBlendFactor );
-			pColor[1] = local->m_skybox3d.fog.colorPrimary.GetG() * flBlendFactor + local->m_skybox3d.fog.colorSecondary.GetG() * ( 1 - flBlendFactor );
-			pColor[2] = local->m_skybox3d.fog.colorPrimary.GetB() * flBlendFactor + local->m_skybox3d.fog.colorSecondary.GetB() * ( 1 - flBlendFactor );
+			pColor[0] = clrPrimary.r * flBlendFactor + clrSecondary.r * (1 - flBlendFactor);
+			pColor[1] = clrPrimary.g * flBlendFactor + clrSecondary.g * (1 - flBlendFactor);
+			pColor[2] = clrPrimary.b * flBlendFactor + clrSecondary.b * (1 - flBlendFactor);
 		}
 		else
 		{
-			pColor[0] = local->m_skybox3d.fog.colorPrimary.GetR();
-			pColor[1] = local->m_skybox3d.fog.colorPrimary.GetG();
-			pColor[2] = local->m_skybox3d.fog.colorPrimary.GetB();
+			pColor[0] = clrPrimary.r;
+			pColor[1] = clrPrimary.g;
+			pColor[2] = clrPrimary.b;
 		}
 	}
 
@@ -3118,9 +3133,13 @@ bool CViewRender::DrawOneMonitor( ITexture *pRenderTarget, int cameraNum, C_Poin
 
 		unsigned char r, g, b;
 		pCameraEnt->GetFogColor( r, g, b );
-		pFogParams->colorPrimary.SetR( r );
-		pFogParams->colorPrimary.SetG( g );
-		pFogParams->colorPrimary.SetB( b );
+		pFogParams->colorPrimary.SetR(r);
+		pFogParams->colorPrimary.SetG(g);
+		pFogParams->colorPrimary.SetB(b);
+		//not sure if this is needed
+		pFogParams->colorPrimaryHDR.SetR(r);
+		pFogParams->colorPrimaryHDR.SetG(g);
+		pFogParams->colorPrimaryHDR.SetB(b);
 
 		monitorView.zFar = pCameraEnt->GetFogEnd();
 	}

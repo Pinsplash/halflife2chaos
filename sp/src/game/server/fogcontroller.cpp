@@ -30,36 +30,42 @@ LINK_ENTITY_TO_CLASS( env_fog_controller, CFogController );
 
 BEGIN_DATADESC( CFogController )
 
-	DEFINE_INPUTFUNC( FIELD_FLOAT,		"SetStartDist",	InputSetStartDist ),
-	DEFINE_INPUTFUNC( FIELD_FLOAT,		"SetEndDist",	InputSetEndDist ),
-	DEFINE_INPUTFUNC( FIELD_FLOAT,		"SetMaxDensity",	InputSetMaxDensity ),
-	DEFINE_INPUTFUNC( FIELD_VOID,		"TurnOn",		InputTurnOn ),
-	DEFINE_INPUTFUNC( FIELD_VOID,		"TurnOff",		InputTurnOff ),
-	DEFINE_INPUTFUNC( FIELD_COLOR32,	"SetColor",		InputSetColor ),
-	DEFINE_INPUTFUNC( FIELD_COLOR32,	"SetColorSecondary",	InputSetColorSecondary ),
-	DEFINE_INPUTFUNC( FIELD_INTEGER,	"SetFarZ",		InputSetFarZ ),
-	DEFINE_INPUTFUNC( FIELD_STRING,		"SetAngles",	InputSetAngles ),
+	DEFINE_INPUTFUNC( FIELD_FLOAT,		"SetStartDist",					InputSetStartDist ),
+	DEFINE_INPUTFUNC( FIELD_FLOAT,		"SetEndDist",					InputSetEndDist ),
+	DEFINE_INPUTFUNC( FIELD_FLOAT,		"SetMaxDensity",				InputSetMaxDensity ),
+	DEFINE_INPUTFUNC( FIELD_VOID,		"TurnOn",						InputTurnOn ),
+	DEFINE_INPUTFUNC( FIELD_VOID,		"TurnOff",						InputTurnOff ),
+	DEFINE_INPUTFUNC( FIELD_COLOR32,	"SetColor",						InputSetColor ),
+	DEFINE_INPUTFUNC( FIELD_COLOR32,	"SetColorSecondary",			InputSetColorSecondary ),
+	DEFINE_INPUTFUNC( FIELD_COLOR32,	"SetColorHDR",					InputSetColorHDR ),
+	DEFINE_INPUTFUNC( FIELD_COLOR32,	"SetColorSecondaryHDR",			InputSetColorSecondaryHDR ),
+	DEFINE_INPUTFUNC( FIELD_INTEGER,	"SetFarZ",						InputSetFarZ ),
+	DEFINE_INPUTFUNC( FIELD_STRING,		"SetAngles",					InputSetAngles ),
 
-	DEFINE_INPUTFUNC( FIELD_COLOR32,	"SetColorLerpTo",		InputSetColorLerpTo ),
-	DEFINE_INPUTFUNC( FIELD_COLOR32,	"SetColorSecondaryLerpTo",	InputSetColorSecondaryLerpTo ),
-	DEFINE_INPUTFUNC( FIELD_FLOAT,		"SetStartDistLerpTo",	InputSetStartDistLerpTo ),
-	DEFINE_INPUTFUNC( FIELD_FLOAT,		"SetEndDistLerpTo",	InputSetEndDistLerpTo ),
-	DEFINE_INPUTFUNC( FIELD_VOID,		"StartFogTransition", InputStartFogTransition ),
+	DEFINE_INPUTFUNC( FIELD_COLOR32,	"SetColorLerpTo",				InputSetColorLerpTo ),
+	DEFINE_INPUTFUNC( FIELD_COLOR32,	"SetColorSecondaryLerpTo",		InputSetColorSecondaryLerpTo ),
+	DEFINE_INPUTFUNC( FIELD_COLOR32,	"SetColorHDRLerpTo",			InputSetColorHDRLerpTo ),
+	DEFINE_INPUTFUNC( FIELD_COLOR32,	"SetColorSecondaryHDRLerpTo",	InputSetColorSecondaryHDRLerpTo ),
+	DEFINE_INPUTFUNC( FIELD_FLOAT,		"SetStartDistLerpTo",			InputSetStartDistLerpTo ),
+	DEFINE_INPUTFUNC( FIELD_FLOAT,		"SetEndDistLerpTo",				InputSetEndDistLerpTo ),
+	DEFINE_INPUTFUNC( FIELD_VOID,		"StartFogTransition",			InputStartFogTransition ),
 
 	// Quiet classcheck
 	//DEFINE_EMBEDDED( m_fog ),
 
-	DEFINE_KEYFIELD( m_bUseAngles,			FIELD_BOOLEAN,	"use_angles" ),
-	DEFINE_KEYFIELD( m_fog.colorPrimary,	FIELD_COLOR32,	"fogcolor" ),
-	DEFINE_KEYFIELD( m_fog.colorSecondary,	FIELD_COLOR32,	"fogcolor2" ),
-	DEFINE_KEYFIELD( m_fog.dirPrimary,		FIELD_VECTOR,	"fogdir" ),
-	DEFINE_KEYFIELD( m_fog.enable,			FIELD_BOOLEAN,	"fogenable" ),
-	DEFINE_KEYFIELD( m_fog.blend,			FIELD_BOOLEAN,	"fogblend" ),
-	DEFINE_KEYFIELD( m_fog.start,			FIELD_FLOAT,	"fogstart" ),
-	DEFINE_KEYFIELD( m_fog.end,				FIELD_FLOAT,	"fogend" ),
-	DEFINE_KEYFIELD( m_fog.maxdensity,		FIELD_FLOAT,	"fogmaxdensity" ),
-	DEFINE_KEYFIELD( m_fog.farz,			FIELD_FLOAT,	"farz" ),
-	DEFINE_KEYFIELD( m_fog.duration,		FIELD_FLOAT,	"foglerptime" ),
+	DEFINE_KEYFIELD( m_bUseAngles,				FIELD_BOOLEAN,	"use_angles" ),
+	DEFINE_KEYFIELD( m_fog.colorPrimary,		FIELD_COLOR32,	"fogcolor" ),
+	DEFINE_KEYFIELD( m_fog.colorSecondary,		FIELD_COLOR32,	"fogcolor2" ),
+	DEFINE_KEYFIELD( m_fog.colorPrimaryHDR,		FIELD_COLOR32,	"fogcolor_hdr" ),
+	DEFINE_KEYFIELD( m_fog.colorSecondaryHDR,	FIELD_COLOR32,	"fogcolor2_hdr" ),
+	DEFINE_KEYFIELD( m_fog.dirPrimary,			FIELD_VECTOR,	"fogdir" ),
+	DEFINE_KEYFIELD( m_fog.enable,				FIELD_BOOLEAN,	"fogenable" ),
+	DEFINE_KEYFIELD( m_fog.blend,				FIELD_BOOLEAN,	"fogblend" ),
+	DEFINE_KEYFIELD( m_fog.start,				FIELD_FLOAT,	"fogstart" ),
+	DEFINE_KEYFIELD( m_fog.end,					FIELD_FLOAT,	"fogend" ),
+	DEFINE_KEYFIELD( m_fog.maxdensity,			FIELD_FLOAT,	"fogmaxdensity" ),
+	DEFINE_KEYFIELD( m_fog.farz,				FIELD_FLOAT,	"farz" ),
+	DEFINE_KEYFIELD( m_fog.duration,			FIELD_FLOAT,	"foglerptime" ),
 
 	DEFINE_THINKFUNC( SetLerpValues ),
 
@@ -68,6 +74,8 @@ BEGIN_DATADESC( CFogController )
 	DEFINE_FIELD( m_fog.lerptime, FIELD_TIME ),
 	DEFINE_FIELD( m_fog.colorPrimaryLerpTo, FIELD_COLOR32 ),
 	DEFINE_FIELD( m_fog.colorSecondaryLerpTo, FIELD_COLOR32 ),
+	DEFINE_FIELD(m_fog.colorPrimaryHDRLerpTo, FIELD_COLOR32),
+	DEFINE_FIELD(m_fog.colorSecondaryHDRLerpTo, FIELD_COLOR32),
 	DEFINE_FIELD( m_fog.startLerpTo, FIELD_FLOAT ),
 	DEFINE_FIELD( m_fog.endLerpTo, FIELD_FLOAT ),
 
@@ -80,6 +88,8 @@ IMPLEMENT_SERVERCLASS_ST_NOBASE( CFogController, DT_FogController )
 	SendPropVector( SENDINFO_STRUCTELEM(m_fog.dirPrimary), -1, SPROP_COORD),
 	SendPropInt( SENDINFO_STRUCTELEM( m_fog.colorPrimary ), 32, SPROP_UNSIGNED ),
 	SendPropInt( SENDINFO_STRUCTELEM( m_fog.colorSecondary ), 32, SPROP_UNSIGNED ),
+	SendPropInt(SENDINFO_STRUCTELEM(m_fog.colorPrimaryHDR), 32, SPROP_UNSIGNED),
+	SendPropInt(SENDINFO_STRUCTELEM(m_fog.colorSecondaryHDR), 32, SPROP_UNSIGNED),
 	SendPropFloat( SENDINFO_STRUCTELEM( m_fog.start ), 0, SPROP_NOSCALE ),
 	SendPropFloat( SENDINFO_STRUCTELEM( m_fog.end ), 0, SPROP_NOSCALE ),
 	SendPropFloat( SENDINFO_STRUCTELEM( m_fog.maxdensity ), 0, SPROP_NOSCALE ),
@@ -87,6 +97,8 @@ IMPLEMENT_SERVERCLASS_ST_NOBASE( CFogController, DT_FogController )
 
 	SendPropInt( SENDINFO_STRUCTELEM( m_fog.colorPrimaryLerpTo ), 32, SPROP_UNSIGNED ),
 	SendPropInt( SENDINFO_STRUCTELEM( m_fog.colorSecondaryLerpTo ), 32, SPROP_UNSIGNED ),
+	SendPropInt(SENDINFO_STRUCTELEM(m_fog.colorPrimaryHDRLerpTo), 32, SPROP_UNSIGNED),
+	SendPropInt(SENDINFO_STRUCTELEM(m_fog.colorSecondaryHDRLerpTo), 32, SPROP_UNSIGNED),
 	SendPropFloat( SENDINFO_STRUCTELEM( m_fog.startLerpTo ), 0, SPROP_NOSCALE ),
 	SendPropFloat( SENDINFO_STRUCTELEM( m_fog.endLerpTo ), 0, SPROP_NOSCALE ),
 	SendPropFloat( SENDINFO_STRUCTELEM( m_fog.lerptime ), 0, SPROP_NOSCALE ),
@@ -111,6 +123,8 @@ void CFogController::Spawn( void )
 
 	m_fog.colorPrimaryLerpTo = m_fog.colorPrimary;
 	m_fog.colorSecondaryLerpTo = m_fog.colorSecondary;
+	m_fog.colorPrimaryHDRLerpTo = m_fog.colorPrimaryHDR;
+	m_fog.colorSecondaryHDRLerpTo = m_fog.colorSecondaryHDR;
 }
 
 //-----------------------------------------------------------------------------
@@ -189,6 +203,11 @@ void CFogController::InputSetColor(inputdata_t &inputdata)
 	m_fog.colorPrimary = inputdata.value.Color32();
 }
 
+void CFogController::InputSetColorHDR(inputdata_t& inputdata)
+{
+	m_fog.colorPrimaryHDR = inputdata.value.Color32();
+}
+
 
 //------------------------------------------------------------------------------
 // Purpose: Input handler for setting the secondary fog color.
@@ -197,6 +216,11 @@ void CFogController::InputSetColorSecondary(inputdata_t &inputdata)
 {
 	// Get the world entity.
 	m_fog.colorSecondary = inputdata.value.Color32();
+}
+
+void CFogController::InputSetColorSecondaryHDR(inputdata_t& inputdata)
+{
+	m_fog.colorSecondaryHDR = inputdata.value.Color32();
 }
 
 void CFogController::InputSetFarZ(inputdata_t &inputdata)
@@ -273,14 +297,42 @@ int CFogController::DrawDebugTextOverlays(void)
 		Q_snprintf(tempstr,sizeof(tempstr),"2) Blue : %i",color.b);
 		EntityText(text_offset,tempstr,0);
 		text_offset++;
+
+		color = m_fog.colorPrimaryHDR;
+		Q_snprintf(tempstr, sizeof(tempstr), "HDR 1) Red  : %i", color.r);
+		EntityText(text_offset, tempstr, 0);
+		text_offset++;
+
+		Q_snprintf(tempstr, sizeof(tempstr), "HDR 1) Green: %i", color.g);
+		EntityText(text_offset, tempstr, 0);
+		text_offset++;
+
+		Q_snprintf(tempstr, sizeof(tempstr), "HDR 1) Blue : %i", color.b);
+		EntityText(text_offset, tempstr, 0);
+		text_offset++;
+
+		color = m_fog.colorSecondaryHDR;
+		Q_snprintf(tempstr, sizeof(tempstr), "HDR 2) Red  : %i", color.r);
+		EntityText(text_offset, tempstr, 0);
+		text_offset++;
+
+		Q_snprintf(tempstr, sizeof(tempstr), "HDR 2) Green: %i", color.g);
+		EntityText(text_offset, tempstr, 0);
+		text_offset++;
+
+		Q_snprintf(tempstr, sizeof(tempstr), "HDR 2) Blue : %i", color.b);
+		EntityText(text_offset, tempstr, 0);
+		text_offset++;
 	}
 	return text_offset;
 }
 
 #define FOG_CONTROLLER_COLORPRIMARY_LERP 1
 #define FOG_CONTROLLER_COLORSECONDARY_LERP 2
-#define FOG_CONTROLLER_START_LERP 4
-#define FOG_CONTROLLER_END_LERP 8
+#define FOG_CONTROLLER_COLORPRIMARY_HDR_LERP 4
+#define FOG_CONTROLLER_COLORSECONDARY_HDR_LERP 8
+#define FOG_CONTROLLER_START_LERP 16
+#define FOG_CONTROLLER_END_LERP 32
 
 void CFogController::InputSetColorLerpTo(inputdata_t &data)
 {
@@ -288,10 +340,22 @@ void CFogController::InputSetColorLerpTo(inputdata_t &data)
 	m_fog.colorPrimaryLerpTo = data.value.Color32();
 }
 
+void CFogController::InputSetColorHDRLerpTo(inputdata_t& data)
+{
+	m_iChangedVariables |= FOG_CONTROLLER_COLORPRIMARY_HDR_LERP;
+	m_fog.colorPrimaryHDRLerpTo = data.value.Color32();
+}
+
 void CFogController::InputSetColorSecondaryLerpTo(inputdata_t &data)
 {
 	m_iChangedVariables |= FOG_CONTROLLER_COLORSECONDARY_LERP;
 	m_fog.colorSecondaryLerpTo = data.value.Color32();
+}
+
+void CFogController::InputSetColorSecondaryHDRLerpTo(inputdata_t& data)
+{
+	m_iChangedVariables |= FOG_CONTROLLER_COLORSECONDARY_HDR_LERP;
+	m_fog.colorSecondaryHDRLerpTo = data.value.Color32();
 }
 
 void CFogController::InputSetStartDistLerpTo(inputdata_t &data)
@@ -393,6 +457,16 @@ void CFogController::SetLerpValues( void )
 	{
 		m_fog.colorSecondary = m_fog.colorSecondaryLerpTo;
 	} 
+
+	if (m_iChangedVariables & FOG_CONTROLLER_COLORPRIMARY_HDR_LERP)
+	{
+		m_fog.colorPrimaryHDR = m_fog.colorPrimaryHDRLerpTo;
+	}
+
+	if (m_iChangedVariables & FOG_CONTROLLER_COLORSECONDARY_HDR_LERP)
+	{
+		m_fog.colorSecondaryHDR = m_fog.colorSecondaryHDRLerpTo;
+	}
 
 	if ( m_iChangedVariables & FOG_CONTROLLER_START_LERP )
 	{

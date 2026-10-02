@@ -22,6 +22,8 @@ BEGIN_NETWORK_TABLE_NOBASE( CFogController, DT_FogController )
 	RecvPropVector( RECVINFO( m_fog.dirPrimary ) ),
 	RecvPropInt( RECVINFO( m_fog.colorPrimary ) ),
 	RecvPropInt( RECVINFO( m_fog.colorSecondary ) ),
+	RecvPropInt(RECVINFO(m_fog.colorPrimaryHDR)),
+	RecvPropInt(RECVINFO(m_fog.colorSecondaryHDR)),
 	RecvPropFloat( RECVINFO( m_fog.start ) ),
 	RecvPropFloat( RECVINFO( m_fog.end ) ),
 	RecvPropFloat( RECVINFO( m_fog.farz ) ),
@@ -29,6 +31,8 @@ BEGIN_NETWORK_TABLE_NOBASE( CFogController, DT_FogController )
 
 	RecvPropInt( RECVINFO( m_fog.colorPrimaryLerpTo ) ),
 	RecvPropInt( RECVINFO( m_fog.colorSecondaryLerpTo ) ),
+	RecvPropInt(RECVINFO(m_fog.colorPrimaryHDRLerpTo)),
+	RecvPropInt(RECVINFO(m_fog.colorSecondaryHDRLerpTo)),
 	RecvPropFloat( RECVINFO( m_fog.startLerpTo ) ),
 	RecvPropFloat( RECVINFO( m_fog.endLerpTo ) ),
 	RecvPropFloat( RECVINFO( m_fog.lerptime ) ),

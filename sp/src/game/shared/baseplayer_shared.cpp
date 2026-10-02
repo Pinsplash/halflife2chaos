@@ -2139,12 +2139,16 @@ bool fogparams_t::operator !=( const fogparams_t& other ) const
 		!VectorsAreEqual(this->dirPrimary, other.dirPrimary, 0.01f ) || 
 		this->colorPrimary.Get() != other.colorPrimary.Get() ||
 		this->colorSecondary.Get() != other.colorSecondary.Get() ||
+		this->colorPrimaryHDR.Get() != other.colorPrimaryHDR.Get() ||
+		this->colorSecondaryHDR.Get() != other.colorSecondaryHDR.Get() ||
 		this->start != other.start ||
 		this->end != other.end ||
 		this->farz != other.farz ||
 		this->maxdensity != other.maxdensity ||
 		this->colorPrimaryLerpTo.Get() != other.colorPrimaryLerpTo.Get() ||
 		this->colorSecondaryLerpTo.Get() != other.colorSecondaryLerpTo.Get() ||
+		this->colorPrimaryHDRLerpTo.Get() != other.colorPrimaryHDRLerpTo.Get() ||
+		this->colorSecondaryHDRLerpTo.Get() != other.colorSecondaryHDRLerpTo.Get() ||
 		this->startLerpTo != other.startLerpTo ||
 		this->endLerpTo != other.endLerpTo ||
 		this->lerptime != other.lerptime ||

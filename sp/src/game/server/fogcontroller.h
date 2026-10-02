@@ -43,12 +43,16 @@ public:
 	void InputTurnOff(inputdata_t &data);
 	void InputSetColor(inputdata_t &data);
 	void InputSetColorSecondary(inputdata_t &data);
+	void InputSetColorHDR(inputdata_t& data);
+	void InputSetColorSecondaryHDR(inputdata_t& data);
 	void InputSetFarZ( inputdata_t &data );
 	void InputSetAngles( inputdata_t &inputdata );
 	void InputSetMaxDensity( inputdata_t &inputdata );
 
 	void InputSetColorLerpTo(inputdata_t &data);
 	void InputSetColorSecondaryLerpTo(inputdata_t &data);
+	void InputSetColorHDRLerpTo(inputdata_t& data);
+	void InputSetColorSecondaryHDRLerpTo(inputdata_t& data);
 	void InputSetStartDistLerpTo(inputdata_t &data);
 	void InputSetEndDistLerpTo(inputdata_t &data);
 

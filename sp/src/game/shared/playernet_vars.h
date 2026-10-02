@@ -31,8 +31,12 @@ struct fogparams_t
 	CNetworkVector( dirPrimary );
 	CNetworkColor32( colorPrimary );
 	CNetworkColor32( colorSecondary );
+	CNetworkColor32(colorPrimaryHDR);
+	CNetworkColor32(colorSecondaryHDR);
 	CNetworkColor32( colorPrimaryLerpTo );
 	CNetworkColor32( colorSecondaryLerpTo );
+	CNetworkColor32(colorPrimaryHDRLerpTo);
+	CNetworkColor32(colorSecondaryHDRLerpTo);
 	CNetworkVar( float, start );
 	CNetworkVar( float, end );
 	CNetworkVar( float, farz );
