@@ -6276,6 +6276,11 @@ bool CChaosEffect::CheckEffectContext()
 		if (PhysConvertSoftlock(pMapName))
 			return false;//bad map
 
+	//Pointless on maps that don't have a meaningful amount of grass
+	if (m_nID == EFFECT_GRASS_HEAL)
+		if (MapLacksGrass(pMapName))
+			return false;//bad map
+
 	//could distrupt cutscenes
 	//if (m_nID == EFFECT_NPC_HATE || m_nID == EFFECT_NPC_FEAR)
 		//if (CombatBreaksScene(pMapName))
@@ -7178,6 +7183,37 @@ bool CChaosEffect::PhysConvertSoftlock(const char* pMapName)
 			|| !Q_strcmp(pMapName, "ep2_outland_11b")//ED
 			|| !Q_strcmp(pMapName, "ep2_outland_12")//lags like crazy and moves very little
 			|| !Q_strcmp(pMapName, "ep2_outland_12a"))//EWN and UPE
+			return true;//bad map
+	}
+	return false;
+}
+
+bool CChaosEffect::MapLacksGrass(const char* pMapName)
+{
+	if (!Q_strnicmp("d1", pMapName, 2))
+	{
+		if (!Q_strnicmp("d1_e", pMapName, 4) || !Q_strcmp(pMapName, "d1_trainstation_01") || !Q_strcmp(pMapName, "d1_trainstation_03") || !Q_strcmp(pMapName, "d1_trainstation_04") || !Q_strcmp(pMapName, "d1_trainstation_05")
+			|| !Q_strcmp(pMapName, "d1_canals_01a") || !Q_strcmp(pMapName, "d1_canals_06") || !Q_strcmp(pMapName, "d1_canals_07") || !Q_strcmp(pMapName, "d1_canals_08") || !Q_strcmp(pMapName, "d1_canals_09")
+			|| !Q_strcmp(pMapName, "d1_canals_10") || !Q_strcmp(pMapName, "d1_canals_12") || !Q_strcmp(pMapName, "d1_town_01a") || !Q_strcmp(pMapName, "d1_town_03") || !Q_strcmp(pMapName, "d1_town_04"))
+			return true;//bad map
+	}
+	else if (!Q_strnicmp("d2", pMapName, 2))
+	{
+		if (!Q_strcmp(pMapName, "d2_coast_08") || (!Q_strnicmp("d2_p", pMapName, 4) && Q_strcmp(pMapName, "d2_prison_01")))
+			return true;//bad map
+	}
+	else if (!Q_strnicmp("d3", pMapName, 2))
+	{
+		if (!Q_strnicmp("d3_ci", pMapName, 5) || !Q_strcmp(pMapName, "d3_c17_01") || !Q_strcmp(pMapName, "d3_c17_02") || !Q_strcmp(pMapName, "d3_c17_06a") || !Q_strcmp(pMapName, "d3_c17_06b") || !Q_strcmp(pMapName, "d3_c17_08")
+			|| !Q_strcmp(pMapName, "d3_c17_10b") || !Q_strcmp(pMapName, "d3_c17_11") || !Q_strcmp(pMapName, "d3_c17_12b") || !Q_strcmp(pMapName, "d3_c17_13") || !Q_strcmp(pMapName, "d3_breen_01"))
+			return true;//bad map
+	}
+	else
+	{
+		if (!Q_strnicmp("ep1_ci", pMapName, 6)
+			|| !Q_strcmp(pMapName, "ep1_c17_02a") || !Q_strcmp(pMapName, "ep1_c17_06")
+			|| !Q_strcmp(pMapName, "ep2_outland_01a") || !Q_strcmp(pMapName, "ep2_outland_02") || !Q_strcmp(pMapName, "ep2_outland_03") || !Q_strcmp(pMapName, "ep2_outland_04")
+			|| !Q_strcmp(pMapName, "ep2_outland_11") || !Q_strcmp(pMapName, "ep2_outland_11a") || !Q_strcmp(pMapName, "ep2_outland_11b") || !Q_strcmp(pMapName, "ep2_outland_12a"))
 			return true;//bad map
 	}
 	return false;

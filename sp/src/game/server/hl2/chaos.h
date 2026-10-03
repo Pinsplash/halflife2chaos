@@ -204,6 +204,7 @@ public:
 	bool MapHasImportantPickups(const char *pMapName);
 	bool QuickclipProblems(const char *pMapName);
 	bool PhysConvertSoftlock(const char *pMapName);
+	bool MapLacksGrass(const char* pMapName);
 	bool CombatBreaksScene(const char *pMapName);
 	bool NeedPhysgun(const char *pMapName);
 	bool DontTeleportPlayer(const char *pMapName);
