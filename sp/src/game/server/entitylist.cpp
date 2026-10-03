@@ -721,7 +721,7 @@ CBaseEntity *CGlobalEntityList::FindEntityInSphere( CBaseEntity *pStartEntity, c
 //				or Use handler, NULL otherwise.
 // Output : Returns a pointer to the found entity, NULL if none.
 //-----------------------------------------------------------------------------
-CBaseEntity *CGlobalEntityList::FindEntityByNameNearest( const char *szName, const Vector &vecSrc, float flRadius, CBaseEntity *pSearchingEntity, CBaseEntity *pActivator, CBaseEntity *pCaller )
+CBaseEntity *CGlobalEntityList::FindEntityByNameNearest( const char *szName, const Vector &vecSrc, float flRadius, CBaseEntity *pSearchingEntity, bool bSkipSelf, CBaseEntity *pActivator, CBaseEntity *pCaller )
 {
 	CBaseEntity *pEntity = NULL;
 
@@ -738,6 +738,9 @@ CBaseEntity *CGlobalEntityList::FindEntityByNameNearest( const char *szName, con
 	while ((pSearch = gEntList.FindEntityByName( pSearch, szName, pSearchingEntity, pActivator, pCaller )) != NULL)
 	{
 		if ( !pSearch->edict() )
+			continue;
+
+		if (bSkipSelf && pSearch == pSearchingEntity)
 			continue;
 
 		float flDist2 = (pSearch->GetAbsOrigin() - vecSrc).LengthSqr();
@@ -972,7 +975,7 @@ CBaseEntity *CGlobalEntityList::FindEntityGenericNearest( const char *szName, co
 {
 	CBaseEntity *pEntity = NULL;
 
-	pEntity = gEntList.FindEntityByNameNearest( szName, vecSrc, flRadius, pSearchingEntity, pActivator, pCaller );
+	pEntity = gEntList.FindEntityByNameNearest( szName, vecSrc, flRadius, pSearchingEntity, false, pActivator, pCaller );
 	if (!pEntity)
 	{
 		pEntity = gEntList.FindEntityByClassnameNearest( szName, vecSrc, flRadius );

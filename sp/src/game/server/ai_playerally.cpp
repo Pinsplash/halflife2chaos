@@ -361,7 +361,7 @@ void CAI_PlayerAlly::DisplayDeathMessage( void )
 	if ( m_bGameEndAlly == false )
 		return;
 	//in chaos, multiples of an ally NPC may exist at once. if so, transfer our importance onto them.
-	CBaseEntity *pOtherMe = gEntList.FindEntityByClassnameNearest(GetClassname(), GetAbsOrigin(), 100000);
+	CBaseEntity *pOtherMe = gEntList.FindEntityByNameNearest(STRING(GetEntityName()), GetAbsOrigin(), 100000, this, true);
 	if (pOtherMe)
 	{
 		CAI_PlayerAlly *pMe = dynamic_cast<CAI_PlayerAlly *>(pOtherMe);
