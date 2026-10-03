@@ -10278,10 +10278,31 @@ void CEAspectRatio::StartEffect()
 	//choose whether to undershoot or overshoot the normal value, THEN pick from within a range
 	//this is because the "under" range is much smaller than the "over" range and if both
 	//coexist in a single rng call, "over" dominates vastly and makes the effect look lame
-	if (RandomInt(0, 1))
-		m_flTargetValue = RandomFloat(default_aspectratio.GetFloat(), default_aspectratio.GetFloat() * 3);
+	if (m_flTimeRem > 2)
+	{
+		int r = RandomInt(0, 3);
+		switch (r)
+		{
+		case 0:
+			m_flTargetValue = RandomFloat(default_aspectratio.GetFloat(), default_aspectratio.GetFloat() * 3);
+			break;
+		case 1:
+			m_flTargetValue = RandomFloat(default_aspectratio.GetFloat() / 3, default_aspectratio.GetFloat());
+			break;
+		//stick with whatever range was already being used. easier to appreciate effect.
+		case 2:
+		case 3:
+			if (m_flTargetValue > default_aspectratio.GetFloat())
+				m_flTargetValue = RandomFloat(default_aspectratio.GetFloat(), default_aspectratio.GetFloat() * 3);
+			else
+				m_flTargetValue = RandomFloat(default_aspectratio.GetFloat() / 3, default_aspectratio.GetFloat());
+			break;
+		}
+	}
 	else
-		m_flTargetValue = RandomFloat(default_aspectratio.GetFloat() / 3, default_aspectratio.GetFloat());
+		//difficult to repro bug where it seems like StopEffect doesn't get called, or maybe another FastThink call sneaks in after it? or just some strange behavior in the convar system
+		//anyway, the bug is that r_aspectratio does not get set back to 0, so in case of this we lerp to the user's normal aspect ratio when the effect is ending.
+		m_flTargetValue = default_aspectratio.GetFloat();
 	m_flRatioChangeTime = gpGlobals->curtime;
 }
 void CEAspectRatio::MaintainEffect()
