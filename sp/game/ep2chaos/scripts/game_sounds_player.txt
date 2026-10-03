@@ -280,3 +280,17 @@
 		"wave"	"player/geiger3.wav"
 	}
 }
+
+"lostcoast.fish_shootgull"
+{
+	"channel"		"CHAN_VOICE"
+	"volume"		"1"
+	"pitch"			"PITCH_NORM"
+	"soundlevel"	"SNDLVL_NORM"
+	"rndwave"
+	{
+		"wave"	"@lostcoast/vo/fisherman/fish_shootgull01.wav"
+		"wave"	"@lostcoast/vo/fisherman/fish_shootgull02.wav"
+		"wave"	"@lostcoast/vo/fisherman/fish_shootgull03.wav"
+	}
+}
