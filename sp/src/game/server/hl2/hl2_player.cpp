@@ -2710,6 +2710,15 @@ void CHL2_Player::StartGame()
 			}
 		}
 	}
+	//remove potentially softlocking clips
+	else if (!Q_strcmp(pMapName, "ep2_outland_04"))
+	{
+		UTIL_Remove(gEntList.FindEntityByName(NULL, "grub_tunnel_1_playerblock"));
+		UTIL_Remove(gEntList.FindEntityByName(NULL, "guardcaveentry_block_player"));
+		UTIL_Remove(gEntList.FindEntityByName(NULL, "maze_bridge_clip"));
+		UTIL_Remove(gEntList.FindEntityByName(NULL, "grub_tunnel_2_playerblock"));
+		UTIL_Remove(gEntList.FindEntityByName(NULL, "guard_leap_3_playerblock"));
+	}
 	//remove confusing and potentially softlocking clips
 	else if (!Q_strcmp(pMapName, "ep2_outland_07"))
 	{
