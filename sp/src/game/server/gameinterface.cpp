@@ -624,7 +624,7 @@ bool CServerGameDLL::DLLInit( CreateInterfaceFn appSystemFactory,
 			if (UTIL_GetModDir(modDir, sizeof(modDir)) == false)
 				Error("2013anni: Missing mod directory?");
 
-			if (Q_stristr(modDir, "mod_ep2"))
+			if (Q_stristr(modDir, "ep2chaos"))
 			{
 				V_strncat(szPath, "ep2", sizeof(szPath));
 				g_pFullFileSystem->AddSearchPath(szPath, "GAME");
