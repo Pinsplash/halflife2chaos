@@ -6653,8 +6653,11 @@ void CChaosEffect::StartEffect()
 	case EFFECT_CANT_LEAVE_MAP:
 		chaos_cant_leave_map.SetValue(1);
 		break;
+	//NOTE: when testing with cte, need to set default_aspectratio 1.77777 for it to work correctly (this is normally set in the hud code)
 	case EFFECT_ORTHO_CAM:
-		engine->ClientCommand(engine->PEntityOfEntIndex(1), "camortho;c_orthoheight 135;c_orthowidth 240\n");
+		engine->ClientCommand(engine->PEntityOfEntIndex(1), "camortho\n");
+		cvar->FindVar("c_orthoheight")->SetValue(135);
+		cvar->FindVar("c_orthowidth")->SetValue(135 * default_aspectratio.GetFloat());
 		break;
 	case EFFECT_INTERP_NPCS:
 		engine->ClientCommand(engine->PEntityOfEntIndex(1), "cl_interp_npcs 5");
@@ -10311,9 +10314,12 @@ void CEAspectRatio::MaintainEffect()
 }
 void CEAspectRatio::FastThink()
 {
-	cvar->FindVar("r_aspectratio")->SetValue(Lerp(gpGlobals->curtime - m_flRatioChangeTime, m_flFromValue, m_flTargetValue));
+	float flRatio = Lerp(gpGlobals->curtime - m_flRatioChangeTime, m_flFromValue, m_flTargetValue);
+	cvar->FindVar("r_aspectratio")->SetValue(flRatio);
+	cvar->FindVar("c_orthowidth")->SetValue(135 * flRatio);
 }
 void CEAspectRatio::StopEffect()
 {
 	cvar->FindVar("r_aspectratio")->SetValue(0);
+	cvar->FindVar("c_orthowidth")->SetValue(135 * default_aspectratio.GetFloat());
 }
