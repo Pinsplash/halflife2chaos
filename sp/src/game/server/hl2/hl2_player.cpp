@@ -648,6 +648,53 @@ CON_COMMAND(cc_generate, "")
 	filesystem->Close(file_handle);
 	DisplayGeneratedCC();
 }
+CON_COMMAND(cc_new_generate, "")
+{
+	FileHandle_t file_handle = filesystem->Open("materials/chaos_random_cc.raw", "wb");
+	int bOut = RandomInt(0, 255);
+	int gOut = RandomInt(0, 255);
+	int rOut = RandomInt(0, 255);
+	int b = 0;
+	int g = 0;
+	int r = 0;
+	CUtlVector<int> colors;
+	int iResolution = 5;
+	for (b = 0; b < iResolution; b++)
+	{
+		//change colors at a controlled rate
+		for (g = 0; g < iResolution; g++)
+		{
+			for (r = 0; r < iResolution; r++)
+			{
+				bOut = (RandomInt(0, 255) + (b * 10) + (bOut * 4)) / 4;
+				gOut = (RandomInt(0, 255) + (g * 10) + (gOut * 4)) / 4;
+				rOut = (RandomInt(0, 255) + (r * 10) + (rOut * 4)) / 4;
+				colors.AddToTail(bOut);
+				colors.AddToTail(gOut);
+				colors.AddToTail(rOut);
+			}
+		}
+	}
+	for (b = 0; b < 32; b++)
+	{
+		int bScaled = floor(b / (32 / iResolution));
+		for (g = 0; g < 32; g++)
+		{
+			int gScaled = floor(g / (32 / iResolution));
+			for (r = 0; r < 32; r++)
+			{
+				int rScaled = floor(r / (32 / iResolution));
+				color24 outColor;
+				outColor.b = colors[bScaled * bScaled * bScaled];
+				outColor.g = colors[bScaled * bScaled * bScaled + gScaled * gScaled + 1];
+				outColor.r = colors[bScaled * bScaled * bScaled + gScaled * gScaled + rScaled + 2];
+				filesystem->Write(&outColor, sizeof(color24), file_handle);
+			}
+		}
+	}
+	filesystem->Close(file_handle);
+	DisplayGeneratedCC();
+}
 CON_COMMAND(chaos_vote_reset, "chooses new effects and resets votes")
 {
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
