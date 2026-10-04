@@ -2209,7 +2209,7 @@ void CHL2_Player::SpawnStoredEnts()
 		if (pEnt)
 		{
 			DispatchSpawn(pEnt);
-			pEnt->Activate();//according to some assert, we don't need this
+			//pEnt->Activate();//activate is called after this function has run. calling it twice is most likely pointless.
 			
 			//these things must be done post spawning
 

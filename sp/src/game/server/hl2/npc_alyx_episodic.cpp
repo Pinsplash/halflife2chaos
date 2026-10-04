@@ -411,7 +411,8 @@ void CNPC_Alyx::Activate( void )
 {
 	// Alyx always kicks her health back up to full after loading a savegame.
 	// Avoids problems with players saving the game in places where she dies immediately afterwards.
-	m_iHealth = 80;
+	if (!m_bChaosSpawned)
+		m_iHealth = 80;
 
 	BaseClass::Activate();
 
