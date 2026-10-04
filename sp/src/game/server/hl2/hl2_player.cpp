@@ -7252,7 +7252,7 @@ bool CChaosEffect::NeedPhysgun(const char* pMapName)
 	{
 		if (!Q_strcmp(pMapName, "ep1_citadel_00") || !Q_strcmp(pMapName, "ep1_citadel_01") || !Q_strcmp(pMapName, "ep1_citadel_03") || !Q_strcmp(pMapName, "ep1_citadel_04")
 			|| !Q_strcmp(pMapName, "ep1_c17_00") || !Q_strcmp(pMapName, "ep1_c17_00a") || !Q_strcmp(pMapName, "ep1_c17_01") || !Q_strcmp(pMapName, "ep1_c17_02")
-			|| !Q_strcmp(pMapName, "ep2_outland_01") || !Q_strcmp(pMapName, "ep2_outland_12"))
+			|| !Q_strcmp(pMapName, "ep2_outland_01") || !Q_strcmp(pMapName, "ep2_outland_06") || !Q_strcmp(pMapName, "ep2_outland_12"))
 			return true;//bad time to lose the gravity gun
 	}
 	return false;
