@@ -648,7 +648,7 @@ CON_COMMAND(cc_generate, "")
 	filesystem->Close(file_handle);
 	DisplayGeneratedCC();
 }
-CON_COMMAND(chaos_vote_reset, "choses new effects and resets votes")
+CON_COMMAND(chaos_vote_reset, "chooses new effects and resets votes")
 {
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
 
@@ -656,9 +656,6 @@ CON_COMMAND(chaos_vote_reset, "choses new effects and resets votes")
 		return;
 
 	CHL2_Player* pHL2Player = static_cast<CHL2_Player*>(pPlayer);
-	// TODO: do we really need this null check? i feel like the cast above is supposed to be dynamic_cast
-	if (!pHL2Player)
-		return;
 	int iWeightSum = pHL2Player->FindWeightSum();
 	pHL2Player->ResetVotes(iWeightSum);
 	ConMsg("%d;%s;%s;%s;%s\n",
@@ -1366,18 +1363,30 @@ void CHL2_Player::ResetVotes(int iWeightSum)
 
 int GetVoteWinnerEffect()
 {
-	int bestVotes = -1;
-	int bestEffect = 0;
+	int iBestVotes = -1;
+	int iBestEffect = 0;
+	int iVoteSum = 0;
 	for (int i = 0; i < 4; i++)
 	{
-		if (g_arriVotes[i] > bestVotes)
+		if (g_arriVotes[i] > iBestVotes)
 		{
-			bestVotes = g_arriVotes[i];
-			bestEffect = g_arriVoteEffects[i];
+			iBestVotes = g_arriVotes[i];
+			iBestEffect = g_arriVoteEffects[i];
 		}
+		iVoteSum += g_arriVotes[i];
 		g_ChaosEffects[g_arriVoteEffects[i]]->m_bInVoteList = false;
 	}
-	return bestEffect;
+	if (iVoteSum >= 5)
+		g_DetectVoteBug_bHighTraffic = true;
+	if (iBestVotes == 0)
+	{
+		if (g_iVoteNumber - g_DetectVoteBug_iLastVotelessEffect >= 30 && g_DetectVoteBug_bHighTraffic)
+		{
+			UTIL_CenterPrintAll("#hl2c_detectvotebug");
+		}
+		g_DetectVoteBug_iLastVotelessEffect = g_iVoteNumber;
+	}
+	return iBestEffect;
 }
 ConVar dvdcross_forcetocorner("dvdcross_forcetocorner", "0");
 ConVar dvdcross("dvdcross", "0");
