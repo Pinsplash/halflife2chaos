@@ -2710,6 +2710,11 @@ void CHL2_Player::StartGame()
 			}
 		}
 	}
+	//never close door to outland 3 to avoid softlock if we get teleported past it in the 2nd visit
+	else if (!Q_strcmp(pMapName, "ep2_outland_02"))
+	{
+		UTIL_Remove(gEntList.FindEntityByName(NULL, "exit_gate_door_close_rl"));
+	}
 	//remove potentially softlocking clips
 	else if (!Q_strcmp(pMapName, "ep2_outland_04"))
 	{
