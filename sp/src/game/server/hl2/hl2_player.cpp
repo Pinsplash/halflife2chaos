@@ -2780,14 +2780,19 @@ void CHL2_Player::StartGame()
 		UTIL_Remove(gEntList.FindEntityByName(NULL, "grub_tunnel_2_playerblock"));
 		UTIL_Remove(gEntList.FindEntityByName(NULL, "guard_leap_3_playerblock"));
 	}
-	//remove confusing and potentially softlocking clips
+	//multi
 	else if (!Q_strcmp(pMapName, "ep2_outland_07"))
 	{
+		//remove confusing and potentially softlocking clips
 		for (CBaseEntity* pEnt = gEntList.FindEntityByName(NULL, "barn_hole_npcclip"); pEnt; pEnt = gEntList.FindEntityByName(pEnt, "barn_hole_npcclip"))
 		{
 			UTIL_Remove(pEnt);
 		}
 		UTIL_Remove(gEntList.FindEntityByName(NULL, "barn_hole_playerclip"));
+		//fix softlock due to alyx not doing sequence that gets her unstuck, because the ent preferred an alyx clone that was not in a script, and said clone is now in the ground due to the sequence
+		CBaseEntity* pSeq = gEntList.FindEntityByName(NULL, "ss_alyx_drop");
+		if (pSeq)
+			pSeq->KeyValue("spawnflags", pSeq->GetSpawnFlags() + 8192);
 	}
 	//delete pointless invisible wall which cause a problem if alyx teleports over a trigger
 	else if (!Q_strcmp(pMapName, "ep2_outland_12a"))

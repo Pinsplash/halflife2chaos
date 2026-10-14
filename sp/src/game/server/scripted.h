@@ -37,6 +37,7 @@
 #define SF_SCRIPT_SEARCH_CYCLICALLY		1024	// Start search from last entity found.
 #define SF_SCRIPT_NO_COMPLAINTS			2048	// doesn't bitch if it can't find anything
 #define SF_SCRIPT_ALLOW_DEATH			4096	// the actor using this scripted sequence may die without interrupting the scene (used for scripted deaths)
+#define SF_SCRIPT_USE_ENQUEUE			8192	//prefer NPCs already in sequences to those who are not
 
 
 enum script_moveto_t

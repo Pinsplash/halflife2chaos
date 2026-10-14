@@ -2536,7 +2536,7 @@ int CChoreoScene::EventThink( CChoreoEvent *e, float frame_start_time, float fra
 			where_is_event = IsTimeInRange( starttime, frame_start_time, frame_end_time );
 			if ( IN_RANGE == where_is_event )
 			{
-				disposition = PROCESSING_TYPE_START;
+				disposition = PROCESSING_TYPE_START_SINGLE;
 				iret = 1;
 			}
 
@@ -2672,10 +2672,9 @@ void CChoreoScene::Think( float curtime )
 
 
 	// Iterate through all events in the scene
-	int i;
-	for ( i = 0; i < m_Events.Size(); i++ )
+	for (int iEvent = 0; iEvent < m_Events.Size(); iEvent++ )
 	{
-		e = m_Events[ i ];
+		e = m_Events[iEvent];
 		if ( !e )
 			continue;
 
@@ -2694,16 +2693,12 @@ void CChoreoScene::Think( float curtime )
 	}
 
 	// Events are sorted start time and then by channel and actor slot or by name if those aren't equal
-	i = pending.FirstInorder();
-	while ( i != pending.InvalidIndex() )
+	
+	for (int iPendingEvent = pending.FirstInorder(); iPendingEvent != pending.InvalidIndex(); iPendingEvent = pending.NextInorder(iPendingEvent))
 	{
-		ActiveList *entry = &pending[ i ];
-
+		ActiveList *entry = &pending[iPendingEvent];
 		Assert( entry->e );
-
 		ProcessActiveListEntry( entry );
-
-		i = pending.NextInorder( i );
 	}
 
 	// If a Process call slams this time, don't override it!!!
@@ -2783,6 +2778,7 @@ void CChoreoScene::ProcessActiveListEntry( ActiveList *entry )
 		}
 		break;
 	case PROCESSING_TYPE_START:
+	case PROCESSING_TYPE_START_SINGLE:
 	case PROCESSING_TYPE_START_RESUMECONDITION:
 		{
 			entry->e->StartProcessing( m_pIChoreoEventCallback, this, m_flCurrentTime );

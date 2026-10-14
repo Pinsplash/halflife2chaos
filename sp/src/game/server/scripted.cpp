@@ -541,12 +541,18 @@ CAI_BaseNPC *CAI_ScriptedSequence::FindScriptEntity( )
 			if ( eCanPlay == CAN_PLAY_NOW )
 			{
 				// If they can play it now, we're done!
-				return pNPC;
+				if (m_spawnflags & SF_SCRIPT_USE_ENQUEUE)
+					pEnqueueNPC = pNPC;
+				else
+					return pNPC;
 			}
-			else if ( eCanPlay == CAN_PLAY_ENQUEUED )
+			else if (eCanPlay == CAN_PLAY_ENQUEUED)
 			{
 				// They can play it, but only enqueued. We'll use them as a last resort.
-				pEnqueueNPC = pNPC;
+				if (m_spawnflags & SF_SCRIPT_USE_ENQUEUE)
+					return pNPC;
+				else
+					pEnqueueNPC = pNPC;
 			}
 			else if (!(m_spawnflags & SF_SCRIPT_NO_COMPLAINTS))
 			{
