@@ -119,3 +119,4 @@ sp/src/utils/vvis_launcher/Debug/vvis.exe
 *.user
 server_blacklist.txt
 *\icktest.*
+*.enc

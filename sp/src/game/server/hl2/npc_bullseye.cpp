@@ -200,6 +200,7 @@ void CNPC_Bullseye::Spawn( void )
 		// Make this an aimtarget, since it has some autoaim influence.
 		AddFlag(FL_AIMTARGET);
 	}
+	BaseClass::Spawn();
 }
 
 

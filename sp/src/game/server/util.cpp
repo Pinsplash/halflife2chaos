@@ -1946,6 +1946,8 @@ int DispatchSpawn( CBaseEntity *pEntity )
 //					Msg( "Added global entity %s (%s)\n", pEntity->GetClassname(), STRING(pEntity->m_iGlobalname) );
 			}
 		}
+		//this was originally where the game called gEntList.NotifySpawn(). it was moved to CBaseEntity::Spawn so that Pretty Colors could affect all energy balls.
+		//if you have an entity not spawning correctly, it's probably because of this change. the entity needs to reach down into CBaseEntity::Spawn.
 	}
 
 	return 0;
