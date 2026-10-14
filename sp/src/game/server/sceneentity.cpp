@@ -4343,8 +4343,7 @@ public:
 
 	virtual void			StartPlayback( void );
 	virtual void			DoThink( float frametime );
-	virtual CBaseFlex*		FindNamedActorInt(int index);
-	virtual void			CInstancedSceneEntity::FindNamedActorInt(int index, CUtlVector<CBaseEntity*>& list);
+	virtual void			FindNamedActorInt(int index, CUtlVector<CBaseEntity*>& list);
 	virtual void			FindNamedActorPointer(CChoreoActor* pChoreoActor, CUtlVector<CBaseEntity*>& list);
 	virtual void			FindNamedEntity(const char* name, CUtlVector<CBaseEntity*>& list);
 	virtual float			GetPostSpeakDelay()	{ return m_flPostSpeakDelay; }
