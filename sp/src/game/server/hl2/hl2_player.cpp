@@ -2794,6 +2794,14 @@ void CHL2_Player::StartGame()
 		if (pSeq)
 			pSeq->KeyValue("spawnflags", pSeq->GetSpawnFlags() + 8192);
 	}
+	//make mirt game end ally
+	else if (!Q_strcmp(pMapName, "ep2_outland_09"))
+	{
+		//npc can come from previous map or spawner on this map. if it comes from spawner, have to be careful when targeting it because this map also has batteries with the same name
+		//easier to delay the input.
+		variant_t variant;
+		g_EventQueue.AddEvent("npc_citizen_opengate", "MakeGameEndAlly", variant, 3, this, this);
+	}
 	//delete pointless invisible wall which cause a problem if alyx teleports over a trigger
 	else if (!Q_strcmp(pMapName, "ep2_outland_12a"))
 	{
@@ -6425,7 +6433,7 @@ bool CChaosEffect::CheckEffectContext()
 	if (m_nContext & EC_FAR_ENEMY)
 		if (!Q_strcmp(pMapName, "d1_eli_01") || !Q_strcmp(pMapName, "d1_eli_02") || !Q_strcmp(pMapName, "d2_prison_06")
 			|| !Q_strcmp(pMapName, "ep1_citadel_03") || !Q_strcmp(pMapName, "ep1_c17_02")
-			|| !Q_strcmp(pMapName, "ep2_outland_11") || !Q_strcmp(pMapName, "ep2_outland_12") || !Q_strcmp(pMapName, "ep2_outland_12a"))
+			|| !Q_strcmp(pMapName, "ep2_outland_09") || !Q_strcmp(pMapName, "ep2_outland_11") || !Q_strcmp(pMapName, "ep2_outland_12") || !Q_strcmp(pMapName, "ep2_outland_12a"))
 			return false;
 
 	//need at least one pickup in the map
