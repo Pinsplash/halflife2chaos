@@ -3756,25 +3756,9 @@ private:
 void CSceneEntity::FindNamedEntity( const char *name, CUtlVector<CBaseEntity*> &list, CBaseEntity *pActor, bool bBaseFlexOnly, bool bUseClear )
 {
 	const char* evalname = name;
-	//this is used by "move to", "face", and "look at" events. you can only do those actions to one thing at a time.
-	//also, "move to" is special because CAI_BaseNPC::FindNamedEntity will attempt to avoid sending the NPC to a place which is covered by something solid.
-	//just leave it as is.
-	if (pActor && pActor->MyNPCPointer())
-	{
-		CSceneFindMarkFilter* pFilter = NULL;
-		if (bUseClear)
-		{
-			pFilter = new CSceneFindMarkFilter();
-			pFilter->SetActor(pActor);
-		}
-		CBaseEntity* pEnt = pActor->MyNPCPointer()->FindNamedEntity(name, pFilter);
-		if (!pEnt && pFilter)
-			pEnt = pFilter->GetFilterResult();
-		list.AddToTail(pEnt);
-		return;
-	}
+	
 	//only one player
-	else if (!stricmp(name, "Player") || !stricmp(name, "!player"))
+	if (!stricmp(name, "Player") || !stricmp(name, "!player"))
 	{
 		list.AddToTail((CBaseEntity*)UTIL_GetLocalPlayer());
 		return;
@@ -3795,6 +3779,24 @@ void CSceneEntity::FindNamedEntity( const char *name, CUtlVector<CBaseEntity*> &
 		evalname = STRING(m_iszTarget7);
 	else if (!stricmp(name, "!target8"))
 		evalname = STRING(m_iszTarget8);
+	//this is used by "move to", "face", and "look at" events. you can only do those actions to one thing at a time.
+	//also, "move to" is special because CAI_BaseNPC::FindNamedEntity will attempt to avoid sending the NPC to a place which is covered by something solid.
+	//just leave it as is.
+	//although it's not ideal for this to come after several string comparisons, the original order demands it, or else some scenes break when we prefer this branch over !targetX's
+	else if (pActor && pActor->MyNPCPointer())
+	{
+		CSceneFindMarkFilter* pFilter = NULL;
+		if (bUseClear)
+		{
+			pFilter = new CSceneFindMarkFilter();
+			pFilter->SetActor(pActor);
+		}
+		CBaseEntity* pEnt = pActor->MyNPCPointer()->FindNamedEntity(name, pFilter);
+		if (!pEnt && pFilter)
+			pEnt = pFilter->GetFilterResult();
+		list.AddToTail(pEnt);
+		return;
+	}
 
 	//search for entities with the same name
 	for (CBaseEntity* pEnt = gEntList.FindEntityByName(NULL, evalname, NULL, pActor); pEnt; pEnt = gEntList.FindEntityByName(pEnt, evalname, NULL, pActor))
