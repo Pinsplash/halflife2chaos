@@ -1272,7 +1272,7 @@ void CPropCombineBall::OnHitEntity( CBaseEntity *pHitEntity, float flSpeed, int 
 	if ( FClassnameIs( pHitEntity, "npc_strider" ) || 
 		(pHitEntity->GetOwnerEntity() && FClassnameIs( pHitEntity->GetOwnerEntity(), "npc_strider" )) )
 	{
-		if (!ar2_super_seek.GetBool())
+		if (!ar2_super_seek.GetBool() && UTIL_IsAR2CombineBall(this))
 		{
 			DoExplosion();
 			return;
@@ -1297,6 +1297,8 @@ void CPropCombineBall::OnHitEntity( CBaseEntity *pHitEntity, float flSpeed, int 
 	{
 		if ( pHitEntity->PassesDamageFilter( info ) )
 		{
+			if (ar2_super_seek.GetBool() && UTIL_IsAR2CombineBall(this))
+				StartLifetime(PROP_COMBINE_BALL_LIFETIME);
 			if( WasFiredByNPC() || m_nMaxBounces == -1 )
 			{
 				// Since Combine balls fired by NPCs do a metered dose of damage per impact, we have to ignore touches
@@ -1341,8 +1343,11 @@ void CPropCombineBall::OnHitEntity( CBaseEntity *pHitEntity, float flSpeed, int 
 					DissolveEntity( pHitEntity );
 					if ( pHitEntity->ClassMatches( "npc_hunter" ) )
 					{
-						DoExplosion();
-						return;
+						if (!ar2_super_seek.GetBool() && UTIL_IsAR2CombineBall(this))
+						{
+							DoExplosion();
+							return;
+						}
 					}
 				}
 			}
