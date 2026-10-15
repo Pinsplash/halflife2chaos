@@ -2636,7 +2636,7 @@ void CNPC_Vortigaunt::SetScriptedScheduleIgnoreConditions( Interruptability_t in
 //-----------------------------------------------------------------------------
 int CNPC_Vortigaunt::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 {
-	if( info.GetDamageType() & (DMG_CRUSH | DMG_BURN) )
+	if (info.GetDamageType() & DMG_BURN)
 		return 0;
 
 	// vital vortigaunts (eg the vortigoth in ep2) take less damage from explosions
