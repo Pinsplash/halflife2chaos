@@ -14,7 +14,7 @@
 #define TEAMNUM_NUM_BITS	6
 #define UF_NO_NODE_TELEPORT 1
 #define UF_NO_DEBUG 2
-//#define UF_NO_DUCK 4
+#define UF_FROM_CMD 4
 #define UF_NO_PRETRACE 8
 #define UF_PRETRACE_SKIP_ENTS 16
 

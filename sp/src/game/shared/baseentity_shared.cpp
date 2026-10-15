@@ -2077,6 +2077,9 @@ void CBaseEntity::FireBullets( const FireBulletsInfo_t &info )
 bool CBaseEntity::GetUnstuck(float flMaxDist, int flags)
 {
 	Msg("GetUnstuck called by %s named %s\n", STRING(m_iClassname), STRING(m_iName));
+	bool bFromCommand = (flags & UF_FROM_CMD) != 0;
+	if (GetMoveType() == MOVETYPE_NOCLIP && !bFromCommand)
+		return true;
 	bool bNoDebug = (flags & UF_NO_DEBUG) != 0;
 	bool bAllowNodeTeleport = !(flags & UF_NO_NODE_TELEPORT);
 	bool bDone = false;

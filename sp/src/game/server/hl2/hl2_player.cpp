@@ -857,7 +857,7 @@ CON_COMMAND_F(chaos_group, "Creates a chaos group.", FCVAR_SERVER_CAN_EXECUTE)
 }
 CON_COMMAND(getunstuck, "try to get unstuck right now")
 {
-	UTIL_GetLocalPlayer()->GetUnstuck(200);
+	UTIL_GetLocalPlayer()->GetUnstuck(200, UF_FROM_CMD);
 }
 CON_COMMAND(putatnearestnode, "failsafe part of unstuck test")
 {
@@ -1578,7 +1578,7 @@ void CHL2_Player::PreThink(void)
 				StartGivenEffect(nID);
 				if (chaos_vote_enable.GetBool())
 					ResetVotes(iWeightSum);
-				if (GetMoveType() != MOVETYPE_NOCLIP && chaos_unstuck_neweffect.GetBool())
+				if (chaos_unstuck_neweffect.GetBool())
 					GetUnstuck(500);
 			}
 		}
