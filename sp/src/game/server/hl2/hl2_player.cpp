@@ -2820,6 +2820,17 @@ void CHL2_Player::StartGame()
 		variant_t variant;
 		g_EventQueue.AddEvent("npc_citizen_opengate", "MakeGameEndAlly", variant, 3, this, this);
 	}
+	//dog should be sent StartScripting IMMEDIATELY, valve, not halfway through the sequence wtf
+	else if (!Q_strcmp(pMapName, "ep2_outland_10a"))
+	{
+		CBaseEntity* pSpawner = gEntList.FindEntityByName(NULL, "dog_template");
+		if (pSpawner)
+		{
+			variant_t variant;
+			variant.SetString(MAKE_STRING("OnEntitySpawned dog,StartScripting,,0,-1"));
+			pSpawner->AcceptInput("AddOutput", this, this, variant, 0);
+		}
+	}
 	//delete pointless invisible wall which cause a problem if alyx teleports over a trigger
 	else if (!Q_strcmp(pMapName, "ep2_outland_12a"))
 	{
