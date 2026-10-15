@@ -30,6 +30,16 @@ votes = {}
 voteEffects = []
 voteKeywords = []
 
+def reconnect(*args, **kwargs):
+    print("reconnecting to youtube")
+    global chat_thread
+    if chat is None:
+        return
+    chat.terminate()
+    chat_thread.join()
+    CAN_CONNECT.clear()
+    chat_thread = threading.Thread(None, chat_loop, daemon=False)
+    chat_thread.start()
 
 def update_game_votes(rcon):
     global voteNumber, voteEffects, votes
@@ -38,6 +48,11 @@ def update_game_votes(rcon):
     for i in range(len(voteEffects)):
         vote_params[i] = str(vote_counts.get(i) or 0)
     rcon.run("chaos_vote_internal_set", str(voteNumber), *vote_params)
+
+    raw_resp = rcon.run("chaos_vote_check_autoreconnect")
+    response = raw_resp.split('rcon from "', 1)[0].strip()
+    if response == "RconMsg: Attempt reconnect":
+        reconnect()
 
 
 def poll_game(rcon):
@@ -253,17 +268,6 @@ def script_properties():
         None,
         None,
     )
-
-    def reconnect(*args, **kwargs):
-        global chat_thread
-        if chat is None:
-            return
-        print("reconnecting to youtube")
-        chat.terminate()
-        chat_thread.join()
-        CAN_CONNECT.clear()
-        chat_thread = threading.Thread(None, chat_loop, daemon=False)
-        chat_thread.start()
 
     obs.obs_properties_add_button(
         props, "reconnect_button", "Reconnect to youtube", reconnect

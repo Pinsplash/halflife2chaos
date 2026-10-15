@@ -74,6 +74,16 @@ async def on_message(msg: ChatMessage):
             if kwIndex <= 3:
                 votes[msg.user.id] = kwIndex
 
+async def reconnect():
+    print("reconnecting to twitch")
+    await shutdown_chat()
+    await try_starting_chat()
+
+def call_reconnect(props, p):
+    _LOOP.call_soon_threadsafe(lambda l: asyncio.ensure_future(reconnect()), _LOOP)
+#parameters on above seem to be untilized in any way but i don't want to figure it out, so here's this
+def call_reconnect2():
+    _LOOP.call_soon_threadsafe(lambda l: asyncio.ensure_future(reconnect()), _LOOP)
 
 async def update_game_votes():
     global voteNumber, voteEffects, votes
@@ -85,6 +95,13 @@ async def update_game_votes():
         'chaos_vote_internal_set', str(voteNumber), *vote_params,
         host=RCON_HOST, port=int(RCON_PORT), passwd=RCON_PASSWORD
     )
+    raw_resp = await rcon(
+        'chaos_vote_check_autoreconnect',
+        host=RCON_HOST, port=int(RCON_PORT), passwd=RCON_PASSWORD
+    )
+    response = raw_resp.split("rcon from \"", 1)[0].strip()
+    if response == "RconMsg: Attempt reconnect":
+        call_reconnect2()
 
 
 async def poll_game():
@@ -253,13 +270,6 @@ def script_properties():
     obs.obs_properties_add_text(props, "rcon_password", "RCON password", obs.OBS_TEXT_PASSWORD)
     obs.obs_properties_add_editable_list(props, "vote_keywords", "Vote keywords", obs.OBS_EDITABLE_LIST_TYPE_STRINGS,
                                          None, None)
-    async def reconnect():
-        print("reconnecting to twitch")
-        await shutdown_chat()
-        await try_starting_chat()
-
-    def call_reconnect(props, p):
-        _LOOP.call_soon_threadsafe(lambda l: asyncio.ensure_future(reconnect()), _LOOP)
 
     obs.obs_properties_add_button(props, "reconnect_button", "Reconnect to twitch", call_reconnect)
     return props

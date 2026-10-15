@@ -299,6 +299,7 @@ int				g_arriVotes[4];
 int				g_iVoteNumber = 0; // acts as a unique number for the external client
 bool			g_DetectVoteBug_bHighTraffic = false;
 int				g_DetectVoteBug_iLastVotelessEffect = 0;
+bool			g_DetectVoteBug_bAutoReconnect = false;
 CChaosStoredEnt *StoreEnt(CBaseEntity *pEnt);
 CBaseEntity *RetrieveStoredEnt(CChaosStoredEnt *pStoredEnt);
 bool			g_bGoBackLevel = false;

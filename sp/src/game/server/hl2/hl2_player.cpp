@@ -562,7 +562,24 @@ CON_COMMAND(chaos_vote_internal_poll, "used by an external client. returns vote 
 		(szLocalized2),
 		(szLocalized3)
 	);
-
+}
+CON_COMMAND(chaos_vote_check_autoreconnect, "")
+{
+	if (g_DetectVoteBug_bAutoReconnect)
+		ConMsg("RconMsg: Attempt reconnect\n");
+	else
+		ConMsg("No.\n");
+	g_DetectVoteBug_bAutoReconnect = false;
+}
+CON_COMMAND(chaos_vote_fake_votebug, "")
+{
+	if (g_DetectVoteBug_bAutoReconnect)
+		ConMsg("Already set.\n");
+	else
+	{
+		g_DetectVoteBug_bAutoReconnect = true;
+		ConMsg("Pretending voting is broken.\n");
+	}
 }
 CON_COMMAND(chaos_vote_internal_set, "used by an external client. sets current votes")
 {
@@ -1430,6 +1447,7 @@ int GetVoteWinnerEffect()
 		if (g_iVoteNumber - g_DetectVoteBug_iLastVotelessEffect >= 30 && g_DetectVoteBug_bHighTraffic)
 		{
 			UTIL_CenterPrintAll("#hl2c_detectvotebug");
+			g_DetectVoteBug_bAutoReconnect = true;
 		}
 		g_DetectVoteBug_iLastVotelessEffect = g_iVoteNumber;
 	}
