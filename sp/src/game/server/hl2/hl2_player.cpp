@@ -6315,12 +6315,13 @@ bool CChaosEffect::CheckEffectContext()
 	//ep1_c17_06 have to kill strider
 	//ep2_outland_01 alyx can become lost
 	//ep2_outland_08 have to kill helicopter
+	//ep2_outland_10a strider will teleport itself out of scripted sequence and generally cause problems
 	//ep2_outland_12 have to kill striders
 	if (m_nID == EFFECT_BULLET_TELEPORT)
 		if (!Q_strcmp(pMapName, "d2_prison_01")
 			|| !Q_strcmp(pMapName, "d3_c17_11") || !Q_strcmp(pMapName, "d3_c17_12b") || !Q_strcmp(pMapName, "d3_c17_13")
 			|| !Q_strcmp(pMapName, "ep1_c17_00a") || !Q_strcmp(pMapName, "ep1_c17_01") || !Q_strcmp(pMapName, "ep1_c17_05") || !Q_strcmp(pMapName, "ep1_c17_06")
-			|| !Q_strcmp(pMapName, "ep2_outland_01") || !Q_strcmp(pMapName, "ep2_outland_08") || !Q_strcmp(pMapName, "ep2_outland_12"))
+			|| !Q_strcmp(pMapName, "ep2_outland_01") || !Q_strcmp(pMapName, "ep2_outland_08") || !Q_strcmp(pMapName, "ep2_outland_10a") || !Q_strcmp(pMapName, "ep2_outland_12"))
 			return false;
 
 	//avoid maps that would poorly fit a crane
