@@ -3095,7 +3095,7 @@ int CNPC_Strider::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 				AddFacingTarget( info.GetAttacker(), info.GetAttacker()->GetAbsOrigin(), 0.5, 2.0 );
 
 			// Default to NPC damage value
-			int damage = 20;
+			int damage = 15;
 
 			//if( HasSpawnFlags(SF_TAKE_MINIMAL_DAMAGE_FROM_NPCS) )
 				//damage = 1;
