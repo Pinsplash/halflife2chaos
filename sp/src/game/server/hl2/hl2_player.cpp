@@ -6429,10 +6429,10 @@ bool CChaosEffect::CheckEffectContext()
 			return false;//we only have one weapon
 	}
 
-	//seeing vision immediately crashes on these maps
+	//seeing vision (usually immediately) crashes on these maps
 	//see StartEffect for explanation
 	if (m_nID == EFFECT_CAMERA_TEXTURES)
-		if (!Q_strcmp(pMapName, "d1_trainstation_05") || !Q_strcmp(pMapName, "d1_eli_01") || !Q_strcmp(pMapName, "d3_c17_01"))
+		if (!Q_strcmp(pMapName, "d1_trainstation_05") || !Q_strcmp(pMapName, "d1_eli_01") || !Q_strcmp(pMapName, "d3_c17_01") || !Q_strcmp(pMapName, "ep2_outland_11b"))
 			return false;
 
 	//breen01 essentially softlocks because the flaps on the core thing don't move down and it can't be destroyed
