@@ -5016,8 +5016,9 @@ void CSceneManager::RemoveScenesInvolvingActor( CBaseFlex *pActor )
 
 		if ( pScene->InvolvesActor( pActor ) ) // NOTE: returns false if scene hasn't loaded yet
 		{
-			LocalScene_Printf( "%s : removed for '%s'\n", STRING( pScene->m_iszSceneFile ), pActor ? pActor->GetDebugName() : "NULL" );
-			pScene->CancelPlayback();
+			//attempt to improve mod stability
+			//LocalScene_Printf( "%s : removed for '%s'\n", STRING( pScene->m_iszSceneFile ), pActor ? pActor->GetDebugName() : "NULL" );
+			//pScene->CancelPlayback();
 		}
 		else
 		{
@@ -5031,8 +5032,9 @@ void CSceneManager::RemoveScenesInvolvingActor( CBaseFlex *pActor )
 						pInstancedScene->OnSceneFinished( true, false );
 					}
 
-					LocalScene_Printf( "%s : removed for '%s'\n", STRING( pInstancedScene->m_iszSceneFile ), pActor ? pActor->GetDebugName() : "NULL" );
-					UTIL_Remove( pInstancedScene );
+					//attempt to improve mod stability
+					//LocalScene_Printf( "%s : removed for '%s'\n", STRING( pInstancedScene->m_iszSceneFile ), pActor ? pActor->GetDebugName() : "NULL" );
+					//UTIL_Remove( pInstancedScene );
 				}
 			}
 		}
@@ -5071,8 +5073,9 @@ void CSceneManager::RemoveActorFromScenes( CBaseFlex *pActor, bool bInstancedOnl
 					continue;
 			}
 
-			LocalScene_Printf( "%s : removed for '%s'\n", STRING( pScene->m_iszSceneFile ), pActor ? pActor->GetDebugName() : "NULL" );
-			pScene->CancelPlayback();
+			//attempt to improve mod stability
+			//LocalScene_Printf( "%s : removed for '%s'\n", STRING( pScene->m_iszSceneFile ), pActor ? pActor->GetDebugName() : "NULL" );
+			//pScene->CancelPlayback();
 		}
 
 	}
