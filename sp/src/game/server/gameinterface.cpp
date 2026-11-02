@@ -89,6 +89,7 @@
 #include "tier3/tier3.h"
 #include "serverbenchmark_base.h"
 #include "querycache.h"
+#include "istudiorender.h"
 
 
 #ifdef TF_DLL
@@ -689,6 +690,8 @@ bool CServerGameDLL::DLLInit( CreateInterfaceFn appSystemFactory,
 		else if (!steamapicontext->SteamApps())
 			Error("2013anni: Missing SteamApps. Please buy Half-Life 2 on Steam if you have not.");
 	}
+	//some files are requested before we reach the point in code where we do the hack. we call some init code again to keep files from being unfound.
+	studiorender->Init();
 
 	if ( (gameeventmanager = (IGameEventManager2 *)appSystemFactory(INTERFACEVERSION_GAMEEVENTSMANAGER2,NULL)) == NULL )
 		return false;
