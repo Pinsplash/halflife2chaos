@@ -8,11 +8,7 @@
 
 ![image](https://github.com/Pinsplash/halflife2chaos/assets/39359267/854d1f1d-7c23-4b87-bd0d-ea840ea2e873)
 
-You must install Half-Life 2 and have it under the same Steam library folder (`steamapps`) as the mod. The same must be done for the Episodes as well to play Episode One/Two Chaos. In one case, someone was not able to do this but got around this limitation by making a symbolic link between their two `sourcemods` folders with this cmd: `mklink /D "C:\Program Files (x86)\Steam\steamapps\sourcemods" "D:\somewhereelse\steamapps\sourcemods"`
-
 To play Episode One Chaos, you must also install Half-Life 2 Chaos, and if you wish to play Episode Two Chaos, you must also install Half-Life 2 Chaos and Episode One Chaos.
-
-If you want to play Chaos in other mods or Half-Life: Source, you can try, but there can be several issues that we wouldn't be able to fix.
 
 To uninstall Chaos, you should delete the entire `hl2chaos` folder. To install a new version, you should do the same before installing the new version. If you don't do this, you may experience some issues that were only in older versions or entirely new issues.
 
@@ -44,7 +40,7 @@ NOTE: Currently, you can only have voting integration for Twitch *or* YouTube.
 2. Extract the contents to any place on your computer. The only parts you need are the files in the `(website)-integration` folder.
 3. Double click on `setup.bat` in the `(website)-integration` folder. It will install [Python](https://en.wikipedia.org/wiki/Python_(programming_language)) and set up OBS to use it. If you run into any issue using this script, it should tell you which of the following steps you need to complete manually. If it works perfectly, you can skip to step 9.
 ---
-These steps can be skipped depending on how much `setup.bat` accomplishes.
+`setup.bat` should be able to do most of this section for you. If it does not, it will tell you what step to start at.
 
 4. Download and install Python 3.11 from [here](https://www.python.org/downloads/release/python-3113/).
 5. Navigate in File Explorer to the extracted `(website)-integration` folder and go to File -> Open Windows PowerShell.
@@ -61,7 +57,7 @@ These steps can be skipped depending on how much `setup.bat` accomplishes.
 
 12. Press 'Reconnect to (website)' if you didn't automatically connect.
 13. In Steam, right click on the mod and then click "Properties...". In 'LAUNCH OPTIONS', put `+developer 0 -usercon +ip 127.0.0.1 +rcon_password ___ +net_start +chaos_vote_enable 1`. Replace `___` with the RCON password that you entered in OBS. The `+developer 0` part is necessary for some reason, despite not seeming like it should be. You will also have to add these options in Ep1 & 2 chaos if you want to use Twitch or YouTube voting in them.
-It should work now. If it doesn't, the 'Script Log' button in OBS might have useful info. You can test voting commands by typing in your stream chat, even if you're not actively streaming.
+It should work now. If it doesn't, the 'Script Log' button in OBS might have useful info.
 
 To remove stream integration, you can simply clear out the mod's launch options and select `(website)-integration.py` in OBS and then click the minus button.
 
@@ -82,8 +78,6 @@ Voting will not work if a map is not loaded. Menu background maps count. If no m
 
 Certain console variables are changed by this mod during gameplay that you might want your own default settings for.
 These settings have been put in their own CFG files so you can control what they are, except when chaos effects modify them.
-* `pitch.cfg`: Sets `m_pitch`, the vertical sensitivity. Default 0.022.
-* `yaw.cfg`: Sets `m_yaw`, the horizontal sensitivity. Default 0.022. Set the inverse in `negative_yaw.cfg`.
 * `portalsopenall.cfg`: Sets `r_portalsopenall`. Force-opens all areaportals. Most users will want to use 1 because if 0, areas of levels may become invisible until you enter them. This was intended to help performance, but Chaos can disrupt this feature due to sequence breaking. Normally the default is 0, but in Chaos, it's 1.
 
 ## Known issues
