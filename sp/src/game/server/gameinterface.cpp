@@ -602,12 +602,14 @@ bool CServerGameDLL::DLLInit( CreateInterfaceFn appSystemFactory,
 		return false;
 	if ( (enginetrace = (IEngineTrace *)appSystemFactory(INTERFACEVERSION_ENGINETRACE_SERVER,NULL)) == NULL )
 		return false;
-	if ( (filesystem = (IFileSystem *)fileSystemFactory(FILESYSTEM_INTERFACE_VERSION,NULL)) == NULL )
+	if ((gameeventmanager = (IGameEventManager2*)appSystemFactory(INTERFACEVERSION_GAMEEVENTSMANAGER2, NULL)) == NULL)
+		return false;
+	if ((filesystem = (IFileSystem*)fileSystemFactory(FILESYSTEM_INTERFACE_VERSION, NULL)) == NULL)
 		return false;
 
 	//This is 2013anni's implementation of mounting HL2 content. This replaces the older method relying on ..\
-	//Apparently this code runs at such a late point in bootup that the engine is already looking for serverevents.res, chapterbackgrounds.txt, and the background textures.
-	//Therefore all of those have to be included in the mod's loose files. If any are missing, problems will happen, including crashing upon loading any map if serverevents.res is missing.
+	//Apparently this code runs at such a late point in bootup that the engine is already looking for chapterbackgrounds.txt and the background textures.
+	//Therefore all of those have to be included in the mod's loose files. If any are missing, problems will happen.
 
 	if (steamapicontext && steamapicontext->SteamApps())
 	{
@@ -691,10 +693,12 @@ bool CServerGameDLL::DLLInit( CreateInterfaceFn appSystemFactory,
 			Error("2013anni: Missing SteamApps. Please buy Half-Life 2 on Steam if you have not.");
 	}
 	//some files are requested before we reach the point in code where we do the hack. we call some init code again to keep files from being unfound.
+	//i don't see a way into the code that finds chapterbackgrounds.txt and the background textures.
+	//fixes missing debug textures
 	studiorender->Init();
+	//fixes missing serverevents.res
+	gameeventmanager->LoadEventsFromFile("resource/serverevents.res");
 
-	if ( (gameeventmanager = (IGameEventManager2 *)appSystemFactory(INTERFACEVERSION_GAMEEVENTSMANAGER2,NULL)) == NULL )
-		return false;
 	if ( (datacache = (IDataCache*)appSystemFactory(DATACACHE_INTERFACE_VERSION, NULL )) == NULL )
 		return false;
 	if ( (soundemitterbase = (ISoundEmitterSystemBase *)appSystemFactory(SOUNDEMITTERSYSTEM_INTERFACE_VERSION, NULL)) == NULL )
