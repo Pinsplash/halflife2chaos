@@ -8438,7 +8438,7 @@ void CEColors::StartEffect()
 	//r_PhysPropStaticLighting makes a prop use the static prop lighting algorithm when it's asleep
 	//the same algorithm's result is overrode by r_debugrandomstaticlighting, resulting in props changing color as they start/stop moving
 	//turn the variable off to keep the color consistent
-	engine->ClientCommand(engine->PEntityOfEntIndex(1), "r_debugrandomstaticlighting 1;r_PhysPropStaticLighting 0;r_drawstaticprops 0;wait 2;flush;r_drawstaticprops 1");
+	engine->ClientCommand(engine->PEntityOfEntIndex(1), "r_debugrandomstaticlighting 1;r_PhysPropStaticLighting 0;r_drawstaticprops 0;wait 2;flush;wait 8;r_drawstaticprops 1");
 	for (CBaseEntity* pEnt = gEntList.FirstEnt(); pEnt; pEnt = gEntList.NextEnt(pEnt))
 	{
 		if (pEnt->ClassMatches("env_fo*") || pEnt->ClassMatches("func_s*"))
