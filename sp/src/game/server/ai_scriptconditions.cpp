@@ -819,6 +819,15 @@ bool CAI_ScriptConditions::ActorInList( CBaseEntity *pActor )
 
 void CAI_ScriptConditions::OnEntitySpawned( CBaseEntity *pEntity )
 {
+	//don't care about unnamed entities. this fixes a problem with an ASC on ep2_outland_12 where it freaks out
+	//upon finding an unnamed entity other than the player and leads to hundreds of ammo boxes spawning.
+	//other possible fixes for this problem are:
+	//1. giving the ASC a Disable input like every other ASC in the map has
+	//2. removing the weird and abstract "element" concept from this entity (gets straight to the root of the problem but could break a lot of things)
+	//3. not calling DispatchSpawn on every entity spawn
+	if (m_Actor == NULL_STRING)
+		return;
+
 	if( m_fDisabled && m_bLeaveAsleep )
 	{
 		// Don't add elements if we're not currently running and don't want to automatically wake up.
