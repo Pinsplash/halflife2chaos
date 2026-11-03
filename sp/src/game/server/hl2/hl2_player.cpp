@@ -5994,6 +5994,7 @@ ConVar chaos_p_evil_eli("chaos_p_evil_eli", "100");
 ConVar chaos_p_zombie_spam("chaos_p_zombie_spam", "100");
 ConVar chaos_p_save_gulls("chaos_p_save_gulls", "100");
 ConVar chaos_p_aspectratio("chaos_p_aspectratio", "100");
+ConVar chaos_p_evil_citizen("chaos_p_evil_citizen", "100");
 #define ERROR_WEIGHT 1
 //intentionally not putting this on sector sweep because scanners are benign unless given rpgs
 #define EC_ENEMY_SPAM EC_HAS_WEAPON | EC_NO_SPAM_NPCS | EC_FAR_ENEMY
@@ -6101,6 +6102,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CEEvilNPC>(EFFECT_EVIL_ELI,				MAKE_STRING("#hl2c_evil_eli"),			EC_FAR_ENEMY,					-1,										chaos_p_evil_eli.GetInt());
 	CreateEffect<CESaveGulls>(EFFECT_SAVE_GULLS,			MAKE_STRING("#hl2c_save_gulls"),		EC_NONE,						chaos_t_save_gulls.GetFloat(),			chaos_p_save_gulls.GetInt());
 	CreateEffect<CEAspectRatio>(EFFECT_ASPECTRATIO,			MAKE_STRING("#hl2c_aspectratio"),		EC_NONE,						chaos_t_aspectratio.GetFloat(),			chaos_p_aspectratio.GetInt());
+	CreateEffect<CEEvilNPC>(EFFECT_EVIL_CITIZEN,			MAKE_STRING("#hl2c_evil_citizen"),		EC_FAR_ENEMY,					-1,										chaos_p_evil_citizen.GetInt());
 }
 
 void CHL2_Player::ClearEffectContextCache()
@@ -7590,43 +7592,46 @@ CAI_BaseNPC* CChaosEffect::ChaosSpawnNPC(const char* className, string_t strActu
 		}
 		else if (FStrEq(className, "npc_citizen"))
 		{
-			pNPC->AddSpawnFlags(65536);//follow player
-			pNPC->AddSpawnFlags(262144);//random head
-			if (RandomInt(0, 1) == 1)//medic
-				pNPC->AddSpawnFlags(131072);
-			if (RandomInt(0, 1) == 1)//ammo resupplier
+			if (!bEvil)
 			{
-				float nRandom = RandomInt(0, 10);
-				if (nRandom == 0) pNPC->KeyValue("ammosupply", "AR2");
-				if (nRandom == 1) pNPC->KeyValue("ammosupply", "Pistol");
-				if (nRandom == 2) pNPC->KeyValue("ammosupply", "SMG1");
-				if (nRandom == 3) pNPC->KeyValue("ammosupply", "357");
-				if (nRandom == 4) pNPC->KeyValue("ammosupply", "XBowBolt");
-				if (nRandom == 5) pNPC->KeyValue("ammosupply", "Buckshot");
-				if (nRandom == 6) pNPC->KeyValue("ammosupply", "RPG_Round");
-				if (nRandom == 7) pNPC->KeyValue("ammosupply", "SMG1_Grenade");
-				if (nRandom == 8) pNPC->KeyValue("ammosupply", "Grenade");
-				if (nRandom == 9) pNPC->KeyValue("ammosupply", "Battery");
-				if (nRandom == 10) pNPC->KeyValue("ammosupply", "AR2AltFire");
-				pNPC->AddSpawnFlags(524288);
-				pNPC->KeyValue("ammoamount", "100");
+				pNPC->AddSpawnFlags(65536);//follow player
+				pNPC->AddSpawnFlags(262144);//random head
+				if (RandomInt(0, 1) == 1)//medic
+					pNPC->AddSpawnFlags(131072);
+				if (RandomInt(0, 1) == 1)//ammo resupplier
+				{
+					float nRandom = RandomInt(0, 10);
+					if (nRandom == 0) pNPC->KeyValue("ammosupply", "AR2");
+					if (nRandom == 1) pNPC->KeyValue("ammosupply", "Pistol");
+					if (nRandom == 2) pNPC->KeyValue("ammosupply", "SMG1");
+					if (nRandom == 3) pNPC->KeyValue("ammosupply", "357");
+					if (nRandom == 4) pNPC->KeyValue("ammosupply", "XBowBolt");
+					if (nRandom == 5) pNPC->KeyValue("ammosupply", "Buckshot");
+					if (nRandom == 6) pNPC->KeyValue("ammosupply", "RPG_Round");
+					if (nRandom == 7) pNPC->KeyValue("ammosupply", "SMG1_Grenade");
+					if (nRandom == 8) pNPC->KeyValue("ammosupply", "Grenade");
+					if (nRandom == 9) pNPC->KeyValue("ammosupply", "Battery");
+					if (nRandom == 10) pNPC->KeyValue("ammosupply", "AR2AltFire");
+					pNPC->AddSpawnFlags(524288);
+					pNPC->KeyValue("ammoamount", "100");
+				}
+				int nRandom = RandomInt(0, 6);//weapon
+				if (nRandom == 0) pNPC->KeyValue("additionalequipment", "weapon_ar2");
+				if (nRandom == 1) pNPC->KeyValue("additionalequipment", "weapon_citizenpackage");
+				if (nRandom == 2) pNPC->KeyValue("additionalequipment", "weapon_citizensuitcase");
+				if (nRandom == 3) pNPC->KeyValue("additionalequipment", "weapon_crowbar");
+				if (nRandom == 4) pNPC->KeyValue("additionalequipment", "weapon_rpg");
+				if (nRandom == 5) pNPC->KeyValue("additionalequipment", "weapon_shotgun");
+				if (nRandom == 6) pNPC->KeyValue("additionalequipment", "weapon_smg1");
+
+				nRandom = RandomInt(0, 3);//clothing
+				if (nRandom == 0) pNPC->KeyValue("citizentype", "0");
+				if (nRandom == 1) pNPC->KeyValue("citizentype", "1");
+				if (nRandom == 2) pNPC->KeyValue("citizentype", "2");
+				if (nRandom == 3) pNPC->KeyValue("citizentype", "3");
+
+				pNPC->KeyValue("expressiontype", "0");
 			}
-			int nRandom = RandomInt(0, 6);//weapon
-			if (nRandom == 0) pNPC->KeyValue("additionalequipment", "weapon_ar2");
-			if (nRandom == 1) pNPC->KeyValue("additionalequipment", "weapon_citizenpackage");
-			if (nRandom == 2) pNPC->KeyValue("additionalequipment", "weapon_citizensuitcase");
-			if (nRandom == 3) pNPC->KeyValue("additionalequipment", "weapon_crowbar");
-			if (nRandom == 4) pNPC->KeyValue("additionalequipment", "weapon_rpg");
-			if (nRandom == 5) pNPC->KeyValue("additionalequipment", "weapon_shotgun");
-			if (nRandom == 6) pNPC->KeyValue("additionalequipment", "weapon_smg1");
-
-			nRandom = RandomInt(0, 3);//clothing
-			if (nRandom == 0) pNPC->KeyValue("citizentype", "0");
-			if (nRandom == 1) pNPC->KeyValue("citizentype", "1");
-			if (nRandom == 2) pNPC->KeyValue("citizentype", "2");
-			if (nRandom == 3) pNPC->KeyValue("citizentype", "3");
-
-			pNPC->KeyValue("expressiontype", "0");
 		}
 		else if (FStrEq(className, "npc_combine_s"))
 		{
@@ -8786,6 +8791,9 @@ void CEEvilNPC::StartEffect()
 		break;
 	case EFFECT_EVIL_ELI:
 		m_iSavedChaosID = ChaosSpawnNPC("npc_eli", MAKE_STRING("#hl2c_evil_eli"), SPAWNTYPE_HIDEINCOVER, "models/eli.mdl", "eli", "weapon_crossbow", CSF_EVIL)->m_iChaosID;
+		break;
+	case EFFECT_EVIL_CITIZEN:
+		m_iSavedChaosID = ChaosSpawnNPC("npc_citizen", MAKE_STRING("#hl2c_evil_citizen"), SPAWNTYPE_HIDEINCOVER, "models/humans/group01/male_07.mdl", "007", "weapon_357", CSF_EVIL)->m_iChaosID;
 		break;
 	}
 }
