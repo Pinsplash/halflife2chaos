@@ -8057,7 +8057,7 @@ void CERandomNPC::StartEffect()
 	variant_t sVariant;
 	int nRandom;
 	//TODO: blob
-	nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 46) : chaos_rng1.GetInt();
+	nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 47) : chaos_rng1.GetInt();
 	if (nRandom == 0)
 	{
 		m_iSavedChaosID = ChaosSpawnNPC("npc_alyx", MAKE_STRING("#hl2c_spawn_alyx"), SPAWNTYPE_EYELEVEL_REGULAR, "models/alyx.mdl", "alyx", "weapon_alyxgun", CSF_SQUAD)->m_iChaosID;
@@ -8144,6 +8144,7 @@ void CERandomNPC::StartEffect()
 	if (nRandom == 44) m_iSavedChaosID = ChaosSpawnNPC("npc_fastzombie_torso", MAKE_STRING("#hl2c_spawn_fastzombie_t"), SPAWNTYPE_HIDEINCOVER, "_", "fastzombie_torso", "_")->m_iChaosID;
 	if (nRandom == 45) m_iSavedChaosID = ChaosSpawnNPC("npc_hunter", MAKE_STRING("#hl2c_spawn_hunter"), SPAWNTYPE_EYELEVEL_REGULAR, "_", "hunter", "_")->m_iChaosID;
 	if (nRandom == 46) m_iSavedChaosID = ChaosSpawnNPC("npc_magnusson", MAKE_STRING("#hl2c_spawn_magnusson"), SPAWNTYPE_EYELEVEL_REGULAR, "models/magnusson.mdl", "magnusson", "_", CSF_SQUAD)->m_iChaosID;
+	if (nRandom == 47) m_iSavedChaosID = ChaosSpawnNPC("npc_blob", MAKE_STRING("#hl2c_spawn_blob"), SPAWNTYPE_ONGROUND, "models/headcrab.mdl", "blob", "_")->m_iChaosID;
 }
 bool CERandomNPC::CheckStrike(const CTakeDamageInfo& info)
 {
