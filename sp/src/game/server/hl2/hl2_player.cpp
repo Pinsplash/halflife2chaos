@@ -530,6 +530,22 @@ CON_COMMAND(chaos_test_effect, "turn on a specific effect")
 		}
 	}
 }
+CON_COMMAND(chaos_pick_random_effect, "Randomly picks an effect under normal rules and activates it")
+{
+	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+	if (pPlayer)
+	{
+		CHL2_Player* pHL2Player = static_cast<CHL2_Player*>(pPlayer);
+		if (pHL2Player)
+		{
+			int iWeightSum = pHL2Player->FindWeightSum();
+			pHL2Player->ClearEffectContextCache();
+			int nID = pHL2Player->PickEffect(iWeightSum);
+			Assert(nID != EFFECT_ERROR);
+			pHL2Player->StartGivenEffect(nID);
+		}
+	}
+}
 CON_COMMAND(chaos_vote_internal_poll, "used by an external client. returns vote number and possible choices for this vote")
 {
 	if (!g_ChaosEffects.Size())
@@ -1571,7 +1587,6 @@ void CHL2_Player::PreThink(void)
 				{
 					nID = GetVoteWinnerEffect();
 					Assert(nID != EFFECT_ERROR);
-					//TODO: ResetVotes should probably be in here
 				}
 				g_flEffectThinkRem = 0;
 				//start effect
