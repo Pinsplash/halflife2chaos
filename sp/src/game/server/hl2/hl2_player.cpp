@@ -5995,6 +5995,7 @@ ConVar chaos_p_zombie_spam("chaos_p_zombie_spam", "100");
 ConVar chaos_p_save_gulls("chaos_p_save_gulls", "100");
 ConVar chaos_p_aspectratio("chaos_p_aspectratio", "100");
 ConVar chaos_p_evil_citizen("chaos_p_evil_citizen", "100");
+ConVar chaos_p_evil_magna("chaos_p_evil_magna", "100");
 #define ERROR_WEIGHT 1
 //intentionally not putting this on sector sweep because scanners are benign unless given rpgs
 #define EC_ENEMY_SPAM EC_HAS_WEAPON | EC_NO_SPAM_NPCS | EC_FAR_ENEMY
@@ -6103,6 +6104,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CESaveGulls>(EFFECT_SAVE_GULLS,			MAKE_STRING("#hl2c_save_gulls"),		EC_NONE,						chaos_t_save_gulls.GetFloat(),			chaos_p_save_gulls.GetInt());
 	CreateEffect<CEAspectRatio>(EFFECT_ASPECTRATIO,			MAKE_STRING("#hl2c_aspectratio"),		EC_NONE,						chaos_t_aspectratio.GetFloat(),			chaos_p_aspectratio.GetInt());
 	CreateEffect<CEEvilNPC>(EFFECT_EVIL_CITIZEN,			MAKE_STRING("#hl2c_evil_citizen"),		EC_FAR_ENEMY,					-1,										chaos_p_evil_citizen.GetInt());
+	CreateEffect<CEEvilNPC>(EFFECT_EVIL_MAGNA,				MAKE_STRING("#hl2c_evil_magna"),		EC_FAR_ENEMY,					-1,										chaos_p_evil_magna.GetInt());
 }
 
 void CHL2_Player::ClearEffectContextCache()
@@ -8794,6 +8796,9 @@ void CEEvilNPC::StartEffect()
 		break;
 	case EFFECT_EVIL_CITIZEN:
 		m_iSavedChaosID = ChaosSpawnNPC("npc_citizen", MAKE_STRING("#hl2c_evil_citizen"), SPAWNTYPE_HIDEINCOVER, "models/humans/group01/male_07.mdl", "007", "weapon_357", CSF_EVIL)->m_iChaosID;
+		break;
+	case EFFECT_EVIL_MAGNA:
+		m_iSavedChaosID = ChaosSpawnNPC("npc_magnusson", MAKE_STRING("#hl2c_evil_magna"), SPAWNTYPE_HIDEINCOVER, "models/magnusson.mdl", "magnusson", "weapon_frag", CSF_EVIL)->m_iChaosID;
 		break;
 	}
 }

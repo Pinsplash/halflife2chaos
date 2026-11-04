@@ -15,6 +15,7 @@
 #include "in_buttons.h"
 #include "soundent.h"
 #include "gamestats.h"
+#include "ai_basenpc.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -59,6 +60,7 @@ private:
 	void	ThrowGrenade( CBasePlayer *pPlayer );
 	void	RollGrenade( CBasePlayer *pPlayer );
 	void	LobGrenade( CBasePlayer *pPlayer );
+	void	NPCThrow();
 	// check a throw from vecSrc.  If not valid, move the position back along the line to vecEye
 	void	CheckThrowPosition( CBasePlayer *pPlayer, const Vector &vecEye, Vector &vecSrc );
 
@@ -78,10 +80,23 @@ BEGIN_DATADESC( CWeaponFrag )
 	DEFINE_FIELD( m_AttackPaused, FIELD_INTEGER ),
 	DEFINE_FIELD( m_fDrawbackFinished, FIELD_BOOLEAN ),
 END_DATADESC()
-
+/*
+ACT_HL2MP_IDLE_GRENADE
+ACT_HL2MP_RUN_GRENADE
+ACT_HL2MP_IDLE_CROUCH_GRENADE
+ACT_HL2MP_WALK_CROUCH_GRENADE
+ACT_HL2MP_GESTURE_RANGE_ATTACK_GRENADE
+ACT_HL2MP_GESTURE_RELOAD_GRENADE
+ACT_HL2MP_JUMP_GRENADE
+*/
 acttable_t	CWeaponFrag::m_acttable[] = 
 {
-	{ ACT_RANGE_ATTACK1, ACT_RANGE_ATTACK_SLAM, true },
+	{ ACT_IDLE, ACT_HL2MP_IDLE_GRENADE, true },
+	{ ACT_RUN, ACT_HL2MP_RUN_GRENADE, true },
+	{ ACT_CROUCHIDLE, ACT_HL2MP_IDLE_CROUCH_GRENADE, true },
+	{ ACT_WALK_CROUCH, ACT_HL2MP_WALK_CROUCH_GRENADE, true },
+	{ ACT_RANGE_ATTACK1, ACT_HL2MP_GESTURE_RANGE_ATTACK_GRENADE, true },
+	{ ACT_RELOAD, ACT_HL2MP_GESTURE_RELOAD_GRENADE, true },
 };
 
 IMPLEMENT_ACTTABLE(CWeaponFrag);
@@ -144,7 +159,7 @@ bool CWeaponFrag::Holster( CBaseCombatWeapon *pSwitchingTo )
 //-----------------------------------------------------------------------------
 void CWeaponFrag::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatCharacter *pOperator )
 {
-	CBasePlayer *pOwner = ToBasePlayer( GetOwner() );
+	CBasePlayer *pPlayerOwner = ToBasePlayer( GetOwner() );
 	bool fThrewGrenade = false;
 
 	switch( pEvent->event )
@@ -154,20 +169,27 @@ void CWeaponFrag::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatChar
 			break;
 
 		case EVENT_WEAPON_THROW:
-			ThrowGrenade( pOwner );
-			DecrementAmmo( pOwner );
-			fThrewGrenade = true;
+			if (pPlayerOwner)
+			{
+				ThrowGrenade(pPlayerOwner);
+				DecrementAmmo(pPlayerOwner);
+				fThrewGrenade = true;
+			}
+			else
+			{
+				NPCThrow();
+			}
 			break;
 
 		case EVENT_WEAPON_THROW2:
-			RollGrenade( pOwner );
-			DecrementAmmo( pOwner );
+			RollGrenade(pPlayerOwner);
+			DecrementAmmo(pPlayerOwner);
 			fThrewGrenade = true;
 			break;
 
 		case EVENT_WEAPON_THROW3:
-			LobGrenade( pOwner );
-			DecrementAmmo( pOwner );
+			LobGrenade(pPlayerOwner);
+			DecrementAmmo(pPlayerOwner);
 			fThrewGrenade = true;
 			break;
 
@@ -299,7 +321,66 @@ void CWeaponFrag::PrimaryAttack( void )
 		pPlayer->SwitchToNextBestWeapon( this );
 	}
 }
+void CWeaponFrag::NPCThrow()
+{
+	Vector vecSpin;
+	vecSpin.x = random->RandomFloat(-1000.0, 1000.0);
+	vecSpin.y = random->RandomFloat(-1000.0, 1000.0);
+	vecSpin.z = random->RandomFloat(-1000.0, 1000.0);
+	CAI_BaseNPC* pOwner = GetOwner()->MyNPCPointer();
+	Vector vecStart;
+	pOwner->GetAttachment("anim_attachment_RH", vecStart);
+	if (!pOwner->GetEnemy())
+		return;
 
+	if (pOwner->m_NPCState == NPC_STATE_SCRIPT)
+	{
+		// Use a fixed velocity for grenades thrown in scripted state.
+		// Grenades thrown from a script do not count against grenades remaining for the AI to use.
+		Vector forward, up, vecThrow;
+
+		GetVectors(&forward, NULL, &up);
+		vecThrow = forward * 750 + up * 175;
+		Fraggrenade_Create(vecStart, vec3_angle, vecThrow, vecSpin, this, 3.5, true);
+	}
+	else
+	{
+		Vector vecToss;
+		Vector vecMins = -Vector(4, 4, 4);
+		Vector vecMaxs = Vector(4, 4, 4);
+		if (pOwner->FInViewCone(pOwner->GetEnemyLKP()) && CBaseEntity::FVisible(pOwner->GetEnemyLKP()))
+		{
+			vecToss = VecCheckThrow(this, EyePosition(), pOwner->GetEnemyLKP(), 650, 1.0, &vecMins, &vecMaxs);
+		}
+		else
+		{
+			// Have to try a high toss. Do I have enough room?
+			trace_t tr;
+			AI_TraceLine(EyePosition(), EyePosition() + Vector(0, 0, 64), MASK_SHOT, this, COLLISION_GROUP_NONE, &tr);
+			if (tr.fraction != 1.0)
+			{
+				return;// false;
+			}
+
+			vecToss = VecCheckToss(this, EyePosition(), pOwner->GetEnemyLKP(), -1, 1.0, true, &vecMins, &vecMaxs);
+		}
+
+		if (vecToss != vec3_origin)
+		{
+			//m_vecTossVelocity = vecToss;
+			// don't check again for a while.
+			//m_flNextGrenadeCheck = gpGlobals->curtime + 1; // 1/3 second.
+			//return;// true;
+		}
+		else
+		{
+			// don't check again for a while.
+			//m_flNextGrenadeCheck = gpGlobals->curtime + 1; // one full second.
+			return;// false;
+		}
+		Fraggrenade_Create(vecStart, vec3_angle, vecToss, vecSpin, this, 3.5, true);
+	}
+}
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : *pOwner - 
