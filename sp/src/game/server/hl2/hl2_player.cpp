@@ -627,6 +627,20 @@ CON_COMMAND(chaos_vote_debug, "prints info about the votes")
 		STRING(g_ChaosEffects[g_arriVoteEffects[3]]->m_strGeneralName)
 	);
 }
+CON_COMMAND(chaos_domustkilldeath1, "")
+{
+	UTIL_CenterPrintAll("#hl2c_mustkilldead1");
+	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+	pPlayer->SetHealth(0);
+	pPlayer->TakeDamage(CTakeDamageInfo(pPlayer, pPlayer, 1, DMG_GENERIC | DMG_VEHICLE));
+}
+CON_COMMAND(chaos_domustkilldeath2, "")
+{
+	UTIL_CenterPrintAll("#hl2c_mustkilldead2");
+	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+	pPlayer->SetHealth(0);
+	pPlayer->TakeDamage(CTakeDamageInfo(pPlayer, pPlayer, 1, DMG_GENERIC | DMG_VEHICLE));
+}
 void DisplayGeneratedCC()
 {
 	CBaseEntity* pCC = (CBaseEntity*)CreateEntityByName("color_correction");
@@ -5892,6 +5906,7 @@ ConVar chaos_t_mirror_world("chaos_t_mirror_world", "1");
 ConVar chaos_t_zombie_spam("chaos_t_zombie_spam", "1");
 ConVar chaos_t_save_gulls("chaos_t_save_gulls", "1");
 ConVar chaos_t_aspectratio("chaos_t_aspectratio", "1");
+ConVar chaos_t_must_kill("chaos_t_must_kill", "1");
 
 ConVar chaos_p_zerog("chaos_p_zerog", "100");
 ConVar chaos_p_superg("chaos_p_superg", "100");
@@ -5996,6 +6011,7 @@ ConVar chaos_p_save_gulls("chaos_p_save_gulls", "100");
 ConVar chaos_p_aspectratio("chaos_p_aspectratio", "100");
 ConVar chaos_p_evil_citizen("chaos_p_evil_citizen", "100");
 ConVar chaos_p_evil_magna("chaos_p_evil_magna", "100");
+ConVar chaos_p_must_kill("chaos_p_must_kill", "100");
 #define ERROR_WEIGHT 1
 //intentionally not putting this on sector sweep because scanners are benign unless given rpgs
 #define EC_ENEMY_SPAM EC_HAS_WEAPON | EC_NO_SPAM_NPCS | EC_FAR_ENEMY
@@ -6105,6 +6121,7 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CEAspectRatio>(EFFECT_ASPECTRATIO,			MAKE_STRING("#hl2c_aspectratio"),		EC_NONE,						chaos_t_aspectratio.GetFloat(),			chaos_p_aspectratio.GetInt());
 	CreateEffect<CEEvilNPC>(EFFECT_EVIL_CITIZEN,			MAKE_STRING("#hl2c_evil_citizen"),		EC_FAR_ENEMY,					-1,										chaos_p_evil_citizen.GetInt());
 	CreateEffect<CEEvilNPC>(EFFECT_EVIL_MAGNA,				MAKE_STRING("#hl2c_evil_magna"),		EC_FAR_ENEMY,					-1,										chaos_p_evil_magna.GetInt());
+	CreateEffect<>(EFFECT_MUST_KILL,						MAKE_STRING("#hl2c_must_kill"),			EC_HAS_WEAPON,					chaos_t_must_kill.GetFloat(),			chaos_p_must_kill.GetInt());
 }
 
 void CHL2_Player::ClearEffectContextCache()
@@ -6829,6 +6846,9 @@ void CChaosEffect::StartEffect()
 	case EFFECT_FIRE_FULL_CLIP:
 		engine->ClientCommand(engine->PEntityOfEntIndex(1), "chaos_fire_full_clip 1");
 		break;
+	case EFFECT_MUST_KILL:
+		engine->ClientCommand(engine->PEntityOfEntIndex(1), "chaos_must_kill 1");
+		break;
 	}
 }// StartEffect()
 void CChaosEffect::StopEffect()
@@ -6889,6 +6909,9 @@ void CChaosEffect::StopEffect()
 		break;
 	case EFFECT_FIRE_FULL_CLIP:
 		engine->ClientCommand(engine->PEntityOfEntIndex(1), "chaos_fire_full_clip 0");
+		break;
+	case EFFECT_MUST_KILL:
+		engine->ClientCommand(engine->PEntityOfEntIndex(1), "chaos_must_kill 0");
 		break;
 	}
 }// StopEffect()

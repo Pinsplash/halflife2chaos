@@ -87,6 +87,7 @@ public:
 	bool WasWeaponLaunched( void ) const { return m_bWeaponLaunched; }
 
 	bool WasFiredByNPC() const { return (GetOwnerEntity() && GetOwnerEntity()->IsNPC()); }
+	bool WasFiredByPlayer() const { return (GetOwnerEntity() && GetOwnerEntity()->IsPlayer()); }
 
 	bool ShouldHitPlayer() const;
 

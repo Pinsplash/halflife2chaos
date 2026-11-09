@@ -36,6 +36,7 @@
 
 ConVar g_Language( "g_Language", "0", FCVAR_REPLICATED );
 ConVar sk_autoaim_mode( "sk_autoaim_mode", "1", FCVAR_ARCHIVE | FCVAR_REPLICATED );
+extern ConVar chaos_must_kill;
 
 #ifndef CLIENT_DLL
 ConVar log_verbose_enable( "log_verbose_enable", "0", FCVAR_GAMEDLL, "Set to 1 to enable verbose server log on the server." );
@@ -325,6 +326,8 @@ void CGameRules::RadiusDamage( const CTakeDamageInfo &info, const Vector &vecSrc
 	trace_t		tr;
 	float		flAdjustedDamage, falloff;
 	Vector		vecSpot;
+	CUtlVector<CBaseEntity*> HitEnts;
+	int NumNPCs = 0;
 
 	Vector vecSrc = vecSrcIn;
 
@@ -518,6 +521,13 @@ void CGameRules::RadiusDamage( const CTakeDamageInfo &info, const Vector &vecSrc
 			adjustedInfo.SetDamagePosition( vecSrc );
 		}
 
+		if (tr.m_pEnt && HitEnts.Find(tr.m_pEnt) == HitEnts.InvalidIndex())
+		{
+			if (tr.m_pEnt->m_lifeState == LIFE_ALIVE && tr.m_pEnt->IsNPC())
+				NumNPCs++;
+			HitEnts.AddToTail(tr.m_pEnt);
+		}
+
 		if ( tr.fraction != 1.0 && pEntity == tr.m_pEnt )
 		{
 			ClearMultiDamage( );
@@ -548,6 +558,20 @@ void CGameRules::RadiusDamage( const CTakeDamageInfo &info, const Vector &vecSrc
 			gamestats->Event_WeaponHit( player, bIsPrimary, (pWeapon != NULL) ? player->GetActiveWeapon()->GetClassname() : "NULL", info );
 		}
 #endif
+	}
+	if (chaos_must_kill.GetBool() && info.GetAttacker()->IsPlayer())
+	{
+		int NumAlive = 0;
+		for (int iEnt = 0; iEnt < HitEnts.Size(); iEnt++)
+		{
+			if (HitEnts[iEnt]->m_lifeState == LIFE_ALIVE && HitEnts[iEnt]->IsNPC())
+				NumAlive++;
+		}
+		int NumKilled = NumNPCs - NumAlive;
+		if (NumKilled == 0)
+			engine->ClientCommand(engine->PEntityOfEntIndex(1), "chaos_domustkilldeath1");
+		if (NumKilled > 1)
+			engine->ClientCommand(engine->PEntityOfEntIndex(1), "chaos_domustkilldeath2");
 	}
 }
 

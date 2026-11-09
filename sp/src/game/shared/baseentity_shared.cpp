@@ -50,6 +50,7 @@ ConVar hl2_episodic( "hl2_episodic", "0", FCVAR_REPLICATED );
 ConVar chaos_replace_bullets_with_crossbow("chaos_replace_bullets_with_crossbow", "0", FCVAR_REPLICATED);
 ConVar chaos_replace_bullets_with_grenades("chaos_replace_bullets_with_grenades", "0", FCVAR_REPLICATED);
 ConVar chaos_bullet_teleport("chaos_bullet_teleport", "0", FCVAR_REPLICATED);
+ConVar chaos_must_kill("chaos_must_kill", "0");
 #ifdef PORTAL
 	#include "prop_portal_shared.h"
 #endif
@@ -1613,7 +1614,8 @@ void CBaseEntity::FireBullets( const FireBulletsInfo_t &info )
 	CAmmoDef*	pAmmoDef	= GetAmmoDef();
 	int			nDamageType	= pAmmoDef->DamageType(info.m_iAmmoType);
 	int			nAmmoFlags	= pAmmoDef->Flags(info.m_iAmmoType);
-	
+	CUtlVector<CBaseEntity*> HitEnts;
+	int NumNPCs = 0;
 	bool bDoServerEffects = true;
 
 #if defined( HL2MP ) && defined( GAME_DLL )
@@ -1887,6 +1889,14 @@ void CBaseEntity::FireBullets( const FireBulletsInfo_t &info )
 				CalculateBulletDamageForce( &dmgInfo, info.m_iAmmoType, vecDir, tr.endpos );
 				dmgInfo.ScaleDamageForce( info.m_flDamageForceScale );
 				dmgInfo.SetAmmoType( info.m_iAmmoType );
+
+				if (tr.m_pEnt && HitEnts.Find(tr.m_pEnt) == HitEnts.InvalidIndex())
+				{
+					if (tr.m_pEnt->m_lifeState == LIFE_ALIVE && tr.m_pEnt->IsNPC())
+						NumNPCs++;
+					HitEnts.AddToTail(tr.m_pEnt);
+				}
+
 				tr.m_pEnt->DispatchTraceAttack( dmgInfo, vecDir, &tr );
 			
 				if ( ToBaseCombatCharacter( tr.m_pEnt ) )
@@ -1989,6 +1999,20 @@ void CBaseEntity::FireBullets( const FireBulletsInfo_t &info )
 			CBasePlayer *pPlayer = static_cast<CBasePlayer *>(this);
 			CTakeDamageInfo dmgInfo(this, pAttacker, flCumulativeDamage, nDamageType);
 			gamestats->Event_WeaponHit(pPlayer, info.m_bPrimaryAttack, pPlayer->GetActiveWeapon()->GetClassname(), dmgInfo);
+		}
+		if (chaos_must_kill.GetBool() && IsPlayer())
+		{
+			int NumAlive = 0;
+			for (int iEnt = 0; iEnt < HitEnts.Size(); iEnt++)
+			{
+				if (HitEnts[iEnt]->m_lifeState == LIFE_ALIVE && HitEnts[iEnt]->IsNPC())
+					NumAlive++;
+			}
+			int NumKilled = NumNPCs - NumAlive;
+			if (NumKilled == 0)
+				engine->ClientCommand(engine->PEntityOfEntIndex(1), "chaos_domustkilldeath1");
+			if (NumKilled > 1)
+				engine->ClientCommand(engine->PEntityOfEntIndex(1), "chaos_domustkilldeath2");
 		}
 		if (chaos_bullet_teleport.GetBool())
 		{

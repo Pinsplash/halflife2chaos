@@ -47,6 +47,7 @@ ConVar sk_combine_ball_search_radius("sk_combine_ball_search_radius", "512", FCV
 ConVar sk_combineball_seek_angle("sk_combineball_seek_angle", "15.0", FCVAR_REPLICATED);
 ConVar sk_combineball_seek_kill("sk_combineball_seek_kill", "0", FCVAR_REPLICATED);
 ConVar ar2_super_seek("ar2_super_seek", "0", FCVAR_NONE);
+extern ConVar chaos_must_kill;
 
 // For our ring explosion
 int s_nExplosionTexture = -1;
@@ -1185,6 +1186,8 @@ void CPropCombineBall::DoExplosion( )
 
 	m_bEmit = false;
 
+	if (!m_bStruckEntity && chaos_must_kill.GetBool() && WasFiredByPlayer())
+		engine->ClientCommand(engine->PEntityOfEntIndex(1), "chaos_domustkilldeath1");
 	
 	if( !m_bStruckEntity && hl2_episodic.GetBool() && GetOwnerEntity() != NULL )
 	{
@@ -1249,6 +1252,9 @@ bool CPropCombineBall::DissolveEntity( CBaseEntity *pEntity )
 		return false;
 
 	pEntity->GetBaseAnimating()->Dissolve( "", gpGlobals->curtime, false, ENTITY_DISSOLVE_NORMAL );
+
+	if (m_bStruckEntity && chaos_must_kill.GetBool() && WasFiredByPlayer())
+		engine->ClientCommand(engine->PEntityOfEntIndex(1), "chaos_domustkilldeath2");
 	
 	// Note that we've struck an entity
 	m_bStruckEntity = true;
