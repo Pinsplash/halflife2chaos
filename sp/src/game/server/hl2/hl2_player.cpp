@@ -173,6 +173,7 @@ ConVar chaos_vote_enable("chaos_vote_enable", "0");
 ConVar chaos_unstuck_neweffect("chaos_unstuck_neweffect", "1", FCVAR_NONE, "Get the player unstuck every time a new effect starts. may not be wanted by some technical players.");
 ConVar chaos_shuffle_mode("chaos_shuffle_mode", "0");
 ConVar chaos_shuffle_debug("chaos_shuffle_debug", "0");
+ConVar chaos_crate_mode("chaos_crate_mode", "0");
 ConVar default_aspectratio("default_aspectratio", "0");
 
 CON_COMMAND(logex, "logic explosion")
@@ -1549,6 +1550,40 @@ void CHL2_Player::CrosshairBounceMotion()
 		m_CrosshairOffset = vec3_origin;
 	}
 }
+
+void CHL2_Player::StartChaosEffectCycle(Vector CratePos)
+{
+	engine->ClientCommand(engine->PEntityOfEntIndex(1), "sv_cheats 1");//always force cheats on to ensure everything works
+	int nID = 0;
+	int iWeightSum = FindWeightSum();
+	if (!chaos_vote_enable.GetBool())
+	{
+		ClearEffectContextCache();
+		nID = PickEffect(iWeightSum);
+		Assert(nID != EFFECT_ERROR);
+	}
+	else
+	{
+		nID = GetVoteWinnerEffect();
+		Assert(nID != EFFECT_ERROR);
+	}
+	g_flEffectThinkRem = 0;
+	//start effect
+	StartGivenEffect(nID, CratePos);
+	if (chaos_vote_enable.GetBool())
+		ResetVotes(iWeightSum);
+	if (chaos_unstuck_neweffect.GetBool())
+		GetUnstuck(500);
+	if (chaos_crate_mode.GetBool())
+	{
+		if (g_ChaosEffects[nID]->m_flDuration > g_flNextEffectRem)
+		{
+			g_flNextEffectRem = g_ChaosEffects[nID]->m_flDuration;
+			g_flNewEffectDuration = g_ChaosEffects[nID]->m_flDuration;
+		}
+	}
+}
+
 //-----------------------------------------------------------------------------
 //Purpose: Allow pre-frame adjustments on the player
 //-----------------------------------------------------------------------------
@@ -1582,33 +1617,15 @@ void CHL2_Player::PreThink(void)
 			{
 				g_flEffectThinkRem = 0;
 				//m_bFirstEffect = true;
-				g_flNextEffectRem = chaos_effect_interval.GetFloat();
+				//note: this will only apply if chaos_crate_mode was set to 1 before a background map was loaded
+				if (!chaos_crate_mode.GetBool())
+					g_flNextEffectRem = chaos_effect_interval.GetFloat();
 				//m_flFirstEffectRem = 0;
 				m_bRestartHUD = true;//Fixes bar not showing when map is loaded if chaos was enabled when no map was "on" at the time. Stupid but works.
 			}
 			if (g_flNextEffectRem <= 0 && !pl.deadflag)//don't start new effects when dead
 			{
-				engine->ClientCommand(engine->PEntityOfEntIndex(1), "sv_cheats 1");//always force cheats on to ensure everything works
-				int nID = 0;
-				int iWeightSum = FindWeightSum();
-				if (!chaos_vote_enable.GetBool())
-				{
-					ClearEffectContextCache();
-					nID = PickEffect(iWeightSum);
-					Assert(nID != EFFECT_ERROR);
-				}
-				else
-				{
-					nID = GetVoteWinnerEffect();
-					Assert(nID != EFFECT_ERROR);
-				}
-				g_flEffectThinkRem = 0;
-				//start effect
-				StartGivenEffect(nID);
-				if (chaos_vote_enable.GetBool())
-					ResetVotes(iWeightSum);
-				if (chaos_unstuck_neweffect.GetBool())
-					GetUnstuck(500);
+				StartChaosEffectCycle();
 			}
 		}
 		else if (chaos_instant_off.GetBool())
@@ -6616,7 +6633,10 @@ void CHL2_Player::DoChaosHUDBar()
 	WRITE_FLOAT(chaos_bar_g.GetInt());
 	WRITE_FLOAT(chaos_bar_r.GetInt());
 	if (chaos.GetBool())
-		WRITE_FLOAT(g_flNextEffectRem / chaos_effect_interval.GetFloat());
+		if (chaos_crate_mode.GetBool())
+			WRITE_FLOAT(g_flNextEffectRem / g_flNewEffectDuration);
+		else
+			WRITE_FLOAT(g_flNextEffectRem / chaos_effect_interval.GetFloat());
 	else
 		WRITE_FLOAT(1);//not visible
 	MessageEnd();
@@ -6702,12 +6722,14 @@ void CHL2_Player::DoChaosHUDText()
 		PrintEffectName(i, iHidden, pl.deadflag, pEffect, bHide);
 	}
 }
-void CHL2_Player::StartGivenEffect(int nID)
+void CHL2_Player::StartGivenEffect(int nID, Vector CratePos)
 {
 	Assert(nID != EFFECT_ERROR);
-	g_flNextEffectRem = chaos_effect_interval.GetFloat();
+	if (!chaos_crate_mode.GetBool())
+		g_flNextEffectRem = chaos_effect_interval.GetFloat();
 	Msg("Effect %s\n", STRING(g_ChaosEffects[nID]->m_strGeneralName));
 	g_ChaosEffects[nID]->m_bActive = true;
+	g_ChaosEffects[nID]->m_CratePos = CratePos;
 	//add to list of picked effects if shuffle mode is on
 	if (chaos_shuffle_mode.GetBool())
 	{
@@ -6742,6 +6764,7 @@ void CHL2_Player::StopGivenEffect(int nID)
 	//if (g_ChaosEffects[nID]->m_bActive)
 	g_ChaosEffects[nID]->StopEffect();
 	g_ChaosEffects[nID]->m_bActive = false;
+	g_ChaosEffects[nID]->m_CratePos = vec3_origin;
 	g_ChaosEffects[nID]->m_flTimeRem = g_ChaosEffects[nID]->m_flDuration;
 	g_ChaosEffects[nID]->m_iStrikes = 0;
 

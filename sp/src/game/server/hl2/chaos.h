@@ -190,6 +190,7 @@ public:
 	int m_iStrikes;
 	bool m_bTransient;
 	int m_iContextStatusCache = C_STATUS_UNKNOWN;
+	Vector m_CratePos;
 	//only to be set true when selecting the 4 effects to use.
 	//g_arriVoteEffects will remember the effects that are in it until a new set of 4 need to be put in. other code is written with that in mind.
 	//the difference matters because we don't want to exclude an effect simply for being a current option.
@@ -297,6 +298,7 @@ CUtlVector<int>	g_iTerminated;//list of chaos ids to NOT restore from txt. used 
 CUtlVector<CChaosStoredEnt *> g_PersistEnts;
 float			g_flEffectThinkRem;
 float			g_flNextEffectRem = -1;
+float			g_flNewEffectDuration = 0;
 int				g_arriVoteEffects[4];
 int				g_arriVotes[4];
 int				g_iVoteNumber = 0; // acts as a unique number for the external client

@@ -8,6 +8,7 @@
 #include "props.h"
 #include "items.h"
 #include "item_dynamic_resupply.h"
+#include "hl2/hl2_player.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -188,6 +189,17 @@ void CItem_ItemCrate::OnBreak( const Vector &vecVelocity, const AngularImpulse &
 	// if it was easy to get a dropdown with all entity types in it.
 
 	m_OnCacheInteraction.FireOutput(pBreaker,this);
+
+
+	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+	if (pPlayer)
+	{
+		CHL2_Player* pHL2Player = static_cast<CHL2_Player*>(pPlayer);
+		if (pHL2Player)
+		{
+			pHL2Player->StartChaosEffectCycle(GetAbsOrigin());
+		}
+	}
 
 	for ( int i = 0; i < m_nItemCount; ++i )
 	{

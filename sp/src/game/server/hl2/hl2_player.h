@@ -84,7 +84,8 @@ public:
 	DECLARE_CLASS(CHL2_Player, CBasePlayer);
 	void ResetVotes(int iWeightSum);
 	int PickEffect(int iWeightSum, bool bTest = false, int iControl = 0);
-	void StartGivenEffect(int nID);
+	void StartChaosEffectCycle(Vector CratePos = vec3_origin);
+	void StartGivenEffect(int nID, Vector CratePos = vec3_origin);
 	void StopGivenEffect(int nID);
 	void MaintainEvils();
 	void PopulateEffects();
