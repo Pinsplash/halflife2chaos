@@ -1071,7 +1071,8 @@ void PropBreakableCreateAll( int modelindex, IPhysicsObject *pPhysics, const bre
 					MatrixGetColumn( localToWorld, 3, placementOrigin );
 					placementOrigin -= parentOrigin;
 				}
-				list[i].offset *= pOwnerAnim->GetModelScale();
+				if (pOwnerAnim)
+					list[i].offset *= pOwnerAnim->GetModelScale();
 				VectorTransform( list[i].offset - placementOrigin, matrix, position );
 			}
 			Vector objectVelocity = params.velocity;
