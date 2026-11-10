@@ -1135,10 +1135,10 @@ void CSceneEntity::OnRestore()
 		FindNamedActorInt(iActor, vEntList);
 		for (int iEnt = 0; iEnt < vEntList.Size(); iEnt++)
 		{
-			if (!vEntList[iEnt]->MyCombatCharacterPointer())
+			if (!vEntList[iEnt]->MyBaseFlexPointer())
 				continue;
 
-			vEntList[iEnt]->MyCombatCharacterPointer()->StartChoreoScene(m_pScene);
+			vEntList[iEnt]->MyBaseFlexPointer()->StartChoreoScene(m_pScene);
 		}
 	}
 
@@ -2324,10 +2324,10 @@ bool CSceneEntity::CheckActors()
 		FindNamedActorInt(i, vEntList);
 		for (int iEnt = 0; iEnt < vEntList.Size(); iEnt++)//vEntList[iEnt]
 		{
-			if (!vEntList[iEnt]->MyCombatCharacterPointer())
+			if (!vEntList[iEnt]->MyBaseFlexPointer())
 				continue;
 
-			if (!vEntList[iEnt]->MyCombatCharacterPointer()->IsAlive())
+			if (!vEntList[iEnt]->MyBaseFlexPointer()->IsAlive())
 				return false;
 
 			if (m_BusyActor == SCENE_BUSYACTOR_WAIT)
@@ -2374,7 +2374,7 @@ bool CSceneEntity::CheckActors()
 			}
 			else if (m_BusyActor == SCENE_BUSYACTOR_INTERRUPT || m_BusyActor == SCENE_BUSYACTOR_INTERRUPT_CANCEL)
 			{
-				CBaseCombatCharacter* pActor = vEntList[iEnt]->MyCombatCharacterPointer();
+				CBaseFlex* pActor = vEntList[iEnt]->MyBaseFlexPointer();
 				if (pActor && !IsInInterruptableScenes(pActor))
 				{
 					// One of the actors is in a scene that's not at an interrupt point.
@@ -2396,7 +2396,7 @@ bool CSceneEntity::CheckActors()
 				}
 			}
 
-			vEntList[iEnt]->MyCombatCharacterPointer()->StartChoreoScene(m_pScene);
+			vEntList[iEnt]->MyBaseFlexPointer()->StartChoreoScene(m_pScene);
 		}
 	}
 
@@ -2905,6 +2905,7 @@ void CSceneEntity::StartEvent( float currenttime, CChoreoScene *scene, CChoreoEv
 		{
 			CUtlVector<CBaseEntity*> vTargetList;
 			CBaseFlex* pActor = (CBaseFlex*)vEntList[iEnt];
+			Assert(pActor);
 			switch (event->GetType())
 			{
 			case CChoreoEvent::SUBSCENE:
@@ -3429,7 +3430,7 @@ void CSceneEntity::UnloadScene( void )
 			CUtlVector<CBaseEntity*> vEntList;
 			FindNamedActorInt(iActor, vEntList);
 			for (int iEnt = 0; iEnt < vEntList.Size(); iEnt++)
-				vEntList[iEnt]->MyCombatCharacterPointer()->RemoveChoreoScene(m_pScene);
+				vEntList[iEnt]->MyBaseFlexPointer()->RemoveChoreoScene(m_pScene);
 		}
 	}
 	delete m_pScene;
@@ -3499,7 +3500,7 @@ bool CSceneEntity::CheckEvent( float currenttime, CChoreoScene *scene, CChoreoEv
 				}
 				//if any clone has completed the task, return true
 				for (int iEnt = 0; iEnt < vEntList.Size(); iEnt++)
-					if (vEntList[iEnt]->MyCombatCharacterPointer()->CheckSceneEvent(currenttime, scene, event))
+					if (vEntList[iEnt]->MyBaseFlexPointer()->CheckSceneEvent(currenttime, scene, event))
 						return true;
 			}
 		}
@@ -3931,7 +3932,7 @@ void CSceneEntity::ClearSceneEvents( CChoreoScene *scene, bool canceled )
 		CUtlVector<CBaseEntity*> vEntList;
 		FindNamedActorInt(i, vEntList);
 		for (int iEnt = 0; iEnt < vEntList.Size(); iEnt++)
-			vEntList[iEnt]->MyCombatCharacterPointer()->ClearSceneEvents(scene, canceled);
+			vEntList[iEnt]->MyBaseFlexPointer()->ClearSceneEvents(scene, canceled);
 	}
 
 	// Iterate events and precache necessary resources
@@ -4250,7 +4251,7 @@ void CSceneEntity::OnSceneFinished( bool canceled, bool fireoutput )
 		FindNamedActorInt(iActor, vEntList);
 		for (int iEnt = 0; iEnt < vEntList.Size(); iEnt++)
 		{
-			vEntList[iEnt]->MyCombatCharacterPointer()->RemoveChoreoScene(m_pScene, canceled);
+			vEntList[iEnt]->MyBaseFlexPointer()->RemoveChoreoScene(m_pScene, canceled);
 
 			// If we interrupted the actor's previous scenes, resume them
 			if (m_bInterruptedActorsScenes)
@@ -4714,10 +4715,10 @@ CBaseFlex* CInstancedSceneEntity::FindNamedActorString(const char* name)
 	{
 		if (m_hOwner != NULL)
 		{
-			CBaseCombatCharacter* pCharacter = m_hOwner->MyCombatCharacterPointer();
-			if (pCharacter)
+			CBaseFlex* pFlex = m_hOwner->MyBaseFlexPointer();
+			if (pFlex)
 			{
-				return pCharacter;
+				return pFlex;
 			}
 		}
 	}
@@ -4730,9 +4731,9 @@ CBaseFlex* CInstancedSceneEntity::FindNamedActorInt(int index)
 	//breakpoint is to see if this is called ever. remove this comment when it is hit.
 	if (m_pScene->GetNumActors() == 1 && m_hOwner)
 	{
-		CBaseCombatCharacter* pCharacter = m_hOwner->MyCombatCharacterPointer();
-		if (pCharacter)
-			return pCharacter;
+		CBaseFlex* pFlex = m_hOwner->MyBaseFlexPointer();
+		if (pFlex)
+			return pFlex;
 	}
 	CUtlVector<CBaseEntity*> vEntList;
 	BaseClass::FindNamedActorInt(index, vEntList);
@@ -4744,10 +4745,10 @@ void CInstancedSceneEntity::FindNamedActorInt(int index, CUtlVector<CBaseEntity*
 	//breakpoint is to see if this is called ever. remove this comment when it is hit.
 	if (m_pScene->GetNumActors() == 1 && m_hOwner)
 	{
-		CBaseCombatCharacter* pCharacter = m_hOwner->MyCombatCharacterPointer();
-		if (pCharacter)
+		CBaseFlex* pFlex = m_hOwner->MyBaseFlexPointer();
+		if (pFlex)
 		{
-			list.AddToTail(pCharacter);
+			list.AddToTail(pFlex);
 			return;
 		}
 	}
@@ -4757,10 +4758,10 @@ void CInstancedSceneEntity::FindNamedActorPointer(CChoreoActor* pChoreoActor, CU
 {
 	if (m_pScene->GetNumActors() == 1 && m_hOwner)
 	{
-		CBaseCombatCharacter* pCharacter = m_hOwner->MyCombatCharacterPointer();
-		if (pCharacter)
+		CBaseFlex* pFlex = m_hOwner->MyBaseFlexPointer();
+		if (pFlex)
 		{
-			list.AddToTail(pCharacter);
+			list.AddToTail(pFlex);
 			return;
 		}
 	}
@@ -4784,7 +4785,7 @@ void CInstancedSceneEntity::FindNamedEntity(const char *name, CUtlVector<CBaseEn
 		{
 			pOther = npc->FindNamedEntity( name );
 		}
-		else if ( m_hOwner->MyCombatCharacterPointer() )
+		else if ( m_hOwner->MyBaseFlexPointer() )
 		{
 			pOther = m_hOwner;
 		}

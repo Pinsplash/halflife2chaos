@@ -50,7 +50,7 @@ public:
 	// Construction
 						CBaseFlex( void );
 						~CBaseFlex( void );
-
+	virtual CBaseFlex* MyBaseFlexPointer(void) { return this; }
 	virtual void		SetModel( const char *szModelName );
 
 	void Blink( );
