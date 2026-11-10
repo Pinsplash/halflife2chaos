@@ -83,6 +83,7 @@
 #include "npc_combinedropship.h"
 #include "npc_crow.h"
 #include "npc_turret_ground.h"
+#include "grenade_frag.h"
 
 #ifdef HL2_EPISODIC
 #include "npc_alyx_episodic.h"
@@ -600,7 +601,6 @@ CON_COMMAND(chaos_vote_fake_votebug, "")
 }
 CON_COMMAND(chaos_vote_internal_set, "used by an external client. sets current votes")
 {
-	// TODO: assumes vote number and 4 choices.
 	if (args.ArgC() < 6)
 		return;
 
@@ -2149,12 +2149,6 @@ void CHL2_Player::Activate(void)
 				StopGivenEffect(i);
 			}
 		}
-		//TODO: test again, death water kills instantly on relaod because water world was on at the time of save, even though it's off during load
-		//
-		//SetWaterLevel(WL_NotInWater);
-		//SetPlayerUnderwater(false);
-		//RemoveFlag(FL_INWATER);
-		//RemoveFlag(FL_SWIM);
 
 		ReplaceEffects();
 		RemoveDeadEnts();
@@ -6060,12 +6054,12 @@ void CHL2_Player::PopulateEffects()
 	CreateEffect<CEPlayerBig>(EFFECT_PLAYER_BIG,			MAKE_STRING("#hl2c_plr_big"),			EC_NONE,						chaos_t_player_big.GetFloat(),			chaos_p_player_big.GetInt());
 	CreateEffect<CEPlayerSmall>(EFFECT_PLAYER_SMALL,		MAKE_STRING("#hl2c_plr_small"),			EC_NONE,						chaos_t_player_small.GetFloat(),		chaos_p_player_small.GetInt());
 	CreateEffect<CENoMouseHorz>(EFFECT_NO_MOUSE_HORIZONTAL,	MAKE_STRING("#hl2c_nomousehorz"),		EC_NONE,						chaos_t_no_mouse_horizontal.GetFloat(),	chaos_p_no_mouse_horizontal.GetInt());
-	CreateEffect<>(EFFECT_NO_MOUSE_VERTICAL,				MAKE_STRING("#hl2c_nomousevert"),		EC_NONE,						chaos_t_no_mouse_vertical.GetFloat(),	chaos_p_no_mouse_vertical.GetInt());
+	CreateEffect<CENoMouseVert>(EFFECT_NO_MOUSE_VERTICAL,	MAKE_STRING("#hl2c_nomousevert"),		EC_NONE,						chaos_t_no_mouse_vertical.GetFloat(),	chaos_p_no_mouse_vertical.GetInt());
 	CreateEffect<CESuperGrab>(EFFECT_SUPER_GRAB,			MAKE_STRING("#hl2c_super_grab"),		EC_NONE,						chaos_t_super_grab.GetFloat(),			chaos_p_super_grab.GetInt());
 	CreateEffect<CERandomWeaponGive>(EFFECT_GIVE_WEAPON,	MAKE_STRING("#hl2c_give_wep"),			EC_NONE,						-1,										chaos_p_give_weapon.GetInt());
 	CreateEffect<>(EFFECT_GIVE_ALL_WEAPONS,					MAKE_STRING("#hl2c_giveallweps"),		EC_NONE,						-1,										chaos_p_give_all_weapons.GetInt());
 	CreateEffect<CEWeaponsDrop>(EFFECT_DROP_WEAPONS,		MAKE_STRING("#hl2c_drop_weps"),			EC_NEED_PHYSGUN,				-1,										chaos_p_drop_weapons.GetInt());
-	CreateEffect<>(EFFECT_NADE_GUNS,						MAKE_STRING("#hl2c_nade_guns"),			EC_NO_INVULN,					chaos_t_nade_guns.GetFloat(),			chaos_p_nade_guns.GetInt());
+	CreateEffect<CENadeGuns>(EFFECT_NADE_GUNS,				MAKE_STRING("#hl2c_nade_guns"),			EC_NO_INVULN,					chaos_t_nade_guns.GetFloat(),			chaos_p_nade_guns.GetInt());
 	CreateEffect<CEEarthquake>(EFFECT_EARTHQUAKE,			MAKE_STRING("#hl2c_shakecam"),			EC_NONE,						chaos_t_earthquake.GetFloat(),			chaos_p_earthquake.GetInt());
 	CreateEffect<CE420Joke>(EFFECT_420_JOKE,				MAKE_STRING("#hl2c_420_health"),		EC_NO_INVULN,					-1,										chaos_p_420_joke.GetInt());
 	CreateEffect<CEZombieSpam>(EFFECT_ZOMBIE_SPAM,			MAKE_STRING("#hl2c_zombie_spam"),		EC_ENEMY_SPAM,					chaos_t_zombie_spam.GetFloat(),			chaos_p_zombie_spam.GetInt());
@@ -6525,7 +6519,6 @@ bool CChaosEffect::CheckEffectContext()
 			return false;//no pickups
 
 	//quickclip must be off
-	//TODO: is the player's collision group ever anything other than these two?
 	if (m_nContext & EC_QC_OFF)
 	{
 		if (!pPlayer->IsInAVehicle() && pPlayer->GetCollisionGroup() == COLLISION_GROUP_IN_VEHICLE)
@@ -6799,27 +6792,21 @@ void CChaosEffect::StartEffect()
 	case EFFECT_LOW_DETAIL:
 		engine->ClientCommand(engine->PEntityOfEntIndex(1), "mat_picmip 4;r_lod 6;mat_filtertextures 0;mat_filterlightmaps 0");
 		break;
-	case EFFECT_NO_MOUSE_VERTICAL:
-		engine->ClientCommand(engine->PEntityOfEntIndex(1), "sv_cheats 1;wait 10;m_chaos_pitch 0.0f;cl_pitchspeed 0");
-		break;
 	case EFFECT_GIVE_ALL_WEAPONS:
 		UTIL_GetLocalPlayer()->EquipSuit();
 		ChaosSpawnWeapon("weapon_crowbar", MAKE_STRING("#hl2c_giveallweps"));
 		ChaosSpawnWeapon("weapon_physcannon", MAKE_STRING("#hl2c_giveallweps"));
-		ChaosSpawnWeapon("weapon_pistol", MAKE_STRING("#hl2c_giveallweps"), 75, "Pistol");
-		ChaosSpawnWeapon("weapon_357", MAKE_STRING("#hl2c_giveallweps"), 9, "357");
-		ChaosSpawnWeapon("weapon_smg1", MAKE_STRING("#hl2c_giveallweps"), 128, "SMG1", 1, "smg1_grenade");
-		ChaosSpawnWeapon("weapon_ar2", MAKE_STRING("#hl2c_giveallweps"), 30, "AR2", 1, "AR2AltFire");
-		ChaosSpawnWeapon("weapon_shotgun", MAKE_STRING("#hl2c_giveallweps"), 15, "Buckshot");
-		ChaosSpawnWeapon("weapon_crossbow", MAKE_STRING("#hl2c_giveallweps"), 5, "XBowBolt");
-		ChaosSpawnWeapon("weapon_frag", MAKE_STRING("#hl2c_giveallweps"), 5, "grenade");
-		ChaosSpawnWeapon("weapon_rpg", MAKE_STRING("#hl2c_giveallweps"), 3, "rpg_round");
+		ChaosSpawnWeapon("weapon_pistol", MAKE_STRING("#hl2c_giveallweps"), 75, "Pistol", "item_ammo_pistol");
+		ChaosSpawnWeapon("weapon_357", MAKE_STRING("#hl2c_giveallweps"), 9, "357", "item_ammo_357");
+		ChaosSpawnWeapon("weapon_smg1", MAKE_STRING("#hl2c_giveallweps"), 128, "SMG1", "item_ammo_smg1", 1, "smg1_grenade", "item_ammo_smg1_grenade");
+		ChaosSpawnWeapon("weapon_ar2", MAKE_STRING("#hl2c_giveallweps"), 30, "AR2", "item_ammo_ar2", 1, "AR2AltFire", "item_ammo_ar2_large");
+		ChaosSpawnWeapon("weapon_shotgun", MAKE_STRING("#hl2c_giveallweps"), 15, "Buckshot", "item_box_buckshot");
+		ChaosSpawnWeapon("weapon_crossbow", MAKE_STRING("#hl2c_giveallweps"), 5, "XBowBolt", "item_ammo_crossbow");
+		ChaosSpawnWeapon("weapon_frag", MAKE_STRING("#hl2c_giveallweps"), 5, "grenade", "weapon_frag");
+		ChaosSpawnWeapon("weapon_rpg", MAKE_STRING("#hl2c_giveallweps"), 3, "rpg_round", "item_rpg_round");
 		ChaosSpawnWeapon("weapon_bugbait", MAKE_STRING("#hl2c_giveallweps"));
 		GlobalEntity_Add(MAKE_STRING("antlion_allied"), gpGlobals->mapname, GLOBAL_ON);//antlions become friendly
-		ChaosSpawnWeapon("weapon_slam", MAKE_STRING("#hl2c_giveallweps"), 5, "slam");
-		break;
-	case EFFECT_NADE_GUNS:
-		chaos_replace_bullets_with_grenades.SetValue(1);
+		ChaosSpawnWeapon("weapon_slam", MAKE_STRING("#hl2c_giveallweps"), 5, "slam", "weapon_slam");
 		break;
 	case EFFECT_EXPLODE_ON_DEATH:
 		chaos_explode_on_death.SetValue(1);
@@ -6883,12 +6870,6 @@ void CChaosEffect::StopEffect()
 		break;
 	case EFFECT_LOW_DETAIL:
 		engine->ClientCommand(engine->PEntityOfEntIndex(1), "mat_picmip -1;r_lod -1;mat_filtertextures 1;mat_filterlightmaps 1\n");
-		break;
-	case EFFECT_NO_MOUSE_VERTICAL:
-		engine->ClientCommand(engine->PEntityOfEntIndex(1), "m_chaos_pitch 1\n");
-		break;
-	case EFFECT_NADE_GUNS:
-		chaos_replace_bullets_with_grenades.SetValue(0);
 		break;
 	case EFFECT_EXPLODE_ON_DEATH:
 		chaos_explode_on_death.SetValue(0);
@@ -7075,6 +7056,9 @@ CBaseEntity* CChaosEffect::ChaosSpawnVehicle(const char* className, string_t str
 	{
 		Vector vecOrigin = pPlayer->GetAbsOrigin() + vecForward * flDistAway + Vector(0, 0, flExtraHeight);
 
+		if (m_CratePos != vec3_origin)
+			vecOrigin = m_CratePos;
+
 		//see if we're looking at a wall
 		trace_t tr;
 		CTraceFilterSkipTwoEntities filter(pPlayer, pPlayer->GetVehicleEntity(), COLLISION_GROUP_NONE);
@@ -7106,17 +7090,56 @@ CBaseEntity* CChaosEffect::ChaosSpawnVehicle(const char* className, string_t str
 	}
 	return pVehicle;
 }
-bool CChaosEffect::ChaosSpawnWeapon(const char* className, string_t strActualName, int iCount, const char* strAmmoType, int iCount2, const char* strAmmoType2)
+bool CChaosEffect::ChaosSpawnWeapon(const char* className, string_t strActualName, int iCount, const char* strAmmoType, const char* strAmmoClass, int iCount2, const char* strAmmoType2, const char* strAmmoClass2)
 {
+	if (m_CratePos != vec3_origin)
+	{
+		CBaseEntity* pWeapon = (CBaseEntity*)CreateEntityByName(className);
+		if (pWeapon)
+			pWeapon->SetAbsOrigin(m_CratePos);
+		else
+			return false;
+	}
 	bool bGaveWeapon = UTIL_GetLocalPlayer()->GiveNamedItem(className, true) != NULL;
 	if (!bGaveWeapon)
 		return false;
-	m_strHudName = strActualName;
-	if (iCount)
-		UTIL_GetLocalPlayer()->GiveAmmo(iCount, strAmmoType);
-	if (iCount2)
-		UTIL_GetLocalPlayer()->GiveAmmo(iCount2, strAmmoType2);
-	return bGaveWeapon;
+	else
+	{
+		m_strHudName = strActualName;
+		if (m_CratePos != vec3_origin)
+		{
+			if (iCount)
+				UTIL_GetLocalPlayer()->GiveAmmo(iCount, strAmmoType);
+			if (iCount2)
+				UTIL_GetLocalPlayer()->GiveAmmo(iCount2, strAmmoType2);
+		}
+		else
+		{
+			if (iCount)
+			{
+				CBaseEntity* pAmmo = (CBaseEntity*)CreateEntityByName(strAmmoClass);
+				if (pAmmo)
+				{
+					pAmmo->SetAbsOrigin(m_CratePos);
+					variant_t variant;
+					variant.SetInt(iCount);
+					pAmmo->AcceptInput("SetAmmoCount", UTIL_GetLocalPlayer(), UTIL_GetLocalPlayer(), variant, 0);
+				}
+			}
+			if (iCount2)
+			{
+				CBaseEntity* pAmmo = (CBaseEntity*)CreateEntityByName(strAmmoClass2);
+				if (pAmmo)
+				{
+					pAmmo->SetAbsOrigin(m_CratePos);
+					variant_t variant;
+					variant.SetInt(iCount2);
+					pAmmo->AcceptInput("SetAmmoCount", UTIL_GetLocalPlayer(), UTIL_GetLocalPlayer(), variant, 0);
+				}
+			}
+		}
+		return true;
+	}
 }
 ConVar getnearbynodes_debug("getnearbynodes_debug", "0");
 CNodeList* CChaosEffect::GetNearbyNodes(int iNodes)
@@ -7571,6 +7594,10 @@ CAI_BaseNPC* CChaosEffect::ChaosSpawnNPC(const char* className, string_t strActu
 	if (pNPC)
 	{
 		Vector vecOrigin = pPlayer->GetAbsOrigin() + vecForward * flDistAway + Vector(0, 0, flExtraHeight);
+
+		if (m_CratePos != vec3_origin)
+			vecOrigin = m_CratePos;
+
 		trace_t wallTrace;
 		UTIL_TraceLine(pPlayer->GetAbsOrigin(), vecOrigin, MASK_SOLID, &filter, &wallTrace);
 		vecOrigin = wallTrace.endpos;
@@ -7891,12 +7918,16 @@ void CEPullToPlayer::StartEffect()
 	{
 		if (gEntList.FindEntityByName(NULL, "chaos_pull_to_player") == NULL)
 		{
-			CPhysExplosion* pExplo = (CPhysExplosion*)CBaseEntity::Create("env_physexplosion", pPlayer->GetAbsOrigin() + Vector(0, 0, 32), QAngle(0, 0, 0), pPlayer);
+			Vector Pos = pPlayer->GetAbsOrigin() + Vector(0, 0, 32);
+			if (m_CratePos != vec3_origin)
+				Pos = m_CratePos;
+			CPhysExplosion* pExplo = (CPhysExplosion*)CBaseEntity::Create("env_physexplosion", Pos, QAngle(0, 0, 0), pPlayer);
 			pExplo->m_damage = sv_gravity.GetFloat() * chaos_pushpull_strength.GetFloat();
 			pExplo->m_radius = 600;
 			pExplo->m_bInvert = true;
 			pExplo->AddSpawnFlags(SF_PHYSEXPLOSION_NODAMAGE);
-			pExplo->SetParent(pPlayer);
+			if (m_CratePos == vec3_origin)
+				pExplo->SetParent(pPlayer);
 			pExplo->SetName(MAKE_STRING("chaos_pull_to_player"));
 			pExplo->m_bConstant = true;
 			variant_t emptyVariant;
@@ -7922,6 +7953,19 @@ bool CEPullToPlayer::CheckStrike(const CTakeDamageInfo& info)
 {
 	return (info.GetDamageType() & DMG_CRUSH | DMG_SLASH | DMG_BLAST) != 0;
 }
+void CEPullToPlayer::MaintainEffect()
+{
+	CBaseEntity* pEnt = gEntList.FindEntityByName(NULL, "chaos_pull_to_player");
+	if (pEnt)
+	{
+		CPhysExplosion* pExplo = static_cast<CPhysExplosion*>(pEnt);
+		pExplo->m_damage = sv_gravity.GetFloat() * chaos_pushpull_strength.GetFloat();
+	}
+	else
+	{
+		StartEffect();
+	}
+}
 void CEPushFromPlayer::StartEffect()
 {
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
@@ -7929,12 +7973,16 @@ void CEPushFromPlayer::StartEffect()
 	{
 		if (gEntList.FindEntityByName(NULL, "chaos_push_from_player") == NULL)
 		{
-			CPhysExplosion* pExplo = (CPhysExplosion*)CBaseEntity::Create("env_physexplosion", pPlayer->GetAbsOrigin() + Vector(0, 0, 32), QAngle(0, 0, 0), pPlayer);
+			Vector Pos = pPlayer->GetAbsOrigin() + Vector(0, 0, 32);
+			if (m_CratePos != vec3_origin)
+				Pos = m_CratePos;
+			CPhysExplosion* pExplo = (CPhysExplosion*)CBaseEntity::Create("env_physexplosion", Pos, QAngle(0, 0, 0), pPlayer);
 			pExplo->m_damage = sv_gravity.GetFloat() * chaos_pushpull_strength.GetFloat();
 			pExplo->m_radius = 500;
 			pExplo->m_bInvert = false;
 			pExplo->AddSpawnFlags(SF_PHYSEXPLOSION_NODAMAGE);
-			pExplo->SetParent(pPlayer);
+			if (m_CratePos == vec3_origin)
+				pExplo->SetParent(pPlayer);
 			pExplo->SetName(MAKE_STRING("chaos_push_from_player"));
 			pExplo->m_bConstant = true;
 			variant_t emptyVariant;
@@ -7956,24 +8004,37 @@ void CEPushFromPlayer::TransitionEffect()
 {
 	StartEffect();
 }
+void CEPushFromPlayer::MaintainEffect()
+{
+	CBaseEntity* pEnt = gEntList.FindEntityByName(NULL, "chaos_push_from_player");
+	if (pEnt)
+	{
+		CPhysExplosion* pExplo = static_cast<CPhysExplosion*>(pEnt);
+		pExplo->m_damage = sv_gravity.GetFloat() * chaos_pushpull_strength.GetFloat();
+	}
+	else
+	{
+		StartEffect();
+	}
+}
 void CERandomWeaponGive::StartEffect()
 {
 	UTIL_GetLocalPlayer()->EquipSuit();
 	int nRandom;
-	//TODO: harpoon, alyxgun, annabelle, citizenpackage, citizensuitcase
+	//TODO: alyxgun, annabelle
 	for (int iWeaponAttempts = 0; iWeaponAttempts <= 30; iWeaponAttempts++)
 	{
 		nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 14) : chaos_rng1.GetInt();
 		if (nRandom == 0) if (ChaosSpawnWeapon("weapon_crowbar", MAKE_STRING("#hl2c_give_crowbar"))) return;
 		if (nRandom == 1) if (ChaosSpawnWeapon("weapon_physcannon", MAKE_STRING("#hl2c_give_gravgun"))) return;
-		if (nRandom == 2) if (ChaosSpawnWeapon("weapon_pistol", MAKE_STRING("#hl2c_give_pistol"), 255, "Pistol")) return;
-		if (nRandom == 3) if (ChaosSpawnWeapon("weapon_357", MAKE_STRING("#hl2c_give_357"), 32, "357")) return;
-		if (nRandom == 4) if (ChaosSpawnWeapon("weapon_smg1", MAKE_STRING("#hl2c_give_smg"), 255, "SMG1", 3, "smg1_grenade")) return;
-		if (nRandom == 5) if (ChaosSpawnWeapon("weapon_ar2", MAKE_STRING("#hl2c_give_ar2"), 255, "AR2", 5, "AR2AltFire")) return;
-		if (nRandom == 6) if (ChaosSpawnWeapon("weapon_shotgun", MAKE_STRING("#hl2c_give_shotgun"), 255, "Buckshot")) return;
-		if (nRandom == 7) if (ChaosSpawnWeapon("weapon_crossbow", MAKE_STRING("#hl2c_give_crossbow"), 16, "XBowBolt")) return;
-		if (nRandom == 8) if (ChaosSpawnWeapon("weapon_frag", MAKE_STRING("#hl2c_give_frag"), 5, "grenade")) return;
-		if (nRandom == 9) if (ChaosSpawnWeapon("weapon_rpg", MAKE_STRING("#hl2c_give_rpg"), 3, "rpg_round")) return;
+		if (nRandom == 2) if (ChaosSpawnWeapon("weapon_pistol", MAKE_STRING("#hl2c_give_pistol"), 255, "Pistol", "item_ammo_pistol")) return;
+		if (nRandom == 3) if (ChaosSpawnWeapon("weapon_357", MAKE_STRING("#hl2c_give_357"), 32, "357", "item_ammo_357")) return;
+		if (nRandom == 4) if (ChaosSpawnWeapon("weapon_smg1", MAKE_STRING("#hl2c_give_smg"), 255, "SMG1", "item_ammo_smg1", 3, "smg1_grenade", "item_ammo_smg1_grenade")) return;
+		if (nRandom == 5) if (ChaosSpawnWeapon("weapon_ar2", MAKE_STRING("#hl2c_give_ar2"), 255, "AR2", "item_ammo_ar2", 5, "AR2AltFire", "item_ammo_ar2_large")) return;
+		if (nRandom == 6) if (ChaosSpawnWeapon("weapon_shotgun", MAKE_STRING("#hl2c_give_shotgun"), 255, "Buckshot", "item_box_buckshot")) return;
+		if (nRandom == 7) if (ChaosSpawnWeapon("weapon_crossbow", MAKE_STRING("#hl2c_give_crossbow"), 16, "XBowBolt", "item_ammo_crossbow")) return;
+		if (nRandom == 8) if (ChaosSpawnWeapon("weapon_frag", MAKE_STRING("#hl2c_give_frag"), 5, "grenade", "weapon_frag")) return;
+		if (nRandom == 9) if (ChaosSpawnWeapon("weapon_rpg", MAKE_STRING("#hl2c_give_rpg"), 3, "rpg_round", "item_rpg_round")) return;
 		if (nRandom == 10)
 		{
 			if (ChaosSpawnWeapon("weapon_bugbait", MAKE_STRING("#hl2c_give_bugbait")))
@@ -7982,7 +8043,7 @@ void CERandomWeaponGive::StartEffect()
 				return;
 			}
 		}
-		if (nRandom == 11) if (ChaosSpawnWeapon("weapon_slam", MAKE_STRING("#hl2c_give_slam"), 5, "slam")) return;
+		if (nRandom == 11) if (ChaosSpawnWeapon("weapon_slam", MAKE_STRING("#hl2c_give_slam"), 5, "slam", "weapon_slam")) return;
 		if (nRandom == 12) if (ChaosSpawnWeapon("weapon_cubemap", MAKE_STRING("#hl2c_give_cubemap"))) return;
 		if (nRandom == 13) if (ChaosSpawnWeapon("weapon_stunstick", MAKE_STRING("#hl2c_give_stunstick"))) return;
 		if (nRandom == 14) if (ChaosSpawnWeapon("weapon_oldmanharpoon", MAKE_STRING("Give Harpoon"))) return;
@@ -8124,7 +8185,6 @@ void CERandomNPC::StartEffect()
 	variant_t emptyVariant;
 	variant_t sVariant;
 	int nRandom;
-	//TODO: blob
 	nRandom = chaos_rng1.GetInt() == -1 ? RandomInt(0, 47) : chaos_rng1.GetInt();
 	if (nRandom == 0)
 	{
@@ -8472,32 +8532,6 @@ void CESupercold::FastThink()
 	float flNum = max(0.3, (hl2_normspeed.GetFloat() / max(hl2_normspeed.GetFloat() * 0.3, vecVelocity.Length())));
 	cvar->FindVar("host_timescale")->SetValue(flNum);
 }
-void CEPullToPlayer::MaintainEffect()
-{
-	CBaseEntity* pEnt = gEntList.FindEntityByName(NULL, "chaos_pull_to_player");
-	if (pEnt)
-	{
-		CPhysExplosion* pExplo = static_cast<CPhysExplosion*>(pEnt);
-		pExplo->m_damage = sv_gravity.GetFloat() * chaos_pushpull_strength.GetFloat();
-	}
-	else
-	{
-		StartEffect();
-	}
-}
-void CEPushFromPlayer::MaintainEffect()
-{
-	CBaseEntity* pEnt = gEntList.FindEntityByName(NULL, "chaos_push_from_player");
-	if (pEnt)
-	{
-		CPhysExplosion* pExplo = static_cast<CPhysExplosion*>(pEnt);
-		pExplo->m_damage = sv_gravity.GetFloat() * chaos_pushpull_strength.GetFloat();
-	}
-	else
-	{
-		StartEffect();
-	}
-}
 void CEColors::TransitionEffect()
 {
 	StartEffect();
@@ -8780,9 +8814,14 @@ void CEBottle::StartEffect()
 	CBaseAnimating* pEnt = (CBaseAnimating*)CreateEntityByName("prop_physics_override");
 	pEnt->SetModel("models/props_junk/garbage_glassbottle003a.mdl");
 	Vector vecOrigin = pPlayer->GetAbsOrigin() + vecForward * 128;
-	trace_t	trDown;
-	UTIL_TraceLine(vecOrigin, vecOrigin - Vector(0, 0, 1000), MASK_SOLID, pEnt, COLLISION_GROUP_DEBRIS, &trDown);
-	vecOrigin = trDown.endpos + Vector(0, 0, 1);
+	if (m_CratePos != vec3_origin)
+		vecOrigin = m_CratePos;
+	else
+	{
+		trace_t	trDown;
+		UTIL_TraceLine(vecOrigin, vecOrigin - Vector(0, 0, 1000), MASK_SOLID, pEnt, COLLISION_GROUP_DEBRIS, &trDown);
+		vecOrigin = trDown.endpos + Vector(0, 0, 1);
+	}
 	Vector vecLastGoodPos = vecOrigin;
 	pEnt->SetAbsOrigin(vecOrigin);
 	trace_t	trace;
@@ -9019,7 +9058,13 @@ void CERandomSong::StartEffect()
 	else if (nRandom == 71) sSongName = "*#music/vlvx_song28.mp3";
 	ep.m_pSoundName = sSongName;
 	pPlayer->PrecacheSound(sSongName);//because precaching every single song on spawn is not the winning move
-	pPlayer->EmitSound(filter, pPlayer->entindex(), ep);
+	if (m_CratePos != vec3_origin && !pPlayer->IsInAVehicle())
+	{
+		CBaseEntity* pSound = CreateEntityByName("ambient_generic");
+		pSound->EmitSound(filter, pSound->entindex(), ep);
+	}
+	else
+		pPlayer->EmitSound(filter, pPlayer->entindex(), ep);
 }
 void CETreeSpam::StartEffect()
 {
@@ -9097,9 +9142,14 @@ void CEMountedGun::StartEffect()
 	UTIL_TraceLine(UTIL_GetLocalPlayer()->EyePosition(), vecOrigin, MASK_SOLID, &filter, &tr);
 	Vector vecTargetOrigin = tr.endpos - vecForward * 40;
 	QAngle vecAngles(0, pPlayer->GetAbsAngles().y, 0);
-	//pTank->SetAbsOrigin(vecOrigin);
-	//pTank->SetAbsAngles(vecAngles);
-	vecOrigin = tr.endpos - vecForward * 5 + Vector(0, 0, 32);//move back out of walls so we're guaranteed to be usable
+	if (m_CratePos != vec3_origin)
+	{
+		vecOrigin = m_CratePos;
+	}
+	else
+	{
+		vecOrigin = tr.endpos - vecForward * 5 + Vector(0, 0, 32);//move back out of walls so we're guaranteed to be usable
+	}
 	CBaseEntity* pProp = CreateEntityByName("prop_dynamic");
 	if (pProp)
 	{
@@ -9701,6 +9751,11 @@ void CEWeaponsDrop::FastThink()
 	VectorAngles(pPlayer->BodyDirection2D(), gunAngles);
 	Vector vecForward;
 	AngleVectors(gunAngles, &vecForward, NULL, NULL);
+	if (m_CratePos != vec3_origin)
+	{
+		vecForward = -(pPlayer->EyePosition() - m_CratePos);
+		vecForward.NormalizeInPlace();
+	}
 	float flDiameter = sqrt(pPlayer->CollisionProp()->OBBSize().x * pPlayer->CollisionProp()->OBBSize().x +
 		pPlayer->CollisionProp()->OBBSize().y * pPlayer->CollisionProp()->OBBSize().y);
 	for (int i = 0; i < MAX_WEAPONS; ++i)
@@ -10452,6 +10507,13 @@ void CEMirrorWorld::StopEffect()
 void CENoMouseHorz::StartEffect()
 {
 	engine->ClientCommand(engine->PEntityOfEntIndex(1), "m_chaos_yaw 0.0f;cl_yawspeed 0");
+	if (m_CratePos != vec3_origin)
+	{
+		Vector vecForward = -(UTIL_GetLocalPlayer()->EyePosition() - m_CratePos);
+		QAngle angleCamera;
+		VectorAngles(vecForward, angleCamera);
+		UTIL_GetLocalPlayer()->SetAbsAngles(angleCamera);
+	}
 }
 void CENoMouseHorz::StopEffect()
 {
@@ -10460,6 +10522,21 @@ void CENoMouseHorz::StopEffect()
 		engine->ClientCommand(engine->PEntityOfEntIndex(1), "m_chaos_yaw 1\n");
 	else
 		engine->ClientCommand(engine->PEntityOfEntIndex(1), "m_chaos_yaw -1\n");
+}
+void CENoMouseVert::StartEffect()
+{
+	engine->ClientCommand(engine->PEntityOfEntIndex(1), "m_chaos_pitch 0.0f;cl_pitchspeed 0");
+	if (m_CratePos != vec3_origin)
+	{
+		Vector vecForward = -(UTIL_GetLocalPlayer()->EyePosition() - m_CratePos);
+		QAngle angleCamera;
+		VectorAngles(vecForward, angleCamera);
+		UTIL_GetLocalPlayer()->SetAbsAngles(angleCamera);
+	}
+}
+void CENoMouseVert::StopEffect()
+{
+	engine->ClientCommand(engine->PEntityOfEntIndex(1), "m_chaos_pitch 1\n");
 }
 void CENormalView::StartEffect()
 {
@@ -10546,4 +10623,16 @@ void CEAspectRatio::StopEffect()
 {
 	cvar->FindVar("r_aspectratio")->SetValue(0);
 	cvar->FindVar("c_orthowidth")->SetValue(135 * default_aspectratio.GetFloat());
+}
+void CENadeGuns::StartEffect()
+{
+	chaos_replace_bullets_with_grenades.SetValue(1);
+	if (m_CratePos != vec3_origin)
+	{
+		Fraggrenade_Create(m_CratePos, vec3_angle, vec3_origin, AngularImpulse(0, 0, 0), NULL, 3, false);
+	}
+}
+void CENadeGuns::StopEffect()
+{
+	chaos_replace_bullets_with_grenades.SetValue(0);
 }

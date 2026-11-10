@@ -197,7 +197,7 @@ public:
 	bool m_bInVoteList = false;
 	CBaseEntity *ChaosSpawnVehicle(const char *className, string_t strActualName, int iSpawnType, const char *strModel, const char *strTargetname, const char *strScript);
 	CAI_BaseNPC *ChaosSpawnNPC(const char *className, string_t strActualName, int iSpawnType, const char *strModel, const char *strTargetname, const char *strWeapon, int flags = 0);
-	bool ChaosSpawnWeapon(const char *className, string_t strActualName, int iCount = 0, const char *strAmmoType = NULL, int iCount2 = 0, const char *strAmmoType2 = NULL);
+	bool ChaosSpawnWeapon(const char *className, string_t strActualName, int iCount = 0, const char* strAmmoType = NULL, const char* strAmmoClass = NULL, int iCount2 = 0, const char *strAmmoType2 = NULL, const char* strAmmoClass2 = NULL);
 	void RandomTeleport(bool bPlayerOnly);
 	CNodeList *GetNearbyNodes(int iNodes);
 	CAI_Node *NearestNodeToPoint(const Vector &vPosition, bool bCheckVisibility);
@@ -707,6 +707,12 @@ public:
 	void StartEffect() override;
 	void StopEffect() override;
 };
+class CENoMouseVert : public CChaosEffect
+{
+public:
+	void StartEffect() override;
+	void StopEffect() override;
+};
 class CENormalView : public CChaosEffect
 {
 public:
@@ -729,5 +735,11 @@ public:
 	float m_flFromValue;
 	float m_flTargetValue;
 	float m_flRatioChangeTime;
+};
+class CENadeGuns : public CChaosEffect
+{
+public:
+	void StartEffect() override;
+	void StopEffect() override;
 };
 #endif
