@@ -2536,7 +2536,7 @@ int CChoreoScene::EventThink( CChoreoEvent *e, float frame_start_time, float fra
 			where_is_event = IsTimeInRange( starttime, frame_start_time, frame_end_time );
 			if ( IN_RANGE == where_is_event )
 			{
-				disposition = PROCESSING_TYPE_START_SINGLE;
+				disposition = PROCESSING_TYPE_START;
 				iret = 1;
 			}
 
@@ -2778,7 +2778,6 @@ void CChoreoScene::ProcessActiveListEntry( ActiveList *entry )
 		}
 		break;
 	case PROCESSING_TYPE_START:
-	case PROCESSING_TYPE_START_SINGLE:
 	case PROCESSING_TYPE_START_RESUMECONDITION:
 		{
 			entry->e->StartProcessing( m_pIChoreoEventCallback, this, m_flCurrentTime );
