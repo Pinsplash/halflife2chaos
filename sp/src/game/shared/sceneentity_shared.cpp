@@ -11,7 +11,11 @@
 #include "tier0/memdbgon.h"
 
 static ConVar scene_print( "scene_print", "0", FCVAR_REPLICATED, "When playing back a scene, print timing and event info to console." );
-ConVar scene_clientflex( "scene_clientflex", "1", FCVAR_REPLICATED, "Do client side flex animation." );
+
+//in chaos we want this off. this comes after the recent changes we made to make it so all copies of an NPC on the map will participate in scenes at the same time.
+//apparently doing that somehow broke C_SceneEntity::FindNamedActor. issuing the flex commands from the server fixes it.
+//nothing else seems to have broken like this, which makes you have to wonder why valve structured it this way to begin with.
+ConVar scene_clientflex( "scene_clientflex", "0", FCVAR_REPLICATED, "Do client side flex animation." );
 
 //-----------------------------------------------------------------------------
 // Purpose: 
