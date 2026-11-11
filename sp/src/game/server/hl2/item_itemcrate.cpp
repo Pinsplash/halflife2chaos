@@ -13,6 +13,9 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
+extern ConVar chaos;
+extern ConVar chaos_crate_mode;
+
 const char *pszItemCrateModelName[] =
 {
 	"models/items/item_item_crate.mdl",
@@ -190,14 +193,16 @@ void CItem_ItemCrate::OnBreak( const Vector &vecVelocity, const AngularImpulse &
 
 	m_OnCacheInteraction.FireOutput(pBreaker,this);
 
-
-	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
-	if (pPlayer)
+	if (chaos.GetBool() && chaos_crate_mode.GetBool())
 	{
-		CHL2_Player* pHL2Player = static_cast<CHL2_Player*>(pPlayer);
-		if (pHL2Player)
+		CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+		if (pPlayer)
 		{
-			pHL2Player->StartChaosEffectCycle(GetAbsOrigin());
+			CHL2_Player* pHL2Player = static_cast<CHL2_Player*>(pPlayer);
+			if (pHL2Player)
+			{
+				pHL2Player->StartChaosEffectCycle(GetAbsOrigin());
+			}
 		}
 	}
 

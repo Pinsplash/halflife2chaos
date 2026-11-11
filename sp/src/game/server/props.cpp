@@ -3345,7 +3345,8 @@ static CBreakableProp *BreakModelCreate_Prop( CBaseEntity *pOwner, breakmodel_t 
 		pEntity->SetModelName( AllocPooledString( pModel->modelName ) );
 		pEntity->SetModel( STRING(pEntity->GetModelName()) );
 		pEntity->SetCollisionGroup(pModel->collisionGroup);
-		pEntity->SetModelScale(pOwner->GetBaseAnimating()->GetModelScale());
+		if (pOwner)
+			pEntity->SetModelScale(pOwner->GetBaseAnimating()->GetModelScale());
 
 		if ( pModel->fadeMinDist > 0 && pModel->fadeMaxDist >= pModel->fadeMinDist )
 		{

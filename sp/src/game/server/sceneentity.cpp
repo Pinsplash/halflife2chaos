@@ -3438,7 +3438,8 @@ void CSceneEntity::UnloadScene( void )
 			CUtlVector<CBaseEntity*> vEntList;
 			FindNamedActorInt(iActor, vEntList);
 			for (int iEnt = 0; iEnt < vEntList.Size(); iEnt++)
-				vEntList[iEnt]->MyBaseFlexPointer()->RemoveChoreoScene(m_pScene);
+				if (vEntList[iEnt] && vEntList[iEnt]->MyBaseFlexPointer())
+					vEntList[iEnt]->MyBaseFlexPointer()->RemoveChoreoScene(m_pScene);
 		}
 	}
 	delete m_pScene;
@@ -3940,7 +3941,8 @@ void CSceneEntity::ClearSceneEvents( CChoreoScene *scene, bool canceled )
 		CUtlVector<CBaseEntity*> vEntList;
 		FindNamedActorInt(i, vEntList);
 		for (int iEnt = 0; iEnt < vEntList.Size(); iEnt++)
-			vEntList[iEnt]->MyBaseFlexPointer()->ClearSceneEvents(scene, canceled);
+			if (vEntList[iEnt] && vEntList[iEnt]->MyBaseFlexPointer())
+				vEntList[iEnt]->MyBaseFlexPointer()->ClearSceneEvents(scene, canceled);
 	}
 
 	// Iterate events and precache necessary resources
@@ -4259,12 +4261,16 @@ void CSceneEntity::OnSceneFinished( bool canceled, bool fireoutput )
 		FindNamedActorInt(iActor, vEntList);
 		for (int iEnt = 0; iEnt < vEntList.Size(); iEnt++)
 		{
-			vEntList[iEnt]->MyBaseFlexPointer()->RemoveChoreoScene(m_pScene, canceled);
-
-			// If we interrupted the actor's previous scenes, resume them
-			if (m_bInterruptedActorsScenes)
+			if (vEntList[iEnt])
 			{
-				QueueActorsScriptedScenesToResume((CBaseFlex*)vEntList[iEnt], false);
+				if (vEntList[iEnt]->MyBaseFlexPointer())
+					vEntList[iEnt]->MyBaseFlexPointer()->RemoveChoreoScene(m_pScene, canceled);
+
+				// If we interrupted the actor's previous scenes, resume them
+				if (m_bInterruptedActorsScenes)
+				{
+					QueueActorsScriptedScenesToResume((CBaseFlex*)vEntList[iEnt], false);
+				}
 			}
 		}
 	}

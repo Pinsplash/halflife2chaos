@@ -1277,6 +1277,7 @@ void CNPC_Manhack::MoveToTarget(float flInterval, const Vector &vMoveTarget)
 		NDebugOverlay::Line( GetAbsOrigin(), GetAbsOrigin() + ( m_vecBurstDirection * 64.0f ), 0, 0, 255, true, 2.1f );
 		NDebugOverlay::Cross3D( GetAbsOrigin() , -Vector(8,8,8), Vector(8,8,8), 255, 0, 0, true, 2.1f );
 		*/
+		targetDir = m_vecBurstDirection;
 
 		flDist	= FLT_MAX;
 		myDecay	 = 0.3f;
