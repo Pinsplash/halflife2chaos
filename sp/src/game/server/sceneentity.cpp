@@ -2944,8 +2944,10 @@ void CSceneEntity::StartEvent( float currenttime, CChoreoScene *scene, CChoreoEv
 		for (int iEnt = 0; iEnt < vEntList.Size(); iEnt++)
 		{
 			CUtlVector<CBaseEntity*> vTargetList;
-			CBaseFlex* pActor = (CBaseFlex*)vEntList[iEnt];
-			Assert(pActor);
+			CBaseFlex* pActor = vEntList[iEnt]->MyBaseFlexPointer();
+			//necessary to avoid a crash on d3_c17_07 where a scene accidentally targets a non-character because it uses *
+			if (!pActor)
+				continue;
 			switch (event->GetType())
 			{
 			case CChoreoEvent::SUBSCENE:
@@ -3209,7 +3211,10 @@ void CSceneEntity::EndEvent( float currenttime, CChoreoScene *scene, CChoreoEven
 		LocalScene_Printf("%s : %8.2f:  finish %s\n", STRING(m_iszSceneFile), currenttime, event->GetDescription());
 		for (int iEnt = 0; iEnt < vEntList.Size(); iEnt++)
 		{
-			CBaseFlex* pActor = (CBaseFlex*)vEntList[iEnt];
+			CBaseFlex* pActor = vEntList[iEnt]->MyBaseFlexPointer();
+			//necessary to avoid a crash on d3_c17_07 where a scene accidentally targets a non-character because it uses *
+			if (!pActor)
+				continue;
 			switch (event->GetType())
 			{
 			case CChoreoEvent::EXPRESSION:
@@ -3550,7 +3555,7 @@ void CSceneEntity::FindNamedActorInt(int index, CUtlVector<CBaseEntity*>& list)
 		CUtlVector<CBaseEntity*> vEntList;
 		FindNamedEntity(pChoreoActor->GetName(), vEntList);
 		if (vEntList.Size())
-			pActor = (CBaseFlex*)vEntList[0];
+			pActor = vEntList[0]->MyBaseFlexPointer();
 
 		if (pActor)
 		{
@@ -3564,7 +3569,7 @@ void CSceneEntity::FindNamedActorInt(int index, CUtlVector<CBaseEntity*>& list)
 			for (int iClone = 1; iClone < vEntList.Size(); iClone++)
 			{
 				if (pActor == NULL || !pActor->IsAlive())
-					m_hActorList.AddToTail((CBaseFlex*)vEntList[iClone]);
+					m_hActorList.AddToTail(vEntList[iClone]->MyBaseFlexPointer());
 				list.AddToTail(vEntList[iClone]);
 			}
 			NetworkProp()->NetworkStateForceUpdate();
@@ -3811,13 +3816,8 @@ void CSceneEntity::FindNamedEntity( const char *name, CUtlVector<CBaseEntity*> &
 	//search for entities with the same name
 	for (CBaseEntity* pEnt = gEntList.FindEntityByName(NULL, evalname, NULL, pActor); pEnt; pEnt = gEntList.FindEntityByName(pEnt, evalname, NULL, pActor))
 	{
-		if (bBaseFlexOnly)
-		{
-			CBaseFlex* pFlexEntity = dynamic_cast<CBaseFlex*>(pEnt);
-			if (!pFlexEntity)
-				continue;
-		}
-		list.AddToTail(pEnt);
+		if (!bBaseFlexOnly || pEnt->MyBaseFlexPointer())
+			list.AddToTail(pEnt);
 	}
 }
 
@@ -4269,7 +4269,7 @@ void CSceneEntity::OnSceneFinished( bool canceled, bool fireoutput )
 				// If we interrupted the actor's previous scenes, resume them
 				if (m_bInterruptedActorsScenes)
 				{
-					QueueActorsScriptedScenesToResume((CBaseFlex*)vEntList[iEnt], false);
+					QueueActorsScriptedScenesToResume(vEntList[iEnt]->MyBaseFlexPointer(), false);
 				}
 			}
 		}
@@ -4751,7 +4751,7 @@ CBaseFlex* CInstancedSceneEntity::FindNamedActorInt(int index)
 	}
 	CUtlVector<CBaseEntity*> vEntList;
 	BaseClass::FindNamedActorInt(index, vEntList);
-	return (CBaseFlex*)vEntList[0];
+	return vEntList[0]->MyBaseFlexPointer();
 }
 */
 void CInstancedSceneEntity::FindNamedActorInt(int index, CUtlVector<CBaseEntity*>& list)

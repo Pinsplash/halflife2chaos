@@ -2835,6 +2835,8 @@ bool CBaseEntity::FVisible( CBaseEntity *pEntity, int traceMask, CBaseEntity **p
 		// Use the custom LOS trace filter
 		CTraceFilterLOS traceFilter( this, COLLISION_GROUP_NONE, pEntity );
 		UTIL_TraceLine( vecLookerOrigin, vecTargetOrigin, traceMask, &traceFilter, &tr );
+		//NDebugOverlay::Line(vecLookerOrigin, vecTargetOrigin, 255, 255, 255, true, 1);
+		//NDebugOverlay::Line(tr.startpos + Vector(0, 0, 1), tr.endpos + Vector(0, 0, 1), 255, 0, 0, true, 1);
 	}
 	
 	if (tr.fraction != 1.0 || tr.startsolid )

@@ -2608,33 +2608,47 @@ void CHL2_Player::StartGame()
 		}
 		return;
 	}
-	//start halfway through when it's from Restart Level and we already went through the detour map
-	else if (g_bGoBackLevel && completed_town03.GetBool() && !Q_strcmp(pMapName, "d1_town_02"))
+	//multiple
+	else if (!Q_strcmp(pMapName, "d1_town_02"))
 	{
-		Vector vecOrigin = Vector(-3648, 0, -3419);
-		static const char* strWeapons[] = {
-			"item_suit",
-			"weapon_crowbar",
-			"weapon_physcannon",
-			"weapon_pistol",
-			"weapon_pistol",
-			"weapon_357",
-			"weapon_smg1",
-			"weapon_smg1",
-			"weapon_shotgun",
-			"weapon_frag",
-			"weapon_frag",
-			"weapon_frag"
-		};
-		for (int i = 0; i < 12; i++)
+		if (g_bGoBackLevel && completed_town03.GetBool())
 		{
-			CBaseEntity* pItem = (CBaseEntity*)CreateEntityByName(strWeapons[i]);
-			if (pItem)
+			//start halfway through when it's from Restart Level and we already went through the detour map
+			Vector vecOrigin = Vector(-3648, 0, -3419);
+			static const char* strWeapons[] = {
+				"item_suit",
+				"weapon_crowbar",
+				"weapon_physcannon",
+				"weapon_pistol",
+				"weapon_pistol",
+				"weapon_357",
+				"weapon_smg1",
+				"weapon_smg1",
+				"weapon_shotgun",
+				"weapon_frag",
+				"weapon_frag",
+				"weapon_frag"
+			};
+			for (int i = 0; i < 12; i++)
 			{
-				pItem->SetAbsOrigin(vecOrigin);
-				pItem->Spawn();
-				pItem->Activate();
+				CBaseEntity* pItem = (CBaseEntity*)CreateEntityByName(strWeapons[i]);
+				if (pItem)
+				{
+					pItem->SetAbsOrigin(vecOrigin);
+					pItem->Spawn();
+					pItem->Activate();
+				}
 			}
+		}
+		//apparently at some point we changed father grigori's ability to path to us to be more likely to find a path.
+		//this means he can see a path to us while we're coming down in the cart, which means he'll take it instead of
+		//standing by the table waiting for you to walk to him, which looks weird.
+		//but why would he want to move to us at that time, you ask? not one, but TWO ai_goal_follow's activate during the sequence.
+		//this is quite strange considering grigori is never meant to follow you; only lead.
+		//just remove that shit
+		for (CBaseEntity* pEnt = gEntList.FindEntityByClassname(NULL, "ai_goal_follow"); pEnt; pEnt = gEntList.FindEntityByClassname(pEnt, "ai_goal_follow"))
+		{
+			UTIL_Remove(pEnt);
 		}
 	}
 	//remove the fucky-wucky triggers so that invert gravity doesn't softlock you

@@ -249,7 +249,7 @@ public:
 	void Spawn(void)
 	{
 		SetClassname("item_rpg_round");
-		m_ModelName = "models/items/w_missile_closed.mdl";
+		m_ModelName = "models/weapons/w_missile_closed.mdl";
 		m_AmmoCount = SIZE_AMMO_RPG_ROUND;
 		m_AmmoType = "RPG_Round";
 		BaseClass::Spawn();

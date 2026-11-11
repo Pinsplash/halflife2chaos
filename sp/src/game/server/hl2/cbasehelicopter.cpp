@@ -217,6 +217,7 @@ void CBaseHelicopter::Spawn( void )
 	AddSolidFlags( FSOLID_CUSTOMRAYTEST | FSOLID_CUSTOMBOXTEST );
 	m_flRandomOffsetTime = -1.0f;
 	m_vecRandomOffset.Init( 0, 0, 0 );
+	BaseClass::Spawn();
 }
 
 

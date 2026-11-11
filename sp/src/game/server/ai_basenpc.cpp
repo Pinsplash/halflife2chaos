@@ -2052,10 +2052,6 @@ void CAI_BaseNPC::OnLooked( int iDistance )
 
 	ClearConditions( conditionsToClear, ARRAYSIZE( conditionsToClear ) );
 
-	//if npc is in a script, don't see enemies. this avoids softlocks from when they go into combat state.
-	if (m_bInAScript)
-		return;
-
 	AISightIter_t iter;
 	CBaseEntity *pSightEnt;
 
@@ -2076,6 +2072,11 @@ void CAI_BaseNPC::OnLooked( int iDistance )
 		// don't check anything else about an entity that can't be seen, or an entity that you don't care about.
 		if ( relation != D_NU )
 		{
+			//if npc is in a script, don't see enemies. this avoids softlocks from when they go into combat state.
+			//still allow them to see the player and miscellaneous because some scenes progress by ability to see the player (ai_script_conditions)
+			if (m_bInAScript && (relation == D_HT || relation == D_FR))
+				return;
+
 			if ( pSightEnt == GetEnemy() )
 			{
 				// we know this ent is visible, so if it also happens to be our enemy, store that now.
