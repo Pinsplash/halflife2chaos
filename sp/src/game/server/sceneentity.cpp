@@ -2889,6 +2889,46 @@ void CSceneEntity::StartEvent( float currenttime, CChoreoScene *scene, CChoreoEv
  		LocalScene_Printf( "%s : %8.2f:  ignored %s\n", STRING( m_iszSceneFile ), currenttime, event->GetDescription() );
  		return;
  	}
+	switch (event->GetType())
+	{
+	case CChoreoEvent::SECTION:
+	{
+		if (IsMultiplayer())
+			break;
+
+		// Pauses scene playback
+		DispatchPauseScene(scene, event->GetParameters());
+	}
+	break;
+	case CChoreoEvent::LOOP:
+	{
+		DispatchProcessLoop(scene, event);
+	}
+	break;
+	case CChoreoEvent::INTERRUPT:
+	{
+		if (IsMultiplayer())
+			break;
+
+		DispatchStartInterrupt(scene, event);
+	}
+	break;
+
+	case CChoreoEvent::STOPPOINT:
+	{
+		if (IsMultiplayer())
+			break;
+
+		DispatchStopPoint(scene, event->GetParameters());
+	}
+	break;
+	default:
+	{
+		// FIXME: Unhandeled event
+		// Assert(0);
+	}
+	break;
+	}
 
 	CChoreoActor *actor = event->GetActor();
 	if ( actor )
@@ -3128,38 +3168,6 @@ void CSceneEntity::StartEvent( float currenttime, CChoreoScene *scene, CChoreoEv
 				}
 			}
 			break;
-			case CChoreoEvent::SECTION:
-			{
-				if (IsMultiplayer())
-					break;
-
-				// Pauses scene playback
-				DispatchPauseScene(scene, event->GetParameters());
-			}
-			break;
-			case CChoreoEvent::LOOP:
-			{
-				DispatchProcessLoop(scene, event);
-			}
-			break;
-			case CChoreoEvent::INTERRUPT:
-			{
-				if (IsMultiplayer())
-					break;
-
-				DispatchStartInterrupt(scene, event);
-			}
-			break;
-
-			case CChoreoEvent::STOPPOINT:
-			{
-				if (IsMultiplayer())
-					break;
-
-				DispatchStopPoint(scene, event->GetParameters());
-			}
-			break;
-
 			case CChoreoEvent::PERMIT_RESPONSES:
 			{
 				if (IsMultiplayer())
@@ -3487,13 +3495,12 @@ bool CSceneEntity::CheckEvent( float currenttime, CChoreoScene *scene, CChoreoEv
 		break;
 	default:
 		{
-			CBaseFlex *pActor = NULL;
 			CChoreoActor *actor = event->GetActor();
 			if ( actor )
 			{
 				CUtlVector<CBaseEntity*> vEntList;
 				FindNamedActorPointer(actor, vEntList);
-				if (pActor == NULL)
+				if (!vEntList.Size())
 				{
 					Warning("CSceneEntity %s unable to find actor \"%s\"\n", STRING(GetEntityName()), actor->GetName());
 					return true;
@@ -3502,6 +3509,7 @@ bool CSceneEntity::CheckEvent( float currenttime, CChoreoScene *scene, CChoreoEv
 				for (int iEnt = 0; iEnt < vEntList.Size(); iEnt++)
 					if (vEntList[iEnt]->MyBaseFlexPointer()->CheckSceneEvent(currenttime, scene, event))
 						return true;
+				return false;
 			}
 		}
 		break;
