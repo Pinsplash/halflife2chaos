@@ -1523,8 +1523,11 @@ void CSceneEntity::DispatchStartGeneric( CChoreoScene *scene, CBaseFlex *actor, 
 {
 	CUtlVector<CBaseEntity*> vEntList;
 	FindNamedEntity(event->GetParameters2(), vEntList);
-	for (int iEnt = 0; iEnt < vEntList.Size(); iEnt++)//vEntList[iEnt]
-		actor->AddSceneEvent(scene, event, vEntList[iEnt]);
+	if (vEntList.Size())
+		for (int iEnt = 0; iEnt < vEntList.Size(); iEnt++)//vEntList[iEnt]
+			actor->AddSceneEvent(scene, event, vEntList[iEnt]);
+	else
+		actor->AddSceneEvent(scene, event);
 }
 
 
@@ -2446,6 +2449,9 @@ void CSceneEntity::PrefetchAnimBlocks( CChoreoScene *scene )
 					FindNamedActorPointer(actor, vEntList);
 					for (int iEnt = 0; iEnt < vEntList.Size(); iEnt++)
 					{
+						if (!vEntList[iEnt]->GetBaseAnimating())
+							continue;
+
 						int seq = vEntList[iEnt]->GetBaseAnimating()->LookupSequence(event->GetParameters());
 						if ( seq >= 0 )
 						{
@@ -3555,7 +3561,16 @@ void CSceneEntity::FindNamedActorInt(int index, CUtlVector<CBaseEntity*>& list)
 		CUtlVector<CBaseEntity*> vEntList;
 		FindNamedEntity(pChoreoActor->GetName(), vEntList);
 		if (vEntList.Size())
-			pActor = vEntList[0]->MyBaseFlexPointer();
+		{
+			for (int iEnt = 0; iEnt < vEntList.Size(); iEnt++)
+			{
+				if (vEntList[iEnt]->MyBaseFlexPointer())
+				{
+					pActor = vEntList[iEnt]->MyBaseFlexPointer();
+					break;
+				}
+			}
+		}
 
 		if (pActor)
 		{
@@ -3812,12 +3827,18 @@ void CSceneEntity::FindNamedEntity( const char *name, CUtlVector<CBaseEntity*> &
 		list.AddToTail(pEnt);
 		return;
 	}
-
+	//scenes with * in the name only want one target
+	size_t length = strlen(evalname);
+	bool star = (evalname[length - 1] == '*');
 	//search for entities with the same name
 	for (CBaseEntity* pEnt = gEntList.FindEntityByName(NULL, evalname, NULL, pActor); pEnt; pEnt = gEntList.FindEntityByName(pEnt, evalname, NULL, pActor))
 	{
 		if (!bBaseFlexOnly || pEnt->MyBaseFlexPointer())
+		{
 			list.AddToTail(pEnt);
+			if (star && pEnt->MyBaseFlexPointer())
+				return;
+		}
 	}
 }
 
@@ -3989,7 +4010,7 @@ void CSceneEntity::ClearSchedules( CChoreoScene *scene )
 		FindNamedActorInt(iActor, vEntList);
 		for (int iEnt = 0; iEnt < vEntList.Size(); iEnt++)
 		{
-			if (!vEntList[iEnt]->IsNPC())
+			if (!vEntList[iEnt]->IsNPC() && vEntList[iEnt]->GetBaseAnimating())
 			{
 				vEntList[iEnt]->GetBaseAnimating()->ResetSequence(vEntList[iEnt]->GetBaseAnimating()->SelectWeightedSequence(ACT_IDLE));
 				vEntList[iEnt]->GetBaseAnimating()->SetCycle(0);

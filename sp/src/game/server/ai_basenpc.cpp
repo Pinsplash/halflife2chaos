@@ -6079,7 +6079,7 @@ Activity CAI_BaseNPC::TranslateActivity( Activity idealActivity, Activity *pIdea
 		//i don't know when this bug started happening.
 		//no other NPCs appear to go down this same code path, but if in the future an NPC is animating incorrectly and this message appears, now you know why.
 		//this may also remove the need for some weapon acttables referencing readiness levels.
-		Msg("%s weapon activity is %s, ideal activity %s\n", GetClassname(), GetActivityName(idealWeaponActivity), GetActivityName(idealActivity));
+		//Msg("%s weapon activity is %s, ideal activity %s\n", GetClassname(), GetActivityName(idealWeaponActivity), GetActivityName(idealActivity));
 		return idealWeaponActivity;
 	}
 

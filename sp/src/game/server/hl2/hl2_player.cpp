@@ -2579,6 +2579,13 @@ void CHL2_Player::StartGame()
 			else if (pEnt->GetAbsOrigin() == Vector(-4614.97, -806.03, 16))
 				UTIL_Remove(pEnt);
 		}
+		//also spawn the two cops next to the train
+		CBaseEntity* pEnt = gEntList.FindEntityByName(NULL, "razortrain_cop_template");
+		if (pEnt)
+		{
+			variant_t param;
+			pEnt->AcceptInput("ForceSpawn", this, this, param, 0);
+		}
 		return;
 	}
 	//critical trigger can be activated by any NPC. only alyx should be able to.
@@ -2650,6 +2657,18 @@ void CHL2_Player::StartGame()
 		{
 			UTIL_Remove(pEnt);
 		}
+	}
+	//in chaos we don't allow NPCs to acquire enemies while in a script to avoid softlocks,
+	//but grigori is an exception since he actually has a gun. turn off the scripting flag so he can see enemies,
+	//and turn on the gag flag so he doesn't call for help, which seems to be why valve used StartScripting in this scene
+	else if (!Q_strcmp(pMapName, "d1_town_02a"))
+	{
+		CBaseEntity* pEnt = gEntList.FindEntityByName(NULL, "graveyard_monk_scene_b2");
+		variant_t param;
+		param.SetString(MAKE_STRING("OnCompletion monk,StopScripting,,0,-1"));
+		pEnt->AcceptInput("AddOutput", this, this, param, 0);
+		param.SetString(MAKE_STRING("OnCompletion monk,GagEnable,,0,-1"));
+		pEnt->AcceptInput("AddOutput", this, this, param, 0);
 	}
 	//remove the fucky-wucky triggers so that invert gravity doesn't softlock you
 	else if (!Q_strcmp(pMapName, "d2_coast_04"))
