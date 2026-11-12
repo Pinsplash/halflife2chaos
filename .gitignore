@@ -120,3 +120,4 @@ sp/src/utils/vvis_launcher/Debug/vvis.exe
 server_blacklist.txt
 *\icktest.*
 *.enc
+GameState.txt
