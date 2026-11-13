@@ -3827,6 +3827,13 @@ void CSceneEntity::FindNamedEntity( const char *name, CUtlVector<CBaseEntity*> &
 		list.AddToTail(pEnt);
 		return;
 	}
+	//this function did not originally have a check for !activator, but i've found that scenes using !activator
+	//are not working after the recent changes, and this check feels like a very obvious solution
+	if (!stricmp(evalname, "!activator"))
+	{
+		list.AddToTail(m_hActivator);
+		return;
+	}
 	//scenes with * in the name only want one target
 	size_t length = strlen(evalname);
 	bool star = (evalname[length - 1] == '*');
