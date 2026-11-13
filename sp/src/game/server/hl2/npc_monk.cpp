@@ -78,6 +78,10 @@ public:
 	bool IsJumpLegal( const Vector &startPos, const Vector &apex, const Vector &endPos ) const;
 	int SelectFailSchedule( int failedSchedule, int failedTask, AI_TaskFailureCode_t taskFailCode );
 
+	//grigori must avoid CNPC_PlayerCompanion::OverrideMove because it has code to avoid walking into fire.
+	//grigori intentionally walks through fire in d1_town_02a. if that code activates he acts strangely.
+	virtual bool OverrideMove(float flInterval) { return CAI_PlayerAlly::OverrideMove(flInterval); };
+
 	DECLARE_DATADESC();
 
 private:
