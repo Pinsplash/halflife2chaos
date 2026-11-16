@@ -8640,7 +8640,7 @@ bool IsPlayerAlly(CBaseCombatCharacter* pCharacter)
 		//then i guess move it back and remove damage filters from any NPC affected by world of hate?
 		if (pCharacter->m_hDamageFilter)
 			return true;
-		if (pCharacter->MyNPCPointer()->IsPlayerAlly())//fighters
+		if (pCharacter->MyNPCPointer()->IsCAI_PlayerAlly())//fighters
 		{
 			if (pCharacter->ClassMatches("npc_a*") || pCharacter->ClassMatches("npc_b*") || pCharacter->ClassMatches("npc_mon*") || pCharacter->ClassMatches("npc_v*"))
 				return true;

@@ -933,6 +933,7 @@ public:
 	void					TraceBleed( float flDamage, const Vector &vecDir, trace_t *ptr, int bitsDamageType );
 	virtual bool			IsTriggered( CBaseEntity *pActivator ) {return true;}
 	virtual bool			IsNPC( void ) const { return false; }
+	virtual bool			IsCAI_PlayerAlly(void) const { return false; }
 	virtual CBaseFlex* MyBaseFlexPointer(void) { return NULL; }
 	CAI_BaseNPC				*MyNPCPointer( void ); 
 	virtual CBaseCombatCharacter *MyCombatCharacterPointer( void ) { return NULL; }

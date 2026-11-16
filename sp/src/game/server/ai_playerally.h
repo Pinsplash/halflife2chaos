@@ -279,6 +279,7 @@ public:
 	// is vital is to determine Classify() == CLASS_PLAYER_ALLY_VITAL. Do not use this function outside that
 	// context. 
 	inline bool IsGameEndAlly(void) { return m_bGameEndAlly; }
+	virtual bool IsCAI_PlayerAlly(void) const { return true; }
 	int			ObjectCaps( void ) { return UsableNPCObjectCaps(BaseClass::ObjectCaps()); }
 	void		TalkInit( void );				
 
