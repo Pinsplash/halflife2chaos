@@ -10055,6 +10055,11 @@ void CEPhysConvert::StartEffect()
 	{
 		d2prison06Hack = true;
 	}
+	bool d1trainstation01Hack = false;
+	if (!Q_strcmp(pMapName, "d1_trainstation_01"))
+	{
+		d1trainstation01Hack = true;
+	}
 	//door-linked areaportals become permanently open since the door is now free to move
 	CBaseEntity* pPortal = NULL;
 	while ((pPortal = gEntList.FindEntityByClassname(pPortal, "func_a*")) != NULL)
@@ -10094,6 +10099,12 @@ void CEPhysConvert::StartEffect()
 			pEnt->GetParent()->NameMatches("door_room2_gate_2")))
 		{
 			//normally we keep child entities parented to whatever their parent is, but these ones are shaped very weirdly and result in a softlock
+			pEnt->SetParent(NULL);
+		}
+		if (d1trainstation01Hack && pEnt->GetParent() &&
+			pEnt->GetParent()->NameMatches("train_door_1"))
+		{
+			//normally we keep child entities parented to whatever their parent is, but these ones will cause a softlock if they stay on
 			pEnt->SetParent(NULL);
 		}
 		//npc_furniture creates a clone as a prop and is not deleted to keep actors working properly
