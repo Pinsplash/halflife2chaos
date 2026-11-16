@@ -37,6 +37,7 @@
 
 float GetCurrentGravity( void );
 ConVar	sk_barnacle_health( "sk_barnacle_health","0");
+extern ConVar chaos_explode_on_death;
 
 static ConVar npc_barnacle_swallow( "npc_barnacle_swallow", "0", 0, "Use prototype swallow code." );
 
@@ -2103,6 +2104,10 @@ void CNPC_Barnacle::Event_Killed( const CTakeDamageInfo &info )
 
 	SetNextThink( gpGlobals->curtime + 0.1f );
 	SetThink ( &CNPC_Barnacle::WaitTillDead );
+
+	//send explosion down, not up
+	if (chaos_explode_on_death.GetBool())
+		ExplosionCreate(GetAbsOrigin() + Vector(0, 0, -16), GetAbsAngles(), NULL, 100, 200, 0, 100, NULL);
 
 	// we deliberately do not call BaseClass::EventKilled
 }

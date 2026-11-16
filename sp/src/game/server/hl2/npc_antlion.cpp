@@ -37,7 +37,6 @@
 
 //Debug visualization
 ConVar	g_debug_antlion("g_debug_antlion", "0");
-extern ConVar chaos_explode_on_death;
 
 // base antlion stuff
 ConVar	sk_antlion_health( "sk_antlion_health", "0" );
