@@ -2606,6 +2606,17 @@ void CHL2_Player::StartGame()
 		}
 		return;
 	}
+	//make kleiner startscripting on spawn. stock map only makes him start in the final ~10 seconds of teleporter sequence.
+	else if (!Q_strcmp(pMapName, "d1_trainstation_05"))
+	{
+		CBaseEntity* pNPC = gEntList.FindEntityByName(NULL, "kleiner");
+		if (pNPC)
+		{
+			variant_t param;
+			pNPC->AcceptInput("StartScripting", this, this, param, 0);
+		}
+		return;
+	}
 	//scripting of canals 11 requires an airboat to be present, give player a new one if they came here without one
 	else if (!Q_strcmp(pMapName, "d1_canals_11"))
 	{
