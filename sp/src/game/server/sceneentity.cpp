@@ -3564,7 +3564,7 @@ void CSceneEntity::FindNamedActorInt(int index, CUtlVector<CBaseEntity*>& list)
 		{
 			for (int iEnt = 0; iEnt < vEntList.Size(); iEnt++)
 			{
-				if (vEntList[iEnt]->MyBaseFlexPointer())
+				if (vEntList[iEnt] && vEntList[iEnt]->MyBaseFlexPointer())
 				{
 					pActor = vEntList[iEnt]->MyBaseFlexPointer();
 					break;
