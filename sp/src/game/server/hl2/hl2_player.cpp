@@ -6693,6 +6693,11 @@ bool CChaosEffect::CheckEffectContext()
 		if (!Q_strcmp(pMapName, "d1_eli_02"))
 			return false;
 
+	//don't have antlion guard's corpse flying around to avoid softlock
+	if (m_nID == EFFECT_ZEROG || m_nID == EFFECT_CAMERA_GRAVITY)
+		if (!Q_strcmp(pMapName, "d2_coast_11"))
+			return false;
+
 	if (m_nContext == EC_NONE)
 		return true;
 
