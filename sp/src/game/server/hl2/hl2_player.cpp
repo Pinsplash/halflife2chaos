@@ -633,14 +633,14 @@ CON_COMMAND(chaos_domustkilldeath1, "")
 	UTIL_CenterPrintAll("#hl2c_mustkilldead1");
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
 	pPlayer->SetHealth(0);
-	pPlayer->TakeDamage(CTakeDamageInfo(pPlayer, pPlayer, 1, DMG_GENERIC | DMG_VEHICLE));
+	pPlayer->TakeDamage(CTakeDamageInfo(pPlayer, pPlayer, 1, DMG_GENERIC));
 }
 CON_COMMAND(chaos_domustkilldeath2, "")
 {
 	UTIL_CenterPrintAll("#hl2c_mustkilldead2");
 	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
 	pPlayer->SetHealth(0);
-	pPlayer->TakeDamage(CTakeDamageInfo(pPlayer, pPlayer, 1, DMG_GENERIC | DMG_VEHICLE));
+	pPlayer->TakeDamage(CTakeDamageInfo(pPlayer, pPlayer, 1, DMG_GENERIC));
 }
 void DisplayGeneratedCC()
 {
@@ -10465,8 +10465,7 @@ void CESuitSwap::StartEffect()
 			pEnt->AcceptInput("Disable", pPlayer, pPlayer, variant, 0);
 		}
 		//so now player is dead, but damage them a bit more so the game properly registers their death
-		//DMG_VEHICLE ensures we hit players in vehicles (i think this only affects the ep2 car)
-		pPlayer->TakeDamage(CTakeDamageInfo(pPlayer, pPlayer, 1, DMG_GENERIC | DMG_VEHICLE));
+		pPlayer->TakeDamage(CTakeDamageInfo(pPlayer, pPlayer, 1, DMG_GENERIC));
 	}
 }
 void CEGiveAllRPG::StartEffect()

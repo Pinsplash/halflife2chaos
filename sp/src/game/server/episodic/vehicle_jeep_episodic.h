@@ -53,7 +53,12 @@ public:
 		if ( GetServerVehicle() && GetServerVehicle()->IsPassengerExiting() )
 			return false;
 
-		return ( info.GetDamageType() & DMG_VEHICLE ) != 0; 
+		//original line. this is causing us problems because we want some effects to kill the player when they're in a vehicle
+		//if we can't damage them then shit gets weird, including the HUD saying they have 0 health while still alive.
+		//adding DMG_VEHICLE to the damage of effects is also a problem, because then they can spawn a janky looking ragdoll when they die,
+		//and this point of failure is the least reasonable.
+		//return ( info.GetDamageType() & DMG_VEHICLE ) != 0; 
+		return true;
 	}
 
 	virtual int		ObjectCaps( void ) { return (BaseClass::ObjectCaps() | FCAP_NOTIFY_ON_TRANSITION); }
