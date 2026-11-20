@@ -6687,6 +6687,12 @@ bool CChaosEffect::CheckEffectContext()
 		if (!Q_strcmp(pMapName, "d3_breen_01"))
 			return false;
 
+	//if the triggers on eli 02 become physically simulated via ran out of glue, we get a crash in vphysics.
+	//this is the only map we've seen this problem happen on. it doesn't have many triggers to turn solid anyway, so disabling it isn't a significant loss.
+	if (m_nID == EFFECT_SOLID_TRIGGERS)
+		if (!Q_strcmp(pMapName, "d1_eli_02"))
+			return false;
+
 	if (m_nContext == EC_NONE)
 		return true;
 
