@@ -696,7 +696,7 @@ CON_COMMAND(cc_generate, "")
 	filesystem->Close(file_handle);
 	DisplayGeneratedCC();
 }
-CON_COMMAND(cc_new_generate, "")
+CON_COMMAND(cc_generate2, "")
 {
 	FileHandle_t file_handle = filesystem->Open("materials/chaos_random_cc.raw", "wb");
 	int bOut = RandomInt(0, 255);
@@ -736,6 +736,165 @@ CON_COMMAND(cc_new_generate, "")
 				outColor.b = colors[bScaled * bScaled * bScaled];
 				outColor.g = colors[bScaled * bScaled * bScaled + gScaled * gScaled + 1];
 				outColor.r = colors[bScaled * bScaled * bScaled + gScaled * gScaled + rScaled + 2];
+				filesystem->Write(&outColor, sizeof(color24), file_handle);
+			}
+		}
+	}
+	filesystem->Close(file_handle);
+	DisplayGeneratedCC();
+}
+//old style fading, fucked up
+CON_COMMAND(cc_generate3, "")
+{
+	FileHandle_t file_handle = filesystem->Open("materials/chaos_random_cc.raw", "wb");
+	int rOut = RandomInt(0, 255);
+	int gOut = RandomInt(0, 255);
+	int bOut = RandomInt(0, 255);
+	int rNewOut = RandomInt(0, 255);
+	int gNewOut = RandomInt(0, 255);
+	int bNewOut = RandomInt(0, 255);
+	float flFrequency = 1;
+	int rIn = 0;
+	int gIn = 0;
+	int bIn = 0;
+	for (rIn = 0; rIn < 32; rIn++)
+	{
+		//change colors at a controlled rate
+		if (flFrequency >= 6)
+		{
+			rOut = rNewOut;
+			gOut = gNewOut;
+			bOut = bNewOut;
+			rNewOut = (RandomInt(0, 255) + (rIn * 10) + (rOut * 4)) / 4;
+			gNewOut = (RandomInt(0, 255) + (gIn * 10) + (rOut * 4)) / 4;
+			bNewOut = (RandomInt(0, 255) + (bIn * 10) + (rOut * 4)) / 4;
+			flFrequency = 1;
+		}
+		flFrequency += 1;
+		for (gIn = 0; gIn < 32; gIn++)
+		{
+			for (bIn = 0; bIn < 32; bIn++)
+			{
+				color24 outColor;
+				outColor.r = Lerp(rIn / 32.0f, rOut, rNewOut);
+				outColor.g = Lerp(gIn / 32.0f, gOut, gNewOut);
+				outColor.b = Lerp(bIn / 32.0f, bOut, bNewOut);
+				filesystem->Write(&outColor, sizeof(color24), file_handle);
+			}
+		}
+	}
+	filesystem->Close(file_handle);
+	DisplayGeneratedCC();
+}
+CON_COMMAND(cc_generate4, "")
+{
+	//FileHandle_t file_handle_ref = filesystem->Open("materials/ref_chaos_random_cc.raw", "wb");
+	FileHandle_t file_handle = filesystem->Open("materials/chaos_random_cc.raw", "wb");
+	int bOut = RandomInt(0, 255);
+	int gOut = RandomInt(0, 255);
+	int rOut = RandomInt(0, 255);
+	int b = 0;
+	int g = 0;
+	int r = 0;
+	CUtlVector<int> colors;
+	int iResolution = 3;
+	for (b = 0; b < iResolution; b++)
+	{
+		//change colors at a controlled rate
+		for (g = 0; g < iResolution; g++)
+		{
+			for (r = 0; r < iResolution; r++)
+			{
+				//bOut = (RandomInt(0, 255) + (b * 10) + (bOut * 4)) / 4;
+				//gOut = (RandomInt(0, 255) + (g * 10) + (gOut * 4)) / 4;
+				//rOut = (RandomInt(0, 255) + (r * 10) + (rOut * 4)) / 4;
+				bOut = RandomInt(0, 255);
+				gOut = RandomInt(0, 255);
+				rOut = RandomInt(0, 255);
+				//bOut = b * 8 * (32 / iResolution);
+				//gOut = g * 8 * (32 / iResolution);
+				//rOut = r * 8 * (32 / iResolution);
+				colors.AddToTail(bOut);
+				colors.AddToTail(gOut);
+				colors.AddToTail(rOut);
+				Msg("%i: %i, %i, %i, \n", colors.Size() / 3 - 1, bOut, gOut, rOut);
+			}
+		}
+	}
+	/*
+	//write old version of file from same rng to compare behavior
+	for (b = 0; b < 32; b++)
+	{
+		int bScaled = floor(b / (32 / iResolution));
+		for (g = 0; g < 32; g++)
+		{
+			int gScaled = floor(g / (32 / iResolution));
+			for (r = 0; r < 32; r++)
+			{
+				int rScaled = floor(r / (32 / iResolution));
+				color24 outColor;
+				outColor.b = colors[bScaled * 3 + gScaled * iResolution * 3 + rScaled * iResolution * iResolution * 3 + 2];
+				outColor.g = colors[bScaled * 3 + gScaled * iResolution * 3 + rScaled * iResolution * iResolution * 3 + 1];
+				outColor.r = colors[bScaled * 3 + gScaled * iResolution * 3 + rScaled * iResolution * iResolution * 3 + 0];
+				filesystem->Write(&outColor, sizeof(color24), file_handle_ref);
+			}
+		}
+	}
+	filesystem->Close(file_handle_ref);
+	*/
+	int bLastScaled = 0;
+	int bOldScaled = 0;
+	int bScaled = 0;
+	int iBoundarySize = 32 / iResolution;
+	for (b = 0; b < 32; b++)
+	{
+		bLastScaled = bScaled;
+		bScaled = floor(b / iBoundarySize);
+
+		if (bLastScaled != bScaled)
+		{
+			//Msg("B%i: %i != %i, so oldB is now %i\n", b, bLastScaled, bScaled, bLastScaled);
+			bOldScaled = bLastScaled;
+		}
+
+		int gLastScaled = 0;
+		int gOldScaled = 0;
+		int gScaled = 0;
+		for (g = 0; g < 32; g++)
+		{
+			gLastScaled = gScaled;
+			gScaled = floor(g / iBoundarySize);
+
+			if (gLastScaled != gScaled)
+			{
+				//Msg("-G%i: %i != %i, so oldG is now %i\n", g, gLastScaled, gScaled, gLastScaled);
+				gOldScaled = gLastScaled;
+			}
+
+			int rLastScaled = 0;
+			int rOldScaled = 0;
+			int rScaled = 0;
+			for (r = 0; r < 32; r++)
+			{
+				rLastScaled = rScaled;
+				rScaled = floor(r / iBoundarySize);
+
+				if (rLastScaled != rScaled)
+				{
+					//Msg("--R%i: %i != %i, so oldR is now %i\n", r, rLastScaled, rScaled, rLastScaled);
+					rOldScaled = rLastScaled;
+				}
+
+				color24 outColor;
+				int bOld = colors[bOldScaled * 3 + gOldScaled * iResolution * 3 + rOldScaled * iResolution * iResolution * 3 + 2];
+				int gOld = colors[bOldScaled * 3 + gOldScaled * iResolution * 3 + rOldScaled * iResolution * iResolution * 3 + 1];
+				int rOld = colors[bOldScaled * 3 + gOldScaled * iResolution * 3 + rOldScaled * iResolution * iResolution * 3 + 0];
+				int bNew = colors[bScaled * 3 + gScaled * iResolution * 3 + rScaled * iResolution * iResolution * 3 + 2];
+				int gNew = colors[bScaled * 3 + gScaled * iResolution * 3 + rScaled * iResolution * iResolution * 3 + 1];
+				int rNew = colors[bScaled * 3 + gScaled * iResolution * 3 + rScaled * iResolution * iResolution * 3 + 0];
+				outColor.b = Lerp((b % iBoundarySize) / (float)iBoundarySize, bOld, bNew);
+				outColor.g = Lerp((g % iBoundarySize) / (float)iBoundarySize, gOld, gNew);
+				outColor.r = Lerp((r % iBoundarySize) / (float)iBoundarySize, rOld, rNew);
 				filesystem->Write(&outColor, sizeof(color24), file_handle);
 			}
 		}
@@ -10253,7 +10412,7 @@ void CEDejaVu::StartEffect()
 }
 void CERandomCC::StartEffect()
 {
-	engine->ClientCommand(engine->PEntityOfEntIndex(1), "cc_generate");
+	engine->ClientCommand(engine->PEntityOfEntIndex(1), "cc_generate4");
 }
 void CERandomCC::StopEffect()
 {
