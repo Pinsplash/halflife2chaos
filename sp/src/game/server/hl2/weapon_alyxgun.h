@@ -45,12 +45,6 @@ public:
 	void Operator_ForceNPCFire( CBaseCombatCharacter  *pOperator, bool bSecondary );
 	void Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatCharacter *pOperator );
 
-	virtual void SetPickupTouch( void )
-	{
-		// Alyx gun cannot be picked up
-		SetTouch(NULL);
-	}
-
 	float m_flTooCloseTimer;
 
 	DECLARE_ACTTABLE();
