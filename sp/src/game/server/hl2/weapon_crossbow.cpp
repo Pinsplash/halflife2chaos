@@ -40,6 +40,8 @@
 
 extern ConVar sk_plr_dmg_crossbow;
 extern ConVar sk_npc_dmg_crossbow;
+extern ConVar chaos_must_kill;
+extern bool g_PlayerMadeExplosion;
 
 void TE_StickyBolt( IRecipientFilter& filter, float delay,	Vector vecDirection, const Vector *origin );
 
@@ -249,14 +251,24 @@ void CCrossbowBolt::BoltTouch( CBaseEntity *pOther )
 			pOther->DispatchTraceAttack( dmgInfo, vecNormalizedVel, &tr );
 		}
 
+		bool WasAlive = pOther->IsAlive();
+		g_PlayerMadeExplosion = false;
+
 		ApplyMultiDamage();
 
 		//Adrian: keep going through the glass.
-		if ( pOther->GetCollisionGroup() == COLLISION_GROUP_BREAKABLE_GLASS )
-			 return;
+		if (pOther->GetCollisionGroup() == COLLISION_GROUP_BREAKABLE_GLASS)
+		{
+			g_PlayerMadeExplosion = false;
+			return;
+		}
 
 		if ( !pOther->IsAlive() )
 		{
+			if (!WasAlive && chaos_must_kill.GetBool() && !g_PlayerMadeExplosion)
+				engine->ClientCommand(engine->PEntityOfEntIndex(1), "chaos_domustkilldeath1");
+			g_PlayerMadeExplosion = false;
+
 			// We killed it! 
 			const surfacedata_t *pdata = physprops->GetSurfaceData( tr.surface.surfaceProps );
 			if ( pdata->game.material == CHAR_TEX_GLASS )
@@ -264,6 +276,9 @@ void CCrossbowBolt::BoltTouch( CBaseEntity *pOther )
 				return;
 			}
 		}
+		else if (chaos_must_kill.GetBool() && !g_PlayerMadeExplosion)
+			engine->ClientCommand(engine->PEntityOfEntIndex(1), "chaos_domustkilldeath1");
+		g_PlayerMadeExplosion = false;
 
 		SetAbsVelocity( Vector( 0, 0, 0 ) );
 
@@ -336,6 +351,10 @@ void CCrossbowBolt::BoltTouch( CBaseEntity *pOther )
 			}
 			else
 			{
+				if (chaos_must_kill.GetBool() && !g_PlayerMadeExplosion)
+					engine->ClientCommand(engine->PEntityOfEntIndex(1), "chaos_domustkilldeath1");
+				g_PlayerMadeExplosion = false;
+
 				SetThink( &CCrossbowBolt::SUB_Remove );
 				SetNextThink( gpGlobals->curtime + 2.0f );
 				
@@ -377,6 +396,10 @@ void CCrossbowBolt::BoltTouch( CBaseEntity *pOther )
 		}
 		else
 		{
+			if (chaos_must_kill.GetBool() && !g_PlayerMadeExplosion)
+				engine->ClientCommand(engine->PEntityOfEntIndex(1), "chaos_domustkilldeath1");
+			g_PlayerMadeExplosion = false;
+
 			// Put a mark unless we've hit the sky
 			if ( ( tr.surface.flags & SURF_SKY ) == false )
 			{
@@ -386,6 +409,7 @@ void CCrossbowBolt::BoltTouch( CBaseEntity *pOther )
 			UTIL_Remove( this );
 		}
 	}
+	g_PlayerMadeExplosion = false;
 
 	if ( g_pGameRules->IsMultiplayer() )
 	{
