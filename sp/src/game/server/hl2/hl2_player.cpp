@@ -797,7 +797,7 @@ CON_COMMAND(cc_generate4, "")
 	int g = 0;
 	int r = 0;
 	CUtlVector<int> colors;
-	int iResolution = 3;
+	int iResolution = 6;
 	for (b = 0; b < iResolution; b++)
 	{
 		//change colors at a controlled rate
@@ -805,9 +805,9 @@ CON_COMMAND(cc_generate4, "")
 		{
 			for (r = 0; r < iResolution; r++)
 			{
-				bOut = RandomInt(0, 255);
-				gOut = RandomInt(0, 255);
-				rOut = RandomInt(0, 255);
+				bOut = (bOut * 4 + RandomInt(0, 255)) / 5;
+				gOut = (gOut * 4 + RandomInt(0, 255)) / 5;
+				rOut = (rOut * 4 + RandomInt(0, 255)) / 5;
 				//bOut = b * 8 * (32 / iResolution);
 				//gOut = g * 8 * (32 / iResolution);
 				//rOut = r * 8 * (32 / iResolution);
