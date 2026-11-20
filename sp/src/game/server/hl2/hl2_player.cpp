@@ -805,9 +805,6 @@ CON_COMMAND(cc_generate4, "")
 		{
 			for (r = 0; r < iResolution; r++)
 			{
-				//bOut = (RandomInt(0, 255) + (b * 10) + (bOut * 4)) / 4;
-				//gOut = (RandomInt(0, 255) + (g * 10) + (gOut * 4)) / 4;
-				//rOut = (RandomInt(0, 255) + (r * 10) + (rOut * 4)) / 4;
 				bOut = RandomInt(0, 255);
 				gOut = RandomInt(0, 255);
 				rOut = RandomInt(0, 255);
@@ -817,7 +814,7 @@ CON_COMMAND(cc_generate4, "")
 				colors.AddToTail(bOut);
 				colors.AddToTail(gOut);
 				colors.AddToTail(rOut);
-				Msg("%i: %i, %i, %i, \n", colors.Size() / 3 - 1, bOut, gOut, rOut);
+				//Msg("%i: %i, %i, %i, \n", colors.Size() / 3 - 1, bOut, gOut, rOut);
 			}
 		}
 	}
