@@ -30,6 +30,7 @@
 
 extern ConVar sv_vehicle_autoaim_scale;
 extern ConVar chaos_no_reload;
+extern ConVar chaos_replace_bullets_with_grenades;
 
 #define	VEHICLE_HITBOX_DRIVER	1
 
@@ -1679,6 +1680,10 @@ void CPropAirboat::FireGun( )
 		vecEyePosition = vecGunPosition;
 		vecEyeDirection = vecRay;
 	}
+
+	if (chaos_replace_bullets_with_grenades.GetBool())
+		return;
+
 	AngleVectors(m_hPlayer->EyeAngles() + m_hPlayer->m_vOffsetedCrosshairDir, &vecEyeDirection);
 
 	CAPCMissile *pEnt = FindAPCMissileInCone( vecEyePosition, vecEyeDirection, 2.5f );
