@@ -390,11 +390,13 @@ public:
 class CESuperhot : public CChaosEffect
 {
 public:
+	void StopEffect() override;
 	void FastThink() override;
 };
 class CESupercold : public CChaosEffect
 {
 public:
+	void StopEffect() override;
 	void FastThink() override;
 };
 class CECredits : public CChaosEffect

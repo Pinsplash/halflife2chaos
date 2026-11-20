@@ -592,6 +592,7 @@ protected:
 	void ForceSetupBonesAtTimeFakeInterpolation( matrix3x4_t *pBonesOut, float curtimeOffset );
 
 	float m_flLaggedMovementValue;
+	float m_flChaosLaggedMovementValue;
 
 	// These are used to smooth out prediction corrections. They're most useful when colliding with
 	// vphysics objects. The server will be sending constant prediction corrections, and these can help
@@ -637,6 +638,7 @@ public:
 	const char *GetLastKnownPlaceName( void ) const	{ return m_szLastPlaceName; }	// return the last nav place name the player occupied
 
 	float GetLaggedMovementValue( void ){ return m_flLaggedMovementValue;	}
+	float GetChaosLaggedMovementValue( void ){ return m_flChaosLaggedMovementValue;	}
 	bool  ShouldGoSouth( Vector vNPCForward, Vector vNPCRight ); //Such a bad name.
 
 	void SetOldPlayerZ( float flOld ) { m_flOldPlayerZ = flOld;	}

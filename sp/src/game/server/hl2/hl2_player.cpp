@@ -6921,10 +6921,6 @@ void CChaosEffect::StopEffect()
 	case EFFECT_BULLET_TELEPORT:
 		chaos_bullet_teleport.SetValue(0);
 		break;
-	case EFFECT_SUPERHOT:
-	case EFFECT_SUPERCOLD:
-		engine->ClientCommand(engine->PEntityOfEntIndex(1), "host_timescale 1");
-		break;
 	case EFFECT_CANT_LEAVE_MAP:
 		chaos_cant_leave_map.SetValue(0);
 		break;
@@ -8544,16 +8540,19 @@ void CESuperhot::FastThink()
 	CBaseEntity* pVehicle = pPlayer->GetVehicleEntity();
 	Vector vecVelocity;
 	if (pVehicle && pVehicle->VPhysicsGetObject())
-	{
 		pVehicle->VPhysicsGetObject()->GetVelocity(&vecVelocity, NULL);
-	}
 	else
-	{
 		vecVelocity = pPlayer->GetAbsVelocity();
-	}
 	//If input locks up, change 0.08 to something higher
 	float flNum = min(3, 2 * max(0.08, 1 / (hl2_normspeed.GetFloat() / max(hl2_normspeed.GetFloat() * 0.05, vecVelocity.Length()))));
 	cvar->FindVar("host_timescale")->SetValue(flNum);
+	pPlayer->SetChaosLaggedMovementValue(1 / flNum);
+}
+void CESuperhot::StopEffect()
+{
+	engine->ClientCommand(engine->PEntityOfEntIndex(1), "host_timescale 1");
+	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+	pPlayer->SetChaosLaggedMovementValue(1);
 }
 void CESupercold::FastThink()
 {
@@ -8566,15 +8565,18 @@ void CESupercold::FastThink()
 	CBaseEntity* pVehicle = pPlayer->GetVehicleEntity();
 	Vector vecVelocity;
 	if (pVehicle && pVehicle->VPhysicsGetObject())
-	{
 		pVehicle->VPhysicsGetObject()->GetVelocity(&vecVelocity, NULL);
-	}
 	else
-	{
 		vecVelocity = pPlayer->GetAbsVelocity();
-	}
 	float flNum = max(0.3, (hl2_normspeed.GetFloat() / max(hl2_normspeed.GetFloat() * 0.3, vecVelocity.Length())));
 	cvar->FindVar("host_timescale")->SetValue(flNum);
+	pPlayer->SetChaosLaggedMovementValue(1 / flNum);
+}
+void CESupercold::StopEffect()
+{
+	engine->ClientCommand(engine->PEntityOfEntIndex(1), "host_timescale 1");
+	CBasePlayer* pPlayer = UTIL_GetLocalPlayer();
+	pPlayer->SetChaosLaggedMovementValue(1);
 }
 void CEColors::TransitionEffect()
 {

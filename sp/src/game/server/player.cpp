@@ -425,6 +425,7 @@ BEGIN_DATADESC( CBasePlayer )
 	DEFINE_FIELD( m_hZoomOwner, FIELD_EHANDLE ),
 	
 	DEFINE_FIELD( m_flLaggedMovementValue, FIELD_FLOAT ),
+	DEFINE_FIELD(m_flChaosLaggedMovementValue, FIELD_FLOAT ),
 
 	DEFINE_FIELD( m_vNewVPhysicsPosition, FIELD_VECTOR ),
 	DEFINE_FIELD( m_vNewVPhysicsVelocity, FIELD_VECTOR ),
@@ -597,6 +598,7 @@ CBasePlayer::CBasePlayer( )
 	m_bPredictWeapons = true;
 	m_bLagCompensation = false;
 	m_flLaggedMovementValue = 1.0f;
+	m_flChaosLaggedMovementValue = 1.0f;
 	m_StuckLast = 0;
 	m_impactEnergyScale = 1.0f;
 	m_fLastPlayerTalkTime = 0.0f;
@@ -5020,6 +5022,7 @@ void CBasePlayer::Spawn( void )
 	g_pGameRules->PlayerSpawn( this );
 
 	m_flLaggedMovementValue = 1.0f;
+	m_flChaosLaggedMovementValue = 1.0f;
 	m_vecSmoothedVelocity = vec3_origin;
 	InitVCollision( GetAbsOrigin(), GetAbsVelocity() );
 
@@ -8002,6 +8005,7 @@ void SendProxy_CropFlagsToPlayerFlagBitsLength( const SendProp *pProp, const voi
 
 		SendPropInt			( SENDINFO( m_nWaterLevel ), 2, SPROP_UNSIGNED ),
 		SendPropFloat		( SENDINFO( m_flLaggedMovementValue ), 0, SPROP_NOSCALE ),
+		SendPropFloat		( SENDINFO(m_flChaosLaggedMovementValue), 0, SPROP_NOSCALE ),
 		SendPropQAngles(SENDINFO(m_vOffsetedCrosshairDir), 13, SPROP_CHANGES_OFTEN),
 	END_SEND_TABLE()
 

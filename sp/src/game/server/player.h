@@ -1159,6 +1159,7 @@ protected:
 	float GetStepSize( void ) const { return m_Local.m_flStepSize; }
 
 	CNetworkVar( float,  m_flLaggedMovementValue );
+	CNetworkVar( float, m_flChaosLaggedMovementValue);
 
 	// These are generated while running usercmds, then given to UpdateVPhysicsPosition after running all queued commands.
 	Vector m_vNewVPhysicsPosition;
@@ -1188,7 +1189,9 @@ public:
 	char			m_chTextureType;
 	char			m_chPreviousTextureType;	// Separate from m_chTextureType. This is cleared if the player's not on the ground.
 	float  GetLaggedMovementValue( void ){ return m_flLaggedMovementValue;	}
+	float  GetChaosLaggedMovementValue( void ){ return m_flChaosLaggedMovementValue;	}
 	void   SetLaggedMovementValue( float flValue ) { m_flLaggedMovementValue = flValue;	}
+	void   SetChaosLaggedMovementValue( float flValue ) { m_flChaosLaggedMovementValue = flValue;	}
 
 	inline bool IsAutoKickDisabled( void ) const;
 	inline void DisableAutoKick( bool disabled );
