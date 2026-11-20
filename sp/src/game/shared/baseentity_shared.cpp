@@ -51,6 +51,7 @@ ConVar chaos_replace_bullets_with_crossbow("chaos_replace_bullets_with_crossbow"
 ConVar chaos_replace_bullets_with_grenades("chaos_replace_bullets_with_grenades", "0", FCVAR_REPLICATED);
 ConVar chaos_bullet_teleport("chaos_bullet_teleport", "0", FCVAR_REPLICATED);
 ConVar chaos_must_kill("chaos_must_kill", "0");
+bool g_PlayerMadeExplosion = false;
 #ifdef PORTAL
 	#include "prop_portal_shared.h"
 #endif
@@ -1992,6 +1993,8 @@ void CBaseEntity::FireBullets( const FireBulletsInfo_t &info )
 
 	if (!chaos_replace_bullets_with_grenades.GetBool())//if grenade guns is on, no real "attack" has actually happened yet, so all of this code would make no sense
 	{
+		g_PlayerMadeExplosion = false;
+
 		ApplyMultiDamage();
 
 		if (IsPlayer() && flCumulativeDamage > 0.0f)
@@ -2000,7 +2003,8 @@ void CBaseEntity::FireBullets( const FireBulletsInfo_t &info )
 			CTakeDamageInfo dmgInfo(this, pAttacker, flCumulativeDamage, nDamageType);
 			gamestats->Event_WeaponHit(pPlayer, info.m_bPrimaryAttack, pPlayer->GetActiveWeapon()->GetClassname(), dmgInfo);
 		}
-		if (chaos_must_kill.GetBool() && IsPlayer())
+		//if the player's shot caused an explosion, let the explosion decide if they should die
+		if (chaos_must_kill.GetBool() && IsPlayer() && !g_PlayerMadeExplosion)
 		{
 			int NumAlive = 0;
 			for (int iEnt = 0; iEnt < HitEnts.Size(); iEnt++)
@@ -2014,6 +2018,7 @@ void CBaseEntity::FireBullets( const FireBulletsInfo_t &info )
 			if (NumKilled > 1)
 				engine->ClientCommand(engine->PEntityOfEntIndex(1), "chaos_domustkilldeath2");
 		}
+		g_PlayerMadeExplosion = false;
 		if (chaos_bullet_teleport.GetBool())
 		{
 			bool bTeleport = false;

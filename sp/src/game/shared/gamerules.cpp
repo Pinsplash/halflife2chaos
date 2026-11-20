@@ -37,6 +37,7 @@
 ConVar g_Language( "g_Language", "0", FCVAR_REPLICATED );
 ConVar sk_autoaim_mode( "sk_autoaim_mode", "1", FCVAR_ARCHIVE | FCVAR_REPLICATED );
 extern ConVar chaos_must_kill;
+extern bool g_PlayerMadeExplosion;
 
 #ifndef CLIENT_DLL
 ConVar log_verbose_enable( "log_verbose_enable", "0", FCVAR_GAMEDLL, "Set to 1 to enable verbose server log on the server." );
@@ -561,6 +562,7 @@ void CGameRules::RadiusDamage( const CTakeDamageInfo &info, const Vector &vecSrc
 	}
 	if (chaos_must_kill.GetBool() && info.GetAttacker()->IsPlayer())
 	{
+		g_PlayerMadeExplosion = true;
 		int NumAlive = 0;
 		for (int iEnt = 0; iEnt < HitEnts.Size(); iEnt++)
 		{
